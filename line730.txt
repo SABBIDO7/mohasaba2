@@ -1,0 +1,102 @@
+@app.get("/moh/{uid}/Accounting/Statement/{id}/{limit}",status_code=200)
+async def AccStatement(uid:str ,id:str,limit:int):
+    if limit=="All":
+        flag=1
+    else:
+        flag=0
+    # if checkList(uid) == "unauthorized":
+    #     return{"Info":"unauthorized"}
+
+    # elif checkList(uid).split("|")[0] == "authorized":
+    #     username = checkList(uid).split("|")[1]
+    username=uid
+    try:
+            conn = mariadb.connect(user="root", password="Hkms0ft", host=dbHost,port=9988,database = username) 
+        #conn = mariadb.connect(user="root", password="", host="127.0.0.1",port=3306,database = username) 
+    except mariadb.Error as e:       
+            print(f"Error connecting to MariaDB Platform: {e}")  
+            response.status_code = status.HTTP_409_CONFLICT
+            return({"Info":"unauthorized",
+                    "msg":{e}})
+    
+    cur = conn.cursor()
+    if str(id).lower() ==  "alldata" :
+        if flag==0:
+            cur.execute(f"SELECT * FROM `listdaily` ORDER BY `Date` desc limit {limit}  ;")
+        else:
+            cur.execute(f"SELECT * FROM `listdaily` ORDER BY `Date` desc  ;")
+    else:
+        if flag==0:
+            cur.execute(f"SELECT * FROM `listdaily` WHERE `AccNo` = '{id}' ORDER BY `Date` desc limit {limit}  ;")
+        else:
+            cur.execute(f"SELECT * FROM `listdaily` WHERE `AccNo` = '{id}' ORDER BY `Date` desc  ;")
+
+        
+    stat = []
+    x= 0
+    distype = []
+    dbr = []
+    tdb = 0
+    tcr = 0
+    dbr.append({"value":"Any","label":"Any"})
+    distype.append({"value":"Any","label":"Any"})
+    for vstat in cur:
+        lno = math.trunc(float(vstat[2]))
+        if (lno < float(vstat[2])):
+            f = float(vstat[2]) 
+        else:
+             f = lno
+      
+        stat.append({
+            "key":x,
+            "RefType":vstat[0],
+            "RefNo":vstat[1],
+            "LNo":f,
+            "AccNo":vstat[3],
+            "Date":vstat[4],
+            "DB":vstat[5],
+            "CR":vstat[6],
+            "Dep":vstat[7],
+            "job":vstat[9],
+            "Bank":vstat[10],
+            "CHQ":vstat[11],
+            "CHQ2":vstat[12],
+            "OppAcc":vstat[13],
+            "Notes":vstat[14],
+            
+        })
+        x= x +1
+        dtype = {
+            "label":vstat[0],
+            "value":vstat[0],
+        }
+        if dtype not in distype:
+            distype.append(dtype)
+        
+        br = {
+            "label":vstat[7],
+            "value":vstat[7],
+        }
+        if br not in dbr:
+            dbr.append(br)
+        tdb = tdb + math.trunc(float(vstat[5]))
+        tcr = tcr + math.trunc(float(vstat[6]))
+    distype.append({"value":"Sales","label":"Sales"})
+    distype.append({"value":"Purchase","label":"Purchase"})
+    distype.append({"value":"Order","label":"Order"})
+    distype.append({"value":"Transfers","label":"Transfers"})
+    distype.append({"value":"Receipt V","label":"Receipt V"})
+    distype.append({"value":"Payment V","label":"Payment V"})
+    distype.append({"value":"Journal  V","label":"Journal  V"})
+        
+    return{
+        "Info":"authorized",
+        "Statment":stat,
+        "disType":distype,
+        "dbr":dbr,
+        "tdb":tdb,
+        "tcr":tcr,
+        "tb":tdb - tcr,
+        
+        }
+    
