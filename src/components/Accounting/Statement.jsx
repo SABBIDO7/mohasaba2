@@ -189,11 +189,17 @@ export default function Statement(props) {
                 </Modal.Header>
                 <Modal.Body>
                     {/* <h1 className='underline'>Info:</h1> */}
+                    
                     <div className=" text-lg">
                         <span className="font-semibold">ID </span>: {props.oData["AccNo"]}{" "}
                         <div className="vr"></div> <span className="font-semibold">Balance </span>:{" "}
                         {props.oData["Balance"]} {props.oData["Cur"]}
+                        <div className="vr"></div>
+
+                        <span className="font-semibold ml-3"><Button onClick={(e)=>{closeFilter();filterStatement();}}>Refresh</Button></span>
                     </div>
+                    
+                    
                     <div className="max-w-[30rem]">
                         <Accordion>
                             <Accordion.Item eventKey="0">
