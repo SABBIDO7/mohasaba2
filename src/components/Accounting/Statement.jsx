@@ -73,35 +73,51 @@ export default function Statement(props) {
     }
 
     function dateFilterHandler(e) {
-        let d = new Date();
-      
-        let month = d.getMonth();
-        let day = d.getDate();
-        let year = d.getFullYear();
-        if(month!==9 && month!==10 && month!==11){
-             
-            month=month+1;
-            month="0"+month;
-         
-        }else{
-            month=month+1;
-        }
-        if (e == "Today") {
-           
-            setdFrom(year + "-" + month + "-" + day);
-            setdTo(year + "-" + month + "-" + day);
-            console.log(dFrom);
+        // let d = new Date();
 
+        // let month = d.getMonth();
+        // let day = d.getDate();
+        // let year = d.getFullYear();
+        // if(month!==9 && month!==10 && month!==11){
+             
+        //     month=month+1;
+        //     month="0"+month;
+         
+        // }else{
+        //     month=month+1;
+        // }
+        // Create a new Date object representing the current date
+        const currentDate = new Date();
+
+        // Get the year, month, and day components
+        const year = currentDate.getFullYear();
+        // Months are zero-based, so we add 1 to get the correct month
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = currentDate.getDate().toString().padStart(2, '0');
+        if (e == "Today") {
+            console.log("hon day")
+            console.log(day);
+            setdFrom(year + "-" + (month) + "-" + day);
+            setdTo(year + "-" + (month) + "-" + day);
         } else if (e == "Yesterday") {
-            setdFrom(year.toString() + "-" + (month).toString() + "-" + (day - 1).toString());
-            setdTo(year.toString() + "-" + (month).toString() + "-" + (day - 1).toString());
-        } 
-        else {
+            var yesterday = new Date();
+            yesterday.setDate(yesterday.getDate()-1);
+
+            // Get the year, month, and day components for yesterday
+            const yYear = yesterday.getFullYear();
+            const yMonth = (yesterday.getMonth() + 1).toString().padStart(2, '0');
+            const yDay = yesterday.getDate().toString().padStart(2, '0');
+
+            setdFrom(yYear.toString() + "-" + yMonth.toString() + "-" + yDay.toString());
+            setdTo(yYear.toString() + "-" + yMonth.toString() + "-" + yDay.toString());
+        } else {
+            
             setdFrom(year.toString() + "-" + e.toString().split("-")[0].trim() + "-" + "01");
             // if ()
             let lastdate = new Date(year, parseInt(e.toString().split("-")[0].trim()), 0);
 
             setdTo(year + "-" + e.toString().split("-")[0].trim() + "-" + lastdate.getDate());
+            console.log(dFrom);
         }
     }
     // The forwardRef is important!!
@@ -254,6 +270,10 @@ export default function Statement(props) {
                                                         placeholder={"Start Date"}
                                                         value={dFrom}
                                                         onChange={(e) => {
+                                                            // Check if dTo is before dFrom, update dTo if needed
+        if (new Date(e.target.value) > new Date(dTo)) {
+            setdTo(e.target.value);
+        }
                                                             setdFrom(e.target.value);
                                                         }}
                                                     />
@@ -264,6 +284,9 @@ export default function Statement(props) {
                                                         placeholder={"End Date"}
                                                         value={dTo}
                                                         onChange={(e) => {
+                                                            if (new Date(e.target.value) < new Date(dFrom)) {
+                                                                setdFrom(e.target.value);
+                                                            }
                                                             setdTo(e.target.value);
                                                         }}
                                                     />
@@ -312,7 +335,8 @@ export default function Statement(props) {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="flex flex-row w-[100%] justify-center px-2 py-1 align-middle">
+                                    <div className="flex flex-col bg-neutral-200 mt-1 p-1 rounded">
+                                        <div className="flex flex-row w-[100%] justify-center px-2 py-1 align-middle">
                     <div className="w-[95%] max-w-[50rem] flex flex-row items-center align-middle justify-center">
                         <div className="font-semibold text-lg">Limit:</div>
                         <Select
@@ -337,7 +361,9 @@ export default function Statement(props) {
                             }}
                         />
                     </div>
-                </div>
+                
+                                    </div>
+                                    </div>
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>
