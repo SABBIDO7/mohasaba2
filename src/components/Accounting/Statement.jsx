@@ -64,7 +64,7 @@ export default function Statement(props) {
                     setcr(data.tcr);
                     settb(data.tb);
                 } else {
-                    window.location.href = props.url;
+                   // window.location.href = props.url;
                 }
             })
             .catch((err) => {
@@ -196,7 +196,7 @@ export default function Statement(props) {
                         {props.oData["Balance"]} {props.oData["Cur"]}
                         <div className="vr"></div>
 
-                        <span className="font-semibold ml-3"><Button onClick={(e)=>{closeFilter();filterStatement();}}>Refresh</Button></span>
+                        <span className="font-semibold ml-3"><Button onClick={() => filterStatement("refresh")}>Refresh</Button></span>
                     </div>
                     
                     
@@ -209,7 +209,7 @@ export default function Statement(props) {
                                 <Accordion.Body className=" p-1">
                                     <div className="flex flex-col">
                                         <div className="flex flex-row justify-around items-center my-2">
-                                            <Button onClick={filterStatement}>Apply</Button>
+                                            <Button onClick={() => filterStatement("Apply")}>Apply</Button>
                                             
                                                     <Dropdown>
                                                         <Dropdown.Toggle
@@ -404,6 +404,7 @@ export default function Statement(props) {
                                     <th>CHQ2</th>
                                     <th>OppAcc</th>
                                     <th>LN</th>
+                                    <th>Time</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -453,6 +454,7 @@ export default function Statement(props) {
                                                 <td>{state["CHQ2"]}</td>
                                                 <td>{state["OppAcc"]}</td>
                                                 <td>{state["LNo"]}</td>
+                                                <td>{state["Time"]}</td>
                                             </tr>
                                         </>
                                     );
@@ -472,8 +474,9 @@ export default function Statement(props) {
         setdTo("");
         setsBranch("Any");
         setsType("Any");
+        setvLimit(100);
     }
-    function filterStatement() {
+    function filterStatement(flag) {
         let data = { dfrom: dFrom, dto: dTo, dtype: sType, db: sBranch};
         console.log("hon")
         
@@ -495,7 +498,10 @@ export default function Statement(props) {
                     setdb(res.data.tdb);
                     setcr(res.data.tcr);
                     settb(res.data.tb);
-                    closeFilter();
+                    if(flag==="Apply"){
+                        closeFilter();
+                    }
+                    
                 }
             })
             .catch((err) => {

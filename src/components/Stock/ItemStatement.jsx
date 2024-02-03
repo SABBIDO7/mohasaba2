@@ -45,6 +45,7 @@ export default function Statement(props) {
         setdTo("");
         setsBranch("Any");
         setsType("Any");
+        setvLimit(100);
     }
 
 
@@ -210,7 +211,10 @@ export default function Statement(props) {
                 </Modal.Header>
                 <Modal.Body>
                     <div className=" flex items-start justify-around">
+                        
+                    <span className="font-semibold ml-3"><Button onClick={() => filterStatement("refresh")}>Refresh</Button></span>
                         <p className="font-semibold m-0 text-gray-500"> {props.oData["ItemNo"]} </p>
+                      
                         <span>Qty: {props.oData["Qty"]}</span>
                     </div>
                     <div className="max-w-[30rem]">
@@ -222,7 +226,7 @@ export default function Statement(props) {
                                 <Accordion.Body className="p-1">
                                     <div className="flex flex-col">
                                         <div className="flex flex-row justify-around items-center my-2">
-                                            <Button onClick={filterStatement}>Apply</Button>
+                                            <Button onClick={() => filterStatement("Apply")}>Apply</Button>
                                             <Dropdown>
                                                 <Dropdown.Toggle
                                                     as={CustomToggle}
@@ -418,6 +422,7 @@ export default function Statement(props) {
                                 <th>Total</th>
                                 <th>AccNo</th>
                                 <th>Disc100</th>
+                                <th>Time</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -454,6 +459,7 @@ export default function Statement(props) {
                                         <td>{state["Total"]}</td>
                                         <td>{state["AccNo"]}</td>
                                         <td>{state["Disc100"]}</td>
+                                        <td>{state["Time"]}</td>
                                     </tr>
                                 );
                             })}
@@ -502,7 +508,7 @@ export default function Statement(props) {
     function closeFilter() {
         document.getElementById("sfl").firstChild.click();
     }
-    function filterStatement() {
+    function filterStatement(flag) {
         let data = { dfrom: dFrom, dto: dTo, dtype: sType, db: sBranch };
     
         axios({
@@ -519,10 +525,12 @@ export default function Statement(props) {
             .then((res) => {
                 if (res.data.Info == "authorized") {
                     setStatement(res.data.Statment);
-
-                    closeFilter();
+                    if(flag==="Apply"){
+                        closeFilter();
+                    }
+                    
                 } else {
-                    window.location.href = "/";
+                   // window.location.href = "/";
                 }
             })
             .catch((err) => {

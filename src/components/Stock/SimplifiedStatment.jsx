@@ -10,6 +10,8 @@ import BranchSelect from "./BranchSelect";
 import Accordion from "react-bootstrap/Accordion";
 import Select from "react-select";
 import axios from "axios";
+import FilterIcon from "../../media/FilterIcon.png";
+import Dropdown from "react-bootstrap/Dropdown";
 
 export default function Statement(props) {
     const values = [true];
@@ -34,6 +36,85 @@ export default function Statement(props) {
     const [branchOptions, setBranchOptions] = useState([]);
     const [sType, setsType] = useState("Any");
     const [sBranch, setsBranch] = useState("Any");
+    const [fLimit, setfLimit] = useState({value:100,label:100});
+    const [vLimit, setvLimit] = useState(100);
+
+    const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+        <a
+            href=""
+            ref={ref}
+            onClick={(e) => {
+                e.preventDefault();
+                onClick(e);
+            }}>
+            {children}
+            {/* &#x25bc; */}
+            <img src={FilterIcon} className="h-[1.5rem]" />
+        </a>
+    ));
+
+    // forwardRef again here!
+    // Dropdown needs access to the DOM of the Menu to measure it
+    const CustomMenu = React.forwardRef(
+        ({ children, style, className, "aria-labelledby": labeledBy }, ref) => {
+            return (
+                <div ref={ref} style={style} className={className} aria-labelledby={labeledBy}>
+                    <ul className="list-unstyled" onClick={(e) => dateFilterHandler(e.target.text)}>
+                        {React.Children.toArray(children)}
+                    </ul>
+                </div>
+            );
+        }
+    );
+
+    function dateFilterHandler(e) {
+        // let d = new Date();
+
+        // let month = d.getMonth();
+        // let day = d.getDate();
+        // let year = d.getFullYear();
+        // if(month!==9 && month!==10 && month!==11){
+             
+        //     month=month+1;
+        //     month="0"+month;
+         
+        // }else{
+        //     month=month+1;
+        // }
+        // Create a new Date object representing the current date
+        const currentDate = new Date();
+
+        // Get the year, month, and day components
+        const year = currentDate.getFullYear();
+        // Months are zero-based, so we add 1 to get the correct month
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = currentDate.getDate().toString().padStart(2, '0');
+        if (e == "Today") {
+            console.log("hon day")
+            console.log(day);
+            setdFrom(year + "-" + (month) + "-" + day);
+            setdTo(year + "-" + (month) + "-" + day);
+        } else if (e == "Yesterday") {
+            var yesterday = new Date();
+            yesterday.setDate(yesterday.getDate()-1);
+
+            // Get the year, month, and day components for yesterday
+            const yYear = yesterday.getFullYear();
+            const yMonth = (yesterday.getMonth() + 1).toString().padStart(2, '0');
+            const yDay = yesterday.getDate().toString().padStart(2, '0');
+
+            setdFrom(yYear.toString() + "-" + yMonth.toString() + "-" + yDay.toString());
+            setdTo(yYear.toString() + "-" + yMonth.toString() + "-" + yDay.toString());
+        } else {
+            
+            setdFrom(year.toString() + "-" + e.toString().split("-")[0].trim() + "-" + "01");
+            // if ()
+            let lastdate = new Date(year, parseInt(e.toString().split("-")[0].trim()), 0);
+
+            setdTo(year + "-" + e.toString().split("-")[0].trim() + "-" + lastdate.getDate());
+            console.log(dFrom);
+        }
+    }
 
     function clearFilters() {
         setdFrom("");
@@ -42,7 +123,7 @@ export default function Statement(props) {
         setsType("Any");
     }
 
-    let nof = "";
+   
 
     async function fetchdata(p, br) {
         setCPage(p);
@@ -52,10 +133,10 @@ export default function Statement(props) {
         fetch(
             props.url +
                 "/moh/" +
-                props.token +
+                localStorage.getItem("compname") +
                 "/Stock/Statement/" +
                 props.oData["ItemNo"].trim() +
-                "/"
+                "/100/"
         )
             .then((resp) => resp.json())
             .then((data) => {
@@ -67,7 +148,7 @@ export default function Statement(props) {
                     setBranchOptions(data.dbr);
                     setLoading(false);
                 } else {
-                    window.location.href = props.url;
+                    //window.location.href = props.url;
                 }
             })
             .catch((err) => {
@@ -93,7 +174,12 @@ export default function Statement(props) {
     // if (Npage != Math.ceil(page / 100)) {
     //     setNPage(Math.ceil(page / 100));
     // }
-
+    let nof = "";
+    if (statement.length == 1) {
+        nof = statement.length + "  r";
+    } else {
+        nof = statement.length + "  r";
+    }
     return (
         <>
             {modalShow ? (
@@ -127,7 +213,9 @@ export default function Statement(props) {
                     <Modal.Title className="ms-5 me-5">{props.oData["ItemName"]}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div className=" flex items-start justify-around">
+                    <div className=" flex items-start justify-around mb-1">
+                    <span className="font-semibold ml-3"><Button onClick={() => filterStatement("refresh")}>Refresh</Button></span>
+
                         <p className="font-semibold m-0 text-gray-500"> {props.oData["ItemNo"]} </p>
                         <span>Qty: {props.oData["Qty"]}</span>
                     </div>
@@ -138,13 +226,67 @@ export default function Statement(props) {
                                 <Accordion.Body>
                                     <div className="flex flex-col">
                                         <div className="flex flex-row justify-around my-2">
-                                            <Button onClick={filterStatement}>Apply</Button>
-                                            <Button onClick={clearFilters} variant="light">
+                                            <Button onClick={() => filterStatement("Apply")}>Apply</Button>
+
+                                            <Dropdown>
+                                                <Dropdown.Toggle
+                                                    as={CustomToggle}
+                                                    id="dropdown-custom-components"></Dropdown.Toggle>
+
+                                                <Dropdown.Menu as={CustomMenu}>
+                                                    <Dropdown.Item eventKey="1">
+                                                        Today
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="2">
+                                                        Yesterday
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="3">
+                                                        01 - JAN
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="4">
+                                                        02 - FEB
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="5">
+                                                        03 - MAR
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="6">
+                                                        04 - APR
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="7">
+                                                        05 - MAY
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="8">
+                                                        06 - JUN
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="9">
+                                                        07 - JUL
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="10">
+                                                        08 - AUG
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="11">
+                                                        09 - SEP
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="12">
+                                                        10 - OCT
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="13">
+                                                        11 - NOV
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="14">
+                                                        12 - DEC
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item eventKey="15"></Dropdown.Item>
+                                                </Dropdown.Menu>
+                                            </Dropdown>
+
+                                            <Button onClick={clearFilters} variant="secondary">
                                                 Clear
                                             </Button>
-                                            <Button onClick={closeFilter} variant="danger">
+                                            {/* <Button onClick={closeFilter} variant="danger">
                                                 Cancel
-                                            </Button>
+                                            </Button> */}
+
                                         </div>
                                         <div className="flex flex-col bg-neutral-200 p-1 mb-1 rounded">
                                             <div className=" w-[100%] mx-auto flex flex-col">
@@ -213,9 +355,44 @@ export default function Statement(props) {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="flex flex-col bg-neutral-200 mt-1 p-1 rounded">
+                                        <div className="flex flex-row w-[100%] justify-center px-2 py-1 align-middle">
+                    <div className="w-[95%] max-w-[50rem] flex flex-row items-center align-middle justify-center">
+                        <div className="font-semibold text-lg">Limit:</div>
+                        <Select
+                            className="basic-single w-[50%] mx-1"
+                            classNamePrefix="select"
+                            isSearchable={false}
+                            isClearable={false}
+                            name="color"
+                            defaultValue={{ value: 100, label: 100 }}
+                            value={{ value: vLimit, label: vLimit }}
+                            options={[
+                                { value: 100, label: 100 },
+                                { value: 200, label: 200 },
+                                { value: 400, label: 400 },
+                                { value: 1000, label: 1000 },
+                                { value: 2000, label: 2000 },
+                                { value: "All", label: "All" },
+                            ]}
+                            onChange={(e) => {
+                                setfLimit(e);
+                                setvLimit(e.value);
+                            }}
+                        />
+                    </div>
+                
+                                    </div>
+                                    </div>
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>
+                    </div>
+                    <div className="flex flex-row whitespace-nowrap mt-3 items-center">
+                        {/* <span className="underline  w-fit text-2xl">Statement:</span>{" "} */}
+                        <span className="text-zinc-600 mx-2 no-underlines italic">{nof}</span>
+                        
+                        
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="underline  w-fit text-2xl">Statement:</span>{" "}
@@ -232,7 +409,7 @@ export default function Statement(props) {
                                 <th>AccName</th>
                                 <th>BR</th>
                                 <th>PQty</th>
-                                <th>LN</th>
+                                <th>LNNN</th>
                                 <th>UFob</th>
                                 <th>PQUnit</th>
                                 <th>Disc</th>
@@ -242,6 +419,7 @@ export default function Statement(props) {
                                 <th>Total</th>
                                 <th>AccNo</th>
                                 <th>Disc100</th>
+                                <th>Time</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -278,6 +456,7 @@ export default function Statement(props) {
                                         <td>{state["Total"]}</td>
                                         <td>{state["AccNo"]}</td>
                                         <td>{state["Disc100"]}</td>
+                                        <td>{state["Time"]}</td>
                                     </tr>
                                 );
                             })}
@@ -326,27 +505,32 @@ export default function Statement(props) {
     function closeFilter() {
         document.getElementById("sfl").firstChild.click();
     }
-    function filterStatement() {
+    function filterStatement(flag) {
         let data = { dfrom: dFrom, dto: dTo, dtype: sType, db: sBranch };
-       
+        localStorage.getItem("compname");
         axios({
             method: "POST",
             url: props.url + "/moh/Stock/Statement/Filter/",
             data: {
-                token: props.token,
+                username: localStorage.getItem("compname"),
                 data: data,
                 id: props.oData["ItemNo"].trim(),
+                limit: vLimit
             },
             headers: { "Content-Type": "application/json" },
         })
             .then((res) => {
+                console.log(localStorage.getItem("compname"));
               
                 if (res.data.Info == "authorized") {
                     setStatement(res.data.Statment);
-
-                    closeFilter();
+                    console.log("killl");
+                    if(flag==="Apply"){
+                        closeFilter();
+                    }
+                    
                 } else {
-                    window.location.href = "/";
+                    //window.location.href = "/";
                 }
             })
             .catch((err) => {

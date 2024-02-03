@@ -352,7 +352,7 @@ export default function StockFilter(props) {
                         {filterItems.map((fi) => {
                             return (
                                 <>
-                                    <div className="flex flex-row w-[100%] justify-center p-2 align-middle">
+                                    <div className="flex flex-row w-[100%] justify-center p-2 align-middle" key={uuid()}>
                                         <div className="w-[95%] max-w-[50rem] flex flex-row items-center">
                                             <Select
                                                 className="basic-single w-[50%] mx-1"
