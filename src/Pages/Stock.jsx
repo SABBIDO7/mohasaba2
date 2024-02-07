@@ -203,8 +203,124 @@ export default function Stock(props) {
                         {!Simplified ? (
                             //this is the card view
                             <div className="m-2 rounded-xl max-h-[80vh] overflow-y-scroll w-full max-w-[50rem]">
-                              
-                                {vStock.map((cl) => {
+                              <Card
+                                            key={uuid()}
+                                            className=" text-center mb-3 box-sh shadow-xl">
+                                            <Card.Header>
+                                                <div className="flex justify-between items-center flex-wrap">
+                                                    <div className="flex flex-col justify-between items-center flex-wrap">
+                                                        <Statement
+                                                            oData={{'key': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1': '', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': '', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': '', 'Qty': 0, 'branch': [('ALLDATA', '', '', 0.0)]}}
+                                                            token={props.token}
+                                                            fil={bSelect}
+                                                            branches={vBranches}
+                                                            url={props.url}
+                                                        />
+                                                    </div>
+                                                    <Quantity
+                                                        url={props.url}
+                                                        oData={{'key': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1': '', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': '', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': '', 'Qty': 0, 'branch': [('ALLDATA', '', '', 0.0)]}}
+                                                        token={props.token}
+                                                        format={"btn"}>
+                                                        {""}
+                                                    </Quantity>
+                                                </div>
+                                            </Card.Header>
+                                            <Card.Body className="py-1">
+                                                {/* <Card.Text> */}
+                                                <div className="border-b-2 flex items-start">
+                                                    <p className="font-semibold m-0 text-gray-500">
+                                                        {" "}
+                                                        {""}{" "}
+                                                    </p>
+                                                </div>
+                                                <div className="border-b-2">
+                                                    <h2 className="font-semibold">
+                                                        {" "}
+                                                        {""}{" "}
+                                                    </h2>
+                                                </div>
+                                                <div className="border-b-2">
+                                                    <h6 className=""> {""} </h6>
+                                                </div>
+                                                <div className="flex border-b-2 flex-row justify-between">
+                                                    <div className=" w-[33%]">
+                                                        <div>Set</div>
+                                                        <div>{""}</div>
+                                                    </div>
+                                                    <div className=" w-[33%]">
+                                                        <div>Category</div>
+                                                        <div> {""}</div>
+                                                    </div>
+                                                    <div className=" w-[33%]">
+                                                        <div>Brand</div>
+                                                        <div>{""}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="mt-2 flex justify-between items-center w-[100%] m-auto">
+                                                    <Info sinfo={{'key': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1': '', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': '', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': '', 'Qty': 0, 'branch': [('ALLDATA', '', '', 0.0)]}} url={props.url}/>
+                                                    <Summery sinfo={{'key': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1': '', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': '', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': '', 'Qty': 0, 'branch': [('ALLDATA', '', '', 0.0)]}} token={props.token} url={props.url}/>
+                                                </div>
+
+                                                {/* </Card.Text> */}
+                                            </Card.Body>
+                                            <Card.Footer className="text-muted">
+                                                <div className="flex justify-between">
+                                                    <Dropdown className="d-inline mx-2">
+                                                        <Dropdown.Toggle id="dropdown-autoclose-true">
+                                                            Cost Price
+                                                        </Dropdown.Toggle>
+
+                                                        <Dropdown.Menu>
+                                                            <div className="pl-3 border-b-2">
+                                                                Last Cost: {""}
+                                                            </div>
+                                                            <div className="pl-3 border-b-2">
+                                                                FOB: {""}
+                                                            </div>
+                                                            <div className="pl-3">
+                                                                Av.Cost: {""}
+                                                            </div>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+
+                                                    <div className="vr"></div>
+
+                                                    <Dropdown className="d-inline mx-2">
+                                                        <Dropdown.Toggle id="dropdown-autoclose-true">
+                                                            Sale Price
+                                                        </Dropdown.Toggle>
+
+                                                        <Dropdown.Menu>
+                                                            <div className="px-3 py-1 border-b-2 flex flex-row justify-between">
+                                                                <div>P1: {""}</div>
+                                                                <div className="flex flex-row">
+                                                                    <div className="px-1">|</div>
+                                                                    <div>-{""}%</div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="px-3 py-1 border-b-2 flex flex-row justify-between">
+                                                                <div>P2: {""}</div>
+                                                                <div className="flex flex-row">
+                                                                    <div className="px-1">|</div>
+                                                                    <div>-{""}%</div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="px-3 py-1 flex flex-row justify-between">
+                                                                <div>P3: {""}</div>
+                                                                <div className="flex flex-row">
+                                                                    <div className="px-1">|</div>
+                                                                    <div>-{""}%</div>
+                                                                </div>
+                                                            </div>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+                                                </div>
+                                            </Card.Footer>
+                                        </Card>
+                                {
+                                vStock.map((cl) => {
+                                   
                                     return (
                                         <Card
                                             key={uuid()}
@@ -362,6 +478,7 @@ export default function Stock(props) {
 
                                             <tbody>
                                                 {vStock.map((cl) => {
+                                                    
                                                     return (
                                                         <>
                                                             <tr

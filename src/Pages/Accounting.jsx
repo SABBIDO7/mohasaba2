@@ -168,81 +168,164 @@ export default function Accounting(props) {
                     <>
                         {!Simplified ? (
                             <div className="m-2 mt-1 x rounded-xl max-h-[80vh] overflow-y-scroll min-w-[330px]">
-                                {vHisab
-                                    ? vHisab.map((cl) => {
-                                          return (
-                                              <Card
-                                                  key={uuid()}
-                                                  className=" text-center mb-3 box-sh shadow-xl">
-                                                  <Card.Header>
-                                                      <div className="flex justify-between items-center flex-wrap">
-                                                          <Statement
-                                                              oData={cl}
-                                                              url={props.url}
-                                                              token={cookies.token}
-                                                              btype={"btn"}
-                                                          />
-                                                          <ItemsOfAccount
-                                                              name={cl["AccName"]}
-                                                              id={cl["AccNo"]}
-                                                              token={props.token}
-                                                              url={props.url}
-                                                          />
-                                                          <Balance
-                                                              oData={cl}
-                                                              token={props.token}
-                                                              url={props.url}
-                                                          />
-                                                      </div>
-                                                  </Card.Header>
-                                                  <Card.Body>
-                                                      <Card.Title>{cl["AccName"]}</Card.Title>
-                                                      {/* <Card.Text> */}
-                                                      <div className="border-b-2">
-                                                          <div className="font-semibold text-gray-500">
-                                                              {cl["AccName2"]}
-                                                          </div>
-                                                          <span className="font-semibold">
-                                                              Address{" "}
-                                                          </span>
-                                                          : {cl["Address"]}
-                                                      </div>
-                                                      <div className="border-b-2">
-                                                          <span className="font-semibold">
-                                                              {" "}
-                                                              Set{" "}
-                                                          </span>
-                                                          : {cl["set"]} |
-                                                          <span className="font-semibold">
-                                                              {" "}
-                                                              Cat.{" "}
-                                                          </span>
-                                                          : {cl["category"]} | {cl["Price"]}
-                                                      </div>
-                                                      <span>
-                                                          {cl["tel"] + " / "} {cl["Mobile"] + " / "}{" "}
-                                                          {cl["Fax"] + " "}{" "}
-                                                      </span>
-
-                                                      {/* </Card.Text> */}
-                                                  </Card.Body>
-                                                  <Card.Footer className="text-muted">
-                                                      <div className="flex justify-between">
-                                                          <span>Contact: {cl["Contact"]}</span>
-                                                          <div className="vr"></div>
-                                                          <span>
-                                                              TaxNo:{" "}
-                                                              <span className="text-gray-500 pr-3">
-                                                                  {cl["TaxNo"]}
-                                                              </span>
-                                                          </span>
-                                                      </div>
-                                                  </Card.Footer>
-                                              </Card>
-                                          );
-                                      })
-                                    : null}
-                            </div>
+                            {vHisab ? (
+                                <>
+                                    <Card
+                                                key={uuid()}
+                                                className=" text-center mb-3 box-sh shadow-xl">
+                                                <Card.Header>
+                                                    <div className="flex justify-between items-center flex-wrap">
+                                                        <Statement
+                                                            oData={{'key': 0, 'AccNo': 'ALLDATA', 'AccName': '', 'Cur': '', 'Balance': 0.0, 'set': '', 'category': '', 'Price': '', 'Contact': '', 'TaxNo': '', 'Address': '', 'tel': '', 'Mobile': '', 'AccName2': '', 'Fax': ''}}
+                                                            url={props.url}
+                                                            token={cookies.token}
+                                                            btype={"btn"}
+                                                        />
+                                                        <ItemsOfAccount
+                                                            name={"ALLDATA"}
+                                                            id={"ALLDATA"}
+                                                            token={props.token}
+                                                            url={props.url}
+                                                        />
+                                                        <Balance //hon
+                                                            oData={{'key': 0, 'AccNo': 'ALLDATA', 'AccName': '', 'Cur': '', 'Balance': 0.0, 'set': '', 'category': '', 'Price': '', 'Contact': '', 'TaxNo': '', 'Address': '', 'tel': '', 'Mobile': '', 'AccName2': '', 'Fax': ''}}
+                                                            token={props.token}
+                                                            url={props.url}
+                                                        />
+                                                    </div>
+                                                </Card.Header>
+                                                <Card.Body>
+                                                    <Card.Title>{"ALLDATA"}</Card.Title>
+                                                    {/* <Card.Text> */}
+                                                    <div className="border-b-2">
+                                                        <div className="font-semibold text-gray-500">
+                                                            {''}
+                                                        </div>
+                                                        <span className="font-semibold">
+                                                            Address{" "}
+                                                        </span>
+                                                        : {''}
+                                                    </div>
+                                                    <div className="border-b-2">
+                                                     
+                        
+                                                        <span className="font-semibold">
+                                                            {" "}
+                                                            Set{" "}
+                                                        </span>
+                                                        : {""} |
+                                                        <span className="font-semibold">
+                                                            {" "}
+                                                            Cat.{" "}
+                                                        </span>
+                                                        : {""} | {""}
+                                                    </div>
+                                                    <span>
+                                                        {"" + " / "} {"" + " / "}{" "}
+                                                        {"" + " "}{" "}
+                                                    </span>
+                        
+                                                    {/* </Card.Text> */}
+                                                </Card.Body>
+                                                <Card.Footer className="text-muted">
+                                                    <div className="flex justify-between">
+                                                        <span>Contact: {""}</span>
+                                                        <div className="vr"></div>
+                                                        <span>
+                                                            TaxNo:{" "}
+                                                            <span className="text-gray-500 pr-3">
+                                                                {""}
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                </Card.Footer>
+                                            </Card>
+                        
+                                    {vHisab.map((cl) => {
+                                        return (
+                                            <Card
+                                                key={uuid()}
+                                                className=" text-center mb-3 box-sh shadow-xl">
+                                                <Card.Header>
+                                                    <div className="flex justify-between items-center flex-wrap">
+                                                        <Statement
+                                                            oData={cl}
+                                                            url={props.url}
+                                                            token={cookies.token}
+                                                            btype={"btn"}
+                                                        />
+                                                        <ItemsOfAccount
+                                                            name={cl["AccName"]}
+                                                            id={cl["AccNo"]}
+                                                            token={props.token}
+                                                            url={props.url}
+                                                        />
+                                                        <Balance //hon
+                                                            oData={cl}
+                                                            token={props.token}
+                                                            url={props.url}
+                                                        />
+                                                    </div>
+                                                </Card.Header>
+                                                <Card.Body>
+                                                    <Card.Title>{cl["AccName"]}</Card.Title>
+                                                    {/* <Card.Text> */}
+                                                    <div className="border-b-2">
+                                                        <div className="font-semibold text-gray-500">
+                                                            {cl["AccName2"]}
+                                                        </div>
+                                                        <span className="font-semibold">
+                                                            Address{" "}
+                                                        </span>
+                                                        : {cl["Address"]}
+                                                    </div>
+                                                    <div className="border-b-2">
+                                                        {branchSearch && (
+                                                            <>
+                                                                <span className="font-semibold">
+                                                                    {" "}
+                                                                    Br{" "}
+                                                                </span>
+                                                                : {cl["Branch"]} |
+                                                            </>
+                                                        )}
+                        
+                                                        <span className="font-semibold">
+                                                            {" "}
+                                                            Set{" "}
+                                                        </span>
+                                                        : {cl["set"]} |
+                                                        <span className="font-semibold">
+                                                            {" "}
+                                                            Cat.{" "}
+                                                        </span>
+                                                        : {cl["category"]} | {cl["Price"]}
+                                                    </div>
+                                                    <span>
+                                                        {cl["tel"] + " / "} {cl["Mobile"] + " / "}{" "}
+                                                        {cl["Fax"] + " "}{" "}
+                                                    </span>
+                        
+                                                    {/* </Card.Text> */}
+                                                </Card.Body>
+                                                <Card.Footer className="text-muted">
+                                                    <div className="flex justify-between">
+                                                        <span>Contact: {cl["Contact"]}</span>
+                                                        <div className="vr"></div>
+                                                        <span>
+                                                            TaxNo:{" "}
+                                                            <span className="text-gray-500 pr-3">
+                                                                {cl["TaxNo"]}
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                </Card.Footer>
+                                            </Card>
+                                        );
+                                    })}
+                                </>
+                            ) : null}
+                        </div>
                         ) : (
                             <div className="m-2 bg-red w-[95%] flex justify-center">
                                 {!branchSearch ? (
@@ -270,7 +353,13 @@ export default function Accounting(props) {
                                             </thead>
                                             <tbody>
                                                 {vHisab
-                                                    ? vHisab.map((cl) => {
+
+                                                
+
+                                               
+                                                    ? (
+                                                        
+                                                        vHisab.map((cl) => {
                                                           return (
                                                               <Statement
                                                                   oData={cl}
@@ -278,7 +367,7 @@ export default function Accounting(props) {
                                                                   token={cookies.token}
                                                                   btype={"tr"}>
                                                                   <td className="text-right">
-                                                                      {cl["Balance"]}
+                                                                      {parseFloat(cl["Balance"]).toFixed(2)}
                                                                   </td>
                                                                   <td>{cl["Cur"]}</td>
                                                                   <td>{cl["AccName"]}</td>
@@ -295,8 +384,12 @@ export default function Accounting(props) {
                                                                   <td>{cl["tel"]}</td>
                                                               </Statement>
                                                           );
-                                                      })
-                                                    : null}
+                                                      }))
+                                                     
+                                                    : null
+                                                    }
+
+                                                 
                                             </tbody>
                                         </Table>
                                     </div>
@@ -336,7 +429,7 @@ export default function Accounting(props) {
                                                             btype={"tr"}>
                                                             <td>{cl["AccNo"]}</td>
                                                             <td>{cl["Branch"]}</td>
-                                                            <td>{cl["Balance"]}</td>
+                                                  <td>{parseFloat(cl["Balance"]).toFixed(2)}</td>
                                                             <td>{cl["Cur"]}</td>
                                                             <td>{cl["AccName"]}</td>
                                                             <td>{cl["tel"]}</td>

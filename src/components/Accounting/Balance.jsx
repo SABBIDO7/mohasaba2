@@ -65,8 +65,8 @@ export default function Balance(props) {
       <thead >
         <tr>
           <th>BR</th>
-          <th>DB</th>
-          <th>CR</th>
+          <th className="text-center">DB</th>
+          <th className="text-center">CR</th>
          
         </tr>
       </thead>
