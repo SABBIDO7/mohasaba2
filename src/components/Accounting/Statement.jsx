@@ -10,6 +10,7 @@ import axios from "axios";
 import Select from "react-select";
 import FilterIcon from "../../media/FilterIcon.png";
 import Dropdown from "react-bootstrap/Dropdown";
+import Balance from "./Balance";
 
 export default function Statement(props) {
     const values = [true];
@@ -197,6 +198,13 @@ export default function Statement(props) {
                         <div className="vr"></div>
 
                         <span className="font-semibold ml-3"><Button onClick={() => filterStatement("refresh")}>Refresh</Button></span>
+                        <span className="font-semibold ml-3">
+                        <Balance //hon
+                                                            oData={props.oData}
+                                                            token={props.token}
+                                                            url={props.url}
+                                                        />
+                                                        </span>
                     </div>
                     
                     

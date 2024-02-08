@@ -477,6 +477,60 @@ export default function Stock(props) {
                                             </thead>
 
                                             <tbody>
+                                            <tr
+                                                                key={uuid()}
+                                                                className=" whitespace-nowrap hover:bg-blue-200"
+                                                                style={{ userSelect: "none" }}>
+                                                                <SimplifiedStatment
+                                                                    oData={{'key': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1': '', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': '', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': '', 'Qty': 0, 'branch': [('ALLDATA', '', '', 0.0)]}}
+                                                                    token={props.token}
+                                                                    show={"ALLDATA"}
+                                                                    fil={bSelect}
+                                                                    branches={vBranches}
+                                                                    url={props.url}
+                                                                />
+                                        
+
+                                                                <Quantity
+                                                                    oData={{'key': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1': '', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': '', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': '', 'Qty': 0, 'branch': [('ALLDATA', '', '', 0.0)]}}
+                                                                    token={props.token}
+                                                                    url={props.url}
+                                                                    format={"td"}>
+                                                                    {"0"}
+                                                                </Quantity>
+
+                                                                <SimplifiedStatment
+                                                                    oData={{'key': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1': '', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': '', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': '', 'Qty': 0, 'branch': [('ALLDATA', '', '', 0.0)]}}
+                                                                    token={props.token}
+                                                                    show={""}
+                                                                    fil={bSelect}
+                                                                    branches={vBranches}
+                                                                    url={props.url}
+                                                                />
+
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                            </tr>
+
                                                 {vStock.map((cl) => {
                                                     
                                                     return (

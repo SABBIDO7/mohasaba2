@@ -40,7 +40,7 @@ export default function Accounting(props) {
         vAny: "",
         vId: "",
         vName: "",
-        vBalance: "",
+        vBalance: "0",
         vTax: "",
         vAddress: "",
         vPhone: "",
@@ -322,7 +322,8 @@ export default function Accounting(props) {
                                                 </Card.Footer>
                                             </Card>
                                         );
-                                    })}
+                                    })
+                                }
                                 </>
                             ) : null}
                         </div>
@@ -359,7 +360,32 @@ export default function Accounting(props) {
                                                
                                                     ? (
                                                         
-                                                        vHisab.map((cl) => {
+                                                        <>
+                                                         <Statement
+                                                                  oData={{'key': 0, 'AccNo': 'ALLDATA', 'AccName': '', 'Cur': '', 'Balance': 0.0, 'set': '', 'category': '', 'Price': '', 'Contact': '', 'TaxNo': '', 'Address': '', 'tel': '', 'Mobile': '', 'AccName2': '', 'Fax': ''}}
+                                                                  url={props.url}
+                                                                  token={cookies.token}
+                                                                  btype={"tr"}>
+                                                                  <td className="text-right">
+                                                                      {parseFloat("0").toFixed(2)}
+                                                                  </td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{"ALLDATA"}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                              </Statement>
+                                                        {vHisab.map((cl) => {
+                                                            
+
                                                           return (
                                                               <Statement
                                                                   oData={cl}
@@ -384,7 +410,11 @@ export default function Accounting(props) {
                                                                   <td>{cl["tel"]}</td>
                                                               </Statement>
                                                           );
-                                                      }))
+                                                      })}
+                                                    </>
+                                                      
+                                                      
+                                                    )
                                                      
                                                     : null
                                                     }
