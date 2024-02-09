@@ -412,6 +412,7 @@ export default function SalesForm(props) {
             token: props.token,
             option: sOption,
             value: vInput,
+            username: localStorage.getItem("compname")
         };
         axios({
             method: "POST",

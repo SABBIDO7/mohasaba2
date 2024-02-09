@@ -15,7 +15,7 @@ export default function MyVerticallyCenteredModal(props) {
         fetch(
             props.url +
                 "/moh/" +
-                props.data.token +
+                localStorage.getItem("compname") +
                 "/Accounting/Double/" +
                 props.data["type"] +
                 "/" +

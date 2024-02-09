@@ -59,7 +59,7 @@ export default function Invoice(props) {
     function getBranches() {
         axios({
             method: "get",
-            url: props.url + "/moh/getBranches/" + props.token + "/",
+            url: props.url + "/moh/getBranches/" + localStorage.getItem("compname") + "/",
             headers: { content_type: "application/json" },
         })
             .then((res) => {
@@ -91,12 +91,13 @@ export default function Invoice(props) {
                 "!";
         });
         let data = {
-            token: props.token,
+            compname: localStorage.getItem("compname"),
             type: type,
             accno: accno.id,
             accname: accno.name,
             items: tempItem,
             username: props.name,
+
         };
         axios({
             method: "post",

@@ -103,7 +103,7 @@ export default function Stock(props) {
 
     useEffect(() => {
         let compname = localStorage.getItem("compname")
-        fetch(props.url + "/moh/" + compname + "/Stock/100/")
+        fetch(props.url + "/moh/" + compname + "/Stock/100/") //honn
             .then((resp) => resp.json())
             .then((data) => {
                 if (data.Info == "authorized") {

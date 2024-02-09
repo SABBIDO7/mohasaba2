@@ -14,7 +14,7 @@ export default function StockDouble(props) {
         fetch(
             props.url +
                 "/moh/" +
-                props.data.token +
+                localStorage.getItem("compname") +
                 "/Stock/Double/" +
                 props.data["type"].trim() +
                 "/" +
