@@ -109,7 +109,7 @@ export default function Stock(props) {
                 if (data.Info == "authorized") {
                     dataHandler(data["stock"]);
                     baranchStockHandler(data["branchStock"]);
-                    branchHandler(data["branches"]);
+                    branchHandler(data["branches"]);//honb
                     setLoading(false);
                 } else {
                     window.location.href = props.url;
@@ -364,7 +364,7 @@ export default function Stock(props) {
                                                 </div>
                                                 <div className="flex border-b-2 flex-row justify-between">
                                                     <div className=" w-[33%]">
-                                                        <div>Set</div>
+                                                        <div>Settt</div>
                                                         <div>{cl["SetG"]}</div>
                                                     </div>
                                                     <div className=" w-[33%]">
@@ -627,7 +627,7 @@ export default function Stock(props) {
                                             </thead>
 
                                             <tbody>
-                                                {branchStock.map((cl) => {
+                                                {branchStock.map((cl) => { //honb
                                                     return (
                                                         <>
                                                             <tr
@@ -705,7 +705,7 @@ export default function Stock(props) {
                 showFilter={showFilter}
                 setShowFilter={setShowFilter}
                 getData={getData}
-                vBranches={vBranches}
+                vBranches={vBranches}//honb1
             />
         </>
     );

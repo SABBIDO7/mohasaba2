@@ -295,7 +295,7 @@ export default function StockFilter(props) {
                                                 setsBranch(e.target.value);
                                             }}
                                             defaultValue={sBranch}>
-                                            {props.vBranches.map((br) => {
+                                            {props.vBranches.map((br) => { //honb
                                                 return (
                                                     <option value={br["key"]}>
                                                         {br["key"]}
