@@ -109,6 +109,7 @@ export default function Stock(props) {
                 if (data.Info == "authorized") {
                     dataHandler(data["stock"]);
                     baranchStockHandler(data["branchStock"]);
+                   
                     branchHandler(data["branches"]);//honb
                     setLoading(false);
                 } else {
@@ -200,7 +201,12 @@ export default function Stock(props) {
                     </Spinner>
                 ) : (
                     <div className=" w-full flex justify-center">
-                        {!Simplified ? (
+                        {!Simplified ? 
+                           
+                                            
+
+                        (
+                            
                             //this is the card view
                             <div className="m-2 rounded-xl max-h-[80vh] overflow-y-scroll w-full max-w-[50rem]">
                               <Card
@@ -319,6 +325,7 @@ export default function Stock(props) {
                                             </Card.Footer>
                                         </Card>
                                 {
+                        
                                 vStock.map((cl) => {
                                    
                                     return (
@@ -362,9 +369,15 @@ export default function Stock(props) {
                                                 <div className="border-b-2">
                                                     <h6 className=""> {cl["ItemName2"]} </h6>
                                                 </div>
-                                                <div className="flex border-b-2 flex-row justify-between">
+                                                <div className="flex border-b-2 flex-row justify-between">                                              
+                                                {branchSearch && (
+                                                            <div className=" w-[33%]">
+                                                            <div>BR: </div>
+                                                            <div>{cl["BR"]}</div>
+                                                        </div>
+                                                        )}
                                                     <div className=" w-[33%]">
-                                                        <div>Settt</div>
+                                                        <div>Set</div>
                                                         <div>{cl["SetG"]}</div>
                                                     </div>
                                                     <div className=" w-[33%]">
@@ -440,7 +453,9 @@ export default function Stock(props) {
                                     );
                                 })}
                             </div>
-                        ) : (
+                        ) : 
+                        //branchStock !== "" ? (vStock=branchStock):null
+                        (
                             <div className="m-2 rounded-xl max-h-[80vh] overflow-y-scroll w-full max-w-[50rem] bg-white">
                                
                                 {/* this is the table view  */}
@@ -597,7 +612,7 @@ export default function Stock(props) {
                                         <>
                                             <thead>
                                                 <tr key={uuid()} className=" whitespace-nowrap bg-slate-500">
-                                                    <th>ItemNo</th>
+                                                    <th>ItemNoo</th>
                                                     <th>BR</th>
                                                     <th>Qty</th>
                                                     <th>Item Name</th>
@@ -627,7 +642,7 @@ export default function Stock(props) {
                                             </thead>
 
                                             <tbody>
-                                                {branchStock.map((cl) => { //honb
+                                                {vStock.map((cl) => { //honb
                                                     return (
                                                         <>
                                                             <tr
@@ -638,7 +653,7 @@ export default function Stock(props) {
                                                                     oData={cl}
                                                                     token={props.token}
                                                                     show={cl["ItemNo"]}
-                                                                    fil={vBranches[cl["BR"]]["key"]}
+                                                                    fil={bSelect}
                                                                     branches={vBranches}
                                                                     url={props.url}
                                                                 />
@@ -660,7 +675,7 @@ export default function Stock(props) {
                                                                     oData={cl}
                                                                     token={props.token}
                                                                     show={cl["ItemName"]}
-                                                                    fil={vBranches[cl["BR"]]["key"]}
+                                                                    fil={bSelect}
                                                                     branches={vBranches}
                                                                     url={props.url}
                                                                 />
@@ -731,8 +746,17 @@ export default function Stock(props) {
           .then((res) => {
              
               if (res.data.Info == "authorized") {
-                setStock(res.data.stock);
+                branchHandler(res.data.branches);
+                if(res.data.branchStock == ""){
+                    setStock(res.data.stock);
+                }
+                else{
+                    setStock(res.data.branchStock);
+                }
+                
+                
                 setBranchstock(res.data.branchStock);
+            
               }
           })
           .catch((err) => {
