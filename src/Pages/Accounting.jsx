@@ -17,6 +17,8 @@ import arrowIcon from "../media/arrowimg.png";
 import AccFilter from "../components/Accounting/AccountingFilter";
 import axios from "axios";
 import ItemsOfAccount from "../components/Accounting/ItemsOfAccount";
+import Summery from "../components/Stock/Summery";
+
 
 export default function Accounting(props) {
     const [vInput, setInput] = useState("");
@@ -219,13 +221,21 @@ export default function Accounting(props) {
                                                             Cat.{" "}
                                                         </span>
                                                         : {""} | {""}
+                                                        
                                                     </div>
+                                                    <div className="border-b-2">
                                                     <span>
                                                         {"" + " / "} {"" + " / "}{" "}
                                                         {"" + " "}{" "}
                                                     </span>
-                        
+                                                    </div>
+                                                    <div className="d-flex justify-content-center align-items-center">
+                                                    <Summery sinfo={{'key': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1': '', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': '', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': '', 'Qty': 0, 'branch': [('ALLDATA', '', '', 0.0)]}} token={props.token} url={props.url}/></div>
                                                     {/* </Card.Text> */}
+                                                
+                                                  
+                                                   
+                                              
                                                 </Card.Body>
                                                 <Card.Footer className="text-muted">
                                                     <div className="flex justify-between">
@@ -289,7 +299,7 @@ export default function Accounting(props) {
                                                                 : {cl["Branch"]} |
                                                             </>
                                                         )}
-                        
+                        <div className="border-b-2">
                                                         <span className="font-semibold">
                                                             {" "}
                                                             Set{" "}
@@ -305,7 +315,10 @@ export default function Accounting(props) {
                                                         {cl["tel"] + " / "} {cl["Mobile"] + " / "}{" "}
                                                         {cl["Fax"] + " "}{" "}
                                                     </span>
-                        
+                                                    </div>
+                                                    <div className="d-flex justify-content-center align-items-center">
+                                                    <Summery sinfo={{'key': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1': '', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': '', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': '', 'Qty': 0, 'branch': [('ALLDATA', '', '', 0.0)]}} token={props.token} url={props.url}/></div>
+                      
                                                     {/* </Card.Text> */}
                                                 </Card.Body>
                                                 <Card.Footer className="text-muted">

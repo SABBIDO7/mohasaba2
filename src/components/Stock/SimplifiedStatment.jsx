@@ -180,6 +180,8 @@ export default function Statement(props) {
     } else {
         nof = statement.length + "  r";
     }
+    console.log("////");
+    console.log(vLimit);
     return (
         <>
             {modalShow ? (
@@ -189,6 +191,7 @@ export default function Statement(props) {
                     data={modalData}
                     key={uuid()}
                     url={props.url}
+                    limit={vLimit}
                 />
             ) : null}
 

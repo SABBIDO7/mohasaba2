@@ -503,6 +503,7 @@ export default function Stock(props) {
                                                                     fil={bSelect}
                                                                     branches={vBranches}
                                                                     url={props.url}
+                                                                
                                                                 />
                                         
 
