@@ -23,7 +23,7 @@ export default function Quantity(props) {
            
             
           } else {
-            window.location.href = props.url;
+            //window.location.href = props.url;
            
           }
         }).catch((err)=>{
@@ -74,7 +74,8 @@ export default function Quantity(props) {
       <thead >
         <tr>
    
-          <th>Branch Name</th>
+          <th>Item No</th>
+          <th>Item Name</th>
           <th>BR</th>
           <th>Qty</th>
          
@@ -85,7 +86,8 @@ export default function Quantity(props) {
       
         return(
           <tr key={uuid()} className="hover:bg-blue-200" >
-          <td>{state["BRName"]}</td>
+          <td>{state["ItemNo"]}</td>
+          <td>{state["ItemName"]}</td>
           <td>{state["BR"]}</td>
           <td className=' text-right'>{state["Qty"]}</td>         
         </tr>
