@@ -60,7 +60,7 @@ export default function Statement(props) {
                 localStorage.getItem("compname") +
                 "/Stock/Statement/" +
                 props.oData["ItemNo"].trim() +
-                "/" + vLimit + "/"
+                "/100"
         )
             .then((resp) => resp.json())
             .then((data) => {
@@ -179,12 +179,13 @@ export default function Statement(props) {
     return (
         <>
             {modalShow ? (
-                <StockDouble
+                <StockDouble //mn hon aambetrouh aal double lal accounting
                     show={modalShow}
                     onHide={() => setModalShow(false)}
                     data={modalData}
                     key={uuid()}
                     url={props.url}
+                    limit={vLimit}
                 />
             ) : null}
 

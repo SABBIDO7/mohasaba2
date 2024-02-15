@@ -5,13 +5,13 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
 
-export default function StockDouble(props,limit) {
+export default function StockDouble(props) {
     const [isLoading, setLoading] = useState(true);
     const [Double, setDouble] = useState([]);
     const [Date, setDate] = useState("");
-
+ 
     useEffect(() => {
-        console.log(limit);
+
         fetch(
             props.url +
                 "/moh/" +
@@ -20,7 +20,7 @@ export default function StockDouble(props,limit) {
                 props.data["type"].trim() +
                 "/" +
                 props.data["no"] +
-                "/"+ limit
+                "/"+ props.limit
         )
             .then((resp) => resp.json())
             .then((data) => {

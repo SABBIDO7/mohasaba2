@@ -180,8 +180,8 @@ export default function Statement(props) {
     } else {
         nof = statement.length + "  r";
     }
-    console.log("////");
-    console.log(vLimit);
+    // console.log("////");
+    // console.log(vLimit);
     return (
         <>
             {modalShow ? (

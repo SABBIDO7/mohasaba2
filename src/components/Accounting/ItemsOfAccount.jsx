@@ -190,6 +190,7 @@ export default function ItemsOfAccount(props) {
                     data={modalData}
                     key={uuid()}
                     url={props.url}
+                    limit={vLimit}
                 />
             ) : null}
 
