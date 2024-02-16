@@ -24,7 +24,7 @@ function App() {
   const [Compname, setCompname] = useState("")
   const [QuickMenu,setQuickMenu ] = useState(false);
   const [FullScreen,setFullScreen ] = useState(false);
-  const [url,setUrl ] = useState("https://pssapi.net:444");
+  const [url,setUrl ] = useState("http://localhost:8000");
   const [cookies, setCookie] = useCookies(["token"]);
 
 
@@ -70,7 +70,7 @@ function App() {
 
 
   function handleCookie(vToken) { 
-    let expDate = new Date('2023-12-17T03:24:00')
+    let expDate = new Date('2099-12-17T03:24:00')
     setCookie("token", vToken, {
       path: "/",
       expires : expDate
