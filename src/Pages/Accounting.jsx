@@ -78,7 +78,7 @@ export default function Accounting(props) {
     let token = cookies.token;
 
     const move = (e) => {
-        console.log(e);
+        
     };
 
     useEffect(() => {
@@ -517,7 +517,7 @@ export default function Accounting(props) {
             data: e,
             filters: filters,
         };
-        console.log(data);
+        
 
         axios({
             method: "POST",

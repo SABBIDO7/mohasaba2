@@ -38,7 +38,7 @@ function LoginModal(props) {
             localStorage.setItem("password",response.data.password);
            
             props.UserDataHandler(response.data.compname, response.data.name, response.data.token);
-            console.log(response.data.token);
+            
 
             handleClose();
           } else {

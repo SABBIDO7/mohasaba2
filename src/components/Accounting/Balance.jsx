@@ -15,7 +15,7 @@ export default function Balance(props) {
   function handleShow(breakpoint) {
     setFullscreen(breakpoint);
     setShow(true);
-    console.log();
+ 
     
       fetch(props.url+"/moh/" + localStorage.getItem("compname") + "/Accounting/Balance/"+ props.oData["AccNo"].trim()+"/" )
         .then((resp) => resp.json())
@@ -24,7 +24,7 @@ export default function Balance(props) {
             setBranch(data.Branch);
             
           } else {
-            window.location.href = props.url;
+            //window.location.href = props.url;
            
           }
         }).catch((err)=>{
@@ -44,7 +44,7 @@ export default function Balance(props) {
       {values.map((v, idx) => (
       
         <Button key={idx} className="me-2 my-1" onClick={() => handleShow(v)}>
-        {props.oData["Balance"] + " " + props.oData["Cur"]}
+        {props.oData["Balance"] !== null ? props.oData["Balance"].toFixed(2) : '0.00' + " " + props.oData["Cur"]}
           {typeof v === 'string' && `below ${v.split('-')[0]}`}
         </Button>
        
@@ -76,8 +76,8 @@ export default function Balance(props) {
         return(
           <tr key={Br["key"]} className="hover:bg-slate-500" >
           <td>{Br["Branch"]}</td>
-          <td className=' text-right'>{Br["DB"]}</td>
-          <td className=' text-right'>{Br["CR"]}</td>
+          <td className=' text-right'>{Br["DB"]!==null? Br["DB"].toFixed(2):""}</td>
+          <td className=' text-right'>{Br["CR"]!==null? Br["CR"].toFixed(2):""}</td>
          
           
          

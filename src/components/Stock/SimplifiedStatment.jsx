@@ -90,8 +90,7 @@ export default function Statement(props) {
         const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
         const day = currentDate.getDate().toString().padStart(2, '0');
         if (e == "Today") {
-            console.log("hon day")
-            console.log(day);
+            
             setdFrom(year + "-" + (month) + "-" + day);
             setdTo(year + "-" + (month) + "-" + day);
         } else if (e == "Yesterday") {
@@ -112,7 +111,7 @@ export default function Statement(props) {
             let lastdate = new Date(year, parseInt(e.toString().split("-")[0].trim()), 0);
 
             setdTo(year + "-" + e.toString().split("-")[0].trim() + "-" + lastdate.getDate());
-            console.log(dFrom);
+            
         }
     }
 
@@ -180,8 +179,7 @@ export default function Statement(props) {
     } else {
         nof = statement.length + "  r";
     }
-    // console.log("////");
-    // console.log(vLimit);
+    
     return (
         <>
             {modalShow ? (
@@ -523,11 +521,11 @@ export default function Statement(props) {
             headers: { "Content-Type": "application/json" },
         })
             .then((res) => {
-                console.log(localStorage.getItem("compname"));
+                
               
                 if (res.data.Info == "authorized") {
                     setStatement(res.data.Statment);
-                    console.log("killl");
+                    
                     if(flag==="Apply"){
                         closeFilter();
                     }

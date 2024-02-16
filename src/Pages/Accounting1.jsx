@@ -70,7 +70,7 @@ export default function Accounting(props) {
     useEffect(() => {
         axios.get(props.url+"/moh/"+cookies.token + "/Accounting/200/")
         .then((data)=>{
-            console.log(data)
+            
         })
     }, []);
    

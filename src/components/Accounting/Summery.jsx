@@ -17,7 +17,7 @@ export default function Summery(props) {
         .then((data) => {
           if (data.Info === "authorized") {
             setSummery(data.summery);
-            console.log(data.summery);
+            
             
           } else {
             //window.location.href = props.url;
@@ -51,15 +51,18 @@ export default function Summery(props) {
 
         <Modal.Body>
         <div className=" flex items-start">
-            <p className="font-semibold m-0 text-gray-500">   {props.sinfo["AccNo"]} </p>
+            <p className="font-semibold m-0 text-gray-500">   {props.sinfo["AccNo"] } </p>
+            {summery.length > 0 &&  props.sinfo["AccNo"]!=="ALLDATA" && (
+            <p className="font-semibold m-0 text-gray-500">{summery[0]["Name"] !==null ? summery[0]["Name"]:""}</p>
+        )}
+        
         </div>
          
         <Table striped bordered responsive className=' mt-2 '>
       <thead >
         <tr>
-          <th>AccName</th>
-          <th>BR</th>
           <th>Type</th>
+          <th>BR</th>
           <th>DB</th>
           <th>CR</th>
           <th>Balance</th>
@@ -72,12 +75,11 @@ export default function Summery(props) {
       
         return(
           <tr key={uuid()} className="hover:bg-slate-500" >
-          <td>{state["Name"]}</td>
-          <td>{state["BR"]}</td>
-          <td>{state["InvType"]}</td>         
-          <td className=' text-center'>{state["DB"]}</td>         
-          <td className=' text-center'>{state["CR"]}</td>
-          <td className=' text-right'>{state["Balance"]}</td>       
+          <td>{state["InvType"]}</td> 
+          <td>{state["BR"]}</td>       
+          <td className=' text-center'>{state["DB"]!==null? state["DB"].toFixed(2):""}</td>         
+          <td className=' text-center'>{state["CR"]!==null? state["CR"].toFixed(2):""}</td>
+          <td className=' text-right'>{state["Balance"]!==null ? state["Balance"].toFixed(2):""}</td>       
         </tr>
         );
       })}

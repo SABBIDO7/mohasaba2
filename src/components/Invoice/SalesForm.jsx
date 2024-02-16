@@ -96,7 +96,7 @@ export default function SalesForm(props) {
                             setsOption(e.target.value);
                             document.getElementById("tf").focus();
                             setvInput("");
-                            console.log("here");
+                            
                         }}>
                         <option>Accounts</option>
                         <option>Items</option>

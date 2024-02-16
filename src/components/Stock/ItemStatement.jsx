@@ -103,8 +103,7 @@ export default function Statement(props) {
         const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
         const day = currentDate.getDate().toString().padStart(2, '0');
         if (e == "Today") {
-            console.log("hon day")
-            console.log(day);
+            
             setdFrom(year + "-" + (month) + "-" + day);
             setdTo(year + "-" + (month) + "-" + day);
         } else if (e == "Yesterday") {
@@ -125,7 +124,7 @@ export default function Statement(props) {
             let lastdate = new Date(year, parseInt(e.toString().split("-")[0].trim()), 0);
 
             setdTo(year + "-" + e.toString().split("-")[0].trim() + "-" + lastdate.getDate());
-            console.log(dFrom);
+            
         }
     }
     // The forwardRef is important!!

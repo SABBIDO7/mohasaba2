@@ -24,7 +24,7 @@ function App() {
   const [Compname, setCompname] = useState("")
   const [QuickMenu,setQuickMenu ] = useState(false);
   const [FullScreen,setFullScreen ] = useState(false);
-  const [url,setUrl ] = useState("http://localhost:8000");
+  const [url,setUrl ] = useState("https://pssapi.net:444");
   const [cookies, setCookie] = useCookies(["token"]);
 
 
@@ -81,14 +81,14 @@ function App() {
     const fetchData = async () => {
       if (!isVerified) {
         var bodyFormData = new FormData();
-        console.log("shayik l tesyive");
+        
 
         let username = localStorage.getItem("username");
         let compname =localStorage.getItem("compname");
         let password =localStorage.getItem("password");
-        console.log(password);
-        console.log(compname);
-        console.log(username);
+        // console.log(password);
+        // console.log(compname);
+        // console.log(username);
         if((username==null || username ==undefined) || (compname == null || compname ==undefined) || (password==null || password==undefined)){
               setisVerified(false);
         }
@@ -115,13 +115,13 @@ function App() {
              setCompname(data.compname);
              setUsername(data.name);
              setToken(cookies.token);
-             console.log("ringo");
+            
            } else {
              if (isVerified) {
-               console.log("???");
+               
                setisVerified(false);
              }
-             console.log("maazme");
+             
            }
          } catch (error) {
            // Handle errors here if needed

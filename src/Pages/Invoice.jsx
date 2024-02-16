@@ -63,7 +63,7 @@ export default function Invoice(props) {
             headers: { content_type: "application/json" },
         })
             .then((res) => {
-                console.log(res.data);
+                
                 setBranches(res.data.branches);
             })
             .catch((e) => {
@@ -105,7 +105,7 @@ export default function Invoice(props) {
             data: data,
             headers: { content_type: "application/json" },
         }).then((res) => {
-            console.log(res.data);
+            
             if (res.data.Info == "authorized") {
                 setInvResponse(
                     {
