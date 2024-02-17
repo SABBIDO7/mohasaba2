@@ -383,11 +383,7 @@ export default function FilterItem(props) {
                 value: vCur,
                 type: sCur,
             },
-            {
-                name: "Balance",
-                value: vBalance,
-                type: sBalance,
-            },
+            
             {
                 name: "SETA",
                 value: vSet,
@@ -410,8 +406,8 @@ export default function FilterItem(props) {
             },
             {
                 name: "Tel",
-                value: vAddress,
-                type: sAddress,
+                value: vPhone,
+                type: sPhone,
             },
             {
                 name: "AccName2",
@@ -423,6 +419,11 @@ export default function FilterItem(props) {
                 value: vFax,
                 type: sFax,
             },
+            {
+                name: "Balance",
+                value: vBalance,
+                type: sBalance,
+            }
         ];
         props.getData(
             {
@@ -434,7 +435,7 @@ export default function FilterItem(props) {
                 vBalance: vBalance,
                 vTax: vTax,
                 vAddress: vAddress,
-                vPhone: vAddress,
+                vPhone: vPhone,
                 vSet: vSet,
                 vCat: vCat,
                 vCur: vCur,

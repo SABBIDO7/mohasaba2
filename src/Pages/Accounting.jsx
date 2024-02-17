@@ -54,7 +54,7 @@ export default function Accounting(props) {
         sAny: "Contains",
         sId: "Start",
         sName: "Contains",
-        sBalance: ">",
+        sBalance: "Not Equal",
         sTax: "Contains",
         sAddress: "Contains",
         sPhone: "Contains",
@@ -463,7 +463,7 @@ export default function Accounting(props) {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {hisabBranches.map((cl) => {
+                                                {vHisab.map((cl) => {
                                                     return (
                                                         <Statement
                                                             oData={cl}
