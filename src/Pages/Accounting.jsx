@@ -17,7 +17,8 @@ import arrowIcon from "../media/arrowimg.png";
 import AccFilter from "../components/Accounting/AccountingFilter";
 import axios from "axios";
 import ItemsOfAccount from "../components/Accounting/ItemsOfAccount";
-import Summery from "../components/Accounting/Summery";
+
+import InitialSummery from "../components/Accounting/InitialSummery";
 
 
 export default function Accounting(props) {
@@ -89,6 +90,7 @@ export default function Accounting(props) {
                 if (data.Info == "authorized") {
                     dataHandler(data["hisab"], data["branches"], data["hisabBranches"]);
                     setLoading(false);
+
                 } else {
                    // window.location.href = props.url;
                 }
@@ -230,7 +232,13 @@ export default function Accounting(props) {
                                                     </span>
                                                     </div>
                                                     <div className="d-flex justify-content-center align-items-center">
-                                                    <Summery sinfo={{'key': 0, 'AccNo': 'ALLDATA', 'AccName': '', 'Cur': '', 'Balance': 0.0, 'set': '', 'category': '', 'Price': '', 'Contact': '', 'TaxNo': '', 'Address': '', 'tel': '', 'Mobile': '', 'AccName2': '', 'Fax': ''}} token={props.token} url={props.url}/></div>
+
+                                                      
+                                                   {/* <Summery sinfo={{'key': 0, 'AccNo': 'ALLDATA', 'AccName': '', 'Cur': '', 'Balance': 0.0, 'set': '', 'category': '', 'Price': '', 'Contact': '', 'TaxNo': '', 'Address': '', 'tel': '', 'Mobile': '', 'AccName2': '', 'Fax': ''}} token={props.token} url={props.url} branch={jsonFilter.selectedBranch}/>  */}
+
+                                                    <InitialSummery sinfo={{'key': 0, 'AccNo': 'ALLDATA', 'AccName': '', 'Cur': '', 'Balance': 0.0, 'set': '', 'category': '', 'Price': '', 'Contact': '', 'TaxNo': '', 'Address': '', 'tel': '', 'Mobile': '', 'AccName2': '', 'Fax': ''}} token={props.token} url={props.url} branch={jsonFilter.selectedBranch} branchSearch={jsonFilter.branch}/>  
+                                                    </div>
+
                                                     {/* </Card.Text> */}
                                                 
                                                   
@@ -317,8 +325,11 @@ export default function Accounting(props) {
                                                     </span>
                                                     </div>
                                                     <div className="d-flex justify-content-center align-items-center">
-                                                    <Summery sinfo={cl} token={props.token} url={props.url}/></div>
-                      
+                                                   {/* <Summery sinfo={cl} token={props.token} url={props.url}/>
+                                                        */}
+                                                        <InitialSummery sinfo={cl} token={props.token} url={props.url} branch={jsonFilter.selectedBranch} branchSearch={jsonFilter.branch}/>
+                                                        </div>
+                                                    
                                                     {/* </Card.Text> */}
                                                 </Card.Body>
                                                 <Card.Footer className="text-muted">
@@ -463,6 +474,28 @@ export default function Accounting(props) {
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                <>
+                                                <Statement oData={{'key': 0, 'AccNo': 'ALLDATA', 'AccName': '', 'Cur': '', 'Balance': 0.0, 'set': '', 'category': '', 'Price': '', 'Contact': '', 'TaxNo': '', 'Address': '', 'tel': '', 'Mobile': '', 'AccName2': '', 'Fax': ''}}
+                                                                  url={props.url}
+                                                                  token={cookies.token}
+                                                                  btype={"tr"}>
+                                                                  <td className="text-right">
+                                                                      {parseFloat("0").toFixed(2)}
+                                                                  </td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{"ALLDATA"}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                                  <td>{""}</td>
+                                                              </Statement>
                                                 {vHisab.map((cl) => {
                                                     return (
                                                         <Statement
@@ -490,6 +523,7 @@ export default function Accounting(props) {
                                                         </Statement>
                                                     );
                                                 })}
+                                                </>
                                             </tbody>
                                         </Table>
                                     </div>
@@ -532,6 +566,7 @@ export default function Accounting(props) {
                 if (res.data.Info == "authorized") {
                     setHisab(res.data.hisab);
                     sethisabBranches(res.data.hisabBranches);
+                 
                 }
             })
             .catch((err) => {

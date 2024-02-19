@@ -265,7 +265,7 @@ export default function Stock(props) {
                                                 </div>
                                                 <div className="mt-2 flex justify-between items-center w-[100%] m-auto">
                                                     <Info sinfo={{'key': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1': '', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': '', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': '', 'Qty': 0, 'branch': [('ALLDATA', '', '', 0.0)]}} url={props.url}/>
-                                                    <Summery sinfo={{'key': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1': '', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': '', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': '', 'Qty': 0, 'branch': [('ALLDATA', '', '', 0.0)]}} token={props.token} url={props.url}/>
+                                                    <Summery sinfo={{'key': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1': '', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': '', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': '', 'Qty': 0, 'branch': [('ALLDATA', '', '', 0.0)]}} token={props.token} url={props.url} branch={jsonFilter.selectedBranch} branchSearch={jsonFilter.branch}/>
                                                 </div>
 
                                                 {/* </Card.Text> */}
@@ -314,6 +314,20 @@ export default function Stock(props) {
                                                             </div>
                                                             <div className="px-3 py-1 flex flex-row justify-between">
                                                                 <div>P3: {""}</div>
+                                                                <div className="flex flex-row">
+                                                                    <div className="px-1">|</div>
+                                                                    <div>-{""}%</div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="px-3 py-1 border-b-2 flex flex-row justify-between">
+                                                                <div>P4: {""}</div>
+                                                                <div className="flex flex-row">
+                                                                    <div className="px-1">|</div>
+                                                                    <div>-{""}%</div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="px-3 py-1 border-b-2 flex flex-row justify-between">
+                                                                <div>P5: {""}</div>
                                                                 <div className="flex flex-row">
                                                                     <div className="px-1">|</div>
                                                                     <div>-{""}%</div>
@@ -391,7 +405,7 @@ export default function Stock(props) {
                                                 </div>
                                                 <div className="mt-2 flex justify-between items-center w-[100%] m-auto">
                                                     <Info sinfo={cl} url={props.url}/>
-                                                    <Summery sinfo={cl} token={props.token} url={props.url}/>
+                                                    <Summery sinfo={cl} token={props.token} url={props.url} branch={jsonFilter.selectedBranch} branchSearch={jsonFilter.branch}/>
                                                 </div>
 
                                                 {/* </Card.Text> */}
@@ -443,6 +457,20 @@ export default function Stock(props) {
                                                                 <div className="flex flex-row">
                                                                     <div className="px-1">|</div>
                                                                     <div>-{cl["Disc3"]}%</div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="px-3 py-1 border-b-2 flex flex-row justify-between">
+                                                                <div>P4: {cl["SPrice4"]}</div>
+                                                                <div className="flex flex-row">
+                                                                    <div className="px-1">|</div>
+                                                                    <div>-{cl["Disc4"]}%</div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="px-3 py-1 border-b-2 flex flex-row justify-between">
+                                                                <div>P5: {cl["SPrice5"]}</div>
+                                                                <div className="flex flex-row">
+                                                                    <div className="px-1">|</div>
+                                                                    <div>-{cl["Disc5"]}%</div>
                                                                 </div>
                                                             </div>
                                                         </Dropdown.Menu>

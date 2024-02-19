@@ -12,7 +12,7 @@ export default function Summery(props) {
   function handleShow(breakpoint) {
     setShow(true);
     
-      fetch(props.url+"/moh/" + localStorage.getItem("compname") + "/Stock/Summery/"+ props.sinfo["ItemNo"].trim()+"/" )
+      fetch(props.url+"/moh/" + localStorage.getItem("compname") + "/Stock/Summery/"+ props.sinfo["ItemNo"].trim()+"/"+props.branch+"/"+props.branchSearch )
         .then((resp) => resp.json())
         .then((data) => {
           if (data.Info === "authorized") {
@@ -20,12 +20,13 @@ export default function Summery(props) {
            
             
           } else {
-            window.location.href = props.url;
+           // window.location.href = props.url;
            
           }
         }).catch((err)=>{
          
-          window.location.href = props.url
+          //window.location.href = props.url
+          console.log(err)
         })
         
       }

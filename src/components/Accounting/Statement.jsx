@@ -193,7 +193,7 @@ export default function Statement(props) {
                     <div className=" text-lg">
                         <span className="font-semibold">ID </span>: {props.oData["AccNo"]}{" "}
                         <div className="vr"></div> <span className="font-semibold">Balance </span>:{" "}
-                        {props.oData["Balance"]} {props.oData["Cur"]}
+                        {tb} {props.oData["Cur"]}
                         <div className="vr"></div>
 
                         <span className="font-semibold ml-3"><Button onClick={() => filterStatement("refresh")}>Refresh</Button></span>

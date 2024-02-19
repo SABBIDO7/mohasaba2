@@ -2,24 +2,24 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
-import uuid from 'react-uuid'
+import uuid from 'react-uuid';
+import Summery from "../Accounting/Summery";
 
-export default function Summery(props) {
+export default function InitialSummery(props) {
   const values = [true];
-  const [showSummery, setShowSummery] = useState(false);
+  const [show, setShow] = useState(false);
   const [summery, setSummery] = useState([]);
 
   function handleShow(breakpoint) {
-  //  props.setShow(false);
-    setShowSummery(true);
-
-    console.log("ANa bel Summery handle");
-      fetch(props.url+"/moh/" + localStorage.getItem("compname") + "/Accounting/Summery/"+ props.sinfo["AccNo"].trim()+"/"+props.branch+"/"+props.branchSearch)
+    setShow(true);
+    console.log("Ana bel initialSummery handle");
+       
+      fetch(props.url+"/moh/" + localStorage.getItem("compname") + "/Accounting/InitialSummery/"+ props.sinfo["AccNo"].trim()+"/"+props.branch+"/"+props.branchSearch)
         .then((resp) => resp.json())
         .then((data) => {
           if (data.Info === "authorized") {
             setSummery(data.summery);
-            console.log(data.summery)
+            
             
           } else {
             //window.location.href = props.url;
@@ -40,7 +40,7 @@ export default function Summery(props) {
           Summery
         </Button>
       ))}
-      <Modal show={showSummery} size="lg" scrollable={true} centered onHide={() => setShowSummery(false)}>
+      <Modal show={show} size="lg" scrollable={true} centered onHide={() => setShow(false)}>
         
         <Modal.Header className='d-flex justify-content-center'>
           <Modal.Header closeButton className='border-0 position-absolute start-0'></Modal.Header>
@@ -52,12 +52,12 @@ export default function Summery(props) {
         </Modal.Header>
 
         <Modal.Body>
-        <div className=" flex items-start">
+        <div className="flex items-center space-x-4">
             <p className="font-semibold m-0 text-gray-500">   {props.sinfo["AccNo"] } </p>
             {summery.length > 0 &&  props.sinfo["AccNo"]!=="ALLDATA" && (
-            <p className="font-semibold m-0 text-gray-500">{""}</p>
+            <p className="font-semibold m-0 text-gray-500">{summery[0]["Name"] !==null ? summery[0]["Name"]:""}</p>
         )}
-        
+        <Summery sinfo={props.sinfo} token={props.token} url={props.url} branch={props.branch} branchSearch={props.branchSearch} setShow={setShow}/> 
         </div>
          
         <Table striped bordered responsive className=' mt-2 '>

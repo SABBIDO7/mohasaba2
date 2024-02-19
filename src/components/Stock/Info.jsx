@@ -135,12 +135,6 @@ function MyModal(props) {
           <th>{props.sinfo["Tax"]}</th>
         </tr>
       </thead>}
-
-   
-
-    
-
-    
   
 
           
