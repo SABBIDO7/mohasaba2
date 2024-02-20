@@ -227,7 +227,7 @@ export default function Accounting(props) {
                                                     </div>
                                                     <div className="border-b-2">
                                                     <span>
-                                                        {"" + " / "} {"" + " / "}{" "}
+                                                        {"" + " "} {"" + " "}{" "}
                                                         {"" + " "}{" "}
                                                     </span>
                                                     </div>
@@ -247,7 +247,7 @@ export default function Accounting(props) {
                                                 </Card.Body>
                                                 <Card.Footer className="text-muted">
                                                     <div className="flex justify-between">
-                                                        <span>Contact: {""}</span>
+                                                        <span>{""}</span>
                                                         <div className="vr"></div>
                                                         <span>
                                                             TaxNo:{" "}
@@ -323,7 +323,7 @@ export default function Accounting(props) {
                                                          {cl["category"]} | {cl["Price"]}
                                                         </div>
                                                         <span>
-                                                            {cl["tel"] + " / "} {cl["Mobile"] + " / "}{" "}
+                                                            {cl["tel"] + " "} {cl["Mobile"] + " "}{" "}
                                                             {cl["Fax"] + " "}{" "}
                                                         </span>
                                                     </div>
@@ -337,7 +337,7 @@ export default function Accounting(props) {
                                                 </Card.Body>
                                                 <Card.Footer className="text-muted">
                                                     <div className="flex justify-between">
-                                                        <span>Contact: {cl["Contact"]}</span>
+                                                        <span>{cl["Contact"]}</span>
                                                         <div className="vr"></div>
                                                         <span>
                                                             TaxNo:{" "}

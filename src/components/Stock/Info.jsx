@@ -27,7 +27,7 @@ function MyModal(props) {
               <div className="row">
                 <div className="col-6">
                   <p><strong>Item Number:</strong> {props.sinfo["ItemNo"]?props.sinfo["ItemNo"]:"--"}</p>
-                  <p><strong>Qty:</strong> {props.sinfo["Qty"] ? props.sinfo["Qty"] : "--"}</p>
+                  <p><strong>ItemName:</strong> {props.sinfo["ItemName"] ? props.sinfo["ItemName"] : "--"}</p>
                 </div>
                 <div className="col-6">
                   <p><strong>Item Name 2:</strong> {props.sinfo["ItemName2"] ? props.sinfo["ItemName2"]:"--"}</p>

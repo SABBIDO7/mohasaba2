@@ -193,7 +193,7 @@ export default function Statement(props) {
                     <div className=" text-lg">
                         <span className="font-semibold">ID </span>: {props.oData["AccNo"]}{" "}
                         <div className="vr"></div> <span className="font-semibold">Balance </span>:{" "}
-                        {tb} {props.oData["Cur"]}
+                        {tb && tb.toFixed(3)} {props.oData["Cur"]}
                         <div className="vr"></div>
 
                         <span className="font-semibold ml-3"><Button onClick={() => filterStatement("refresh")}>Refresh</Button></span>
@@ -384,10 +384,10 @@ export default function Statement(props) {
                     <div className="flex flex-row whitespace-nowrap mt-3 items-center">
                         {/* <span className="underline  w-fit text-2xl">Statement:</span>{" "} */}
                         <span className="text-zinc-600 mx-2 no-underlines italic">{nof}</span>
-                        <span className="text-zinc-600 mx-2 no-underlines italic">DB:{db}</span>
-                        <span className="text-zinc-600 mx-2 no-underlines italic">CR:{cr}</span>
+                        <span className="text-zinc-600 mx-2 no-underlines italic">DB:{db && db.toFixed(3)}</span>
+                        <span className="text-zinc-600 mx-2 no-underlines italic">CR:{cr && cr.toFixed(3)}</span>
                         <span className="text-zinc-600 mx-2 no-underlines italic">
-                            Bal:{tb}
+                            Bal:{tb && tb.toFixed(3)}
                         </span>
                     </div>
                     {isLoading ? (
