@@ -357,13 +357,24 @@ export default function Stock(props) {
                                                             url={props.url}
                                                         />
                                                     </div>
-                                                    <Quantity
+                                                    <div>
+                                                        {branchSearch && (
+                                                            
+                                                            <span className="font-semibold">
+                                                                {" "}
+                                                                Br{" "}{cl["BR"]? cl["BR"]:"-"}{" "}
+                                                            </span>
+                                                             
+                                                        
+                                                        )}
+                                                        <Quantity
                                                         url={props.url}
                                                         oData={cl}
                                                         token={props.token}
                                                         format={"btn"}>
                                                         {cl["Qty"]}
-                                                    </Quantity>
+                                                        </Quantity>
+                                                    </div>
                                                 </div>
                                             </Card.Header>
                                             <Card.Body className="py-1">
@@ -384,12 +395,12 @@ export default function Stock(props) {
                                                     <h6 className=""> {cl["ItemName2"]} </h6>
                                                 </div>
                                                 <div className="flex border-b-2 flex-row justify-between">                                              
-                                                {branchSearch && (
+                                                {/* {branchSearch && (
                                                             <div className=" w-[33%]">
                                                             <div>BR: </div>
                                                             <div>{cl["BR"]}</div>
                                                         </div>
-                                                        )}
+                                                        )} */}
                                                     <div className=" w-[33%]">
                                                         <div>Set</div>
                                                         <div>{cl["SetG"]}</div>
@@ -641,11 +652,11 @@ export default function Stock(props) {
                                         <>
                                             <thead>
                                                 <tr key={uuid()} className=" whitespace-nowrap bg-slate-500">
-                                                    <th>ItemNoo</th>
+                                                    <th>ItemNo</th>
                                                     <th>BR</th>
                                                     <th>Qty</th>
                                                     <th>Item Name</th>
-                                                    <th>BR.Name</th>
+                                                    <th>BR Name</th>
                                                     <th>SP1</th>
                                                     <th>SP2</th>
                                                     <th>SP3</th>
@@ -671,6 +682,68 @@ export default function Stock(props) {
                                             </thead>
 
                                             <tbody>
+                                            <tr
+                                                                key={uuid()}
+                                                                className=" whitespace-nowrap hover:bg-blue-200"
+                                                                style={{ userSelect: "none" }}>
+                                                                <SimplifiedStatment
+                                                                    oData={{'key': -9, 'BR': 'ALLDATA', 'BRName': '', 'Qty': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1':'', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': 'PIECE', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': ''}
+                                                                }
+                                                                                             token={props.token}
+                                                                    show={"ALLDATA"}
+                                                                    fil={bSelect}
+                                                                    branches={vBranches}
+                                                                    url={props.url}
+                                                                
+                                                                />
+                                        
+
+                                                                <Quantity
+                                                                    oData={{'key': -9, 'BR': 'ALLDATA', 'BRName': '', 'Qty': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1':'', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': 'PIECE', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': ''}
+                                                                }
+                                                                    token={props.token}
+                                                                    url={props.url}
+                                                                    format={"td"}>
+                                                                    {""}
+                                                                </Quantity>
+                                                                <Quantity
+                                                                    oData={{'key': -9, 'BR': 'ALLDATA', 'BRName': '', 'Qty': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1':'', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': 'PIECE', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': ''}
+                                                                }
+                                                                    token={props.token}
+                                                                    url={props.url}
+                                                                    format={"td"}>
+                                                                    {""}
+                                                                </Quantity>
+                                                                <SimplifiedStatment
+                                                                    oData={{'key': -9, 'BR': 'ALLDATA', 'BRName': '', 'Qty': 0, 'ItemNo': 'ALLDATA', 'ItemName': '', 'ItemName2': '', 'MainNo': '', 'SetG': '', 'Category': '', 'Unit': '', 'Brand': '', 'Origin': '', 'Supplier': '', 'Sizeg': '', 'Color': '', 'Family': '', 'Groupg': '', 'Tax': '', 'SPrice1': '', 'SPrice2': '', 'SPrice3': '', 'Disc1':'', 'Disc2': '', 'Disc3': '', 'CostPrice': '', 'FobCost': '', 'AvPrice': '', 'BPUnit': 'PIECE', 'PQty': '', 'PUnit': '', 'PQUnit': '', 'SPUnit': ''}}
+                                                                    token={props.token}
+                                                                    show={""}
+                                                                    fil={bSelect}
+                                                                    branches={vBranches}
+                                                                    url={props.url}
+                                                                />
+
+                                                                
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                                <td>{""}</td>
+                                                            </tr>
+
                                                 {vStock.map((cl) => { //honb
                                                     return (
                                                         <>

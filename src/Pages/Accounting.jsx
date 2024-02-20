@@ -206,23 +206,23 @@ export default function Accounting(props) {
                                                             {''}
                                                         </div>
                                                         <span className="font-semibold">
-                                                            Address{" "}
+                                                            {" "}
                                                         </span>
-                                                        : {''}
+                                                         {''}
                                                     </div>
                                                     <div className="border-b-2">
                                                      
                         
                                                         <span className="font-semibold">
                                                             {" "}
-                                                            Set{" "}
+                                                            
                                                         </span>
-                                                        : {""} |
+                                                        {""} |
                                                         <span className="font-semibold">
                                                             {" "}
-                                                            Cat.{" "}
+                                                           
                                                         </span>
-                                                        : {""} | {""}
+                                                        {""} | {""}
                                                         
                                                     </div>
                                                     <div className="border-b-2">
@@ -278,11 +278,22 @@ export default function Accounting(props) {
                                                             token={props.token}
                                                             url={props.url}
                                                         />
-                                                        <Balance //hon
+                                                        <div>
+                                                            {branchSearch && (
+                                                            
+                                                                <span className="font-semibold">
+                                                                    {" "}
+                                                                    Br{" "}{cl["Branch"]?cl["Branch"]:"-"}{" "}
+                                                                </span>
+                                                                 
+                                                            
+                                                            )}
+                                                            <Balance //hon
                                                             oData={cl}
                                                             token={props.token}
                                                             url={props.url}
-                                                        />
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </Card.Header>
                                                 <Card.Body>
@@ -293,36 +304,28 @@ export default function Accounting(props) {
                                                             {cl["AccName2"]}
                                                         </div>
                                                         <span className="font-semibold">
-                                                            Address{" "}
+                                                           {" "}
                                                         </span>
-                                                        : {cl["Address"]}
+                                                         {cl["Address"]}
                                                     </div>
                                                     <div className="border-b-2">
-                                                        {branchSearch && (
-                                                            <>
-                                                                <span className="font-semibold">
-                                                                    {" "}
-                                                                    Br{" "}
-                                                                </span>
-                                                                : {cl["Branch"]} |
-                                                            </>
-                                                        )}
-                        <div className="border-b-2">
-                                                        <span className="font-semibold">
+                                                        
+                                                        <div className="border-b-2">
+                                                            <span className="font-semibold">
                                                             {" "}
-                                                            Set{" "}
+                                                            
+                                                            </span>
+                                                            {cl["set"]} |
+                                                            <span className="font-semibold">
+                                                                {" "}
+                                                                
+                                                            </span>
+                                                         {cl["category"]} | {cl["Price"]}
+                                                        </div>
+                                                        <span>
+                                                            {cl["tel"] + " / "} {cl["Mobile"] + " / "}{" "}
+                                                            {cl["Fax"] + " "}{" "}
                                                         </span>
-                                                        : {cl["set"]} |
-                                                        <span className="font-semibold">
-                                                            {" "}
-                                                            Cat.{" "}
-                                                        </span>
-                                                        : {cl["category"]} | {cl["Price"]}
-                                                    </div>
-                                                    <span>
-                                                        {cl["tel"] + " / "} {cl["Mobile"] + " / "}{" "}
-                                                        {cl["Fax"] + " "}{" "}
-                                                    </span>
                                                     </div>
                                                     <div className="d-flex justify-content-center align-items-center">
                                                    {/* <Summery sinfo={cl} token={props.token} url={props.url}/>

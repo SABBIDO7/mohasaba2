@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import Card from 'react-bootstrap/Card';
 
 function MyModal(props) {
-  const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
+
 
   return (
     <Modal
@@ -39,13 +39,12 @@ function MyModal(props) {
         </Card>
 
         <Card>
-        <Card onClick={() => setShowAdditionalDetails(!showAdditionalDetails)}>
+        <Card>
           <Card.Body>
             <Card.Title>
               Additional Details
-              <span className="float-end">{showAdditionalDetails ? '-' : '+'}</span>
             </Card.Title>
-            {showAdditionalDetails && (
+      
               <Card.Text>
                 <div className="row">
                   <div className="col-6">
@@ -70,7 +69,7 @@ function MyModal(props) {
                   </div>
                 </div>
               </Card.Text>
-            )}
+        
           </Card.Body>
         </Card>
 </Card>
