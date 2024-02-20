@@ -1,146 +1,79 @@
+import React,{ useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import React from 'react';
-import Table from 'react-bootstrap/Table';
+import Card from 'react-bootstrap/Card';
 
 function MyModal(props) {
+  const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
+
   return (
     <Modal
       {...props}
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
       centered
+      scrollable={true}
     >
-
-      <Modal.Header className='d-flex justify-content-center'>
-      <Modal.Header closeButton className="border-0 position-absolute start-0"></Modal.Header>
-        <Modal.Title className='ms-5 me-5'>
-        {props.sinfo["ItemName"]}
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          {props.sinfo["ItemName"]}
         </Modal.Title>
-       
       </Modal.Header>
       <Modal.Body>
-      <div className=" flex items-center flex-col">
-      <p className="font-semibold m-0 text-gray-500 text-center border-b-2">Item Name 2:    {props.sinfo["ItemName2"]} </p>
-      <p className="font-semibold m-0 text-gray-500 text-center border-b-2">Item Number:  {props.sinfo["ItemNo"]} </p>
-      <p className="font-semibold m-0 text-gray-500 text-center ">Main Number:  {props.sinfo["MainNo"]} </p>
-      </div>
+        <Card>
+          <Card.Body>
+            <Card.Title>Item Details</Card.Title>
+            <Card.Text>
+              <div className="row">
+                <div className="col-6">
+                  <p><strong>Item Number:</strong> {props.sinfo["ItemNo"]?props.sinfo["ItemNo"]:"--"}</p>
+                  <p><strong>Qty:</strong> {props.sinfo["Qty"] ? props.sinfo["Qty"] : "--"}</p>
+                </div>
+                <div className="col-6">
+                  <p><strong>Item Name 2:</strong> {props.sinfo["ItemName2"] ? props.sinfo["ItemName2"]:"--"}</p>
+                  <p><strong>Main Number:</strong> {props.sinfo["MainNo"] ? props.sinfo["MainNo"]:"--"}</p>
+                </div>
+              </div>
+            </Card.Text>
+          </Card.Body>
+        </Card>
 
-      <div className=' flex flex-row justify-evenly'>
-
-      <Table bordered responsive striped="columns">
-      {props.sinfo["SetG"] == ""?
-        null
-      :
-      <thead className=' whitespace-nowrap'>
-        <tr className="hover:bg-slate-500" >
-          <th>Set</th>
-          <th>{props.sinfo["SetG"]}</th>
-        </tr>
-      </thead>
-      }
-      {props.sinfo["Category"] == ""?
-        null
-      :
-      <thead className=' whitespace-nowrap'>
-        <tr className="hover:bg-slate-500" >
-          <th>Cat.</th>
-          <th>{props.sinfo["Category"]}</th>
-        </tr>
-      </thead>
-      }
-      {props.sinfo["Unit"] == ""?
-        null
-      :
-      <thead className=' whitespace-nowrap'>
-        <tr className="hover:bg-slate-500" >
-          <th>Unit</th>
-          <th>{props.sinfo["Unit"]}</th>
-        </tr>
-      </thead>
-      }
-      {props.sinfo["Brand"] == ""?
-        null
-      :
-      <thead className=' whitespace-nowrap'>
-        <tr className="hover:bg-slate-500" >
-          <th>Brand</th>
-          <th>{props.sinfo["Brand"]}</th>
-        </tr>
-      </thead>}
-      {props.sinfo["Origin"] == ""?
-        null
-      :
-      <thead className=' whitespace-nowrap'>
-        <tr className="hover:bg-slate-500" >
-          <th>Origin</th>
-          <th>{props.sinfo["Origin"]}</th>
-        </tr>
-      </thead>}
-      {props.sinfo["Supplier"] == ""?
-        null
-      :
-      <thead className=' whitespace-nowrap'>
-        <tr className="hover:bg-slate-500" >
-          <th>SUPP</th>
-          <th>{props.sinfo["Supplier"]}</th>
-        </tr>
-      </thead>}
-
-          
-      </Table>
-      <Table striped="columns" bordered responsive>
-      {props.sinfo["Sizeg"] == ""?
-        null
-      :
-      <thead className=' whitespace-nowrap'>
-        <tr className="hover:bg-slate-500" >
-          <th>Size</th>
-          <th>{props.sinfo["Sizeg"]}</th>
-        </tr>
-      </thead>}
-      {props.sinfo["Color"] == ""?
-        null
-      :
-      <thead className=' whitespace-nowrap'>
-        <tr className="hover:bg-slate-500" >
-          <th>Color</th>
-          <th>{props.sinfo["Color"]}</th>
-        </tr>
-      </thead>}
-      {props.sinfo["Groupg"] == ""?
-        null
-      :
-      <thead className=' whitespace-nowrap'>
-        <tr className="hover:bg-slate-500" >
-          <th>Group</th>
-          <th>{props.sinfo["Groupg"]}</th>
-        </tr>
-      </thead>}
-      {props.sinfo["Family"] == ""?
-        null
-      :
-      <thead className=' whitespace-nowrap'>
-        <tr className="hover:bg-slate-500" >
-          <th>Family</th>
-          <th>{props.sinfo["Family"]}</th>
-        </tr>
-      </thead>}
-      {props.sinfo["Tax"] == ""?
-        null
-      :
-      <thead className=' whitespace-nowrap'>
-        <tr className="hover:bg-slate-500" >
-          <th>Tax</th>
-          <th>{props.sinfo["Tax"]}</th>
-        </tr>
-      </thead>}
-  
-
-          
-      </Table>
-      </div>
-    
+        <Card>
+        <Card onClick={() => setShowAdditionalDetails(!showAdditionalDetails)}>
+          <Card.Body>
+            <Card.Title>
+              Additional Details
+              <span className="float-end">{showAdditionalDetails ? '-' : '+'}</span>
+            </Card.Title>
+            {showAdditionalDetails && (
+              <Card.Text>
+                <div className="row">
+                  <div className="col-6">
+                    {<p><strong>Set:</strong> {props.sinfo["SetG"] ? props.sinfo["SetG"]:"--"}</p>}
+                    {<p><strong>Category:</strong> {props.sinfo["Category"] ? props.sinfo["Category"]:"--"}</p>}
+                    {<p><strong>Unit:</strong> {props.sinfo["Unit"] ? props.sinfo["Unit"]:"--"}</p>}
+                    {<p><strong>Brand:</strong> {props.sinfo["Brand"] ? props.sinfo["Brand"]:"--"}</p>}
+                    {<p><strong>Origin:</strong> {props.sinfo["Origin"] ? props.sinfo["Origin"]:"--"}</p>}
+                    {<p><strong>Size:</strong> {props.sinfo["Sizeg"] ? props.sinfo["Sizeg"]:"--"}</p>}
+                    {<p><strong>Color:</strong> {props.sinfo["Color"] ?  props.sinfo["Color"]:"--"}</p>}
+                    {<p><strong>SUPP:</strong> {props.sinfo["Supplier"] ?  props.sinfo["Supplier"]:"--"}</p>}
+                  </div>
+                  <div className="col-6">
+                    {<p><strong>Group:</strong> {props.sinfo["Groupg"] ?  props.sinfo["Groupg"]:"--"}</p>}
+                    {<p><strong>Family:</strong> {props.sinfo["Family"] ? props.sinfo["Family"]:"--"}</p>}
+                    {<p><strong>Tax:</strong> {props.sinfo["Tax"] ? props.sinfo["Tax"]:"--"}</p>}
+                    {<p><strong>BPUnit:</strong> {props.sinfo["BPUnit"] ? props.sinfo["BPUnit"]:"--"}</p>}
+                    {<p><strong>PQty:</strong> {props.sinfo["PQty"] ? props.sinfo["PQty"]:"--"}</p>}
+                    {<p><strong>PUnit:</strong> {props.sinfo["PUnit"] ? props.sinfo["PUnit"]:"--"}</p>}
+                    {<p><strong>PQUnit:</strong> {props.sinfo["PQUnit"] ? props.sinfo["PQUnit"]:"--"}</p>}
+                    {<p><strong>BPUnit:</strong> {props.sinfo["SPUnit"] ? props.sinfo["SPUnit"]:"--"}</p>}
+                  </div>
+                </div>
+              </Card.Text>
+            )}
+          </Card.Body>
+        </Card>
+</Card>
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>
