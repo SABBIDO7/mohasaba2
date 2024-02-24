@@ -11,6 +11,8 @@ import minus from "../../media/minus.png";
 import axios from "axios";
 import ConfirmPostInvoiceModal from "./ConfirmPostInvoiceModal";
 import DiscardInvoiceModal from "./DiscardInvoicemodal";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 export default function SalesForm(props) {
     const [Client, setClient] = useState("");
@@ -150,15 +152,16 @@ export default function SalesForm(props) {
                             <Table bordered striped responsive>
                                 <thead className=" bg-slate-500">
                                     <tr className=" whitespace-nowrap ">
-                                        <th>No.</th>
+                                        <th>LNO</th>
+                                        <th>ItemNo</th>
                                         <th>Name</th>
-                                        <th>QTY</th>
                                         <th>Br</th>
+                                        <th>QTY</th>
                                         <th>UPrice</th>
                                         <th>Discount</th>
-                                        <th>Total</th>
                                         <th>Tax</th>
-                                        <th>Tax Amount</th>
+                                        <th>Total</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white">
@@ -176,16 +179,7 @@ export default function SalesForm(props) {
                                             <tr
                                                 key={idx}
                                                 className=" whitespace-nowrap hover:bg-blue-200 select-none "
-                                                onDoubleClick={() => {
-                                                    setShow(true);
-                                                    setEditItem(si);
-                                                    setEditQty(si["qty"]);
-                                                    setEditPrice(si["uprice"]);
-                                                    setEditIdx(idx);
-                                                    setEditTax(tax);
-                                                    setEditBranch(si["branch"]);
-                                                    setEditDiscount(si["discount"]);
-                                                }}>
+                                               >
                                                 <td>{si["no"]}</td>
                                                 <td>{si["name"]}</td>
                                                 <td>{si["qty"]}</td>
@@ -195,6 +189,23 @@ export default function SalesForm(props) {
                                                 <td>{total.toFixed(3)}</td>
                                                 <td>{tax}%</td>
                                                 <td>{taxAmount.toFixed(3)}</td>
+                                                <td>
+                                                    <button
+                                                        className="text-blue-500 hover:text-blue-700"
+                                                        onClick={() => {
+                                                            setShow(true);
+                                                            setEditItem(si);
+                                                            setEditQty(si["qty"]);
+                                                            setEditPrice(si["uprice"]);
+                                                            setEditIdx(idx);
+                                                            setEditTax(tax);
+                                                            setEditBranch(si["branch"]);
+                                                            setEditDiscount(si["discount"]);
+                                                        }}
+                                                    >
+                                                        <FontAwesomeIcon icon={faEdit} />
+                                                    </button>
+                                                </td>
                                             </tr>
                                         );
                                     })}
@@ -423,6 +434,7 @@ export default function SalesForm(props) {
             .then((res) => {
                 if (res.data.Info == "authorized") {
                     setIdOptions(res.data.opp);
+                    //02/24/2024
                 }
             })
             .catch((err) => {

@@ -41,7 +41,7 @@ export default function IdSelect(props) {
                                 key={idx}
                                 className=" bg-gradient-to-br from-gray-300 to-zinc-200 shadow-sm p-2 rounded my-2"
                                 onClick={(e) => {
-                                    selectHandler(e, idx);
+                                    selectHandler(io, idx);
                                     setsItemNo(io[0]);
                                     setsItemName(io[1]);
                                     setsItemQty(1);
@@ -181,10 +181,12 @@ export default function IdSelect(props) {
     );
     function selectHandler(e, idx) {
         if (props.sOption == "Accounts") {
-            props.setClient({
-                id: e.currentTarget.firstChild.textContent,
-                name: e.currentTarget.children[1].textContent,
-            });
+            // props.setClient({
+            //     id: e.currentTarget.firstChild.textContent,
+            //     name: e.currentTarget.children[1].textContent,
+            // });
+            console.log("///////////");
+            console.log(e);
             props.setModalShow(false);
             props.setsOption("Items");
             props.setvInput("");
