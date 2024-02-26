@@ -16,6 +16,8 @@ export default function IdSelect(props) {
     const [sItemTax, setsItemTax] = useState();
     const [sItemDiscount, setsItemDiscount] = useState();
     const [sItemBranch, setsItemBranch] = useState("");
+    const [sItemPQty, setsItemPQty] = useState("");
+    const [sItemPUnit, setsItemPUnit] = useState("");
 
     return (
         <>
@@ -47,6 +49,9 @@ export default function IdSelect(props) {
                                     setsItemQty(1);
                                     setsItemTax(temptax);
                                     setsItemDiscount(0);
+                                    setsItemPQty(io[26]);
+                                    setsItemPUnit(io[27]);
+                                   
                                 }}>
                                 <div>{io[0]}</div>
                                 <div>{io[1]}</div>
@@ -181,12 +186,19 @@ export default function IdSelect(props) {
     );
     function selectHandler(e, idx) {
         if (props.sOption == "Accounts") {
-            // props.setClient({
-            //     id: e.currentTarget.firstChild.textContent,
-            //     name: e.currentTarget.children[1].textContent,
-            // });
-            console.log("///////////");
-            console.log(e);
+
+            console.log("ll");
+            const currentDate = new Date();
+            const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+            const formattedTime = `${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+            
+            props.setClient({
+                id: e[0],
+                name: e[1],
+                date: formattedDate,
+                time: formattedTime,
+            });
+            
             props.setModalShow(false);
             props.setsOption("Items");
             props.setvInput("");
@@ -194,13 +206,17 @@ export default function IdSelect(props) {
             document.getElementById("tf").focus();
             props.handleSave({
                 accName: {
-                    id: e.currentTarget.firstChild.textContent,
-                    name: e.currentTarget.children[1].textContent,
+                    id: e[0],
+                    name: e[1],
+                    date: formattedDate,
+                    time: formattedTime
                 },
+
                 items: props.si,
             });
         } else if (props.sOption === "Items") {
             let uprice = 0;
+            
             if (props.options[idx][15] != "0") {
                 uprice = props.options[idx][15];
             } else if (props.options[idx][16] != "0") {
@@ -217,24 +233,35 @@ export default function IdSelect(props) {
     }
     function addItem() {
         let tempsi = [];
-
+        
         let tax = sItemTax == "" || undefined ? 0 : sItemTax;
         let uprice = sItemPrice == "" || undefined ? 0 : sItemPrice;
         let discount = sItemDiscount == "" || undefined ? 0 : sItemDiscount;
         let tempQty = sItemQty == "" || undefined || 0 ? 1 : sItemQty;
-
+        let Lno=(props.si).length + 1;
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+        const formattedTime = `${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
         tempsi = [
             ...props.si,
             {
                 no: sItemNo,
                 name: sItemName,
                 qty: tempQty,
+              
                 uprice: uprice,
                 tax: tax,
                 discount: discount,
                 branch: sItemBranch,
+                lno : Lno,
+                PQty: sItemPQty,
+                PUnit:sItemPUnit,
+                DateT: formattedDate,
+                TimeT: formattedTime,
             },
         ];
+        console.log("*//////////////////////*");
+        console.log(tempsi);
         props.ssi(tempsi);
         setModalItems(false);
         props.handleSave({

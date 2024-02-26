@@ -71,7 +71,7 @@ export default function Invoice(props) {
             });
     }
 
-    function postInvoice(type, accno, items) {
+    function postInvoice(type, acc, items) {
         let tempItem = "";
 
         items.forEach((item) => {
@@ -93,36 +93,41 @@ export default function Invoice(props) {
         let data = {
             compname: localStorage.getItem("compname"),
             type: type,
-            accno: accno.id,
-            accname: accno.name,
-            items: tempItem,
-            username: props.name,
+            accno: acc.id,
+            accDate:acc.date,
+            accTime:acc.time,
+            branch : localStorage.getItem("branch"),
+            accname: acc.name,
+            items: items,
+            username: localStorage.getItem("username"),
 
         };
-        axios({
-            method: "post",
-            url: props.url + "/moh/newInvoice/",
-            data: data,
-            headers: { content_type: "application/json" },
-        }).then((res) => {
+        console.log("n bl invoice");
+        console.log(data);
+        // axios({
+        //     method: "post",
+        //     url: props.url + "/moh/newInvoice/",
+        //     data: data,
+        //     headers: { content_type: "application/json" },
+        // }).then((res) => {
             
-            if (res.data.Info == "authorized") {
-                setInvResponse(
-                    {
-                        Info:"Successful",
-                        msg:"Sales Invoice Created Successfully"
-                    }
-                )
-            } else if (res.data.Info == "Failed") {
-                setInvResponse(
-                    {
-                        Info:"Failed",
-                        msg:res.data.msg
-                    }
-                )
-            }
-            setafterSubmitModal(true)
-        });
+        //     if (res.data.Info == "authorized") {
+        //         setInvResponse(
+        //             {
+        //                 Info:"Successful",
+        //                 msg:"Sales Invoice Created Successfully"
+        //             }
+        //         )
+        //     } else if (res.data.Info == "Failed") {
+        //         setInvResponse(
+        //             {
+        //                 Info:"Failed",
+        //                 msg:res.data.msg
+        //             }
+        //         )
+        //     }
+        //     setafterSubmitModal(true)
+        // });
     }
 
     function AfterSubmit() {

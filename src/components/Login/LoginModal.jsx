@@ -15,16 +15,17 @@ function LoginModal(props) {
   const [vResult, setVresult] = useState("");
   const [warning, setWarning] = useState(false);
 
-  function verify(compname,username, password) {
+  function verify(compname,username, password, branch) {
     var bodyFormData = new FormData();
-    if (username == "" || password == "" || compname == "") {
-      setVresult("Invalid Username or Password");
+    if (username == "" || password == "" || compname == "" || branch == "") {
+      setVresult("Invalid Username or Password or Branch");
       setWarning(true);
   
     } else {
       bodyFormData.append("compname", compname.toLowerCase());
       bodyFormData.append("username", username.toLowerCase());
       bodyFormData.append("password", password);
+      bodyFormData.append("branch", branch);
       axios({
         method: "post",
         url: props.url+"/moh/login/",
@@ -36,7 +37,8 @@ function LoginModal(props) {
             localStorage.setItem("username", response.data.name);
             localStorage.setItem("compname", response.data.compname);
             localStorage.setItem("password",response.data.password);
-           
+            localStorage.setItem("branch",response.data.branch);
+           console.log("HEYYYYYY /*/*/*/*/");
             props.UserDataHandler(response.data.compname, response.data.name, response.data.token);
             
 

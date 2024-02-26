@@ -5,6 +5,7 @@ function LoginForm(props) {
   const [compname, setCompname] = useState("");
   const [username, setuserName] = useState("");
   const [password, setpassword] = useState("");
+  const [branch, setbranch] = useState("");
 
   return (
     <Form
@@ -49,6 +50,19 @@ function LoginForm(props) {
           onChange={(e) => {
             setpassword(e.target.value);
           }}
+        />
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="formBasicText">
+        <Form.Label>Branch Name</Form.Label>
+        <Form.Control
+          onChange={(e) => {
+            setbranch(e.target.value);
+          }}
+          name="branch"
+          type="username"
+          placeholder="Branch Name"
+          autoFocus
         />
       </Form.Group>
     </Form>

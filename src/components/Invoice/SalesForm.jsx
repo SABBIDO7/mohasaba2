@@ -12,7 +12,7 @@ import axios from "axios";
 import ConfirmPostInvoiceModal from "./ConfirmPostInvoiceModal";
 import DiscardInvoiceModal from "./DiscardInvoicemodal";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faSave  } from '@fortawesome/free-solid-svg-icons';
 
 export default function SalesForm(props) {
     const [Client, setClient] = useState("");
@@ -35,6 +35,7 @@ export default function SalesForm(props) {
     const [EditBranch, setEditBranch] = useState("");
     const [EditTax, setEditTax] = useState("");
     const [EditDiscount, setEditDiscount] = useState("");
+    const [EditLno,setEditLno] = useState("");
 
     const [EditIdx, setEditIdx] = useState(0);
 
@@ -44,8 +45,24 @@ export default function SalesForm(props) {
     //discard Modal
     const [discardModalShow, setDiscardModalShow] = useState(false);
 
+    
+    const [showNoteModal, setShowNoteModal] = useState(false);
+    const [noteInput, setNoteInput] = useState("");
+    const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+
     let final = 0;
     let fTax = 0;
+
+    const handleNoteSave = () => {
+        // Update note for the selected item
+        if (selectedItemIndex !== null) {
+            const updatedItems = [...SelectedItems];
+            updatedItems[selectedItemIndex].note = noteInput;
+            setSelectedItems(updatedItems);
+            setShowNoteModal(false);
+            setNoteInput("");
+        }
+    };
 
     const handleSave = (e) => {
         const jsonString = JSON.stringify(e);
@@ -159,8 +176,9 @@ export default function SalesForm(props) {
                                         <th>QTY</th>
                                         <th>UPrice</th>
                                         <th>Discount</th>
-                                        <th>Tax</th>
                                         <th>Total</th>
+                                        <th>Tax</th>
+                                        <th>Note</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -180,15 +198,30 @@ export default function SalesForm(props) {
                                                 key={idx}
                                                 className=" whitespace-nowrap hover:bg-blue-200 select-none "
                                                >
+                                                <td>{si["lno"]}</td>
                                                 <td>{si["no"]}</td>
                                                 <td>{si["name"]}</td>
-                                                <td>{si["qty"]}</td>
                                                 <td>{si["branch"]}</td>
+                                                <td>{si["qty"]}</td>  
                                                 <td>{si["uprice"]}</td>
                                                 <td>{si["discount"]}%</td>
                                                 <td>{total.toFixed(3)}</td>
                                                 <td>{tax}%</td>
-                                                <td>{taxAmount.toFixed(3)}</td>
+                                                <td>
+                                                    {/* Render note icon/button */}
+                                                    <button
+                                                        className="text-blue-500 hover:text-blue-700"
+                                                        onClick={() => {
+                                                            setShowNoteModal(true);
+                                                            setSelectedItemIndex(idx);
+                                                            setNoteInput(si.note || "");
+                                                        }}
+                                                    >
+                                                        Note
+                                                    </button>
+                                                </td>
+                                                
+                                              {  /*<td>{taxAmount.toFixed(3)}</td>*/}
                                                 <td>
                                                     <button
                                                         className="text-blue-500 hover:text-blue-700"
@@ -201,6 +234,7 @@ export default function SalesForm(props) {
                                                             setEditTax(tax);
                                                             setEditBranch(si["branch"]);
                                                             setEditDiscount(si["discount"]);
+                                                            setEditLno(si["lno"]);
                                                         }}
                                                     >
                                                         <FontAwesomeIcon icon={faEdit} />
@@ -211,6 +245,29 @@ export default function SalesForm(props) {
                                     })}
                                 </tbody>
                             </Table>
+                                            {/* Note Modal */}
+                            <Modal show={showNoteModal} onHide={() => setShowNoteModal(false)}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Edit Note</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <textarea
+                                        value={noteInput}
+                                        onChange={(e) => setNoteInput(e.target.value)}
+                                        className="form-control"
+                                        rows={5}
+                                    />
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="secondary" onClick={() => setShowNoteModal(false)}>
+                                        Close
+                                    </Button>
+                                    <Button variant="primary" onClick={handleNoteSave}>
+                                        <FontAwesomeIcon icon={faSave} className="mr-2" />
+                                        Save Note
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
                         </div>
                         <div className="flex flex-col justify-start ">
                             <div className=" font-semibold text-xl ">
@@ -382,6 +439,7 @@ export default function SalesForm(props) {
                                         branch: EditBranch,
                                         tax: EditTax,
                                         discount: EditDiscount,
+                                        lno :EditLno
                                     };
                                     setSelectedItems(tempa);
                                 }}>
@@ -394,10 +452,11 @@ export default function SalesForm(props) {
                                 onClick={() => {
                                     setShow(false);
 
-                                    let tempa = SelectedItems;
-
-                                    tempa.pop(EditIdx);
-
+                                    let tempa = [...SelectedItems]; // Create a copy of SelectedItems array
+                                    tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
+                                    tempa.forEach((item, index) => {
+                                        item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
+                                    });
                                     setSelectedItems(tempa);
                                 }}>
                                 Remove
@@ -411,7 +470,7 @@ export default function SalesForm(props) {
                 setModalShow={setConfirmModalShow}
                 postInvoice={props.postInvoice}
                 token={props.token}
-                type={"SAOL"}
+                type={"SA"}
                 Client={Client}
                 items={SelectedItems}
             />
@@ -434,6 +493,7 @@ export default function SalesForm(props) {
             .then((res) => {
                 if (res.data.Info == "authorized") {
                     setIdOptions(res.data.opp);
+
                     //02/24/2024
                 }
             })
