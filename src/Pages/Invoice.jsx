@@ -96,7 +96,8 @@ export default function Invoice(props) {
             accno: acc.id,
             accDate:acc.date,
             accTime:acc.time,
-            branch : localStorage.getItem("branch"),
+            Sbranch : localStorage.getItem("Sbranch"),
+            Abranch : localStorage.getItem("Abranch"),
             accname: acc.name,
             items: items,
             username: localStorage.getItem("username"),
@@ -104,30 +105,30 @@ export default function Invoice(props) {
         };
         console.log("n bl invoice");
         console.log(data);
-        // axios({
-        //     method: "post",
-        //     url: props.url + "/moh/newInvoice/",
-        //     data: data,
-        //     headers: { content_type: "application/json" },
-        // }).then((res) => {
+        axios({
+            method: "post",
+            url: props.url + "/moh/newInvoice/",
+            data: data,
+            headers: { content_type: "application/json" },
+        }).then((res) => {
             
-        //     if (res.data.Info == "authorized") {
-        //         setInvResponse(
-        //             {
-        //                 Info:"Successful",
-        //                 msg:"Sales Invoice Created Successfully"
-        //             }
-        //         )
-        //     } else if (res.data.Info == "Failed") {
-        //         setInvResponse(
-        //             {
-        //                 Info:"Failed",
-        //                 msg:res.data.msg
-        //             }
-        //         )
-        //     }
-        //     setafterSubmitModal(true)
-        // });
+            if (res.data.Info == "authorized") {
+                setInvResponse(
+                    {
+                        Info:"Successful",
+                        msg:"Sales Invoice Created Successfully"
+                    }
+                )
+            } else if (res.data.Info == "Failed") {
+                setInvResponse(
+                    {
+                        Info:"Failed",
+                        msg:res.data.msg
+                    }
+                )
+            }
+            setafterSubmitModal(true)
+        });
     }
 
     function AfterSubmit() {

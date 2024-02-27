@@ -15,17 +15,17 @@ function LoginModal(props) {
   const [vResult, setVresult] = useState("");
   const [warning, setWarning] = useState(false);
 
-  function verify(compname,username, password, branch) {
+  function verify(compname,username, password) {
     var bodyFormData = new FormData();
-    if (username == "" || password == "" || compname == "" || branch == "") {
-      setVresult("Invalid Username or Password or Branch");
+    if (username == "" || password == "" || compname == "") {
+      setVresult("Invalid Username or Password");
       setWarning(true);
   
     } else {
-      bodyFormData.append("compname", compname.toLowerCase());
-      bodyFormData.append("username", username.toLowerCase());
+      bodyFormData.append("compname", compname.toUpperCase());
+      bodyFormData.append("username", username.toUpperCase());
       bodyFormData.append("password", password);
-      bodyFormData.append("branch", branch);
+      
       axios({
         method: "post",
         url: props.url+"/moh/login/",
@@ -34,11 +34,14 @@ function LoginModal(props) {
       })
         .then(function (response) {
           if (response.data.Info == "authorized") {
+            console.log("ffffff");
+            console.log(response.data.Abranch);
+            console.log(response.data.Sbranch);
             localStorage.setItem("username", response.data.name);
             localStorage.setItem("compname", response.data.compname);
             localStorage.setItem("password",response.data.password);
-            localStorage.setItem("branch",response.data.branch);
-           console.log("HEYYYYYY /*/*/*/*/");
+            localStorage.setItem("Sbranch",response.data.Sbranch);
+            localStorage.setItem("Abranch",response.data.Abranch);
             props.UserDataHandler(response.data.compname, response.data.name, response.data.token);
             
 

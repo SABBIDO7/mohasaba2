@@ -57,7 +57,7 @@ export default function SalesForm(props) {
         // Update note for the selected item
         if (selectedItemIndex !== null) {
             const updatedItems = [...SelectedItems];
-            updatedItems[selectedItemIndex].note = noteInput;
+            updatedItems[selectedItemIndex]["Note"] = noteInput;
             setSelectedItems(updatedItems);
             setShowNoteModal(false);
             setNoteInput("");
@@ -183,7 +183,9 @@ export default function SalesForm(props) {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white">
-                                    {SelectedItems.map((si, idx) => {
+                                    {
+                                      //  console.log(SelectedItems);
+                                    SelectedItems.map((si, idx) => {
                                         let total =
                                             si["qty"] * si["uprice"] -
                                             (si["qty"] * si["uprice"] * si["discount"]) / 100;
@@ -214,7 +216,7 @@ export default function SalesForm(props) {
                                                         onClick={() => {
                                                             setShowNoteModal(true);
                                                             setSelectedItemIndex(idx);
-                                                            setNoteInput(si.note || "");
+                                                            setNoteInput(si["Note"] || "");
                                                         }}
                                                     >
                                                         Note

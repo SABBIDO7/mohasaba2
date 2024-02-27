@@ -18,6 +18,11 @@ export default function IdSelect(props) {
     const [sItemBranch, setsItemBranch] = useState("");
     const [sItemPQty, setsItemPQty] = useState("");
     const [sItemPUnit, setsItemPUnit] = useState("");
+    const [sItemNote, setsItemNote] = useState("");
+    const [sItemTaxTotal, setsItemTaxTotal] = useState();
+    const [sItemTotal, setsItemTotal] = useState();
+    
+    
 
     return (
         <>
@@ -35,31 +40,73 @@ export default function IdSelect(props) {
                     <Modal.Title id="contained-modal-title-vcenter">Choose</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="h-[43rem] overflow-y-auto">
-                    {props.options.map((io, idx) => {
-                        let temptax = io[14] == "" || undefined ? 0 : io[14];
+    {props.options.map((io, idx) => {
+        console.log("Solution")
+        console.log(props.sOption);
+        let temptax = io["Tax"] == "" || undefined ? 0 : io["Tax"];
 
-                        return (
-                            <div
-                                key={idx}
-                                className=" bg-gradient-to-br from-gray-300 to-zinc-200 shadow-sm p-2 rounded my-2"
-                                onClick={(e) => {
-                                    selectHandler(io, idx);
-                                    setsItemNo(io[0]);
-                                    setsItemName(io[1]);
-                                    setsItemQty(1);
-                                    setsItemTax(temptax);
-                                    setsItemDiscount(0);
-                                    setsItemPQty(io[26]);
-                                    setsItemPUnit(io[27]);
-                                   
-                                }}>
-                                <div>{io[0]}</div>
-                                <div>{io[1]}</div>
-                                <div>{io[2]}</div>
+        return (
+            props.sOption === "Items" && (
+                <div
+                    key={idx}
+                    className=" bg-gradient-to-br from-gray-300 to-zinc-200 shadow-sm p-2 rounded my-2"
+                    onClick={(e) => {
+                        console.log(io);
+                        selectHandler(io, idx);
+                        setsItemNo(io["ItemNo"]);
+                        setsItemName(io["ItemName"]);
+                        setsItemQty(1);
+                        setsItemTax(temptax);
+                        setsItemDiscount(0);
+                        setsItemPQty(io["PQty"]);
+                        setsItemPUnit(io["PUnit"]);
+                    }}
+                >
+                    <div className="card-body">
+                        <div className="d-flex flex-wrap">
+                            <div>
+                                {<p className="me-3 mb-0 card-title"><strong>ItemNo:</strong> {io["ItemNo"]}</p>}
+                                {<p className="me-3 mb-0"><strong>ItemName:</strong> {io["ItemName"]}</p>}
                             </div>
-                        );
-                    })}
-                </Modal.Body>
+                            <div>
+                                {<p className="me-3 mb-0"><strong>ItemName2:</strong> {io["ItemName2"]}</p>}
+                                {io["AvQty"] != null && <p className="me-3 mb-0"><strong>AvQty:</strong> {io["AvQty"]}</p>}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+            // props.sOption === "Accounts" && (
+            //     <div
+            //         key={idx}
+            //         className=" bg-gradient-to-br from-gray-300 to-zinc-200 shadow-sm p-2 rounded my-2"
+            //         onClick={(e) => {
+            //             console.log(io);
+            //             selectHandler(io, idx);
+            //         }}
+            //     >
+            //     <div className="card-body">
+            //         <div className="flex-wrap">
+            //             <div>
+            //                 <p className="me-3 mb-0 card-title"><strong>AccNo:</strong> {io["AccNo"] != null || io["AccNo"] != null ? io["AccNo"] : "--"}</p>
+            //             </div>
+            //             <div>
+            //                 <p className="me-3 mb-0"><strong>AccName:</strong>{io["AccName"] != null || io["AccName"] != null ? io["AccName"] : "--"}</p>
+            //             </div>
+            //             <div>
+            //                 <p className="me-3 mb-0"><strong>Address:</strong>{io["Address"] != null || io["Address"] != null ? io["Address"] : "--"}</p>
+            //             </div>
+            //             <div>
+            //                 <p className="me-3 mb-0"><strong>Tel:</strong>{io["Tel"] != null || io["Tel"] != null ? io["Tel"] : "--"}</p>
+            //             </div>
+            //         </div>
+            //     </div>
+            // </div>
+            // )
+        );
+    })}
+</Modal.Body>
+
                 {/* <Modal.Footer>
                     <Button onClick={() => setModalShow(false)}>Close</Button>
                 </Modal.Footer> */}
@@ -190,11 +237,11 @@ export default function IdSelect(props) {
             console.log("ll");
             const currentDate = new Date();
             const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
-            const formattedTime = `${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+            const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
             
             props.setClient({
-                id: e[0],
-                name: e[1],
+                id: e["AccNo"],
+                name: e["AccName"],
                 date: formattedDate,
                 time: formattedTime,
             });
@@ -206,8 +253,8 @@ export default function IdSelect(props) {
             document.getElementById("tf").focus();
             props.handleSave({
                 accName: {
-                    id: e[0],
-                    name: e[1],
+                    id: e["AccNo"],
+                    name: e["AccName"],
                     date: formattedDate,
                     time: formattedTime
                 },
@@ -217,18 +264,26 @@ export default function IdSelect(props) {
         } else if (props.sOption === "Items") {
             let uprice = 0;
             
-            if (props.options[idx][15] != "0") {
-                uprice = props.options[idx][15];
-            } else if (props.options[idx][16] != "0") {
-                uprice = props.options[idx][16];
-            } else if (props.options[idx][17] != "0") {
-                uprice = props.options[idx][17];
+            if (e["SPrice1"] != 0) {
+                uprice = e["SPrice1"];
+            } else if (e["SPrice2"] != 0) {
+                uprice = e["SPrice2"];
+            } else if (e["SPrice3"] != 0) {
+                uprice = e["SPrice3"];
             }
+            else if (e["SPrice4"] != 0) {
+                uprice = e["SPrice4"];
+            }
+            else if (e["SPrice5"] != 0) {
+                uprice = e["SPrice5"];
+            }
+            
 
             setsItemPrice(uprice);
             setModalItems(true);
             props.setModalShow(false);
-            setsItemBranch(props.branches[0]["number"]);
+            //setsItemBranch(props.branches[0]["number"]);
+            setsItemBranch(localStorage.getItem("Sbranch"));
         }
     }
     function addItem() {
@@ -237,25 +292,29 @@ export default function IdSelect(props) {
         let tax = sItemTax == "" || undefined ? 0 : sItemTax;
         let uprice = sItemPrice == "" || undefined ? 0 : sItemPrice;
         let discount = sItemDiscount == "" || undefined ? 0 : sItemDiscount;
+        console.log(discount);
+        console.log("--=");
         let tempQty = sItemQty == "" || undefined || 0 ? 1 : sItemQty;
         let Lno=(props.si).length + 1;
         const currentDate = new Date();
         const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
-        const formattedTime = `${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+        const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
         tempsi = [
             ...props.si,
             {
                 no: sItemNo,
                 name: sItemName,
                 qty: tempQty,
-              
                 uprice: uprice,
-                tax: tax,
                 discount: discount,
                 branch: sItemBranch,
                 lno : Lno,
                 PQty: sItemPQty,
                 PUnit:sItemPUnit,
+                tax: tax,
+                TaxTotal: sItemTaxTotal,
+                Total:sItemTotal,
+                Note: sItemNote,
                 DateT: formattedDate,
                 TimeT: formattedTime,
             },

@@ -111,10 +111,23 @@ function App() {
            const data = resp.data;
  
            if (data.Info === "authorized") {
+            
              setisVerified(true);
              setCompname(data.compname);
              setUsername(data.name);
              setToken(cookies.token);
+             let Sbranch = localStorage.getItem("Sbranch");
+             let Abranch = localStorage.getItem("Abranch");
+             
+            if (Sbranch == "" || Sbranch == null || Abranch == "" || Abranch == null){
+             
+              localStorage.setItem("Sbranch",data.Sbranch);
+              localStorage.setItem("Abranch",data.Abranch);
+
+            
+
+            }
+            
             
            } else {
              if (isVerified) {
