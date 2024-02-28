@@ -118,14 +118,15 @@ function App() {
              setToken(cookies.token);
              let Sbranch = localStorage.getItem("Sbranch");
              let Abranch = localStorage.getItem("Abranch");
+             let SalePrice = localStorage.getItem("SalePrice");
              
             if (Sbranch == "" || Sbranch == null || Abranch == "" || Abranch == null){
              
               localStorage.setItem("Sbranch",data.Sbranch);
               localStorage.setItem("Abranch",data.Abranch);
-
-            
-
+            }
+            if(SalePrice=="" || SalePrice == null){
+              localStorage.setItem("SalePrice",data.SalePrice);
             }
             
             

@@ -42,6 +42,7 @@ function LoginModal(props) {
             localStorage.setItem("password",response.data.password);
             localStorage.setItem("Sbranch",response.data.Sbranch);
             localStorage.setItem("Abranch",response.data.Abranch);
+            localStorage.setItem("SalePrice",response.data.SalePrice);
             props.UserDataHandler(response.data.compname, response.data.name, response.data.token);
             
 

@@ -38,6 +38,7 @@ export default function SalesForm(props) {
     const [EditLno,setEditLno] = useState("");
 
     const [EditIdx, setEditIdx] = useState(0);
+    const [EditTotal, setEditTotal] = useState(0);
 
     //confirm modal state
     const [confirmModalShow, setConfirmModalShow] = useState(false);
@@ -176,8 +177,9 @@ export default function SalesForm(props) {
                                         <th>QTY</th>
                                         <th>UPrice</th>
                                         <th>Discount</th>
-                                        <th>Total</th>
                                         <th>Tax</th>
+                                        <th>Total</th>
+                                        
                                         <th>Note</th>
                                         <th>Action</th>
                                     </tr>
@@ -186,20 +188,23 @@ export default function SalesForm(props) {
                                     {
                                       //  console.log(SelectedItems);
                                     SelectedItems.map((si, idx) => {
+                                        console.log(si);
                                         let total =
-                                            si["qty"] * si["uprice"] -
-                                            (si["qty"] * si["uprice"] * si["discount"]) / 100;
+                                            (si["qty"] * si["uprice"])  *(1 - si["discount"] / 100);
 
                                         let tax = si["tax"] == "" ? 0 : si["tax"];
 
+                                        
+                                        
                                         let taxAmount = (total * tax) / 100;
-                                        final = final + total;
+                                        total = total + taxAmount;
                                         fTax = fTax + taxAmount;
                                         return (
                                             <tr
                                                 key={idx}
                                                 className=" whitespace-nowrap hover:bg-blue-200 select-none "
                                                >
+
                                                 <td>{si["lno"]}</td>
                                                 <td>{si["no"]}</td>
                                                 <td>{si["name"]}</td>
@@ -207,8 +212,9 @@ export default function SalesForm(props) {
                                                 <td>{si["qty"]}</td>  
                                                 <td>{si["uprice"]}</td>
                                                 <td>{si["discount"]}%</td>
-                                                <td>{total.toFixed(3)}</td>
                                                 <td>{tax}%</td>
+                                                <td>{total}</td>
+                                                
                                                 <td>
                                                     {/* Render note icon/button */}
                                                     <button
@@ -237,6 +243,7 @@ export default function SalesForm(props) {
                                                             setEditBranch(si["branch"]);
                                                             setEditDiscount(si["discount"]);
                                                             setEditLno(si["lno"]);
+                                                            setEditTotal(si["Total"]);
                                                         }}
                                                     >
                                                         <FontAwesomeIcon icon={faEdit} />
@@ -318,74 +325,90 @@ export default function SalesForm(props) {
                     setShow(false);
                     setIdOptions([]);
                 }}
+                aria-labelledby="contained-modal-title-vcenter"
                 centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>{EditItem["name"]}</Modal.Title>
+                    <Modal.Title id="contained-modal-title-vcenter">{EditItem["name"]}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    <div>
-                        <div className="flex flex-row justify-between align-middle items-center my-1">
-                            <div>Qty:</div>
-                            <img
-                                src={minus}
-                                alt={"minus"}
-                                className="h-6"
-                                onClick={() => {
-                                    setEditQty(EditQty - 1);
-                                }}
-                            />
-                            <img
-                                src={plus}
-                                alt={"plus"}
-                                className="h-6"
-                                onClick={() => {
-                                    setEditQty(EditQty + 1);
-                                }}
-                            />
+                <Modal.Body className="px-6 py-4">
+                    <div className="space-y-3">
+                        
+                        <div className="flex items-center">
+                <label htmlFor="itemQty" className="w-1/4">Qty:</label>
+                <div className="flex items-center space-x-2">
+                    <img
+                        src={minus}
+                        alt="minus"
+                        className="h-6 cursor-pointer"
+                        onClick={() => {
+                            setEditQty(parseInt(EditQty) - 1);
+                        }}
+                    />
+                    <input
+                        id="itemQty"
+                        type="number"
+                        className="w-35 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                        placeholder={"Qty"}
+                        value={EditQty}
+                        onChange={(e) => {
+                            setEditQty(e.target.value);
+                        }}
+                        style={{ '-moz-appearance': 'textfield', 'appearance': 'textfield' }}
+
+                    />
+                    <img
+                        src={plus}
+                        alt="plus"
+                        className="h-6 cursor-pointer"
+                        onClick={() => {
+
+
+                            setEditQty(parseInt(EditQty) + 1);
+                        }}
+                    />
+                </div>
+            </div>
+                       
+                        <div className="flex items-center">
+                <label htmlFor="itemPrice" className="w-1/4">Uprice:</label>
+                <input
+              
+                    type="number"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    placeholder={"Uprice"}
+                    value={EditPrice}
+                    onChange={(e) => {
+                        setEditPrice(e.target.value);
+                    }}
+                />
+            </div>
+                        
+
+                        <div className="flex items-center">
+                <label htmlFor="itemBranch" className="w-1/4">Branch:</label>
+                <select
+                    id="itemBranch"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    value={EditBranch}
+                    onChange={(e) => {
+                        setEditBranch(e.target.value);
+                    }}>
+                    {props.branches.map((br) => {
+                        return (
+                            <option key={br.number} value={br.number}>
+                            {br.number} - {br.name}
+                            </option>
+                        );
+                    })}
+                </select>
+            </div>
+                        
+                        <div className="flex items-center">
+                            <label htmlFor="itemTax" className="w-1/4">% Tax:</label>
                             <input
+                                
                                 type={"number"}
-                                className="block rounded-md w-[50%] h-[2.3rem] border-gray-400 mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                placeholder={"Qty"}
-                                value={EditQty}
-                                onChange={(e) => {
-                                    setEditQty(e.target.value);
-                                }}
-                            />
-                        </div>
-                        <div className="flex flex-row justify-between align-middle items-center my-1">
-                            <div>Uprice:</div>
-                            <input
-                                type={"number"}
-                                className="block rounded-md w-[50%] h-[2.3rem] border-gray-400 mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                placeholder={"Uprice"}
-                                value={EditPrice}
-                                onChange={(e) => {
-                                    setEditPrice(e.target.value);
-                                }}
-                            />
-                        </div>
-                        <div className="flex flex-row justify-between align-middle items-center my-1">
-                            <div>Branch:</div>
-                            <select
-                                className="block rounded-md w-[50%] h-[2.3rem] border-gray-400 mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                value={EditBranch}
-                                onChange={(e) => {
-                                    setEditBranch(e.target.value);
-                                }}>
-                                {props.branches.map((br) => {
-                                    return (
-                                        <option key={br.number} value={br.number}>
-                                        {br.number} - {br.name}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </div>
-                        <div className="flex flex-row justify-between align-middle items-center my-1">
-                            <div>%Tax:</div>
-                            <input
-                                type={"number"}
-                                className="block rounded-md w-[50%] h-[2.3rem] border-gray-400 mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                                 placeholder={"Tax"}
                                 value={EditTax}
                                 onChange={(e) => {
@@ -393,16 +416,34 @@ export default function SalesForm(props) {
                                 }}
                             />
                         </div>
-                        <div className="flex flex-row justify-between align-middle items-center my-1">
-                            <div>%Discount:</div>
+                      
+                        <div className="flex items-center">
+                            <label htmlFor="itemDiscount" className="w-1/4">% Discount:</label>
                             <input
-                                type={"number"}
-                                className="block rounded-md w-[50%] h-[2.3rem] border-gray-400 mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            
+                                    type={"number"}
+                                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                                 placeholder={"Discount"}
                                 value={EditDiscount}
                                 onChange={(e) => {
                                     setEditDiscount(e.target.value);
                                 }}
+                            />
+                        </div>
+
+                        <div className="flex items-center">
+                            <label htmlFor="itemTotal" className="w-1/4">Total:</label>
+                            <input
+                                id="itemTotal"
+                                type="number"
+                                readOnly
+                                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder="Total"
+                                value={((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)}
+                                onChange={(e) => {
+                                    setEditTotal(e.target.value);
+                                }}
+                                
                             />
                         </div>
                     </div>
@@ -441,7 +482,8 @@ export default function SalesForm(props) {
                                         branch: EditBranch,
                                         tax: EditTax,
                                         discount: EditDiscount,
-                                        lno :EditLno
+                                        lno :EditLno,
+                                        Total:EditTotal
                                     };
                                     setSelectedItems(tempa);
                                 }}>
