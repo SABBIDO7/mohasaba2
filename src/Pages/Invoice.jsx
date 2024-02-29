@@ -7,6 +7,9 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 
 export default function Invoice(props) {
+    const [Client, setClient] = useState("");
+    const [SelectedItems, setSelectedItems] = useState([]);
+
     const [sInvoice, setSInvoice] = useState("");
     
     const [invResponse, setInvResponse] = useState({
@@ -26,7 +29,9 @@ export default function Invoice(props) {
     const [branches, setBranches] = useState([]);
 
     const [afterSubmitModal, setafterSubmitModal] = useState(false);
-
+    function discardInvoice(){
+        
+    }
     return (
         <div className=" h-[90vh] overscroll-contain">
             {(() => {
@@ -44,6 +49,11 @@ export default function Invoice(props) {
                                 branches={branches}
                                 setafterSubmitModal={setafterSubmitModal}
                                 afterSubmitModal={afterSubmitModal}
+                                discardInvoice={discardInvoice}
+                                Client={Client}
+                                setClient={setClient}
+                                SelectedItems={SelectedItems}
+                                setSelectedItems={setSelectedItems}
                             />
                         );
                     case "won":
@@ -119,6 +129,14 @@ export default function Invoice(props) {
                         msg:"Sales Invoice Created Successfully"
                     }
                 )
+                //discardInvoice()
+                setClient({
+                    id:"",
+                    name:""
+                })
+                setSelectedItems([])
+                localStorage.setItem("sales", "")
+                
             } else if (res.data.Info == "Failed") {
                 setInvResponse(
                     {
@@ -153,4 +171,5 @@ export default function Invoice(props) {
             </>
         );
     }
+   
 }

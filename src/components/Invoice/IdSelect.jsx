@@ -11,8 +11,8 @@ export default function IdSelect(props) {
 
     const [sItemNo, setsItemNo] = useState("");
     const [sItemName, setsItemName] = useState("");
-    const [sItemQty, setsItemQty] = useState("");
-    const [sItemPrice, setsItemPrice] = useState("");
+    const [sItemQty, setsItemQty] = useState();
+    const [sItemPrice, setsItemPrice] = useState();
     const [sItemTax, setsItemTax] = useState();
     const [sItemDiscount, setsItemDiscount] = useState();
     const [sItemBranch, setsItemBranch] = useState("");
@@ -185,6 +185,7 @@ export default function IdSelect(props) {
                         value={sItemQty}
                         onChange={(e) => {
                             setsItemQty(e.target.value);
+                        
                         }}
                     />
                     <img
@@ -193,6 +194,7 @@ export default function IdSelect(props) {
                         className="h-6 cursor-pointer"
                         onClick={() => {
                             setsItemQty(sItemQty + 1);
+                            
                         }}
                     />
                 </div>
@@ -207,6 +209,7 @@ export default function IdSelect(props) {
                     value={sItemPrice}
                     onChange={(e) => {
                         setsItemPrice(e.target.value);
+                        
                     }}
                 />
             </div>
@@ -220,6 +223,7 @@ export default function IdSelect(props) {
                     value={sItemDiscount}
                     onChange={(e) => {
                         setsItemDiscount(e.target.value);
+                        
                     }}
                 />
             </div>
@@ -233,6 +237,7 @@ export default function IdSelect(props) {
                     value={sItemTax}
                     onChange={(e) => {
                         setsItemTax(e.target.value);
+                        
                     }}
                 />
             </div>
@@ -246,15 +251,16 @@ export default function IdSelect(props) {
                     placeholder="Total"
                     value={((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3)}
                     onChange={(e) => {
-                        if(sItemPrice=="" || sItemPrice==undefined){
+                        // if(sItemPrice=="" || sItemPrice==undefined){
                             
-                        }
+                        // }
 
-                        setsItemTotal(((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
-                        
+                        // setsItemTotal(((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
+                        // console.log(sItemTotal);
                     }}
                     
                 />
+
             </div>
         </div>
     </Modal.Body>
@@ -331,6 +337,7 @@ export default function IdSelect(props) {
                 uprice = 0
 
             setsItemPrice(uprice);
+            setsItemTotal(((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
             setModalItems(true);
             props.setModalShow(false);
             //setsItemBranch(props.branches[0]["number"]);
@@ -353,9 +360,15 @@ export default function IdSelect(props) {
         let tax = sItemTax == "" || undefined ? 0 : sItemTax;
         let uprice = sItemPrice == "" || undefined ? 0 : sItemPrice;
         let discount = sItemDiscount == "" || undefined ? 0 : sItemDiscount;
-        console.log(sItemTotal);
-        console.log("--=");
+        
+        
         let tempQty = sItemQty == "" || undefined || 0 ? 1 : sItemQty;
+        console.log(uprice);
+        console.log(discount);
+        console.log(tax);
+        console.log(sItemQty);
+
+        
         let Lno=(props.si).length + 1;
         const currentDate = new Date();
         const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
@@ -374,7 +387,7 @@ export default function IdSelect(props) {
                 PUnit:sItemPUnit,
                 tax: tax,
                 TaxTotal: sItemTaxTotal,
-                Total:sItemTotal,
+                Total:(parseFloat(uprice) * parseFloat(sItemQty) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3),
                 Note: sItemNote,
                 DateT: formattedDate,
                 TimeT: formattedTime,
@@ -382,6 +395,9 @@ export default function IdSelect(props) {
         ];
         console.log("*//////////////////////*");
         console.log(tempsi);
+        setsItemTotal((parseFloat(uprice) * parseFloat(sItemQty) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3));
+        console.log(sItemTotal);
+        console.log("--=");
         props.ssi(tempsi);
         setModalItems(false);
         props.handleSave({

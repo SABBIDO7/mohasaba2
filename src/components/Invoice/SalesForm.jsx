@@ -15,7 +15,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSave  } from '@fortawesome/free-solid-svg-icons';
 
 export default function SalesForm(props) {
-    const [Client, setClient] = useState("");
     const [vInput, setvInput] = useState("");
 
     const [sOption, setsOption] = useState("Accounts");
@@ -25,7 +24,6 @@ export default function SalesForm(props) {
 
     const [IdOptions, setIdOptions] = useState([]);
 
-    const [SelectedItems, setSelectedItems] = useState([]);
 
     const [show, setShow] = useState(false);
 
@@ -50,16 +48,50 @@ export default function SalesForm(props) {
     const [showNoteModal, setShowNoteModal] = useState(false);
     const [noteInput, setNoteInput] = useState("");
     const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+    const [fTotal,setFtotal] = useState(0)
+    const [fTax,setFTax] = useState(0)
+    const [sSA, setsSA] = useState();
+    const [sInvoices, setsInvoices] = useState([]);
+    const [selectedInvoice, setSelectedInvoice] = useState("");
 
-    let final = 0;
-    let fTax = 0;
+    let finalTotal = 0;
+    let finalTax = 0;
+
+// Function to handle the change event of the select element
+const handleSelectChange = (e) => {
+    const selectedValue = e.target.value;
+    setSelectedInvoice(selectedValue);
+
+    // Send Axios request with the selected value
+    axios({
+        method: 'get', // or 'get', 'put', 'delete', etc.
+        url: props.url + '/moh/getInvoiceDetail/', // Replace with your backend endpoint
+        data: {
+            username:localStorage.getItem("compname"),
+            user :localStorage.getItem("username"),
+            selectedInvoice: selectedInvoice
+        },
+        headers: {
+            'Content-Type': 'application/json',
+            // Add any additional headers if needed
+        }
+    })
+    .then((response) => {
+        // Handle success response
+        console.log("Response:", response);
+    })
+    .catch((error) => {
+        // Handle error
+        console.error("Error:", error);
+    });
+};
 
     const handleNoteSave = () => {
         // Update note for the selected item
         if (selectedItemIndex !== null) {
-            const updatedItems = [...SelectedItems];
+            const updatedItems = [...props.SelectedItems];
             updatedItems[selectedItemIndex]["Note"] = noteInput;
-            setSelectedItems(updatedItems);
+            props.setSelectedItems(updatedItems);
             setShowNoteModal(false);
             setNoteInput("");
         }
@@ -71,17 +103,52 @@ export default function SalesForm(props) {
     };
 
     const handleRetrieve = () => {
+        
         const jsonString = localStorage.getItem("sales");
-        const retrievedJson = JSON.parse(jsonString);
-        setClient(retrievedJson["accName"]);
-        setSelectedItems(retrievedJson["items"]);
+        if (jsonString!=[]){
+            const retrievedJson = JSON.parse(jsonString);
+            
+            props.setClient(retrievedJson["accName"]);
+            props.setSelectedItems(retrievedJson["items"]);
+        
+
+        }
+       
+    };
+
+    const getInvoicesHistory = () =>{
+        
+
+        axios({
+            method: "get",
+            url: props.url + "/moh/getInvoiceHistory/" + localStorage.getItem("compname") + "/"+localStorage.getItem("username") + "/",
+            headers: { content_type: "application/json" },
+        }).then((res) => {
+            
+            if (res.data.Info == "authorized") {
+                
+                setsInvoices(res.data.Invoices);
+                console.log(sInvoices);
+                console.log("anehon")
+            } else if (res.data.Info == "Failed") {
+                setsInvoices([]);
+            }
+            
+        }).catch((error) => {
+            console.error("Error in getInvoicesHistory:", error);
+            // Handle error (e.g., set error state)
+        });
+        
     };
 
     useEffect(() => {
         try {
             handleRetrieve();
-        } catch (error) {
             
+            getInvoicesHistory();
+
+        } catch (error) {
+            console.log("ERROR")
         }
     }, []);
 
@@ -101,7 +168,7 @@ export default function SalesForm(props) {
                     <div className=" font-semibold text-lg ">Search:</div>
                     <input
                         type={"text"}
-                        className="block rounded-md w-[8rem] h-[2.3rem] border-black mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        className="block rounded-md w-[18rem] h-[2.3rem] border-black mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         placeholder={"Value"}
                         value={vInput}
                         onChange={(e) => {
@@ -110,7 +177,7 @@ export default function SalesForm(props) {
                         id={"tf"}
                     />
                     <select
-                        className="p-[0.39rem] rounded border-black border-[1px]"
+                        className="p-[0.6rem] rounded border-black border-[1px] col-auto"
                         value={sOption}
                         onChange={(e) => {
                             setsOption(e.target.value);
@@ -134,14 +201,14 @@ export default function SalesForm(props) {
                 <div className=" w-[95%] shadow-lg mx-auto h-[40rem] rounded p-2 max-w-[60rem]">
                     <div className="flex flex-col justify-between h-[38.5rem]">
                         <h3 className="text-center">Sales Form</h3>
-                        <div className=" flex flex-row align-middle items-center mb-2 justify-between">
+                        <div className=" flex flex-row align-middle items-center mb-2 justify-center">
                             <div className=" text-xl font-semibold">Client ID:</div>
                             <div>
                                 <input
                                     type={"text"}
                                     className="block rounded-md w-[80%] h-[2.3rem] border-gray-400 mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                     placeholder={"Client Id"}
-                                    value={Client["id"]}
+                                    value={props.Client["id"]}
                                     disabled
                                     // onChange={(e) => {
                                     //     setClient(e.target.value);
@@ -149,11 +216,31 @@ export default function SalesForm(props) {
                                     // }}
                                 />
                             </div>
+                            <div className=" text-xl font-semibold mr-1">Invoice History:</div>
+                            
+                            <select
+                                className="p-[0.6rem] rounded border-black border-[1px] col-auto"
+                                
+                                
+                                    onChange={handleSelectChange}
+                                    value={selectedInvoice}
+                                    
+                                >
+                                    <option value="">Choose invoice</option>
+                                    {sInvoices.map((inv,idx)=>{
+                                        return (
+                                            <option value={inv["RefNo"]} key={idx}>{inv["RefType"]}_{inv["RefNo"]}_{inv["AccNo"]}</option>
+
+                                        );
+                                            })
+                                        }
+                            </select>
+                           
                         </div>
-                        <div className=" flex flex-row align-middle items-center mb-2 justify-between">
+                        <div className=" flex flex-row align-middle items-center mb-2 justify-center">
                             <div className=" text-xl font-semibold mr-3"> Name:</div>
                             <div>
-                                {Client["name"]}
+                                {props.Client["name"]}
                                 {/* <input
                                 type={"text"}
                                 className="block rounded-md w-[80%] h-[2.3rem] border-gray-400 mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -186,19 +273,23 @@ export default function SalesForm(props) {
                                 </thead>
                                 <tbody className="bg-white">
                                     {
+
                                       //  console.log(SelectedItems);
-                                    SelectedItems.map((si, idx) => {
+                                      props.SelectedItems.map((si, idx) => {
                                         console.log(si);
                                         let total =
                                             (si["qty"] * si["uprice"])  *(1 - si["discount"] / 100);
 
-                                        let tax = si["tax"] == "" ? 0 : si["tax"];
-
-                                        
-                                        
+                                        let tax = si["tax"] == "" ? 0 : si["tax"];                            
+                                        si["tax"] = tax;
                                         let taxAmount = (total * tax) / 100;
-                                        total = total + taxAmount;
-                                        fTax = fTax + taxAmount;
+                                        finalTotal = finalTotal + total;
+                                       // setFtotal(finalTotal);
+                                        finalTax = finalTax + taxAmount;
+                                       // setFTax(finalTax);
+                                        si["TaxTotal"] = taxAmount;
+
+                                        si["Total"] = ((si["uprice"]* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3)
                                         return (
                                             <tr
                                                 key={idx}
@@ -212,8 +303,8 @@ export default function SalesForm(props) {
                                                 <td>{si["qty"]}</td>  
                                                 <td>{si["uprice"]}</td>
                                                 <td>{si["discount"]}%</td>
-                                                <td>{tax}%</td>
-                                                <td>{total}</td>
+                                                <td>{si["tax"]}%</td>
+                                                <td>{si["Total"]}</td>
                                                 
                                                 <td>
                                                     {/* Render note icon/button */}
@@ -252,6 +343,8 @@ export default function SalesForm(props) {
                                             </tr>
                                         );
                                     })}
+                                    
+                                    
                                 </tbody>
                             </Table>
                                             {/* Note Modal */}
@@ -281,9 +374,9 @@ export default function SalesForm(props) {
                         <div className="flex flex-col justify-start ">
                             <div className=" font-semibold text-xl ">
                                 <div>
-                                    {final.toFixed(3)} + {fTax.toFixed(3)}
+                                    {finalTotal.toFixed(3)} + {finalTax.toFixed(3)}
                                 </div>
-                                Total: {final + fTax}
+                                Total: {(finalTotal + finalTax).toFixed(3)}
                             </div>
                             <div className="flex flex-row justify-between max-w-[60rem]">
                                 <Button className="my-2" variant="danger" onClick={() => {
@@ -311,10 +404,10 @@ export default function SalesForm(props) {
                 setModalShow={setModalShow}
                 sOption={sOption}
                 setsOption={setsOption}
-                setClient={setClient}
-                Client={Client}
-                si={SelectedItems}
-                ssi={setSelectedItems}
+                setClient={props.setClient}
+                Client={props.Client}
+                si={props.SelectedItems}
+                ssi={props.setSelectedItems}
                 setvInput={setvInput}
                 branches={props.branches}
                 handleSave={handleSave}
@@ -402,9 +495,22 @@ export default function SalesForm(props) {
                     })}
                 </select>
             </div>
+                        <div className="flex items-center">
+                            <label htmlFor="itemDiscount" className="w-1/4">Discount %:</label>
+                            <input
+                            
+                                    type={"number"}
+                                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder={"Discount"}
+                                value={EditDiscount}
+                                onChange={(e) => {
+                                    setEditDiscount(e.target.value);
+                                }}
+                            />
+                        </div>
                         
                         <div className="flex items-center">
-                            <label htmlFor="itemTax" className="w-1/4">% Tax:</label>
+                            <label htmlFor="itemTax" className="w-1/4">Tax %:</label>
                             <input
                                 
                                 type={"number"}
@@ -417,19 +523,7 @@ export default function SalesForm(props) {
                             />
                         </div>
                       
-                        <div className="flex items-center">
-                            <label htmlFor="itemDiscount" className="w-1/4">% Discount:</label>
-                            <input
-                            
-                                    type={"number"}
-                                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
-                                placeholder={"Discount"}
-                                value={EditDiscount}
-                                onChange={(e) => {
-                                    setEditDiscount(e.target.value);
-                                }}
-                            />
-                        </div>
+                        
 
                         <div className="flex items-center">
                             <label htmlFor="itemTotal" className="w-1/4">Total:</label>
@@ -465,7 +559,7 @@ export default function SalesForm(props) {
                                 onClick={() => {
                                     setShow(false);
                                     setIdOptions([]);
-                                    let tempa = SelectedItems;
+                                    let tempa = props.SelectedItems;
 
                                     let tempQty;
                                     if (EditQty === 0) {
@@ -473,6 +567,7 @@ export default function SalesForm(props) {
                                     } else {
                                         tempQty = EditQty;
                                     }
+                                    
 
                                     tempa[EditIdx] = {
                                         no: EditItem.no,
@@ -483,9 +578,9 @@ export default function SalesForm(props) {
                                         tax: EditTax,
                                         discount: EditDiscount,
                                         lno :EditLno,
-                                        Total:EditTotal
+                                        Total:((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
                                     };
-                                    setSelectedItems(tempa);
+                                    props.setSelectedItems(tempa);
                                 }}>
                                 Apply
                             </Button>
@@ -496,12 +591,12 @@ export default function SalesForm(props) {
                                 onClick={() => {
                                     setShow(false);
 
-                                    let tempa = [...SelectedItems]; // Create a copy of SelectedItems array
+                                    let tempa = [...props.SelectedItems]; // Create a copy of SelectedItems array
                                     tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
                                     tempa.forEach((item, index) => {
                                         item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
                                     });
-                                    setSelectedItems(tempa);
+                                    props.setSelectedItems(tempa);
                                 }}>
                                 Remove
                             </Button>
@@ -514,9 +609,9 @@ export default function SalesForm(props) {
                 setModalShow={setConfirmModalShow}
                 postInvoice={props.postInvoice}
                 token={props.token}
-                type={"SA"}
-                Client={Client}
-                items={SelectedItems}
+                type={"SA_AP"}
+                Client={props.Client}
+                items={props.SelectedItems}
             />
             <DiscardInvoiceModal modalShow={discardModalShow} setModalShow={setDiscardModalShow} callBack={discardInvoice} />
         </>
@@ -538,7 +633,6 @@ export default function SalesForm(props) {
                 if (res.data.Info == "authorized") {
                     setIdOptions(res.data.opp);
 
-                    //02/24/2024
                 }
             })
             .catch((err) => {
@@ -546,11 +640,12 @@ export default function SalesForm(props) {
             });
     }
     function discardInvoice(){
-        setClient({
+        props.setClient({
             id:"",
             name:""
         })
-        setSelectedItems([])
+        props.setSelectedItems([])
         localStorage.setItem("sales", "")
     }
+
 }
