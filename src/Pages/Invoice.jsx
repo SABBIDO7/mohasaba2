@@ -54,6 +54,7 @@ export default function Invoice(props) {
                                 setClient={setClient}
                                 SelectedItems={SelectedItems}
                                 setSelectedItems={setSelectedItems}
+                                
                             />
                         );
                     case "won":
@@ -106,6 +107,7 @@ export default function Invoice(props) {
             accno: acc.id,
             accDate:acc.date,
             accTime:acc.time,
+            accRefNo:acc.RefNo,
             Sbranch : localStorage.getItem("Sbranch"),
             Abranch : localStorage.getItem("Abranch"),
             accname: acc.name,
@@ -136,6 +138,7 @@ export default function Invoice(props) {
                 })
                 setSelectedItems([])
                 localStorage.setItem("sales", "")
+                
                 
             } else if (res.data.Info == "Failed") {
                 setInvResponse(

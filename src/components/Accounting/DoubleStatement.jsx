@@ -27,14 +27,23 @@ export default function MyVerticallyCenteredModal(props) {
                 if (data.Info == "authorized") {
                     setDouble(data.double);
                     setLoading(false);
-                    setDate(data.double[0]["TDate"]);
-                    setAccname(data.double[0]["AccName"]);
+                    if(data.double.length>0){
+                        setDate(data.double[0]["TDate"]);
+                        setAccname(data.double[0]["AccName"]);
+                        console.log("hhhhhhhh");
+                        console.log(data.double);
+                    }else{
+                        console.log("gggg");
+                        console.log(data.double);
+                    }
+                    
                 } else {
-                    window.location.href = props.url;
+                    //window.location.href = props.url;
                 }
             })
             .catch((err) => {
-                window.location.href = props.url;
+                //window.location.href = props.url;
+                console.log(err);
             });
     }, []);
 

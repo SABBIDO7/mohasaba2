@@ -287,6 +287,17 @@ export default function IdSelect(props) {
     );
     function selectHandler(e, idx) {
         if (props.sOption == "Accounts") {
+            props.setClient({
+                id:"",
+                name:"",
+                RefNo:"",
+                date:"",
+                time:"",
+            })
+            props.ssi([])
+            localStorage.setItem("sales", "")
+          //  props.setsInvoices([]);
+           
 
             console.log("ll");
             const currentDate = new Date();
@@ -298,6 +309,7 @@ export default function IdSelect(props) {
                 name: e["AccName"],
                 date: formattedDate,
                 time: formattedTime,
+                RefNo:''
             });
             
             props.setModalShow(false);
@@ -310,7 +322,8 @@ export default function IdSelect(props) {
                     id: e["AccNo"],
                     name: e["AccName"],
                     date: formattedDate,
-                    time: formattedTime
+                    time: formattedTime,
+                    RefNo:''
                 },
 
                 items: props.si,
@@ -386,7 +399,7 @@ export default function IdSelect(props) {
                 PQty: sItemPQty,
                 PUnit:sItemPUnit,
                 tax: tax,
-                TaxTotal: sItemTaxTotal,
+                TaxTotal: sItemTaxTotal.toFixed(3),
                 Total:(parseFloat(uprice) * parseFloat(sItemQty) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3),
                 Note: sItemNote,
                 DateT: formattedDate,

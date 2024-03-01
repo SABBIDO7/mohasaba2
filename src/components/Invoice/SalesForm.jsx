@@ -1,6 +1,6 @@
 import backbutton from "../../media/backbutton.png";
 import Select from "react-select";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef  } from "react";
 import searchico from "../../media/searchnbg.png";
 import IdSelect from "./IdSelect";
 import Button from "react-bootstrap/Button";
@@ -53,24 +53,21 @@ export default function SalesForm(props) {
     const [sSA, setsSA] = useState();
     const [sInvoices, setsInvoices] = useState([]);
     const [selectedInvoice, setSelectedInvoice] = useState("");
-
+    const [NewInvoiceAlertModalShow, setNewInvoiceAlertModalShow] = useState(false);
+    const inputRef = useRef(null);
     let finalTotal = 0;
     let finalTax = 0;
 
 // Function to handle the change event of the select element
 const handleSelectChange = (e) => {
     const selectedValue = e.target.value;
-    setSelectedInvoice(selectedValue);
+    console.log(selectedValue);
+   
 
     // Send Axios request with the selected value
     axios({
         method: 'get', // or 'get', 'put', 'delete', etc.
-        url: props.url + '/moh/getInvoiceDetail/', // Replace with your backend endpoint
-        data: {
-            username:localStorage.getItem("compname"),
-            user :localStorage.getItem("username"),
-            selectedInvoice: selectedInvoice
-        },
+        url: props.url + "/moh/getInvoiceDetails/" + localStorage.getItem("compname")+"/"+ localStorage.getItem("username") + "/"+ selectedValue +"/", 
         headers: {
             'Content-Type': 'application/json',
             // Add any additional headers if needed
@@ -79,6 +76,11 @@ const handleSelectChange = (e) => {
     .then((response) => {
         // Handle success response
         console.log("Response:", response);
+        console.log(response.data.Invoices[0]["RefNo"]);
+        setSelectedInvoice(response.data.Invoices[0]["RefNo"]);
+        props.setSelectedItems(response.data.Invoices);
+        props.setClient(response.data.InvProfile[0]);
+        
     })
     .catch((error) => {
         // Handle error
@@ -145,12 +147,24 @@ const handleSelectChange = (e) => {
         try {
             handleRetrieve();
             
-            getInvoicesHistory();
+         
 
         } catch (error) {
             console.log("ERROR")
         }
     }, []);
+    useEffect(() => {
+        try {
+          
+            
+            getInvoicesHistory();
+            handleSelectChange("");
+        } catch (error) {
+            console.log("ERROR")
+        }
+    }, [props.afterSubmitModal]);
+
+
 
     return (
         <>
@@ -168,6 +182,7 @@ const handleSelectChange = (e) => {
                     <div className=" font-semibold text-lg ">Search:</div>
                     <input
                         type={"text"}
+                        ref={inputRef}
                         className="block rounded-md w-[18rem] h-[2.3rem] border-black mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         placeholder={"Value"}
                         value={vInput}
@@ -235,7 +250,26 @@ const handleSelectChange = (e) => {
                                             })
                                         }
                             </select>
-                           
+                            <div className="ml-2">
+                            {/* <button
+                            className="btn btn-danger"
+                             onClick={() => {
+                                props.setClient({
+                                    id:"",
+                                    name:"",
+                                    RefNo:"",
+                                    date:"",
+                                    time:"",
+                                });
+                                props.setSelectedItems([]);
+                                localStorage.setItem("sales", "");
+                                props.setsInvoices([]);
+                                
+                              
+                            }}>
+                                Clear
+                            </button> */}
+                            </div>
                         </div>
                         <div className=" flex flex-row align-middle items-center mb-2 justify-center">
                             <div className=" text-xl font-semibold mr-3"> Name:</div>
@@ -382,7 +416,20 @@ const handleSelectChange = (e) => {
                                 <Button className="my-2" variant="danger" onClick={() => {
                                     setDiscardModalShow(true)
                                 }}>
-                                    Discard
+                                    Exit
+                                </Button>
+                                <Button className="my-2" variant="primary" onClick={() => {
+                                    if(props.Client["id"]!=undefined){
+                                        console.log("/*//////////")
+                                        console.log(props.SelectedItems.length);
+                                        console.log(props.Client["id"]);
+                                        console.log(props.setSelectedItems.length);
+                                        setNewInvoiceAlertModalShow(true);
+                                        
+                                    }
+                                    
+                                }}>
+                                    New Invoice
                                 </Button>
                                 <Button
                                     className="my-2"
@@ -390,7 +437,7 @@ const handleSelectChange = (e) => {
                                     onClick={() => {
                                         setConfirmModalShow(true);
                                     }}>
-                                    Confirm
+                                    Apply
                                 </Button>
                             </div>
                         </div>
@@ -411,6 +458,8 @@ const handleSelectChange = (e) => {
                 setvInput={setvInput}
                 branches={props.branches}
                 handleSave={handleSave}
+                setSelectedInvoice={setSelectedInvoice}
+                setsInvoices={setsInvoices}
             />
             <Modal
                 show={show}
@@ -567,19 +616,59 @@ const handleSelectChange = (e) => {
                                     } else {
                                         tempQty = EditQty;
                                     }
+                                    const currentDate = new Date();
+                                    const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+                                    const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
                                     
-
+                                    let PQtyT = tempa[EditIdx]["PQty"];
+                                    let PUnitT = tempa[EditIdx]["PUnit"];
+                                    let DateTT = tempa[EditIdx]["DateT"];
+                                    let TimeTT = tempa[EditIdx]["TimeT"];
+                                    
+                                    let NoteT = tempa[EditIdx]["Note"];
+                                    let oldtempa= tempa[EditIdx];
+                                    let propertiesAreEqual = true;
+                                    
                                     tempa[EditIdx] = {
                                         no: EditItem.no,
                                         name: EditItem.name,
                                         qty: tempQty,
                                         uprice: EditPrice,
-                                        branch: EditBranch,
-                                        tax: EditTax,
                                         discount: EditDiscount,
+                                        branch: EditBranch,
                                         lno :EditLno,
-                                        Total:((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
+                                        PQty: PQtyT,
+                                        PUnit:PUnitT,
+                                        tax: EditTax,
+                                        TaxTotal: ((EditPrice* EditQty)*(1-EditDiscount/100)*(EditTax/100)).toFixed(3),
+                                        
+                                       
+                                       
+                                        Total:((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3),
+                                        Note: NoteT,
+                                        DateT: DateTT,
+                                        TimeT: TimeTT,
                                     };
+
+                                    for (const key in oldtempa) {
+                                        if (key === "Total" || key==="TaxTotal") {
+                                            console.log("FETTT TOAL");
+                                            continue; // Skip the Total field
+                                        }
+                                        const oldValue = parseFloat(oldtempa[key]).toFixed(3); // Convert to number and fix precision
+                                        const newValue = parseFloat(tempa[EditIdx][key]).toFixed(3); 
+                                        if (oldValue !== newValue) {
+                                            propertiesAreEqual = false;
+                                            console.log(oldtempa[key]);
+                                            console.log(tempa[EditIdx][key]);
+                                            console.log(propertiesAreEqual);
+                                            break;
+                                        }
+                                    }
+                                    if(!propertiesAreEqual){
+                                        tempa[EditIdx]["DateT"]=formattedDate;
+                                        tempa[EditIdx]["TimeT"] = formattedTime;
+                                    }
                                     props.setSelectedItems(tempa);
                                 }}>
                                 Apply
@@ -614,6 +703,42 @@ const handleSelectChange = (e) => {
                 items={props.SelectedItems}
             />
             <DiscardInvoiceModal modalShow={discardModalShow} setModalShow={setDiscardModalShow} callBack={discardInvoice} />
+            <Modal
+                show={NewInvoiceAlertModalShow}
+                onHide={() => setNewInvoiceAlertModalShow(false)}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">Unsaved Items Invoice</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>Are You Sure You Want To Ignore Current Invoice?</h4>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="flex flex-row w-full justify-around">
+                        <Button onClick={()=>setNewInvoiceAlertModalShow(false)}>No</Button>
+                        <Button variant="danger" onClick={()=>{
+                        //props.callBack()
+                        setNewInvoiceAlertModalShow(false);
+                        props.setClient({
+                            id:"",
+                            name:"",
+                            RefNo:"",
+                            date:"",
+                            time:"",
+                        });
+                        props.setSelectedItems([]);
+                        localStorage.setItem("sales", "");
+                        props.setsInvoices([]);
+                        
+                        //inputRef.current.focus();
+                        }
+                        }
+                        >Yes</Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
         </>
     );
     function getInvoiceOptions() {
