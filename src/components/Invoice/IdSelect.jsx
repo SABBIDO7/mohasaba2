@@ -330,6 +330,7 @@ export default function IdSelect(props) {
             });
         } else if (props.sOption === "Items") {
             let uprice = 0;
+           
             
             // if (e["SPrice1"] != 0) {
             //     uprice = e["SPrice1"];

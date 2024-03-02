@@ -54,7 +54,13 @@ export default function SalesForm(props) {
     const [sInvoices, setsInvoices] = useState([]);
     const [selectedInvoice, setSelectedInvoice] = useState("");
     const [NewInvoiceAlertModalShow, setNewInvoiceAlertModalShow] = useState(false);
+    const [EmptyAlertModalShow, setEmptyAlertModalShow] = useState(false);
+    const [ItemsWithoutAccount, setItemsWithoutAccount] = useState(false);
+
     const inputRef = useRef(null);
+    const selectRef = useRef(null);
+    const selectInvRef = useRef(null);
+
     let finalTotal = 0;
     let finalTax = 0;
 
@@ -158,9 +164,11 @@ const handleSelectChange = (e) => {
           
             
             getInvoicesHistory();
-            handleSelectChange("");
+           // handleSelectChange("");
+            selectRef.current.value = "Accounts";
+            selectInvRef.current.value = "" ;
         } catch (error) {
-            console.log("ERROR")
+            console.log("ERROR");
         }
     }, [props.afterSubmitModal]);
 
@@ -194,6 +202,7 @@ const handleSelectChange = (e) => {
                     <select
                         className="p-[0.6rem] rounded border-black border-[1px] col-auto"
                         value={sOption}
+                        ref={selectRef}
                         onChange={(e) => {
                             setsOption(e.target.value);
                             document.getElementById("tf").focus();
@@ -208,8 +217,18 @@ const handleSelectChange = (e) => {
                         alt="Search"
                         className="h-[2rem] ml-3"
                         onClick={() => {
-                            getInvoiceOptions();
-                            setModalShow(true);
+                            if((props.Client["id"]=="" || props.Client["id"] == undefined) && sOption=="Items"){
+                                console.log("salmmmmmmmmmm");
+                                setItemsWithoutAccount(true);
+                            }
+                            else{
+                                console.log("][][][][][]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]][]");
+                                console.log(props.Client["id"]);
+                                console.log(sOption);
+                                getInvoiceOptions();
+                                setModalShow(true);
+                            }
+                            
                         }}
                     />
                 </div>
@@ -236,7 +255,7 @@ const handleSelectChange = (e) => {
                             <select
                                 className="p-[0.6rem] rounded border-black border-[1px] col-auto"
                                 
-                                
+                                    ref={selectInvRef}
                                     onChange={handleSelectChange}
                                     value={selectedInvoice}
                                     
@@ -424,9 +443,16 @@ const handleSelectChange = (e) => {
                                         console.log(props.SelectedItems.length);
                                         console.log(props.Client["id"]);
                                         console.log(props.setSelectedItems.length);
+
                                         setNewInvoiceAlertModalShow(true);
                                         
+
                                     }
+                                    
+                                    inputRef.current.focus();
+                                    
+
+                                    
                                     
                                 }}>
                                     New Invoice
@@ -435,7 +461,15 @@ const handleSelectChange = (e) => {
                                     className="my-2"
                                     variant="primary"
                                     onClick={() => {
-                                        setConfirmModalShow(true);
+                                        if((props.SelectedItems).length==0 || props.Client==""){
+                                            setEmptyAlertModalShow(true);
+                                            console.log("//**/////");
+                                            console.log(props.Client);
+                                        }else{
+                                        
+                                            setConfirmModalShow(true);
+                                        }
+                                        
                                     }}>
                                     Apply
                                 </Button>
@@ -460,6 +494,7 @@ const handleSelectChange = (e) => {
                 handleSave={handleSave}
                 setSelectedInvoice={setSelectedInvoice}
                 setsInvoices={setsInvoices}
+                
             />
             <Modal
                 show={show}
@@ -710,7 +745,7 @@ const handleSelectChange = (e) => {
                 aria-labelledby="contained-modal-title-vcenter"
                 centered>
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">Unsaved Items Invoice</Modal.Title>
+                    <Modal.Title id="contained-modal-title-vcenter">Unsaved Invoice</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <h4>Are You Sure You Want To Ignore Current Invoice?</h4>
@@ -720,6 +755,10 @@ const handleSelectChange = (e) => {
                         <Button onClick={()=>setNewInvoiceAlertModalShow(false)}>No</Button>
                         <Button variant="danger" onClick={()=>{
                         //props.callBack()
+
+                        setsOption("Accounting");
+                        setvInput("");
+                        setSelectedInvoice("")
                         setNewInvoiceAlertModalShow(false);
                         props.setClient({
                             id:"",
@@ -732,10 +771,54 @@ const handleSelectChange = (e) => {
                         localStorage.setItem("sales", "");
                         props.setsInvoices([]);
                         
-                        //inputRef.current.focus();
+                        
                         }
                         }
                         >Yes</Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal
+                show={EmptyAlertModalShow}
+                onHide={() => setEmptyAlertModalShow(false)}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">Empty Invoice</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>{(props.Client["id"])==""? "No Account Choosen" :"No Items in your invoice"}</h4>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="flex flex-row w-full justify-around">
+                        
+                        <Button variant="danger"  
+                        onClick={()=>setEmptyAlertModalShow(false)}
+                        >Ok</Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal
+                show={ItemsWithoutAccount}
+                onHide={() => setItemsWithoutAccount(false)}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">Empty Invoice</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>{"No Account Choosen Yet."}<br /> {"Please select Account first"}</h4>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="flex flex-row w-full justify-around">
+                        
+                        <Button variant="danger"  
+                        onClick={()=>setItemsWithoutAccount(false)}
+                        >Ok</Button>
                     </div>
                 </Modal.Footer>
             </Modal>
