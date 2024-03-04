@@ -35,6 +35,7 @@ export default function MyVerticallyCenteredModal(props) {
                     }else{
                         console.log("gggg");
                         console.log(data.double);
+                        console.log(Double.length);
                     }
                     
                 } else {
@@ -50,71 +51,76 @@ export default function MyVerticallyCenteredModal(props) {
     return (
         <>
             <Modal
-                {...props}
-                size="lg"
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-                className="shadow-2xl border-4 drop-shadow-2xl shadow-black">
-                <Modal.Header className="d-flex justify-content-center p-1">
-                    <Modal.Header
-                        closeButton
-                        className="border-0 position-absolute start-0"></Modal.Header>
-                    <Modal.Title className="ms-5 me-5">
-                        {props.data.type}-{props.data.no} | {Date}
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="max-h-[30rem] overflow-y-scroll">
-                        <div className=" whitespace-normal text-center text-lg font-bold">
-                            {props.data.AccNo} - {Accname}
-                        </div>
+    {...props}
+    size="lg"
+    aria-labelledby="contained-modal-title-vcenter"
+    centered
+    className="shadow-2xl border-4 drop-shadow-2xl shadow-black"
+>
+    <Modal.Header className="d-flex justify-content-center p-1">
+        <Modal.Header
+            closeButton
+            className="border-0 position-absolute start-0"
+        ></Modal.Header>
+        <Modal.Title className="ms-5 me-5">
+            {props.data.type}-{props.data.no} | {Date}
+        </Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+        <div className="max-h-[30rem] overflow-y-scroll">
+            <div className=" whitespace-normal text-center text-lg font-bold">
+                {props.data.AccNo} - {Accname}
+            </div>
 
-                        {isLoading ? (
-                            <Spinner animation="border" role="status" disabled={true}>
-                                <span className="visually-hidden">Loading...</span>
-                            </Spinner>
-                        ) : (
-                            <Table striped bordered responsive className=" mt-2 ">
-                                <thead>
-                                    <tr className="bg-slate-500">
-                                        <th>ItemNo</th>
-                                        <th>Item Name</th>
-                                        <th>Notes</th>
-                                        <th>P.Qty</th>
-                                        <th>P.Unit</th>
-                                        <th>Qty</th>
-                                        <th>UPrice</th>
-                                        <th>Disc</th>
-                                        <th>Total</th>
+            {isLoading ? (
+                <Spinner animation="border" role="status" disabled={true}>
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            ) : (
+                <>
+                    {Double.length === 0 ? (
+                        <div className="text-center font-bold mb-2">REQUEST NOT FOUND</div>
+                    ) : (
+                        <Table striped bordered responsive className=" mt-2 ">
+                            <thead>
+                                <tr className="bg-slate-500">
+                                    <th>ItemNo</th>
+                                    <th>Item Name</th>
+                                    <th>Notes</th>
+                                    <th>P.Qty</th>
+                                    <th>P.Unit</th>
+                                    <th>Qty</th>
+                                    <th>UPrice</th>
+                                    <th>Disc</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {Double.map((DB) => (
+                                    <tr
+                                        key={uuid()}
+                                        className="hover:bg-blue-200 whitespace-nowrap"
+                                    >
+                                        <td>{DB["ItemNo"]}</td>
+                                        <td>{DB["ItemName"]}</td>
+                                        <td>{DB["Notes"]}</td>
+                                        <td>{DB["PQty"]}</td>
+                                        <td>{DB["PQUnit"]}</td>
+                                        <td className=" text-center">{DB["Qty"]}</td>
+                                        <td className=" text-right">{DB["UPrice"]}</td>
+                                        <td className=" text-right">{DB["Disc"]}</td>
+                                        <td>{DB["Total"]}</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {Double.map((DB) => {
-                                        return (
-                                            <tr
-                                                key={uuid()}
-                                                className="hover:bg-blue-200 whitespace-nowrap">
-                                                <td>{DB["ItemNo"]}</td>
-                                                <td>{DB["ItemName"]}</td>
-                                                <td>{DB["Notes"]}</td>
-                                                <td>{DB["PQty"]}</td>
-                                                <td>{DB["PQUnit"]}</td>
-                                                <td className=" text-center">{DB["Qty"]}</td>
-                                                <td className=" text-right">{DB["UPrice"]}</td>
-                                                <td className=" text-right">{DB["Disc"]}</td>
-                                                <td>{DB["Total"]}</td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </Table>
-                        )}
-                    </div>
-                </Modal.Body>
-                {/* <Modal.Footer>
-        <Button onClick={props.onHide}>Close</Button>
-      </Modal.Footer> */}
-            </Modal>
+                                ))}
+                            </tbody>
+                        </Table>
+                    )}
+                </>
+            )}
+        </div>
+    </Modal.Body>
+</Modal>
+
         </>
     );
 }

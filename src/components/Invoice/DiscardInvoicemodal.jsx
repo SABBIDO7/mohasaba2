@@ -24,7 +24,7 @@ export default function DiscardInvoiceModal(props) {
                         props.setModalShow(false)
                         }
                         }
-                        >Confirm</Button>
+                        >Yes</Button>
                     </div>
                 </Modal.Footer>
             </Modal>

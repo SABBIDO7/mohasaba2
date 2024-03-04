@@ -56,21 +56,41 @@ export default function SalesForm(props) {
     const [NewInvoiceAlertModalShow, setNewInvoiceAlertModalShow] = useState(false);
     const [EmptyAlertModalShow, setEmptyAlertModalShow] = useState(false);
     const [ItemsWithoutAccount, setItemsWithoutAccount] = useState(false);
+    const [propertiesAreEqual, setpropertiesAreEqual] = useState(true);
+    const [discardOldInvoiceModalShow, setDiscardOldInvoiceModalShow] = useState(false);
+    const [changeAccountModalShow, setchangeAccountModalShow] = useState(false);
+    const [SearchAccountModalShow, setSearchAccountModalShow] = useState(false);
+    const [switchBetweenInvoicesModalShow, setswitchBetweenInvoicesModalShow] = useState(false);
+    const [passSelectedInvoiceToModal,setpassSelectedInvoiceToModal] = useState('');
 
     const inputRef = useRef(null);
     const selectRef = useRef(null);
     const selectInvRef = useRef(null);
-
+    //let propertiesAreEqual = true;
     let finalTotal = 0;
     let finalTax = 0;
 
 // Function to handle the change event of the select element
 const handleSelectChange = (e) => {
-    const selectedValue = e.target.value;
+    const selectedValue = e;
+    console.log("hpooooowwwwwwwww");
+    console.log(e);
     console.log(selectedValue);
-   
-
-    // Send Axios request with the selected value
+    
+    if (selectedValue==""){
+        setSelectedInvoice("");
+        props.setSelectedItems([]);
+        props.setClient({
+            id:"",
+            name:"",
+            RefNo:"",
+            date:"",
+            time:"",
+        });
+    }else{
+        setSelectedInvoice(selectedValue);
+        localStorage.setItem("InvoiceHistory", selectedValue);
+         // Send Axios request with the selected value
     axios({
         method: 'get', // or 'get', 'put', 'delete', etc.
         url: props.url + "/moh/getInvoiceDetails/" + localStorage.getItem("compname")+"/"+ localStorage.getItem("username") + "/"+ selectedValue +"/", 
@@ -83,23 +103,38 @@ const handleSelectChange = (e) => {
         // Handle success response
         console.log("Response:", response);
         console.log(response.data.Invoices[0]["RefNo"]);
-        setSelectedInvoice(response.data.Invoices[0]["RefNo"]);
+        
         props.setSelectedItems(response.data.Invoices);
         props.setClient(response.data.InvProfile[0]);
+        //
         
     })
     .catch((error) => {
         // Handle error
         console.error("Error:", error);
     });
+    }
+
+   
 };
 
     const handleNoteSave = () => {
         // Update note for the selected item
         if (selectedItemIndex !== null) {
             const updatedItems = [...props.SelectedItems];
+            if(updatedItems[selectedItemIndex]["Note"] !==noteInput){
+                const currentDate = new Date();
+                const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+                const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+                updatedItems[selectedItemIndex]["DateT"]=formattedDate;
+                updatedItems[selectedItemIndex]["TimeT"]=formattedTime;
+                setpropertiesAreEqual = false;
+            }
             updatedItems[selectedItemIndex]["Note"] = noteInput;
+            //?????
             props.setSelectedItems(updatedItems);
+            localStorage.setItem("sales", updatedItems);
+
             setShowNoteModal(false);
             setNoteInput("");
         }
@@ -108,6 +143,7 @@ const handleSelectChange = (e) => {
     const handleSave = (e) => {
         const jsonString = JSON.stringify(e);
         localStorage.setItem("sales", jsonString);
+
     };
 
     const handleRetrieve = () => {
@@ -118,6 +154,10 @@ const handleSelectChange = (e) => {
             
             props.setClient(retrievedJson["accName"]);
             props.setSelectedItems(retrievedJson["items"]);
+            setSelectedInvoice(localStorage.getItem("InvoiceHistory"));
+
+            console.log("drinkdrink");
+            console.log(localStorage.getItem("InvoiceHistory"));
         
 
         }
@@ -182,7 +222,19 @@ const handleSelectChange = (e) => {
                         src={backbutton}
                         alt="Back"
                         className="h-8 mr-2"
-                        onClick={() => props.inv("")}
+                        onClick={() =>{
+                            if(selectedInvoice!=""){
+                                
+                                console.log(propertiesAreEqual);
+                                console.log("lklklkk")
+                                console.log(selectedInvoice);
+                                setDiscardOldInvoiceModalShow(true)
+                            }
+                            else{
+                                props.inv("");
+                            }
+                            
+                        } }
                     />
                     <h3>Sales Invoice</h3>
                 </div>
@@ -221,6 +273,11 @@ const handleSelectChange = (e) => {
                                 console.log("salmmmmmmmmmm");
                                 setItemsWithoutAccount(true);
                             }
+                            else if (selectedInvoice!="" && sOption=="Accounts"){
+                                console.log("tiriririoro");
+                                console.log(selectedInvoice);
+                                setSearchAccountModalShow(true);
+                            }
                             else{
                                 console.log("][][][][][]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]][]");
                                 console.log(props.Client["id"]);
@@ -256,7 +313,23 @@ const handleSelectChange = (e) => {
                                 className="p-[0.6rem] rounded border-black border-[1px] col-auto"
                                 
                                     ref={selectInvRef}
-                                    onChange={handleSelectChange}
+                                    onChange={(e) =>{
+                                        if(!propertiesAreEqual){
+                                            console.log("naaaammmmmmm")
+                                            console.log(e.target.value);
+                                            let intervalue= e.target.value;
+                                            setpassSelectedInvoiceToModal(intervalue);
+                                            setswitchBetweenInvoicesModalShow(true);
+                                        }
+                                        else{
+                                            handleSelectChange(e.target.value);
+                                        }
+                                        
+
+                                    }
+                                       
+                                    
+                                    }
                                     value={selectedInvoice}
                                     
                                 >
@@ -438,7 +511,7 @@ const handleSelectChange = (e) => {
                                     Exit
                                 </Button>
                                 <Button className="my-2" variant="primary" onClick={() => {
-                                    if(props.Client["id"]!=undefined){
+                                    //if(props.Client["id"]!=undefined){
                                         console.log("/*//////////")
                                         console.log(props.SelectedItems.length);
                                         console.log(props.Client["id"]);
@@ -447,9 +520,10 @@ const handleSelectChange = (e) => {
                                         setNewInvoiceAlertModalShow(true);
                                         
 
-                                    }
+                                    
                                     
                                     inputRef.current.focus();
+                                    //selectRef.current.value="Accounts";
                                     
 
                                     
@@ -651,9 +725,7 @@ const handleSelectChange = (e) => {
                                     } else {
                                         tempQty = EditQty;
                                     }
-                                    const currentDate = new Date();
-                                    const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
-                                    const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+                                    
                                     
                                     let PQtyT = tempa[EditIdx]["PQty"];
                                     let PUnitT = tempa[EditIdx]["PUnit"];
@@ -662,7 +734,7 @@ const handleSelectChange = (e) => {
                                     
                                     let NoteT = tempa[EditIdx]["Note"];
                                     let oldtempa= tempa[EditIdx];
-                                    let propertiesAreEqual = true;
+                                    
                                     
                                     tempa[EditIdx] = {
                                         no: EditItem.no,
@@ -684,23 +756,45 @@ const handleSelectChange = (e) => {
                                         DateT: DateTT,
                                         TimeT: TimeTT,
                                     };
-
-                                    for (const key in oldtempa) {
-                                        if (key === "Total" || key==="TaxTotal") {
-                                            console.log("FETTT TOAL");
-                                            continue; // Skip the Total field
-                                        }
-                                        const oldValue = parseFloat(oldtempa[key]).toFixed(3); // Convert to number and fix precision
-                                        const newValue = parseFloat(tempa[EditIdx][key]).toFixed(3); 
-                                        if (oldValue !== newValue) {
-                                            propertiesAreEqual = false;
-                                            console.log(oldtempa[key]);
-                                            console.log(tempa[EditIdx][key]);
-                                            console.log(propertiesAreEqual);
-                                            break;
-                                        }
+                                    let pAreEqual= true;
+                                    if (oldtempa["qty"]!==tempa[EditIdx]["qty"]){
+                                        pAreEqual=false;
                                     }
-                                    if(!propertiesAreEqual){
+                                    if(oldtempa["uprice"].toFixed(3) !== tempa[EditIdx]["uprice"].toFixed(3)){
+                                        pAreEqual = false;
+                                    }
+                                    if(oldtempa["branch"] !== tempa[EditIdx]["branch"]){
+                                        pAreEqual = false;
+                                    }
+                                    if(oldtempa["discount"] !== tempa[EditIdx]["discount"]){
+                                        pAreEqual = false;
+                                    }
+                                    if(oldtempa["tax"] !== tempa[EditIdx]["tax"]){
+                                        pAreEqual = false;
+                                    }
+
+                                    // for (const key in oldtempa) {
+                                    //     if (key === "Total" || key==="TaxTotal") {
+                                    //         console.log("FETTT TOAL");
+                                    //         continue; // Skip the Total field
+                                    //     }
+                                    //     const oldValue = parseFloat(oldtempa[key]).toFixed(3); // Convert to number and fix precision
+                                    //     const newValue = parseFloat(tempa[EditIdx][key]).toFixed(3); 
+                                    //     if (oldValue !== newValue) {
+                                    //         propertiesAreEqual = false;
+                                    //         console.log(oldtempa[key]);
+                                    //         console.log(tempa[EditIdx][key]);
+                                    //         console.log(propertiesAreEqual);
+                                    //         break;
+                                    //     }
+                                    // }
+                                    if(!pAreEqual){
+                                        console.log("rouhhhhhhhhhhhh")
+                                        
+                                        setpropertiesAreEqual(false)
+                                        const currentDate = new Date();
+                                    const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+                                        const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
                                         tempa[EditIdx]["DateT"]=formattedDate;
                                         tempa[EditIdx]["TimeT"] = formattedTime;
                                     }
@@ -743,6 +837,8 @@ const handleSelectChange = (e) => {
                 onHide={() => setNewInvoiceAlertModalShow(false)}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
+                backdrop="static"
+                keyboard={false}
                 centered>
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">Unsaved Invoice</Modal.Title>
@@ -756,7 +852,7 @@ const handleSelectChange = (e) => {
                         <Button variant="danger" onClick={()=>{
                         //props.callBack()
 
-                        setsOption("Accounting");
+                        setsOption("Accounts");
                         setvInput("");
                         setSelectedInvoice("")
                         setNewInvoiceAlertModalShow(false);
@@ -770,6 +866,51 @@ const handleSelectChange = (e) => {
                         props.setSelectedItems([]);
                         localStorage.setItem("sales", "");
                         props.setsInvoices([]);
+                        setpropertiesAreEqual(true);
+                        setSelectedInvoice("");
+                        
+                        }
+                        }
+                        >Yes</Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
+            
+            <Modal
+                show={discardOldInvoiceModalShow}
+                onHide={() => setDiscardOldInvoiceModalShow(false)}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                backdrop="static"
+                keyboard={false}
+                centered>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">Unsaved Invoice</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>Are You Sure You Want To Ignore Current Invoice?</h4>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="flex flex-row w-full justify-around">
+                        <Button onClick={()=>setDiscardOldInvoiceModalShow(false)}>No</Button>
+                        <Button variant="danger" onClick={()=>{
+                        //props.callBack()
+                        props.inv("");
+                        setsOption("Accounts");
+                        setvInput("");
+                        setSelectedInvoice("")
+                        setDiscardOldInvoiceModalShow(false);
+                        props.setClient({
+                            id:"",
+                            name:"",
+                            RefNo:"",
+                            date:"",
+                            time:"",
+                        });
+                        props.setSelectedItems([]);
+                        localStorage.setItem("sales", "");
+                        props.setsInvoices([]);
+                        localStorage.setItem("InvoiceHistory","");
                         
                         
                         }
@@ -778,7 +919,38 @@ const handleSelectChange = (e) => {
                     </div>
                 </Modal.Footer>
             </Modal>
-
+            <Modal
+                show={SearchAccountModalShow}
+                onHide={() => setSearchAccountModalShow(false)}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                backdrop="static"
+                keyboard={false}
+                centered>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">Unsaved Old Invoice</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>Are You Sure You Want To Ignore your Old Invoice?</h4>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="flex flex-row w-full justify-around">
+                        <Button onClick={()=>setSearchAccountModalShow(false)}>No</Button>
+                        <Button variant="danger" onClick={()=>{
+                        //props.callBack()
+                        getInvoiceOptions();
+                        setModalShow(true);
+                        setSelectedInvoice("");
+                        setSearchAccountModalShow(false);
+                        
+                        
+                        
+                        }
+                        }
+                        >Yes</Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
             <Modal
                 show={EmptyAlertModalShow}
                 onHide={() => setEmptyAlertModalShow(false)}
@@ -819,6 +991,42 @@ const handleSelectChange = (e) => {
                         <Button variant="danger"  
                         onClick={()=>setItemsWithoutAccount(false)}
                         >Ok</Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
+
+
+            <Modal
+                show={switchBetweenInvoicesModalShow}
+                onHide={() => setswitchBetweenInvoicesModalShow(false)}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                backdrop="static"
+                keyboard={false}
+                centered>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">Unsaved Invoice</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>Are You Sure You Want To Ignore Current Invoice and switch to another?</h4>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="flex flex-row w-full justify-around">
+                        <Button onClick={()=>setswitchBetweenInvoicesModalShow(false)}>No</Button>
+                        <Button variant="danger" onClick={() => {
+                            setSelectedInvoice(passSelectedInvoiceToModal);
+                            console.log(".--.");
+                            console.log(passSelectedInvoiceToModal);
+                            handleSelectChange(passSelectedInvoiceToModal); // Pass the event as an argument
+                            setpropertiesAreEqual(true);
+                            setswitchBetweenInvoicesModalShow(false);
+                            
+                        
+                        
+                        
+                        }
+                        }
+                        >Yes</Button>
                     </div>
                 </Modal.Footer>
             </Modal>
