@@ -266,18 +266,18 @@ export default function IdSelect(props) {
                 />
 
             </div>
-            {errorMessage && (
+           
                     <div className="text-red-500 mb-2">
-                        {errorMessage}
+                    {errorMessage}
                     </div>
-                )}
+                
             
         </div>
     </Modal.Body>
     
     <Modal.Footer>
     <div className="flex flex-row-reverse justify-between w-full">
-            <Button onClick={() =>{addItem();setErrorMessage('');}}>Add Item</Button>
+            <Button onClick={() =>{addItem();}}>Add Item</Button>
             <Button
                     
                     onClick={() => {
@@ -424,12 +424,11 @@ export default function IdSelect(props) {
         setsItemTotal((parseFloat(uprice) * parseFloat(sItemQty) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3));
         console.log(sItemTotal);
         console.log("--=");
+        console.log("hhhhhhhhhhhhhhh", parseFloat(uprice).toFixed(3));
         if (parseFloat(uprice).toFixed(3)==0.000){
-            console.log("popopopopopopopo");
+            console.log("uiuiuuuuuuuiuiiuu");
             setErrorMessage("Unit Price cannot be 0. Please enter a valid value.");
-            console.log(errorMessage);
-            return; 
-
+            return;
         }
         props.ssi(tempsi);
         setModalItems(false);

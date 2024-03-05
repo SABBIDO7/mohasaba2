@@ -1,10 +1,14 @@
 import InvoiceTypeSelect from "../components/Invoice/InvoiceTypeSelect";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,ReactDOM } from "react";
 import Select from "react-select";
 import Button from "react-bootstrap/Button";
 import SalesForm from "../components/Invoice/SalesForm";
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
+import html2canvas from "html2canvas";
+import jsPDF from 'jspdf';
+
+
 
 export default function Invoice(props) {
     const [Client, setClient] = useState("");
@@ -41,6 +45,7 @@ export default function Invoice(props) {
                         return <InvoiceTypeSelect url={props.url} inv={sInvoiceHandler} />;
                     case "Sales":
                         return (
+                            <>
                             <SalesForm
                                 url={props.url}
                                 inv={sInvoiceHandler}
@@ -59,6 +64,8 @@ export default function Invoice(props) {
                                 setpropertiesAreEqual={setpropertiesAreEqual}
                                 
                             />
+                          
+                            </>
                         );
                     case "won":
                         return null;
@@ -133,7 +140,8 @@ export default function Invoice(props) {
                         Info:"Successful",
                         msg:"Sales Invoice Created Successfully"
                     }
-                )
+                );
+                
                 //discardInvoice()
                 setClient({
                     id:"",
@@ -145,6 +153,19 @@ export default function Invoice(props) {
                 setSelectedItems([])
                 localStorage.setItem("sales", "")
                 setpropertiesAreEqual(true);
+                const downloadPDF =() =>{
+                    const capture = document.querySelector('.actual-receipt');
+                    html2canvas(capture).then((canvas)=>{
+                        const imgData = canvas.toDataURL('img/png');
+                        const doc = new jsPDF('p', 'mm','a4');
+                        const componentwidth = doc.internal.pageSize.getWidth();
+                        const componentHeight = doc.internal.pageSize.getHeight();
+                        doc.addImage(imgData, 'PNG', 0,0,componentwidth,componentHeight);
+                        doc.save('invoice.pdf');
+
+                    });
+                }
+                downloadPDF();
                 
             } else if (res.data.Info == "Failed") {
                 setInvResponse(
@@ -172,6 +193,7 @@ export default function Invoice(props) {
                     </Modal.Header>
                     <Modal.Body>
                         <div>{invResponse["msg"]}</div>
+                        <div className="actual-receipt">ffdfdf</div>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={()=>{setafterSubmitModal(false)}}>Close</Button>
