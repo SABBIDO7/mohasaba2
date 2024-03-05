@@ -56,12 +56,13 @@ export default function SalesForm(props) {
     const [NewInvoiceAlertModalShow, setNewInvoiceAlertModalShow] = useState(false);
     const [EmptyAlertModalShow, setEmptyAlertModalShow] = useState(false);
     const [ItemsWithoutAccount, setItemsWithoutAccount] = useState(false);
-    const [propertiesAreEqual, setpropertiesAreEqual] = useState(true);
+
     const [discardOldInvoiceModalShow, setDiscardOldInvoiceModalShow] = useState(false);
     const [changeAccountModalShow, setchangeAccountModalShow] = useState(false);
     const [SearchAccountModalShow, setSearchAccountModalShow] = useState(false);
     const [switchBetweenInvoicesModalShow, setswitchBetweenInvoicesModalShow] = useState(false);
     const [passSelectedInvoiceToModal,setpassSelectedInvoiceToModal] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const inputRef = useRef(null);
     const selectRef = useRef(null);
@@ -76,8 +77,9 @@ const handleSelectChange = (e) => {
     console.log("hpooooowwwwwwwww");
     console.log(e);
     console.log(selectedValue);
-    
+    localStorage.setItem("sales","");
     if (selectedValue==""){
+        
         setSelectedInvoice("");
         props.setSelectedItems([]);
         props.setClient({
@@ -107,6 +109,17 @@ const handleSelectChange = (e) => {
         props.setSelectedItems(response.data.Invoices);
         props.setClient(response.data.InvProfile[0]);
         //
+        handleSave({
+            accName: {
+                id: response.data.InvProfile[0]["id"],
+                name: response.data.InvProfile[0]["name"],
+                date: response.data.InvProfile[0]["date"],
+                time: response.data.InvProfile[0]["time"],
+                RefNo:response.data.InvProfile[0]["RefNo"]
+            },
+
+            items: response.data.Invoices,
+        });
         
     })
     .catch((error) => {
@@ -128,7 +141,8 @@ const handleSelectChange = (e) => {
                 const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
                 updatedItems[selectedItemIndex]["DateT"]=formattedDate;
                 updatedItems[selectedItemIndex]["TimeT"]=formattedTime;
-                setpropertiesAreEqual = false;
+                console.log("rouhhhhh1");
+                props.setpropertiesAreEqual(false);
             }
             updatedItems[selectedItemIndex]["Note"] = noteInput;
             //?????
@@ -142,6 +156,8 @@ const handleSelectChange = (e) => {
 
     const handleSave = (e) => {
         const jsonString = JSON.stringify(e);
+        console.log("//*/*/*/*/*/*/*////");
+        console.log(jsonString);
         localStorage.setItem("sales", jsonString);
 
     };
@@ -191,6 +207,7 @@ const handleSelectChange = (e) => {
 
     useEffect(() => {
         try {
+            setErrorMessage('');
             handleRetrieve();
             
          
@@ -205,7 +222,8 @@ const handleSelectChange = (e) => {
             
             getInvoicesHistory();
            // handleSelectChange("");
-            selectRef.current.value = "Accounts";
+           // selectRef.current.value = "Accounts";
+            setsOption("Accounts");
             selectInvRef.current.value = "" ;
         } catch (error) {
             console.log("ERROR");
@@ -225,7 +243,7 @@ const handleSelectChange = (e) => {
                         onClick={() =>{
                             if(selectedInvoice!=""){
                                 
-                                console.log(propertiesAreEqual);
+                                console.log(props.propertiesAreEqual);
                                 console.log("lklklkk")
                                 console.log(selectedInvoice);
                                 setDiscardOldInvoiceModalShow(true)
@@ -314,9 +332,10 @@ const handleSelectChange = (e) => {
                                 
                                     ref={selectInvRef}
                                     onChange={(e) =>{
-                                        if(!propertiesAreEqual){
+                                        if(props.propertiesAreEqual==false){
                                             console.log("naaaammmmmmm")
                                             console.log(e.target.value);
+                                            console.log(props.propertiesAreEqual);
                                             let intervalue= e.target.value;
                                             setpassSelectedInvoiceToModal(intervalue);
                                             setswitchBetweenInvoicesModalShow(true);
@@ -439,6 +458,7 @@ const handleSelectChange = (e) => {
                                                         onClick={() => {
                                                             setShowNoteModal(true);
                                                             setSelectedItemIndex(idx);
+                                                            setErrorMessage('');
                                                             setNoteInput(si["Note"] || "");
                                                         }}
                                                     >
@@ -512,7 +532,7 @@ const handleSelectChange = (e) => {
                                 </Button>
                                 <Button className="my-2" variant="primary" onClick={() => {
                                     //if(props.Client["id"]!=undefined){
-                                        console.log("/*//////////")
+                                        console.log("/*//////////");
                                         console.log(props.SelectedItems.length);
                                         console.log(props.Client["id"]);
                                         console.log(props.setSelectedItems.length);
@@ -569,12 +589,16 @@ const handleSelectChange = (e) => {
                 setSelectedInvoice={setSelectedInvoice}
                 setsInvoices={setsInvoices}
                 
+                
             />
             <Modal
+            backdrop="static"
+            keyboard={false}
                 show={show}
                 onHide={() => {
                     setShow(false);
                     setIdOptions([]);
+                    setErrorMessage('');
                 }}
                 aria-labelledby="contained-modal-title-vcenter"
                 centered>
@@ -698,6 +722,11 @@ const handleSelectChange = (e) => {
                                 
                             />
                         </div>
+                        {errorMessage && (
+                    <div className="text-red-500 mb-2">
+                        {errorMessage}
+                    </div>
+                )}
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
@@ -708,6 +737,7 @@ const handleSelectChange = (e) => {
                                 onClick={() => {
                                     setShow(false);
                                     setIdOptions([]);
+                                    setErrorMessage('');
                                 }}>
                                 Close
                             </Button>
@@ -715,8 +745,7 @@ const handleSelectChange = (e) => {
                             <Button
                                 variant="primary"
                                 onClick={() => {
-                                    setShow(false);
-                                    setIdOptions([]);
+                                    
                                     let tempa = props.SelectedItems;
 
                                     let tempQty;
@@ -740,7 +769,7 @@ const handleSelectChange = (e) => {
                                         no: EditItem.no,
                                         name: EditItem.name,
                                         qty: tempQty,
-                                        uprice: EditPrice,
+                                        uprice: parseFloat(EditPrice).toFixed(3),
                                         discount: EditDiscount,
                                         branch: EditBranch,
                                         lno :EditLno,
@@ -756,11 +785,14 @@ const handleSelectChange = (e) => {
                                         DateT: DateTT,
                                         TimeT: TimeTT,
                                     };
+                                    console.log("edipricee",tempa[EditIdx]["uprice"]);
                                     let pAreEqual= true;
                                     if (oldtempa["qty"]!==tempa[EditIdx]["qty"]){
                                         pAreEqual=false;
                                     }
-                                    if(oldtempa["uprice"].toFixed(3) !== tempa[EditIdx]["uprice"].toFixed(3)){
+                                    
+                                    
+                                    if(oldtempa["uprice"] !== tempa[EditIdx]["uprice"]){
                                         pAreEqual = false;
                                     }
                                     if(oldtempa["branch"] !== tempa[EditIdx]["branch"]){
@@ -788,16 +820,27 @@ const handleSelectChange = (e) => {
                                     //         break;
                                     //     }
                                     // }
+                                    if (tempa[EditIdx]["uprice"]==0.000){
+                                        setErrorMessage("Unit Price cannot be 0. Please enter a valid value.");
+                                        return; 
+
+                                    }
+                                    else
                                     if(!pAreEqual){
                                         console.log("rouhhhhhhhhhhhh")
                                         
-                                        setpropertiesAreEqual(false)
+                                        props.setpropertiesAreEqual(false)
                                         const currentDate = new Date();
                                     const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
                                         const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
                                         tempa[EditIdx]["DateT"]=formattedDate;
                                         tempa[EditIdx]["TimeT"] = formattedTime;
                                     }
+                                    setErrorMessage('');
+                                   
+                                        setShow(false);
+                                    setIdOptions([]);
+                                    
                                     props.setSelectedItems(tempa);
                                 }}>
                                 Apply
@@ -815,6 +858,7 @@ const handleSelectChange = (e) => {
                                         item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
                                     });
                                     props.setSelectedItems(tempa);
+                                    setErrorMessage('');
                                 }}>
                                 Remove
                             </Button>
@@ -853,6 +897,8 @@ const handleSelectChange = (e) => {
                         //props.callBack()
 
                         setsOption("Accounts");
+                        console.log("__________*****");
+                        props.setpropertiesAreEqual(true);//lola
                         setvInput("");
                         setSelectedInvoice("")
                         setNewInvoiceAlertModalShow(false);
@@ -865,9 +911,11 @@ const handleSelectChange = (e) => {
                         });
                         props.setSelectedItems([]);
                         localStorage.setItem("sales", "");
-                        props.setsInvoices([]);
-                        setpropertiesAreEqual(true);
+                       // setsInvoices([]);
+                        
                         setSelectedInvoice("");
+                       
+                        console.log(props.propertiesAreEqual);
                         
                         }
                         }
@@ -1018,7 +1066,8 @@ const handleSelectChange = (e) => {
                             console.log(".--.");
                             console.log(passSelectedInvoiceToModal);
                             handleSelectChange(passSelectedInvoiceToModal); // Pass the event as an argument
-                            setpropertiesAreEqual(true);
+                            props.setpropertiesAreEqual(true);
+                            console.log(props.propertiesAreEqual);
                             setswitchBetweenInvoicesModalShow(false);
                             
                         
@@ -1059,9 +1108,10 @@ const handleSelectChange = (e) => {
         props.setClient({
             id:"",
             name:""
-        })
-        props.setSelectedItems([])
-        localStorage.setItem("sales", "")
+        });
+        props.setSelectedItems([]);
+        localStorage.setItem("sales", "");
+        props.setpropertiesAreEqual(true);
     }
 
 }

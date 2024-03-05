@@ -21,6 +21,7 @@ export default function IdSelect(props) {
     const [sItemNote, setsItemNote] = useState("");
     const [sItemTaxTotal, setsItemTaxTotal] = useState(0);
     const [sItemTotal, setsItemTotal] = useState(0);
+    const [errorMessage, setErrorMessage] = useState("");
     
     
 
@@ -118,10 +119,13 @@ export default function IdSelect(props) {
                 </Modal.Footer> */}
             </Modal>
             <Modal
+            backdrop="static"
+            keyboard={false}
     show={modalItems}
     onHide={() => {
         setModalItems(false);
         props.setModalShow(true);
+        setErrorMessage('');
     }}
     
     aria-labelledby="contained-modal-title-vcenter"
@@ -262,15 +266,22 @@ export default function IdSelect(props) {
                 />
 
             </div>
+            {errorMessage && (
+                    <div className="text-red-500 mb-2">
+                        {errorMessage}
+                    </div>
+                )}
+            
         </div>
     </Modal.Body>
     
     <Modal.Footer>
     <div className="flex flex-row-reverse justify-between w-full">
-            <Button onClick={addItem}>Add Item</Button>
+            <Button onClick={() =>{addItem();setErrorMessage('');}}>Add Item</Button>
             <Button
                     
                     onClick={() => {
+                        setErrorMessage('');
                         setModalItems(false);
                         props.setModalShow(true);
                     }}
@@ -365,6 +376,7 @@ export default function IdSelect(props) {
             if (ItemBranch=="" || ItemBranch==null || ItemBranch==undefined){
                 ItemBranch="1";
             }
+           
             setsItemBranch(ItemBranch);
         }
     }
@@ -412,6 +424,13 @@ export default function IdSelect(props) {
         setsItemTotal((parseFloat(uprice) * parseFloat(sItemQty) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3));
         console.log(sItemTotal);
         console.log("--=");
+        if (parseFloat(uprice).toFixed(3)==0.000){
+            console.log("popopopopopopopo");
+            setErrorMessage("Unit Price cannot be 0. Please enter a valid value.");
+            console.log(errorMessage);
+            return; 
+
+        }
         props.ssi(tempsi);
         setModalItems(false);
         props.handleSave({

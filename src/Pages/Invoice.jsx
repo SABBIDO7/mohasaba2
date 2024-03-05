@@ -16,6 +16,7 @@ export default function Invoice(props) {
         Info:"No Invoice Created",
         msg:"No Invoice Created"
     });
+    const [propertiesAreEqual, setpropertiesAreEqual] = useState(true);
 
     function sInvoiceHandler(e) {
         setSInvoice(e);
@@ -54,6 +55,8 @@ export default function Invoice(props) {
                                 setClient={setClient}
                                 SelectedItems={SelectedItems}
                                 setSelectedItems={setSelectedItems}
+                                propertiesAreEqual={propertiesAreEqual}
+                                setpropertiesAreEqual={setpropertiesAreEqual}
                                 
                             />
                         );
@@ -134,11 +137,14 @@ export default function Invoice(props) {
                 //discardInvoice()
                 setClient({
                     id:"",
-                    name:""
+                    name:"",
+                    RefNo:"",
+                    date:"",
+                    time:"",
                 })
                 setSelectedItems([])
                 localStorage.setItem("sales", "")
-                
+                setpropertiesAreEqual(true);
                 
             } else if (res.data.Info == "Failed") {
                 setInvResponse(
