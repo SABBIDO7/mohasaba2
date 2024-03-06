@@ -37,8 +37,58 @@ export default function Invoice(props) {
     function discardInvoice(){
         
     }
+
+    const downloadPDF = (data) => {
+        const htmlContent = `
+        <div>
+            <h1>${data.accname}</h1>
+            <p>Account ID: ${data.accno}</p>
+            <h2>Items</h2>
+            <ul>
+                ${data.items.map(item => `<li>${item.name}: ${item.uprice}</li>`).join('')}
+            </ul>
+        </div>
+    `;
+
+    
+    console.log(htmlContent); // Log the HTML content to verify
+        // Create a hidden div to render the HTML content
+        const container = document.createElement('div');
+        console.log("CONTAINER", container);
+        container.style.visibility = 'hidden';
+        container.innerHTML = htmlContent;
+        document.body.appendChild(container);
+        console.log("appendd",document.body.appendChild(container));
+        console.log("innerHTML",container.innerHTML);
+        // const capture = document.querySelector('#sales-form-container');
+
+        // if (!capture) {
+        //     console.error('Error: Unable to find #sales-form-container element');
+        //     return;
+        // }
+       // Delay capturing to allow for rendering
+       setTimeout(() => {
+        html2canvas(container).then((canvas) => {
+            console.log(canvas); // Log the captured canvas to verify
+
+            try {
+                const imgData = canvas.toDataURL('image/png');
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const componentWidth = doc.internal.pageSize.getWidth();
+                const componentHeight = doc.internal.pageSize.getHeight();
+                doc.addImage(imgData, 'PNG', 0, 0, componentWidth, componentHeight);
+                doc.save('invoice.pdf');
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+            }
+        }).catch((error) => {
+            console.error('Error capturing HTML to canvas:', error);
+        });
+    }, 1000); // Adjust the delay time as needed
+
+    };
     return (
-        <div className=" h-[90vh] overscroll-contain">
+        <div className="h-[90vh] overscroll-contain">
             {(() => {
                 switch (sInvoice) {
                     case "":
@@ -153,19 +203,8 @@ export default function Invoice(props) {
                 setSelectedItems([])
                 localStorage.setItem("sales", "")
                 setpropertiesAreEqual(true);
-                const downloadPDF =() =>{
-                    const capture = document.querySelector('.actual-receipt');
-                    html2canvas(capture).then((canvas)=>{
-                        const imgData = canvas.toDataURL('img/png');
-                        const doc = new jsPDF('p', 'mm','a4');
-                        const componentwidth = doc.internal.pageSize.getWidth();
-                        const componentHeight = doc.internal.pageSize.getHeight();
-                        doc.addImage(imgData, 'PNG', 0,0,componentwidth,componentHeight);
-                        doc.save('invoice.pdf');
-
-                    });
-                }
-                downloadPDF();
+                downloadPDF(data);
+               
                 
             } else if (res.data.Info == "Failed") {
                 setInvResponse(
@@ -193,7 +232,7 @@ export default function Invoice(props) {
                     </Modal.Header>
                     <Modal.Body>
                         <div>{invResponse["msg"]}</div>
-                        <div className="actual-receipt">ffdfdf</div>
+                        
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={()=>{setafterSubmitModal(false)}}>Close</Button>

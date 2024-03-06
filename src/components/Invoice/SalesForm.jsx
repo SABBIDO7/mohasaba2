@@ -63,6 +63,8 @@ export default function SalesForm(props) {
     const [switchBetweenInvoicesModalShow, setswitchBetweenInvoicesModalShow] = useState(false);
     const [passSelectedInvoiceToModal,setpassSelectedInvoiceToModal] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [changingAccountInvoiceFromDB,setchangingAccountInvoiceFromDB] = useState('')
+    const [EditType,setEditType]= useState('1')
 
     const inputRef = useRef(null);
     const selectRef = useRef(null);
@@ -223,6 +225,7 @@ const handleSelectChange = (e) => {
             getInvoicesHistory();
            // handleSelectChange("");
            // selectRef.current.value = "Accounts";
+           setSelectedInvoice("");
             setsOption("Accounts");
             selectInvRef.current.value = "" ;
         } catch (error) {
@@ -291,12 +294,13 @@ const handleSelectChange = (e) => {
                                 console.log("salmmmmmmmmmm");
                                 setItemsWithoutAccount(true);
                             }
-                            else if (selectedInvoice!="" && sOption=="Accounts"){
+                            else if (((selectedInvoice!="" || props.Client["id"]!="" || props.Client["id"] != undefined) && sOption=="Accounts" && props.SelectedItems!=[]) || (selectedInvoice!="" && sOption=="Accounts")){
                                 console.log("tiriririoro");
                                 console.log(selectedInvoice);
                                 setSearchAccountModalShow(true);
                             }
                             else{
+                                console.log(selectedInvoice);
                                 console.log("][][][][][]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]][]");
                                 console.log(props.Client["id"]);
                                 console.log(sOption);
@@ -565,7 +569,7 @@ const handleSelectChange = (e) => {
                                         }
                                         
                                     }}>
-                                    Apply
+                                    Save & New
                                 </Button>
                             </div>
                         </div>
@@ -588,6 +592,8 @@ const handleSelectChange = (e) => {
                 handleSave={handleSave}
                 setSelectedInvoice={setSelectedInvoice}
                 setsInvoices={setsInvoices}
+                changingAccountInvoiceFromDB={changingAccountInvoiceFromDB}
+                setchangingAccountInvoiceFromDB={setchangingAccountInvoiceFromDB}
                 
                 
             />
@@ -610,11 +616,11 @@ const handleSelectChange = (e) => {
                         
                         <div className="flex items-center">
                 <label htmlFor="itemQty" className="w-1/4">Qty:</label>
-                <div className="flex items-center space-x-2">
+                <div className="w-3/4 flex items-center space-x-2">
                     <img
                         src={minus}
                         alt="minus"
-                        className="h-6 cursor-pointer"
+                        className="w-1/8 h-6 cursor-pointer"
                         onClick={() => {
                             setEditQty(parseInt(EditQty) - 1);
                         }}
@@ -622,7 +628,7 @@ const handleSelectChange = (e) => {
                     <input
                         id="itemQty"
                         type="number"
-                        className="w-35 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                        className="w-1/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                         placeholder={"Qty"}
                         value={EditQty}
                         onChange={(e) => {
@@ -634,13 +640,25 @@ const handleSelectChange = (e) => {
                     <img
                         src={plus}
                         alt="plus"
-                        className="h-6 cursor-pointer"
+                        className="w-1/8 h-6 cursor-pointer"
                         onClick={() => {
 
 
                             setEditQty(parseInt(EditQty) + 1);
                         }}
                     />
+                        <select
+                            id="itemType"
+                            className="w-1/2 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                            value={EditType}
+                            onChange={(e) => {
+                                setEditType(e.target.value);
+                            }}
+                        >
+                            <option value="1">Box</option>
+                            <option value="2">Packet</option>
+                            <option value="3">Piece</option>
+                        </select>
                 </div>
             </div>
                        
@@ -705,7 +723,21 @@ const handleSelectChange = (e) => {
                             />
                         </div>
                       
-                        
+                        <div className="flex items-center">
+                            <label htmlFor="itemTotal" className="w-1/4">Total:</label>
+                            <input
+                                id="pieceTotal"
+                                type="number"
+                                readOnly
+                                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder="Total Pieces"
+                                value={(EditType=="1"?(EditPrice* EditQty*EditItem["PQty"]):"!").toFixed(3)}
+                                onChange={(e) => {
+                                    setEditTotal(e.target.value);
+                                }}
+                                
+                            />
+                        </div>
 
                         <div className="flex items-center">
                             <label htmlFor="itemTotal" className="w-1/4">Total:</label>
@@ -976,19 +1008,22 @@ const handleSelectChange = (e) => {
                 keyboard={false}
                 centered>
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">Unsaved Old Invoice</Modal.Title>
+                    <Modal.Title id="contained-modal-title-vcenter">Change Invoice Account</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4>Are You Sure You Want To Ignore your Old Invoice?</h4>
+                    <h4>Are You Sure You Want To Change the Account Invoice From {props.Client.id} to {vInput} ?</h4>
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="flex flex-row w-full justify-around">
                         <Button onClick={()=>setSearchAccountModalShow(false)}>No</Button>
                         <Button variant="danger" onClick={()=>{
                         //props.callBack()
-                        getInvoiceOptions();
+                        
+                        setchangingAccountInvoiceFromDB(props.Client.RefNo);
+                       
+                       getInvoiceOptions();
                         setModalShow(true);
-                        setSelectedInvoice("");
+                       // setSelectedInvoice("");
                         setSearchAccountModalShow(false);
                         
                         
@@ -1056,12 +1091,13 @@ const handleSelectChange = (e) => {
                     <Modal.Title id="contained-modal-title-vcenter">Unsaved Invoice</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4>Are You Sure You Want To Ignore Current Invoice and switch to another?</h4>
+                    <h4>You cannot Switch to Another Account Without saving the changes</h4>
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="flex flex-row w-full justify-around">
-                        <Button onClick={()=>setswitchBetweenInvoicesModalShow(false)}>No</Button>
-                        <Button variant="danger" onClick={() => {
+                        <Button onClick={()=>setswitchBetweenInvoicesModalShow(false)}>Ok</Button>
+                        {/* <Button onClick={()=>setswitchBetweenInvoicesModalShow(false)}>No</Button> */}
+                        {/* <Button variant="danger" onClick={() => {
                             setSelectedInvoice(passSelectedInvoiceToModal);
                             console.log(".--.");
                             console.log(passSelectedInvoiceToModal);
@@ -1075,13 +1111,15 @@ const handleSelectChange = (e) => {
                         
                         }
                         }
-                        >Yes</Button>
+                        >Yes</Button> */}
                     </div>
                 </Modal.Footer>
             </Modal>
         </>
     );
     function getInvoiceOptions() {
+      
+        console.log(changingAccountInvoiceFromDB);
         let data = {
             token: props.token,
             option: sOption,

@@ -305,8 +305,8 @@ export default function IdSelect(props) {
                 date:"",
                 time:"",
             })
-            props.ssi([])
-            localStorage.setItem("sales", "")
+            // props.ssi([])
+            // localStorage.setItem("sales", "")
           //  props.setsInvoices([]);
            
 
@@ -320,9 +320,8 @@ export default function IdSelect(props) {
                 name: e["AccName"],
                 date: formattedDate,
                 time: formattedTime,
-                RefNo:''
+                RefNo:props.changingAccountInvoiceFromDB==''?'':props.changingAccountInvoiceFromDB
             });
-            
             props.setModalShow(false);
             props.setsOption("Items");
             props.setvInput("");
@@ -334,11 +333,13 @@ export default function IdSelect(props) {
                     name: e["AccName"],
                     date: formattedDate,
                     time: formattedTime,
-                    RefNo:''
+                    RefNo:props.changingAccountInvoiceFromDB==''?'':props.changingAccountInvoiceFromDB
                 },
 
                 items: props.si,
             });
+            console.log(props.setClient.RefNo);
+
         } else if (props.sOption === "Items") {
             let uprice = 0;
            
@@ -405,7 +406,7 @@ export default function IdSelect(props) {
                 no: sItemNo,
                 name: sItemName,
                 qty: tempQty,
-                uprice: uprice,
+                uprice: parseFloat(uprice).toFixed(3),
                 discount: discount,
                 branch: sItemBranch,
                 lno : Lno,

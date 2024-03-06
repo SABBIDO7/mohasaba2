@@ -16,13 +16,14 @@ export default function ConfirmPostInvoiceModal(props) {
                 <Modal.Body>
                     <div className="flex flex-row justify-around w[100%]">
                         <Button variant="danger" onClick={() => props.setModalShow(false)}>No</Button>
-                        <Button onClick={() =>onYesPress() }>Yes</Button>
+                        <Button onClick={() =>onYesPress()
+                         }>Yes</Button>
                     </div>
                 </Modal.Body>
             </Modal>
         </>
     );
-    function onYesPress(){
+    function onYesPress() {
         if (props.accno == ""){
 
         }else if(props.items.length == 0){
