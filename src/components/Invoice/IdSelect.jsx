@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import plus from "../../media/plus.png";
@@ -22,8 +22,26 @@ export default function IdSelect(props) {
     const [sItemTaxTotal, setsItemTaxTotal] = useState(0);
     const [sItemTotal, setsItemTotal] = useState(0);
     const [errorMessage, setErrorMessage] = useState("");
-    
-    
+    const [sItemPQUnit,setsItemPQunit] = useState();
+    const [sItemPType,setsItemPType] = useState("1");
+    const [sItemTotalPieces,setTotalPieces] = useState(1);
+    const [sItemPPrice,setsItemPPrice] = useState();
+    useEffect(() => {
+        // Calculate total pieces based on other inputs whenever they change
+        const calculateTotalPieces = () => {
+            let total = 0;
+            if (sItemPType === "3") {
+                total = sItemQty * sItemPQty * sItemPQUnit;
+            } else if (sItemPType === "2") {
+                total = sItemQty * sItemPQUnit;
+            } else {
+                total = sItemQty;
+            }
+            setTotalPieces(parseFloat(total).toFixed(3));
+        };
+
+        calculateTotalPieces();
+    }, [sItemQty, sItemPQty, sItemPQUnit, sItemPType]);
 
     return (
         <>
@@ -62,6 +80,11 @@ export default function IdSelect(props) {
                             setsItemDiscount(0);
                             setsItemPQty(io["PQty"]);
                             setsItemPUnit(io["PUnit"]);
+                            setsItemPQunit(io["PQUnit"]);
+                            setsItemPType("1");
+                            setsItemPPrice(io["PPrice"]);
+
+                        
                         }}
                     >
                         <div className="card-body">
@@ -178,7 +201,7 @@ export default function IdSelect(props) {
                         alt="minus"
                         className="h-6 cursor-pointer"
                         onClick={() => {
-                            setsItemQty(sItemQty - 1);
+                            setsItemQty(parseInt(sItemQty) - 1);
                         }}
                     />
                     <input
@@ -197,10 +220,24 @@ export default function IdSelect(props) {
                         alt="plus"
                         className="h-6 cursor-pointer"
                         onClick={() => {
-                            setsItemQty(sItemQty + 1);
+                            setsItemQty(parseInt(sItemQty) + 1);
                             
                         }}
                     />
+                    <select
+                            id="itemType"
+                            className="w-1/2 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                            value={sItemPType}
+                            onChange={(e) => {
+                                setsItemPType(e.target.value);
+                            }}
+                        >
+                             <option value="1">Piece</option>
+                             <option value="2">Packet</option>
+                            <option value="3">Box</option>
+                            
+                           
+                        </select>
                 </div>
             </div>
             <div className="flex items-center">
@@ -218,7 +255,7 @@ export default function IdSelect(props) {
                 />
             </div>
             <div className="flex items-center">
-                <label htmlFor="itemDiscount" className="w-1/4">% Discount:</label>
+                <label htmlFor="itemDiscount" className="w-1/4">Discount %:</label>
                 <input
                     id="itemDiscount"
                     type="number"
@@ -232,7 +269,7 @@ export default function IdSelect(props) {
                 />
             </div>
             <div className="flex items-center">
-                <label htmlFor="itemTax" className="w-1/4">% Tax:</label>
+                <label htmlFor="itemTax" className="w-1/4">Tax %:</label>
                 <input
                     id="itemTax"
                     type="number"
@@ -246,6 +283,19 @@ export default function IdSelect(props) {
                 />
             </div>
             <div className="flex items-center">
+                            <label htmlFor="itemPieceTotal" className="w-1/4">Total Pieces:</label>
+                            <input
+                                id="pieceTotal"
+                                type="number"
+                                readOnly
+                                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder="Total Pieces"
+                                value={sItemTotalPieces}
+                                
+                                
+                            />
+                        </div>
+            <div className="flex items-center">
                 <label htmlFor="itemTotal" className="w-1/4">Total:</label>
                 <input
                     id="itemTotal"
@@ -253,7 +303,7 @@ export default function IdSelect(props) {
                     readOnly
                     className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                     placeholder="Total"
-                    value={((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3)}
+                    value={parseFloat((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3)}
                     onChange={(e) => {
                         // if(sItemPrice=="" || sItemPrice==undefined){
                             
@@ -320,7 +370,7 @@ export default function IdSelect(props) {
                 name: e["AccName"],
                 date: formattedDate,
                 time: formattedTime,
-                RefNo:props.changingAccountInvoiceFromDB==''?'':props.changingAccountInvoiceFromDB
+                RefNo:props.changingAccountInvoiceFromDB=='' || props.changingAccountInvoiceFromDB==undefined?'':props.changingAccountInvoiceFromDB
             });
             props.setModalShow(false);
             props.setsOption("Items");
@@ -333,7 +383,7 @@ export default function IdSelect(props) {
                     name: e["AccName"],
                     date: formattedDate,
                     time: formattedTime,
-                    RefNo:props.changingAccountInvoiceFromDB==''?'':props.changingAccountInvoiceFromDB
+                    RefNo:props.changingAccountInvoiceFromDB=='' || props.changingAccountInvoiceFromDB==undefined?'':props.changingAccountInvoiceFromDB
                 },
 
                 items: props.si,
@@ -363,7 +413,7 @@ export default function IdSelect(props) {
                 uprice = 0
 
             setsItemPrice(uprice);
-            setsItemTotal(((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
+            setsItemTotal(((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
             setModalItems(true);
             props.setModalShow(false);
             //setsItemBranch(props.branches[0]["number"]);
@@ -414,15 +464,20 @@ export default function IdSelect(props) {
                 PUnit:sItemPUnit,
                 tax: tax,
                 TaxTotal: sItemTaxTotal.toFixed(3),
-                Total:(parseFloat(uprice) * parseFloat(sItemQty) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3),
+                Total:(parseFloat(uprice) * parseFloat(sItemTotalPieces) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3),
                 Note: sItemNote,
                 DateT: formattedDate,
                 TimeT: formattedTime,
+                PQUnit: sItemPQUnit,
+                PType: sItemPType,
+                TotalPieces:sItemTotalPieces,
+                PPrice:sItemPPrice
+
             },
         ];
         console.log("*//////////////////////*");
         console.log(tempsi);
-        setsItemTotal((parseFloat(uprice) * parseFloat(sItemQty) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3));
+        setsItemTotal((parseFloat(uprice) * parseFloat(sItemTotalPieces) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3));
         console.log(sItemTotal);
         console.log("--=");
         console.log("hhhhhhhhhhhhhhh", parseFloat(uprice).toFixed(3));

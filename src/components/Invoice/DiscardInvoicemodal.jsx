@@ -22,6 +22,7 @@ export default function DiscardInvoiceModal(props) {
                         <Button variant="danger" onClick={()=>{
                         props.callBack()
                         props.setModalShow(false)
+                        
                         }
                         }
                         >Yes</Button>

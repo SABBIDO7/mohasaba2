@@ -65,6 +65,7 @@ export default function SalesForm(props) {
     const [errorMessage, setErrorMessage] = useState('');
     const [changingAccountInvoiceFromDB,setchangingAccountInvoiceFromDB] = useState('')
     const [EditType,setEditType]= useState('1')
+    const [EditTotalPieces,setEditTotalPieces] = useState()
 
     const inputRef = useRef(null);
     const selectRef = useRef(null);
@@ -72,6 +73,23 @@ export default function SalesForm(props) {
     //let propertiesAreEqual = true;
     let finalTotal = 0;
     let finalTax = 0;
+
+    useEffect(() => {
+        // Calculate total pieces based on other inputs whenever they change
+        const calculateTotalPieces = () => {
+            let total = 0;
+            if (EditType === "3") {
+                total = EditQty * EditItem["PQty"] * EditItem["PQUnit"];
+            } else if (EditType === "2") {
+                total = EditQty * EditItem["PQUnit"];
+            } else {
+                total = EditQty;
+            }
+            setEditTotalPieces(parseFloat(total).toFixed(3));
+        };
+
+        calculateTotalPieces();
+    }, [EditBranch,EditDiscount,EditPrice,EditQty,EditTax,EditType]);
 
 // Function to handle the change event of the select element
 const handleSelectChange = (e) => {
@@ -161,6 +179,7 @@ const handleSelectChange = (e) => {
         console.log("//*/*/*/*/*/*/*////");
         console.log(jsonString);
         localStorage.setItem("sales", jsonString);
+        props.setpropertiesAreEqual(true);
 
     };
 
@@ -173,7 +192,8 @@ const handleSelectChange = (e) => {
             props.setClient(retrievedJson["accName"]);
             props.setSelectedItems(retrievedJson["items"]);
             setSelectedInvoice(localStorage.getItem("InvoiceHistory"));
-
+            console.log("POPOPOPOP[OPO")
+            console.log(retrievedJson["accName"]);
             console.log("drinkdrink");
             console.log(localStorage.getItem("InvoiceHistory"));
         
@@ -294,11 +314,20 @@ const handleSelectChange = (e) => {
                                 console.log("salmmmmmmmmmm");
                                 setItemsWithoutAccount(true);
                             }
-                            else if (((selectedInvoice!="" || props.Client["id"]!="" || props.Client["id"] != undefined) && sOption=="Accounts" && props.SelectedItems!=[]) || (selectedInvoice!="" && sOption=="Accounts")){
+                            else if (props.Client["id"] != "" && props.Client["id"] !=undefined && sOption=="Accounts"){
                                 console.log("tiriririoro");
+                                console.log(props.Client);
                                 console.log(selectedInvoice);
                                 setSearchAccountModalShow(true);
                             }
+
+                            
+                            // else if (((selectedInvoice!="" || props.Client["id"]!="" || props.Client["id"] != undefined) && sOption=="Accounts" && props.SelectedItems!=[]) || (selectedInvoice!="" && sOption=="Accounts")){
+                            //     console.log("tiriririoro");
+                            //     console.log(props.Client["id"]);
+                            //     console.log(selectedInvoice);
+                            //     setSearchAccountModalShow(true);
+                            // }
                             else{
                                 console.log(selectedInvoice);
                                 console.log("][][][][][]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]][]");
@@ -414,8 +443,7 @@ const handleSelectChange = (e) => {
                                         <th>UPrice</th>
                                         <th>Discount</th>
                                         <th>Tax</th>
-                                        <th>Total</th>
-                                        
+                                        <th>Total</th> 
                                         <th>Note</th>
                                         <th>Action</th>
                                     </tr>
@@ -427,7 +455,7 @@ const handleSelectChange = (e) => {
                                       props.SelectedItems.map((si, idx) => {
                                         console.log(si);
                                         let total =
-                                            (si["qty"] * si["uprice"])  *(1 - si["discount"] / 100);
+                                            (si["TotalPieces"] * si["uprice"])  *(1 - si["discount"] / 100);
 
                                         let tax = si["tax"] == "" ? 0 : si["tax"];                            
                                         si["tax"] = tax;
@@ -436,9 +464,9 @@ const handleSelectChange = (e) => {
                                        // setFtotal(finalTotal);
                                         finalTax = finalTax + taxAmount;
                                        // setFTax(finalTax);
-                                        si["TaxTotal"] = taxAmount;
+                                        si["TaxTotal"] = taxAmount.toFixed(3);
 
-                                        si["Total"] = ((si["uprice"]* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3)
+                                        si["Total"] = ((si["uprice"]* si["TotalPieces"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3)
                                         return (
                                             <tr
                                                 key={idx}
@@ -449,7 +477,7 @@ const handleSelectChange = (e) => {
                                                 <td>{si["no"]}</td>
                                                 <td>{si["name"]}</td>
                                                 <td>{si["branch"]}</td>
-                                                <td>{si["qty"]}</td>  
+                                                <td>{si["TotalPieces"]}</td>  
                                                 <td>{si["uprice"]}</td>
                                                 <td>{si["discount"]}%</td>
                                                 <td>{si["tax"]}%</td>
@@ -485,6 +513,8 @@ const handleSelectChange = (e) => {
                                                             setEditDiscount(si["discount"]);
                                                             setEditLno(si["lno"]);
                                                             setEditTotal(si["Total"]);
+                                                            setEditTotalPieces(si["TotalPieces"]);
+                                                            setEditType(si["PType"]);
                                                         }}
                                                     >
                                                         <FontAwesomeIcon icon={faEdit} />
@@ -655,9 +685,11 @@ const handleSelectChange = (e) => {
                                 setEditType(e.target.value);
                             }}
                         >
-                            <option value="1">Box</option>
-                            <option value="2">Packet</option>
-                            <option value="3">Piece</option>
+                             <option value="1">Piece</option>
+                             <option value="2">Packet</option>
+                            <option value="3">Box</option>
+                            
+                           
                         </select>
                 </div>
             </div>
@@ -724,16 +756,16 @@ const handleSelectChange = (e) => {
                         </div>
                       
                         <div className="flex items-center">
-                            <label htmlFor="itemTotal" className="w-1/4">Total:</label>
+                            <label htmlFor="itemPieceTotal" className="w-1/4">Total Pieces:</label>
                             <input
                                 id="pieceTotal"
                                 type="number"
                                 readOnly
                                 className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                                 placeholder="Total Pieces"
-                                value={(EditType=="1"?(EditPrice* EditQty*EditItem["PQty"]):"!").toFixed(3)}
+                                value={parseFloat(EditType=="3"?(EditQty*EditItem["PQty"]* EditItem["PQUnit"]):EditType=="2"?( EditQty*EditItem["PQUnit"]):(EditQty)).toFixed(3)}
                                 onChange={(e) => {
-                                    setEditTotal(e.target.value);
+                                    setEditTotalPieces(parseFloat(EditType=="1"?(EditQty*EditItem["PQty"]* EditItem["PQUnit"]):EditType=="2"?(EditQty*EditItem["PQUnit"]):(EditQty)).toFixed(3));
                                 }}
                                 
                             />
@@ -747,7 +779,7 @@ const handleSelectChange = (e) => {
                                 readOnly
                                 className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                                 placeholder="Total"
-                                value={((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)}
+                                value={parseFloat((EditPrice* EditTotalPieces)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)}
                                 onChange={(e) => {
                                     setEditTotal(e.target.value);
                                 }}
@@ -787,13 +819,14 @@ const handleSelectChange = (e) => {
                                         tempQty = EditQty;
                                     }
                                     
-                                    
+                                    let PQUnitT = tempa[EditIdx]["PQUnit"];
                                     let PQtyT = tempa[EditIdx]["PQty"];
                                     let PUnitT = tempa[EditIdx]["PUnit"];
                                     let DateTT = tempa[EditIdx]["DateT"];
                                     let TimeTT = tempa[EditIdx]["TimeT"];
                                     
                                     let NoteT = tempa[EditIdx]["Note"];
+                                    let PPriceT = tempa[EditIdx]["PPrice"];
                                     let oldtempa= tempa[EditIdx];
                                     
                                     
@@ -808,14 +841,15 @@ const handleSelectChange = (e) => {
                                         PQty: PQtyT,
                                         PUnit:PUnitT,
                                         tax: EditTax,
-                                        TaxTotal: ((EditPrice* EditQty)*(1-EditDiscount/100)*(EditTax/100)).toFixed(3),
-                                        
-                                       
-                                       
-                                        Total:((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3),
+                                        TaxTotal: ((EditPrice* EditTotalPieces)*(1-EditDiscount/100)*(EditTax/100)).toFixed(3),
+                                        Total:((EditPrice* EditTotalPieces)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3),
                                         Note: NoteT,
                                         DateT: DateTT,
                                         TimeT: TimeTT,
+                                        PQUnit: PQUnitT,
+                                        PType:EditType,
+                                        TotalPieces:EditTotalPieces,
+                                        PPrice:PPriceT
                                     };
                                     console.log("edipricee",tempa[EditIdx]["uprice"]);
                                     let pAreEqual= true;
@@ -1145,11 +1179,15 @@ const handleSelectChange = (e) => {
     function discardInvoice(){
         props.setClient({
             id:"",
-            name:""
+            name:"",
+            RefNo:"",
+            date:"",
+            time:"",
         });
         props.setSelectedItems([]);
         localStorage.setItem("sales", "");
         props.setpropertiesAreEqual(true);
+        props.setSelectedInvoice("");
     }
 
 }
