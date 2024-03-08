@@ -20,8 +20,9 @@ export default function DiscardInvoiceModal(props) {
                     <div className="flex flex-row w-full justify-around">
                         <Button onClick={()=>props.setModalShow(false)}>No</Button>
                         <Button variant="danger" onClick={()=>{
-                        props.callBack()
-                        props.setModalShow(false)
+                            props.setModalShow(false);
+                            props.callBack();
+                        
                         
                         }
                         }

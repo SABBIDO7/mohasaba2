@@ -1,10 +1,10 @@
-import React, { useState,useEffect } from "react";
+import React, { useState,useEffect, forwardRef, useImperativeHandle } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import plus from "../../media/plus.png";
 import minus from "../../media/minus.png";
 
-export default function IdSelect(props) {
+const IdSelect = forwardRef((props,ref) => {
     const [modalShow, setModalShow] = useState(false);
 
     const [modalItems, setModalItems] = useState(false);
@@ -26,6 +26,17 @@ export default function IdSelect(props) {
     const [sItemPType,setsItemPType] = useState("1");
     const [sItemTotalPieces,setTotalPieces] = useState(1);
     const [sItemPPrice,setsItemPPrice] = useState();
+    const [sItemDBPUnit,setsItemBPUnit] = useState();
+    const [sItemDSPUnit,setsItemDSPUnit] = useState();
+
+    useImperativeHandle(ref, () => ({
+        // Define functions here
+        selectHandler: (e,idx) => {
+            selectHandler(e,idx);
+        },
+        
+    }));
+
     useEffect(() => {
         // Calculate total pieces based on other inputs whenever they change
         const calculateTotalPieces = () => {
@@ -83,6 +94,10 @@ export default function IdSelect(props) {
                             setsItemPQunit(io["PQUnit"]);
                             setsItemPType("1");
                             setsItemPPrice(io["PPrice"]);
+                            setsItemBPUnit(io["BPUnit"]);
+                            setsItemDSPUnit(io["SPUnit"]);
+
+                            
 
                         
                         }}
@@ -232,14 +247,27 @@ export default function IdSelect(props) {
                                 setsItemPType(e.target.value);
                             }}
                         >
-                             <option value="1">Piece</option>
-                             <option value="2">Packet</option>
-                            <option value="3">Box</option>
+                             <option value="1">{sItemDSPUnit}</option>
+                             <option value="2">{sItemPUnit}</option>
+                            <option value="3">{sItemDBPUnit}</option>
                             
                            
                         </select>
                 </div>
             </div>
+            <div className="flex items-center">
+                            <label htmlFor="itemPieceTotal" className="w-1/4">Total Qty:</label>
+                            <input
+                                id="pieceTotal"
+                                type="number"
+                                readOnly
+                                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder="Total Pieces"
+                                value={sItemTotalPieces}
+                                
+                                
+                            />
+                        </div>
             <div className="flex items-center">
                 <label htmlFor="itemPrice" className="w-1/4">Uprice:</label>
                 <input
@@ -282,19 +310,7 @@ export default function IdSelect(props) {
                     }}
                 />
             </div>
-            <div className="flex items-center">
-                            <label htmlFor="itemPieceTotal" className="w-1/4">Total Pieces:</label>
-                            <input
-                                id="pieceTotal"
-                                type="number"
-                                readOnly
-                                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
-                                placeholder="Total Pieces"
-                                value={sItemTotalPieces}
-                                
-                                
-                            />
-                        </div>
+
             <div className="flex items-center">
                 <label htmlFor="itemTotal" className="w-1/4">Total:</label>
                 <input
@@ -303,7 +319,7 @@ export default function IdSelect(props) {
                     readOnly
                     className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                     placeholder="Total"
-                    value={parseFloat((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3)}
+                    value={ sItemPPrice=="U"?  parseFloat((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3):sItemPPrice=="P"? parseFloat((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3):parseFloat((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3)}
                     onChange={(e) => {
                         // if(sItemPrice=="" || sItemPrice==undefined){
                             
@@ -348,6 +364,17 @@ export default function IdSelect(props) {
     );
     function selectHandler(e, idx) {
         if (props.sOption == "Accounts") {
+            if (props.Client["id"] != "" && props.Client["id"] !=undefined && idx!="fromParent"){
+                console.log("tiriririoro");
+           
+                
+                props.setnewAccount(e["AccNo"]);
+            
+                props.sethandlingAccWhenChanging(e);
+                props.setSearchAccountModalShow(true);
+                
+                return;
+            }
             props.setClient({
                 id:"",
                 name:"",
@@ -377,6 +404,7 @@ export default function IdSelect(props) {
             props.setvInput("");
             props.setOption([]);
             document.getElementById("tf").focus();
+
             props.handleSave({
                 accName: {
                     id: e["AccNo"],
@@ -388,7 +416,8 @@ export default function IdSelect(props) {
 
                 items: props.si,
             });
-            console.log(props.setClient.RefNo);
+           
+            props.setpropertiesAreEqual(false);
 
         } else if (props.sOption === "Items") {
             let uprice = 0;
@@ -409,11 +438,21 @@ export default function IdSelect(props) {
             // }
             let prefix = localStorage.getItem("SalePrice"); //SalePrice number 
             uprice = e[`SPrice${prefix}`];
-            if (uprice==""|| uprice ==null || uprice == undefined)
-                uprice = 0
+            if (uprice==""|| uprice ==null || uprice == undefined){
+                uprice = 0;
+            
+            }
+              
 
             setsItemPrice(uprice);
-            setsItemTotal(((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
+            if(sItemPPrice=="U"){
+                setsItemTotal(((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
+            }
+            else if(sItemPPrice=="P"){
+                setsItemTotal(((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
+
+            }
+            //setsItemTotal(((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
             setModalItems(true);
             props.setModalShow(false);
             //setsItemBranch(props.branches[0]["number"]);
@@ -429,6 +468,9 @@ export default function IdSelect(props) {
             }
            
             setsItemBranch(ItemBranch);
+            props.setpropertiesAreEqual(false);
+          
+
         }
     }
     function addItem() {
@@ -464,20 +506,29 @@ export default function IdSelect(props) {
                 PUnit:sItemPUnit,
                 tax: tax,
                 TaxTotal: sItemTaxTotal.toFixed(3),
-                Total:(parseFloat(uprice) * parseFloat(sItemTotalPieces) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3),
+                Total:sItemPPrice=="U"?
+                (parseFloat(uprice) * parseFloat(sItemTotalPieces) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3):sItemPPrice=="P"?(parseFloat(uprice) * parseFloat(sItemQty) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3):(parseFloat(uprice) * parseFloat(sItemQty) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3),
                 Note: sItemNote,
                 DateT: formattedDate,
                 TimeT: formattedTime,
                 PQUnit: sItemPQUnit,
                 PType: sItemPType,
                 TotalPieces:sItemTotalPieces,
-                PPrice:sItemPPrice
+                PPrice:sItemPPrice,
+                BPUnit:sItemDBPUnit,
+                SPUnit:sItemDSPUnit
+
 
             },
         ];
         console.log("*//////////////////////*");
         console.log(tempsi);
-        setsItemTotal((parseFloat(uprice) * parseFloat(sItemTotalPieces) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3));
+        if(sItemPPrice=="U"){
+            setsItemTotal((parseFloat(uprice) * parseFloat(sItemTotalPieces) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3));
+        }else if(sItemPPrice=="P"){
+            setsItemTotal((parseFloat(uprice) * parseFloat(sItemQty) * (1 - parseFloat(discount) / 100) * (1 + parseFloat(sItemTax) / 100)).toFixed(3));
+        }
+        
         console.log(sItemTotal);
         console.log("--=");
         console.log("hhhhhhhhhhhhhhh", parseFloat(uprice).toFixed(3));
@@ -497,3 +548,6 @@ export default function IdSelect(props) {
         document.getElementById("tf").focus();
     }
 }
+);
+
+export default IdSelect;

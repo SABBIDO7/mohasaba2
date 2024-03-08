@@ -37,6 +37,10 @@ export default function SalesForm(props) {
 
     const [EditIdx, setEditIdx] = useState(0);
     const [EditTotal, setEditTotal] = useState(0);
+    const [EditDBPUnit,setEditDBPUnit] = useState();
+    const [EditDPUnit,setEditDPUnit] = useState();
+    const [EditDSPUnit,setEditDSPUnit] = useState();
+    const [EditPPrice,setEditPPrice] = useState();
 
     //confirm modal state
     const [confirmModalShow, setConfirmModalShow] = useState(false);
@@ -65,11 +69,13 @@ export default function SalesForm(props) {
     const [errorMessage, setErrorMessage] = useState('');
     const [changingAccountInvoiceFromDB,setchangingAccountInvoiceFromDB] = useState('')
     const [EditType,setEditType]= useState('1')
-    const [EditTotalPieces,setEditTotalPieces] = useState()
+    const [EditTotalPieces,setEditTotalPieces] = useState();
+    const [newAccount,setnewAccount] = useState("");
 
     const inputRef = useRef(null);
     const selectRef = useRef(null);
     const selectInvRef = useRef(null);
+    const childRef = useRef();
     //let propertiesAreEqual = true;
     let finalTotal = 0;
     let finalTax = 0;
@@ -313,13 +319,14 @@ const handleSelectChange = (e) => {
                             if((props.Client["id"]=="" || props.Client["id"] == undefined) && sOption=="Items"){
                                 console.log("salmmmmmmmmmm");
                                 setItemsWithoutAccount(true);
+
                             }
-                            else if (props.Client["id"] != "" && props.Client["id"] !=undefined && sOption=="Accounts"){
-                                console.log("tiriririoro");
-                                console.log(props.Client);
-                                console.log(selectedInvoice);
-                                setSearchAccountModalShow(true);
-                            }
+                            // else if (props.Client["id"] != "" && props.Client["id"] !=undefined && sOption=="Accounts"){
+                            //     console.log("tiriririoro");
+                            //     console.log(props.Client);
+                            //     console.log(selectedInvoice);
+                            //     setSearchAccountModalShow(true);
+                            // }
 
                             
                             // else if (((selectedInvoice!="" || props.Client["id"]!="" || props.Client["id"] != undefined) && sOption=="Accounts" && props.SelectedItems!=[]) || (selectedInvoice!="" && sOption=="Accounts")){
@@ -515,6 +522,11 @@ const handleSelectChange = (e) => {
                                                             setEditTotal(si["Total"]);
                                                             setEditTotalPieces(si["TotalPieces"]);
                                                             setEditType(si["PType"]);
+                                                            setEditDBPUnit(si["BPUnit"]);
+                                                            setEditDPUnit(si["PUnit"]);
+                                                            setEditDSPUnit(si["SPUnit"]);
+                                                            setEditPPrice(si["PPrice"]);
+                                                            
                                                         }}
                                                     >
                                                         <FontAwesomeIcon icon={faEdit} />
@@ -566,25 +578,35 @@ const handleSelectChange = (e) => {
                                 </Button>
                                 <Button className="my-2" variant="primary" onClick={() => {
                                     //if(props.Client["id"]!=undefined){
-                                        console.log("/*//////////");
-                                        console.log(props.SelectedItems.length);
+                                    //     console.log("/*//////////");
+                                    //     console.log(props.SelectedItems.length);
+                                    //     console.log(props.Client["id"]);
+                                    //     console.log(props.setSelectedItems.length);
+                                    if((props.Client["id"]!=undefined || props.Client["id"]!="") && props.SelectedItems.length > 0){
+                                        console.log("hhey")
                                         console.log(props.Client["id"]);
-                                        console.log(props.setSelectedItems.length);
-
+                                        console.log(props.SelectedItems);
                                         setNewInvoiceAlertModalShow(true);
+                                    }else{
+                                        clearInvoice()
+
+
+                                    }
+                                         
                                         
 
                                     
                                     
-                                    inputRef.current.focus();
+                                    // inputRef.current.focus();
                                     //selectRef.current.value="Accounts";
                                     
 
                                     
                                     
                                 }}>
-                                    New Invoice
+                                    Clear Invoice
                                 </Button>
+                                
                                 <Button
                                     className="my-2"
                                     variant="primary"
@@ -607,6 +629,7 @@ const handleSelectChange = (e) => {
                 </div>
             </div>
             <IdSelect
+            ref={childRef}
                 options={IdOptions}
                 setOption={setIdOptions}
                 show={modalShow}
@@ -624,9 +647,17 @@ const handleSelectChange = (e) => {
                 setsInvoices={setsInvoices}
                 changingAccountInvoiceFromDB={changingAccountInvoiceFromDB}
                 setchangingAccountInvoiceFromDB={setchangingAccountInvoiceFromDB}
-                
-                
+                propertiesAreEqual={props.propertiesAreEqual}
+                setpropertiesAreEqual={props.setpropertiesAreEqual}
+                SearchAccountModalShow={SearchAccountModalShow}
+                setSearchAccountModalShow={setSearchAccountModalShow}
+                newAccount={newAccount}
+                setnewAccount={setnewAccount}
+                sethandlingAccWhenChanging={props.sethandlingAccWhenChanging}
+                handlingAccWhenChanging={props.handlingAccWhenChanging}
             />
+           
+
             <Modal
             backdrop="static"
             keyboard={false}
@@ -685,30 +716,29 @@ const handleSelectChange = (e) => {
                                 setEditType(e.target.value);
                             }}
                         >
-                             <option value="1">Piece</option>
-                             <option value="2">Packet</option>
-                            <option value="3">Box</option>
+                             <option value="1">{EditDSPUnit}</option>
+                             <option value="2">{EditDPUnit}</option>
+                            <option value="3">{EditDBPUnit}</option>
                             
                            
                         </select>
                 </div>
             </div>
-                       
-                        <div className="flex items-center">
-                <label htmlFor="itemPrice" className="w-1/4">Uprice:</label>
-                <input
-              
-                    type="number"
-                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
-                    placeholder={"Uprice"}
-                    value={EditPrice}
-                    onChange={(e) => {
-                        setEditPrice(e.target.value);
-                    }}
-                />
-            </div>
-                        
-
+            <div className="flex items-center">
+                            <label htmlFor="itemPieceTotal" className="w-1/4">Total Qty:</label>
+                            <input
+                                id="pieceTotal"
+                                type="number"
+                                readOnly
+                                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder="Total Pieces"
+                                value={parseFloat(EditType=="3"?(EditQty*EditItem["PQty"]* EditItem["PQUnit"]):EditType=="2"?( EditQty*EditItem["PQUnit"]):(EditQty)).toFixed(3)}
+                                onChange={(e) => {
+                                    setEditTotalPieces(parseFloat(EditType=="1"?(EditQty*EditItem["PQty"]* EditItem["PQUnit"]):EditType=="2"?(EditQty*EditItem["PQUnit"]):(EditQty)).toFixed(3));
+                                }}
+                                
+                            />
+                        </div>
                         <div className="flex items-center">
                 <label htmlFor="itemBranch" className="w-1/4">Branch:</label>
                 <select
@@ -727,6 +757,23 @@ const handleSelectChange = (e) => {
                     })}
                 </select>
             </div>
+                       
+                        <div className="flex items-center">
+                <label htmlFor="itemPrice" className="w-1/4">Uprice:</label>
+                <input
+              
+                    type="number"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    placeholder={"Uprice"}
+                    value={EditPrice}
+                    onChange={(e) => {
+                        setEditPrice(e.target.value);
+                    }}
+                />
+            </div>
+                        
+
+                       
                         <div className="flex items-center">
                             <label htmlFor="itemDiscount" className="w-1/4">Discount %:</label>
                             <input
@@ -755,21 +802,7 @@ const handleSelectChange = (e) => {
                             />
                         </div>
                       
-                        <div className="flex items-center">
-                            <label htmlFor="itemPieceTotal" className="w-1/4">Total Pieces:</label>
-                            <input
-                                id="pieceTotal"
-                                type="number"
-                                readOnly
-                                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
-                                placeholder="Total Pieces"
-                                value={parseFloat(EditType=="3"?(EditQty*EditItem["PQty"]* EditItem["PQUnit"]):EditType=="2"?( EditQty*EditItem["PQUnit"]):(EditQty)).toFixed(3)}
-                                onChange={(e) => {
-                                    setEditTotalPieces(parseFloat(EditType=="1"?(EditQty*EditItem["PQty"]* EditItem["PQUnit"]):EditType=="2"?(EditQty*EditItem["PQUnit"]):(EditQty)).toFixed(3));
-                                }}
-                                
-                            />
-                        </div>
+                   
 
                         <div className="flex items-center">
                             <label htmlFor="itemTotal" className="w-1/4">Total:</label>
@@ -779,7 +812,11 @@ const handleSelectChange = (e) => {
                                 readOnly
                                 className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                                 placeholder="Total"
-                                value={parseFloat((EditPrice* EditTotalPieces)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)}
+                                value={EditPPrice=="U"?
+                                    parseFloat((EditPrice* EditTotalPieces)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
+                                :EditPPrice=="P"? parseFloat((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
+                                : parseFloat((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
+                            }
                                 onChange={(e) => {
                                     setEditTotal(e.target.value);
                                 }}
@@ -842,7 +879,10 @@ const handleSelectChange = (e) => {
                                         PUnit:PUnitT,
                                         tax: EditTax,
                                         TaxTotal: ((EditPrice* EditTotalPieces)*(1-EditDiscount/100)*(EditTax/100)).toFixed(3),
-                                        Total:((EditPrice* EditTotalPieces)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3),
+                                        Total:EditPPrice=="U"?
+                                        parseFloat((EditPrice* EditTotalPieces)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
+                                    :EditPPrice=="P"? parseFloat((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
+                                    : parseFloat((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3),
                                         Note: NoteT,
                                         DateT: DateTT,
                                         TimeT: TimeTT,
@@ -951,10 +991,10 @@ const handleSelectChange = (e) => {
                 keyboard={false}
                 centered>
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">Unsaved Invoice</Modal.Title>
+                    <Modal.Title id="contained-modal-title-vcenter">Cancel Invoice</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4>Are You Sure You Want To Ignore Current Invoice?</h4>
+                    <h4>Are You Sure You Want To Clear Current Invoice?</h4>
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="flex flex-row w-full justify-around">
@@ -962,26 +1002,7 @@ const handleSelectChange = (e) => {
                         <Button variant="danger" onClick={()=>{
                         //props.callBack()
 
-                        setsOption("Accounts");
-                        console.log("__________*****");
-                        props.setpropertiesAreEqual(true);//lola
-                        setvInput("");
-                        setSelectedInvoice("")
-                        setNewInvoiceAlertModalShow(false);
-                        props.setClient({
-                            id:"",
-                            name:"",
-                            RefNo:"",
-                            date:"",
-                            time:"",
-                        });
-                        props.setSelectedItems([]);
-                        localStorage.setItem("sales", "");
-                       // setsInvoices([]);
-                        
-                        setSelectedInvoice("");
-                       
-                        console.log(props.propertiesAreEqual);
+                      clearInvoice();
                         
                         }
                         }
@@ -1045,7 +1066,7 @@ const handleSelectChange = (e) => {
                     <Modal.Title id="contained-modal-title-vcenter">Change Invoice Account</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4>Are You Sure You Want To Change the Account Invoice From {props.Client.id} to {vInput} ?</h4>
+                    <h4>Are You Sure You Want To Change the Account Invoice From {props.Client.id} to {newAccount} ?</h4>
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="flex flex-row w-full justify-around">
@@ -1059,6 +1080,7 @@ const handleSelectChange = (e) => {
                         setModalShow(true);
                        // setSelectedInvoice("");
                         setSearchAccountModalShow(false);
+                        childRef.current.selectHandler(props.handlingAccWhenChanging,"fromParent");
                         
                         
                         
@@ -1187,7 +1209,30 @@ const handleSelectChange = (e) => {
         props.setSelectedItems([]);
         localStorage.setItem("sales", "");
         props.setpropertiesAreEqual(true);
-        props.setSelectedInvoice("");
+        setSelectedInvoice("");
+        console.log("selectedInvoice");
+        console.log(props.selectedInvoice);
+    }
+    function clearInvoice(){
+        setsOption("Accounts");
+  
+        props.setpropertiesAreEqual(true);//lola
+        setvInput("");
+        setSelectedInvoice("");
+        setNewInvoiceAlertModalShow(false);
+        props.setClient({
+            id:"",
+            name:"",
+            RefNo:"",
+            date:"",
+            time:"",
+        });
+        props.setSelectedItems([]);
+        localStorage.setItem("sales", "");
+       // setsInvoices([]);
+        
+        setSelectedInvoice("");
+        inputRef.current.focus();
     }
 
 }

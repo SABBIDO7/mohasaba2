@@ -21,7 +21,7 @@ export default function Invoice(props) {
         msg:"No Invoice Created"
     });
     const [propertiesAreEqual, setpropertiesAreEqual] = useState(true);
-
+    const [handlingAccWhenChanging,sethandlingAccWhenChanging] = useState();
     function sInvoiceHandler(e) {
         setSInvoice(e);
     }
@@ -112,6 +112,8 @@ export default function Invoice(props) {
                                 setSelectedItems={setSelectedItems}
                                 propertiesAreEqual={propertiesAreEqual}
                                 setpropertiesAreEqual={setpropertiesAreEqual}
+                                sethandlingAccWhenChanging={sethandlingAccWhenChanging}
+                                handlingAccWhenChanging={handlingAccWhenChanging}
                                 
                             />
                           
