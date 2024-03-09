@@ -23,7 +23,7 @@ const IdSelect = forwardRef((props,ref) => {
     const [sItemTotal, setsItemTotal] = useState(0);
     const [errorMessage, setErrorMessage] = useState("");
     const [sItemPQUnit,setsItemPQunit] = useState();
-    const [sItemPType,setsItemPType] = useState("1");
+    const [sItemPType,setsItemPType] = useState("");
     const [sItemTotalPieces,setTotalPieces] = useState(1);
     const [sItemPPrice,setsItemPPrice] = useState();
     const [sItemDBPUnit,setsItemBPUnit] = useState();
@@ -82,6 +82,7 @@ const IdSelect = forwardRef((props,ref) => {
                         key={idx}
                         className="bg-gradient-to-br from-gray-300 to-zinc-200 shadow-sm p-2 rounded my-2"
                         onClick={(e) => {
+                            console.log("kkjjjhhgg");
                             console.log(io);
                             selectHandler(io, idx);
                             setsItemNo(io["ItemNo"]);
@@ -92,7 +93,8 @@ const IdSelect = forwardRef((props,ref) => {
                             setsItemPQty(io["PQty"]);
                             setsItemPUnit(io["PUnit"]);
                             setsItemPQunit(io["PQUnit"]);
-                            setsItemPType("1");
+                            {sItemDBPUnit && sItemDBPUnit.trim() !== '' ? setsItemPType("3"): sItemPUnit && sItemPUnit.trim() !== ''?setsItemPType("2"):setsItemPType("1")}
+                           // setsItemPType("1");
                             setsItemPPrice(io["PPrice"]);
                             setsItemBPUnit(io["BPUnit"]);
                             setsItemDSPUnit(io["SPUnit"]);
@@ -123,6 +125,7 @@ const IdSelect = forwardRef((props,ref) => {
                         className="bg-gradient-to-br from-gray-300 to-zinc-200 shadow-sm p-2 rounded my-2"
                         onClick={(e) => {
                             console.log(io);
+                            props.setchangingAccountInvoiceFromDB(props.Client.RefNo);
                             selectHandler(io, idx);
                         }}
                     >
@@ -247,9 +250,11 @@ const IdSelect = forwardRef((props,ref) => {
                                 setsItemPType(e.target.value);
                             }}
                         >
-                             <option value="1">{sItemDSPUnit}</option>
-                             <option value="2">{sItemPUnit}</option>
-                            <option value="3">{sItemDBPUnit}</option>
+                            
+                            {sItemDBPUnit && sItemDBPUnit.trim() !== '' && <option value="3">{sItemDBPUnit}</option>}            
+                            {sItemPUnit && sItemPUnit.trim() !== '' && <option value="2">{sItemPUnit}</option>}
+    
+                            {sItemDSPUnit && sItemDSPUnit.trim() !== '' && <option value="1">{sItemDSPUnit}</option>}
                             
                            
                         </select>
@@ -319,7 +324,7 @@ const IdSelect = forwardRef((props,ref) => {
                     readOnly
                     className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                     placeholder="Total"
-                    value={ sItemPPrice=="U"?  parseFloat((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3):sItemPPrice=="P"? parseFloat((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3):parseFloat((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3)}
+                    value={ sItemPPrice=="U"?  parseFloat((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3):sItemPPrice=="P"&& sItemPType==3? parseFloat((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3):sItemPPrice=="P"&& sItemPType==2? parseFloat(((sItemPrice/sItemPQty) * sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3):sItemPPrice=="P"&& sItemPType==1 && parseFloat(((sItemPrice/sItemPQUnit*sItemPQty) * sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3)}
                     onChange={(e) => {
                         // if(sItemPrice=="" || sItemPrice==undefined){
                             
@@ -371,6 +376,7 @@ const IdSelect = forwardRef((props,ref) => {
                 props.setnewAccount(e["AccNo"]);
             
                 props.sethandlingAccWhenChanging(e);
+                
                 props.setSearchAccountModalShow(true);
                 
                 return;
@@ -449,7 +455,17 @@ const IdSelect = forwardRef((props,ref) => {
                 setsItemTotal(((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
             }
             else if(sItemPPrice=="P"){
-                setsItemTotal(((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
+                if(sItemPPrice=="3"){
+                    setsItemTotal(((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
+
+                }
+                else if(sItemPPrice=="2"){
+                    setsItemTotal((((sItemPrice/sItemPQty)* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
+
+                }
+                else if(sItemPPrice=="1"){
+                    setsItemTotal((((sItemPrice/(sItemPQty*sItemPQUnit)* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3)));
+                }
 
             }
             //setsItemTotal(((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));

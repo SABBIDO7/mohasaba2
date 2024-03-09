@@ -68,7 +68,7 @@ export default function SalesForm(props) {
     const [passSelectedInvoiceToModal,setpassSelectedInvoiceToModal] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [changingAccountInvoiceFromDB,setchangingAccountInvoiceFromDB] = useState('')
-    const [EditType,setEditType]= useState('1')
+    const [EditType,setEditType]= useState("")
     const [EditTotalPieces,setEditTotalPieces] = useState();
     const [newAccount,setnewAccount] = useState("");
 
@@ -251,7 +251,7 @@ const handleSelectChange = (e) => {
             getInvoicesHistory();
            // handleSelectChange("");
            // selectRef.current.value = "Accounts";
-           setSelectedInvoice("");
+           //setSelectedInvoice("");
             setsOption("Accounts");
             selectInvRef.current.value = "" ;
         } catch (error) {
@@ -270,7 +270,8 @@ const handleSelectChange = (e) => {
                         alt="Back"
                         className="h-8 mr-2"
                         onClick={() =>{
-                            if(selectedInvoice!=""){
+                            //if(selectedInvoice!=""){
+                                if(props.setpropertiesAreEqual==false){
                                 
                                 console.log(props.propertiesAreEqual);
                                 console.log("lklklkk")
@@ -461,8 +462,17 @@ const handleSelectChange = (e) => {
                                       //  console.log(SelectedItems);
                                       props.SelectedItems.map((si, idx) => {
                                         console.log(si);
-                                        let total =
-                                            (si["TotalPieces"] * si["uprice"])  *(1 - si["discount"] / 100);
+                                        let total;
+                                        if(si["PPrice"]=="U"){
+                                            total =  parseFloat((si["uprice"]* si["TotalPieces"])*(1-si["discount"]/100));
+                                        }
+                                        else if(si["PPrice"]=="P"){
+                                            total =  parseFloat((si["uprice"]* si["qty"])*(1-si["discount"]/100));
+                                        }
+
+                                    
+                                        // let total =
+                                        //     (si["TotalPieces"] * si["uprice"])  *(1 - si["discount"] / 100);
 
                                         let tax = si["tax"] == "" ? 0 : si["tax"];                            
                                         si["tax"] = tax;
@@ -472,8 +482,14 @@ const handleSelectChange = (e) => {
                                         finalTax = finalTax + taxAmount;
                                        // setFTax(finalTax);
                                         si["TaxTotal"] = taxAmount.toFixed(3);
-
-                                        si["Total"] = ((si["uprice"]* si["TotalPieces"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3)
+                                        let totalf;
+                                        if(si["PPrice"]=="U"){
+                                            totalf =  parseFloat((si["uprice"]* si["TotalPieces"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
+                                        }
+                                        else if(si["PPrice"]=="P"){
+                                            totalf =  parseFloat((si["uprice"]* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
+                                        }
+                                        si["Total"] = totalf;
                                         return (
                                             <tr
                                                 key={idx}
@@ -526,6 +542,7 @@ const handleSelectChange = (e) => {
                                                             setEditDPUnit(si["PUnit"]);
                                                             setEditDSPUnit(si["SPUnit"]);
                                                             setEditPPrice(si["PPrice"]);
+
                                                             
                                                         }}
                                                     >
@@ -582,14 +599,14 @@ const handleSelectChange = (e) => {
                                     //     console.log(props.SelectedItems.length);
                                     //     console.log(props.Client["id"]);
                                     //     console.log(props.setSelectedItems.length);
-                                    if((props.Client["id"]!=undefined || props.Client["id"]!="") && props.SelectedItems.length > 0){
+                                   // if((props.Client["id"]!=undefined && props.Client["id"]!="") || props.SelectedItems.length > 0){
+                                    if(props.propertiesAreEqual==false){
                                         console.log("hhey")
                                         console.log(props.Client["id"]);
                                         console.log(props.SelectedItems);
                                         setNewInvoiceAlertModalShow(true);
                                     }else{
-                                        clearInvoice()
-
+                                        clearInvoice();
 
                                     }
                                          
@@ -716,9 +733,11 @@ const handleSelectChange = (e) => {
                                 setEditType(e.target.value);
                             }}
                         >
-                             <option value="1">{EditDSPUnit}</option>
-                             <option value="2">{EditDPUnit}</option>
-                            <option value="3">{EditDBPUnit}</option>
+                            {/* {EditDBPUnit && EditDBPUnit.trim() !== '' ? setEditType("3"): EditDPUnit && EditDPUnit.trim() !== ''?setEditType("2"):setEditType("1")} */}
+                            {EditDBPUnit && EditDBPUnit.trim() !=="" && <option value="3">{EditDBPUnit}</option> }
+                            
+                            {EditDPUnit && EditDPUnit.trim() !=="" && <option value="2">{EditDPUnit}</option> }
+                            {EditDSPUnit && EditDBPUnit.trim() !=="" && <option value="1">{EditDSPUnit}</option> }
                             
                            
                         </select>
@@ -1074,7 +1093,7 @@ const handleSelectChange = (e) => {
                         <Button variant="danger" onClick={()=>{
                         //props.callBack()
                         
-                        setchangingAccountInvoiceFromDB(props.Client.RefNo);
+                        
                        
                        getInvoiceOptions();
                         setModalShow(true);
