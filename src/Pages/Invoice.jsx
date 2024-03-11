@@ -205,6 +205,7 @@ export default function Invoice(props) {
                 setSelectedItems([])
                 localStorage.setItem("sales", "")
                 setpropertiesAreEqual(true);
+                localStorage.setItem("InvoiceHistory","");
                 downloadPDF(data);
                
                 

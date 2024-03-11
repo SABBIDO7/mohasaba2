@@ -28,6 +28,7 @@ const IdSelect = forwardRef((props,ref) => {
     const [sItemPPrice,setsItemPPrice] = useState();
     const [sItemDBPUnit,setsItemBPUnit] = useState();
     const [sItemDSPUnit,setsItemDSPUnit] = useState();
+    const [sItemInitial,setsItemInitial] = useState();
 
     useImperativeHandle(ref, () => ({
         // Define functions here
@@ -53,6 +54,26 @@ const IdSelect = forwardRef((props,ref) => {
 
         calculateTotalPieces();
     }, [sItemQty, sItemPQty, sItemPQUnit, sItemPType]);
+
+    useEffect(() => {
+        // Calculate total pieces based on other inputs whenever they change
+        const calculateUprice = () => {
+            let total = 0;
+            if (sItemPType === "3") {
+                total = sItemInitial;
+            } else if (sItemPType === "2") {
+                total = sItemInitial / sItemPQty;
+            } else {
+                total = sItemInitial / (sItemPQty * sItemPQUnit);
+            }
+            setsItemPrice(parseFloat(total).toFixed(3));
+        };
+        if(sItemPPrice=="P"){
+            calculateUprice();
+        }
+        
+    }, [sItemPType]);
+
 
     return (
         <>
@@ -324,7 +345,7 @@ const IdSelect = forwardRef((props,ref) => {
                     readOnly
                     className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                     placeholder="Total"
-                    value={ sItemPPrice=="U"?  parseFloat((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3):sItemPPrice=="P"&& sItemPType==3? parseFloat((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3):sItemPPrice=="P"&& sItemPType==2? parseFloat(((sItemPrice/sItemPQty) * sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3):sItemPPrice=="P"&& sItemPType==1 && parseFloat(((sItemPrice/sItemPQUnit*sItemPQty) * sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3)}
+                    value={ sItemPPrice=="U"?  parseFloat((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3):sItemPPrice=="P" && parseFloat((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3)}
                     onChange={(e) => {
                         // if(sItemPrice=="" || sItemPrice==undefined){
                             
@@ -422,7 +443,7 @@ const IdSelect = forwardRef((props,ref) => {
 
                 items: props.si,
             });
-           
+            localStorage.setItem("InvoiceHistory","");
             props.setpropertiesAreEqual(false);
 
         } else if (props.sOption === "Items") {
@@ -448,6 +469,7 @@ const IdSelect = forwardRef((props,ref) => {
                 uprice = 0;
             
             }
+            setsItemInitial(uprice);
               
 
             setsItemPrice(uprice);
@@ -455,17 +477,17 @@ const IdSelect = forwardRef((props,ref) => {
                 setsItemTotal(((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
             }
             else if(sItemPPrice=="P"){
-                if(sItemPPrice=="3"){
-                    setsItemTotal(((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
+                
+                setsItemTotal(((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
 
-                }
-                else if(sItemPPrice=="2"){
-                    setsItemTotal((((sItemPrice/sItemPQty)* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
+                
+                // else if(sItemPPrice=="2"){
+                //     setsItemTotal((((sItemPrice/sItemPQty)* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
 
-                }
-                else if(sItemPPrice=="1"){
-                    setsItemTotal((((sItemPrice/(sItemPQty*sItemPQUnit)* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3)));
-                }
+                // }
+                // else if(sItemPPrice=="1"){
+                //     setsItemTotal((((sItemPrice/(sItemPQty*sItemPQUnit)* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3)));
+                // }
 
             }
             //setsItemTotal(((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
