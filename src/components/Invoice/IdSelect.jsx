@@ -28,6 +28,7 @@ const IdSelect = forwardRef((props,ref) => {
     const [sItemPPrice,setsItemPPrice] = useState();
     const [sItemDBPUnit,setsItemBPUnit] = useState();
     const [sItemDSPUnit,setsItemDSPUnit] = useState();
+
     const [sItemInitial,setsItemInitial] = useState();
 
     useImperativeHandle(ref, () => ({
@@ -69,11 +70,29 @@ const IdSelect = forwardRef((props,ref) => {
             setsItemPrice(parseFloat(total).toFixed(3));
         };
         if(sItemPPrice=="P"){
+            console.log("klop");
             calculateUprice();
         }
         
     }, [sItemPType]);
 
+    useEffect(() => {
+        // Calculate total pieces based on other inputs whenever they change
+        const UpriceZeroCheck = () => {
+            console.log("klop2");
+            if(parseFloat(sItemPrice).toFixed(3)==0){
+                setErrorMessage("The Item Price is 0 !");
+            }else{
+                setErrorMessage("");
+            }
+            
+        };
+        
+
+            UpriceZeroCheck();
+       
+        
+    }, [sItemPrice]);
 
     return (
         <>
@@ -240,25 +259,73 @@ const IdSelect = forwardRef((props,ref) => {
                         alt="minus"
                         className="h-6 cursor-pointer"
                         onClick={() => {
+                            
                             setsItemQty(parseInt(sItemQty) - 1);
                         }}
                     />
                     <input
                         id="itemQty"
-                        type="name"
+                        type="text"
                         className="w-25 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                         placeholder="Quantity"
                         value={sItemQty}
+                        onBlur={(e) =>{
+                            if(e.target.value==null || e.target.value=="" || e.target.value=="-"){
+                                e.target.value=0;
+                                setsItemQty(0)
+                            }
+
+                        }
+                            
+                        }
                         onChange={(e) => {
-                            setsItemQty(e.target.value);
+                            let sanitizedValue = e.target.value;
+                            
+                            // if (sanitizedValue.startsWith('0') && e.target.selectionStart === 1 && e.nativeEvent.data !== '.') {
+                            //     console.log("lkkkkkk");
+                            //     sanitizedValue = sanitizedValue.slice(1);
+                                
+                            // }
+                             sanitizedValue = e.target.value.replace(/[^0-9-]/g, '');
+
+                            setsItemQty(sanitizedValue);
                         
                         }}
+                        onKeyPress={(e) => {
+                            // Allow only numeric values, minus symbol, and buffer the numbers
+                            const allowedChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '.'];
+                    
+                            // Prevent entering multiple minus symbols or minus symbol as the first character
+                            if (
+                                e.key === '-' &&                  // If the pressed key is a minus symbol
+                                (e.target.selectionStart !== 0 || // And not at the beginning of the input
+                                e.target.value.includes('-'))    // Or if the minus symbol is already present
+                            ) {
+                                e.preventDefault();  // Prevent the default action (typing the minus symbol)
+                            }
+                            if (
+                                e.key === '.' &&                  // If the pressed key is a minus symbol
+                                (e.target.selectionStart == 0 || // And not at the beginning of the input
+                                e.target.value.includes('.'))    // Or if the minus symbol is already present
+                            ) {
+                                e.preventDefault();  // Prevent the default action (typing the minus symbol)
+                            }
+                           
+                    
+                            // Allow only the specified characters
+                            if (!allowedChars.includes(e.key)) {
+                                e.preventDefault();  // Prevent the default action (typing the character)
+                            }
+                        }
+                        
+                    }
                     />
                     <img
                         src={plus}
                         alt="plus"
                         className="h-6 cursor-pointer"
                         onClick={() => {
+                            
                             setsItemQty(parseInt(sItemQty) + 1);
                             
                         }}
@@ -570,17 +637,18 @@ const IdSelect = forwardRef((props,ref) => {
         console.log(sItemTotal);
         console.log("--=");
         console.log("hhhhhhhhhhhhhhh", parseFloat(uprice).toFixed(3));
-        if (parseFloat(uprice).toFixed(3)==0.000){
-            console.log("uiuiuuuuuuuiuiiuu");
-            setErrorMessage("Unit Price cannot be 0. Please enter a valid value.");
-            return;
-        }
+        // if (parseFloat(uprice).toFixed(3)==0.000){
+        //     console.log("uiuiuuuuuuuiuiiuu");
+        //     setErrorMessage("Unit Price cannot be 0. Please enter a valid value.");
+        //     return;
+        // }
         props.ssi(tempsi);
         setModalItems(false);
         props.handleSave({
             accName: props.Client,
             items: tempsi,
         });
+        props.setpropertiesAreEqual(false)
         props.setvInput("");
         props.setOption([]);
         document.getElementById("tf").focus();

@@ -11,10 +11,10 @@ export default function DiscardInvoiceModal(props) {
                 aria-labelledby="contained-modal-title-vcenter"
                 centered>
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">Discard Invoice</Modal.Title>
+                    <Modal.Title id="contained-modal-title-vcenter">Unsaved Invoice</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4>Are You Sure You Want To Discard Invoice?</h4>
+                    <h4>Are You Sure You Want To Exit Invoice Without Saving Changes?</h4>
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="flex flex-row w-full justify-around">
@@ -22,7 +22,7 @@ export default function DiscardInvoiceModal(props) {
                         <Button variant="danger" onClick={()=>{
                             props.setModalShow(false);
                             props.callBack();
-                        
+                            props.exit("");
                         
                         }
                         }

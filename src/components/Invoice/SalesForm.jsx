@@ -73,6 +73,7 @@ export default function SalesForm(props) {
     const [newAccount,setnewAccount] = useState("");
     const [EditPQUnit,setEditPQUnit] = useState();
     const [EditPQty,setEditPQty] = useState();
+    const [EditInitialPrice,setEditInitialPrice] = useState();
 
 
     const inputRef = useRef(null);
@@ -99,6 +100,43 @@ export default function SalesForm(props) {
 
         calculateTotalPieces();
     }, [EditBranch,EditDiscount,EditPrice,EditQty,EditTax,EditType]);
+    useEffect(() => {
+        // Calculate total pieces based on other inputs whenever they change
+        const calculateUprice = () => {
+            let total = 0;
+            if (EditType === "3") {
+                total = EditInitialPrice;
+            } else if (EditType === "2") {
+                total = EditInitialPrice / EditPQty;
+            } else {
+                total = EditInitialPrice / (EditPQty * EditPQUnit);
+            }
+            setEditPrice(parseFloat(total).toFixed(3));
+        };
+        if(EditPPrice=="P"){
+
+            calculateUprice();
+        }
+        
+    }, [EditType]);
+
+    useEffect(() => {
+        // Calculate total pieces based on other inputs whenever they change
+        const UpriceZeroCheck = () => {
+            console.log("klop2");
+            if(parseFloat(EditPrice).toFixed(3)==0){
+                setErrorMessage("The Item Price is 0 !");
+            }else{
+                setErrorMessage("");
+            }
+            
+        };
+        
+
+            UpriceZeroCheck();
+       
+        
+    }, [EditPrice]);
 
 // Function to handle the change event of the select element
 const handleSelectChange = (e) => {
@@ -159,6 +197,7 @@ const handleSelectChange = (e) => {
 
    
 };
+
 
     const handleNoteSave = () => {
         // Update note for the selected item
@@ -236,6 +275,44 @@ const handleSelectChange = (e) => {
         
     };
 
+    const RemoveItem = (item,DeleteType) =>{
+        
+        console.log("ana bel deletation",item);
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+        const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+
+        let data ={
+            item:item,
+            DateDeleted:formattedDate,
+            TimeDeleted:formattedTime,
+            username:localStorage.getItem("username"),
+            compname:localStorage.getItem("compname"),
+            RefNo:selectedInvoice,
+            type:"SA_AP",
+            DeleteType:DeleteType
+        }
+        axios({
+            method: "post",
+            url: props.url + "/moh/RemoveItemFromInvoiceHistory/",
+            data: data,
+            headers: { content_type: "application/json" },
+        }).then((res) => {
+            
+            if (res.data.Info == "authorized") {
+                
+                
+            } else if (res.data.Info == "Failed") {
+                console.log("*****///removedddd sucesss/////******");
+            }
+            
+        }).catch((error) => {
+            console.error("Error in getInvoicesHistory:", error);
+            // Handle error (e.g., set error state)
+        });
+        
+    };
+
     useEffect(() => {
         try {
             setErrorMessage('');
@@ -279,7 +356,7 @@ const handleSelectChange = (e) => {
                                 console.log(props.propertiesAreEqual);
                                 console.log("lklklkk")
                                 console.log(selectedInvoice);
-                                setDiscardOldInvoiceModalShow(true)
+                                setDiscardOldInvoiceModalShow(true);
                             }
                             else{
                             
@@ -380,9 +457,7 @@ const handleSelectChange = (e) => {
                                     ref={selectInvRef}
                                     onChange={(e) =>{
                                         if(props.propertiesAreEqual==false){
-                                            console.log("naaaammmmmmm")
-                                            console.log(e.target.value);
-                                            console.log(props.propertiesAreEqual);
+                                           
                                             let intervalue= e.target.value;
                                             setpassSelectedInvoiceToModal(intervalue);
                                             setswitchBetweenInvoicesModalShow(true);
@@ -473,18 +548,18 @@ const handleSelectChange = (e) => {
                                             total =  parseFloat((si["uprice"]* si["TotalPieces"])*(1-si["discount"]/100));
                                         }
                                         else if(si["PPrice"]=="P"){
-                                            if(si["PType"=="3"]){
-                                                total =  parseFloat((si["uprice"]* si["qty"])*(1-si["discount"]/100));
+                                         
+                                            total =  parseFloat((si["uprice"]* si["qty"])*(1-si["discount"]/100));
 
-                                            }
-                                            else if (si["PType"]=="2"){
-                                                total =  parseFloat(((si["uprice"]/si["PQty"])* si["qty"])*(1-si["discount"]/100));
+                                            
+                                            // else if (si["PType"]=="2"){
+                                            //     total =  parseFloat(((si["uprice"]/si["PQty"])* si["qty"])*(1-si["discount"]/100));
 
-                                            }
-                                            else if (si["PType"]=="1"){
-                                                total =  parseFloat(((si["uprice"]/(si["PQty"]*si['PQUnit']))* si["qty"])*(1-si["discount"]/100));
+                                            // }
+                                            // else if (si["PType"]=="1"){
+                                            //     total =  parseFloat(((si["uprice"]/(si["PQty"]*si['PQUnit']))* si["qty"])*(1-si["discount"]/100));
 
-                                            }
+                                            // }
                                         }
 
                                     
@@ -504,14 +579,14 @@ const handleSelectChange = (e) => {
                                             totalf =  parseFloat((si["uprice"]* si["TotalPieces"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
                                         }
                                         else if(si["PPrice"]=="P"){
-                                            if(si["PType"]=="3"){
-                                                totalf =  parseFloat((si["uprice"]* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
-                                            }
-                                            else if(si["PType"]=="2"){
-                                                totalf =  parseFloat(((si["uprice"]/si["PQty"])* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
-                                            }else if(si["PType"]=="1"){
-                                                totalf =  parseFloat(((si["uprice"]/(si["PQty"]*si["PQUnit"]))* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
-                                            }
+                                            
+                                            totalf =  parseFloat((si["uprice"]* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
+                                            
+                                            // else if(si["PType"]=="2"){
+                                            //     totalf =  parseFloat(((si["uprice"]/si["PQty"])* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
+                                            // }else if(si["PType"]=="1"){
+                                            //     totalf =  parseFloat(((si["uprice"]/(si["PQty"]*si["PQUnit"]))* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
+                                            // }
                                             
 
                                         }
@@ -570,6 +645,21 @@ const handleSelectChange = (e) => {
                                                             setEditPPrice(si["PPrice"]);
                                                             setEditPQUnit(si["PQUnit"]);
                                                             setEditPQty(si["PQty"]);
+                                                            if(EditType=="3"){
+                                                                setEditInitialPrice(si["uprice"]);
+                                                            }
+                                                            else if(EditType=="2"){
+                                                                let initialPrice = si["uprice"]*si["PQty"]
+                                                                setEditInitialPrice(initialPrice);
+                                                            }
+                                                            else if(EditType=="1"){
+                                                                let initialPrice = si["uprice"]*si["PQty"]*si["PQUnit"]
+                                                                setEditInitialPrice(initialPrice);
+                                                            }
+                                                            else{
+                                                                setEditInitialPrice(si["uprice"]);
+                                                            }
+                                                            
 
                                                             
                                                         }}
@@ -617,7 +707,35 @@ const handleSelectChange = (e) => {
                             </div>
                             <div className="flex flex-row justify-between max-w-[60rem]">
                                 <Button className="my-2" variant="danger" onClick={() => {
-                                    setDiscardModalShow(true)
+                                    if(props.propertiesAreEqual==false){
+                                        setDiscardModalShow(true)
+                                    }
+                                    else{
+                                        props.inv("");
+                                        if(localStorage.getItem("InvoiceHistory")!=null && localStorage.getItem("InvoiceHistory")!=undefined && localStorage.getItem("InvoiceHistory")!=""){
+                                            localStorage.setItem("InvoiceHistory","");
+                                           
+                                            props.setSelectedItems([]);
+                                            props.setpropertiesAreEqual(true);
+                                         
+                                            
+                                            setsOption("Accounts");
+                                            setvInput("");
+                                            setSelectedInvoice("");
+                                            
+                                            props.setClient({
+                                                id:"",
+                                                name:"",
+                                                RefNo:"",
+                                                date:"",
+                                                time:"",
+                                            });
+                                            localStorage.setItem("sales","");
+
+                                        }
+                                        
+                                    }
+                                    
                                 }}>
                                     Exit
                                 </Button>
@@ -861,8 +979,7 @@ const handleSelectChange = (e) => {
                                 placeholder="Total"
                                 value={EditPPrice=="U"?
                                     parseFloat((EditPrice* EditTotalPieces)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
-                                :EditPPrice=="P" && EditType=="3"? parseFloat((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
-                                :EditPPrice=="P" && EditType=="2"? parseFloat(((EditPrice/EditPQty)* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3):EditPPrice=="P" && EditType=="1" && parseFloat(((EditPrice/(EditPQty*EditPQUnit))* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
+                                :EditPPrice=="P" && parseFloat((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
                             }
                                 onChange={(e) => {
                                     setEditTotal(e.target.value);
@@ -915,8 +1032,7 @@ const handleSelectChange = (e) => {
                                     
                                     let totalConditions = EditPPrice=="U"?
                                     parseFloat((EditPrice* EditTotalPieces)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
-                                :EditPPrice=="P"? parseFloat((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
-                                : parseFloat((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3);
+                                :EditPPrice=="P" && parseFloat((EditPrice* EditQty)*(1-EditDiscount/100)*(1 +EditTax/100)).toFixed(3)
                                     tempa[EditIdx] = {
                                         no: EditItem.no,
                                         name: EditItem.name,
@@ -975,11 +1091,11 @@ const handleSelectChange = (e) => {
                                     //         break;
                                     //     }
                                     // }
-                                    if (tempa[EditIdx]["uprice"]==0.000){
-                                        setErrorMessage("Unit Price cannot be 0. Please enter a valid value.");
-                                        return; 
+                                    // if (tempa[EditIdx]["uprice"]==0.000){
+                                    //     setErrorMessage("Unit Price cannot be 0. Please enter a valid value.");
+                                    //     return; 
 
-                                    }
+                                    // }
                                     else
                                     if(!pAreEqual){
                                         console.log("rouhhhhhhhhhhhh")
@@ -1008,14 +1124,20 @@ const handleSelectChange = (e) => {
                                     setShow(false);
 
                                     let tempa = [...props.SelectedItems]; // Create a copy of SelectedItems array
+                                    if(selectedInvoice!=undefined && selectedInvoice!=null && selectedInvoice!=""){
+                                        RemoveItem(tempa[EditIdx],"ITEM");
+                                    }
                                     tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
                                     tempa.forEach((item, index) => {
                                         item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
                                     });
+
                                     localStorage.setItem("sales",tempa);
                                     props.setSelectedItems(tempa);
-                                    props.setpropertiesAreEqual(false);
+                                  //  props.setpropertiesAreEqual(false);
                                     setErrorMessage('');
+                                    
+                                    
                                 }}>
                                 Remove
                             </Button>
@@ -1032,7 +1154,7 @@ const handleSelectChange = (e) => {
                 Client={props.Client}
                 items={props.SelectedItems}
             />
-            <DiscardInvoiceModal modalShow={discardModalShow} setModalShow={setDiscardModalShow} callBack={discardInvoice} />
+            <DiscardInvoiceModal modalShow={discardModalShow} setModalShow={setDiscardModalShow} exit={props.inv} callBack={discardInvoice} />
             <Modal
                 show={NewInvoiceAlertModalShow}
                 onHide={() => setNewInvoiceAlertModalShow(false)}
@@ -1042,10 +1164,10 @@ const handleSelectChange = (e) => {
                 keyboard={false}
                 centered>
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">Cancel Invoice</Modal.Title>
+                    <Modal.Title id="contained-modal-title-vcenter">Unsaved Invoice</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4>Are You Sure You Want To Clear Current Invoice?</h4>
+                    <h4>There is Unsaved Changes in Your Invoice<br></br>Are You Sure You Want To Clear Current Invoice Without Saving?</h4>
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="flex flex-row w-full justify-around">
@@ -1074,7 +1196,7 @@ const handleSelectChange = (e) => {
                     <Modal.Title id="contained-modal-title-vcenter">Unsaved Invoice</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4>Are You Sure You Want To Ignore Current Invoice?</h4>
+                    <h4>Are You Sure You Want To Exit Invoice Without Saving Changes?</h4>
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="flex flex-row w-full justify-around">
