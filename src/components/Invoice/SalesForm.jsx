@@ -74,8 +74,11 @@ export default function SalesForm(props) {
     const [EditPQUnit,setEditPQUnit] = useState();
     const [EditPQty,setEditPQty] = useState();
     const [EditInitialPrice,setEditInitialPrice] = useState();
-
-
+    const [DeleteLastItemFromHistory,setDeleteLastItemFromHistory] = useState();
+    const [DeleteInvoiceModal,setDeleteInvoiceModal] =useState(false);
+    const [DeletePermission,setDeletePermission] =useState(false);
+    const [NoSavedToDelete,setNoSavedToDelete] =useState(false);
+    
     const inputRef = useRef(null);
     const selectRef = useRef(null);
     const selectInvRef = useRef(null);
@@ -138,6 +141,13 @@ export default function SalesForm(props) {
         
     }, [EditPrice]);
 
+    useEffect(() => {
+        localStorage.setItem('propertiesAreEqual',props.propertiesAreEqual);
+
+        console.log("bl use effect",localStorage.getItem("propertiesAreEqual"));
+
+      }, [props.propertiesAreEqual]); 
+
 // Function to handle the change event of the select element
 const handleSelectChange = (e) => {
     const selectedValue = e;
@@ -162,7 +172,7 @@ const handleSelectChange = (e) => {
          // Send Axios request with the selected value
     axios({
         method: 'get', // or 'get', 'put', 'delete', etc.
-        url: props.url + "/moh/getInvoiceDetails/" + localStorage.getItem("compname")+"/"+ localStorage.getItem("username") + "/"+ selectedValue +"/", 
+        url: props.url + "/moh/getInvoiceDetails/" + localStorage.getItem("compname")+"/"+ localStorage.getItem("username") + "/"+ selectedValue +"/" + localStorage.getItem("SalePrice") + "/", 
         headers: {
             'Content-Type': 'application/json',
             // Add any additional headers if needed
@@ -215,7 +225,18 @@ const handleSelectChange = (e) => {
             updatedItems[selectedItemIndex]["Note"] = noteInput;
             //?????
             props.setSelectedItems(updatedItems);
-            localStorage.setItem("sales", updatedItems);
+            let accName=props.Client;
+            console.log("accName",accName);
+            
+            let items=props.SelectedItems;
+            console.log(items)
+            let json = {accName,items};
+            let jsonString = JSON.stringify(json); // Convert data object to JSON string
+
+            console.log("ghayrik enti",jsonString);
+            localStorage.setItem("sales",jsonString);
+
+
 
             setShowNoteModal(false);
             setNoteInput("");
@@ -234,6 +255,7 @@ const handleSelectChange = (e) => {
     const handleRetrieve = () => {
         
         const jsonString = localStorage.getItem("sales");
+        console.log("ila hona w tantahi",jsonString);
         if (jsonString!=[]){
             const retrievedJson = JSON.parse(jsonString);
             
@@ -244,7 +266,12 @@ const handleSelectChange = (e) => {
             console.log(retrievedJson["accName"]);
             console.log("drinkdrink");
             console.log(localStorage.getItem("InvoiceHistory"));
-        
+            if (localStorage.getItem("propertiesAreEqual")=="true"){
+                props.setpropertiesAreEqual(true)
+            }else if (localStorage.getItem("propertiesAreEqual")=="false"){
+                props.setpropertiesAreEqual(false)
+            }
+           
 
         }
        
@@ -313,6 +340,46 @@ const handleSelectChange = (e) => {
         
     };
 
+    const DeleteInvoice = (items,client,DeleteType) =>{
+        
+       
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+        const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+
+        let data ={
+            item:items,
+            client:client,
+            DateDeleted:formattedDate,
+            TimeDeleted:formattedTime,
+            username:localStorage.getItem("username"),
+            compname:localStorage.getItem("compname"),
+            RefNo:selectedInvoice,
+            type:"SA_AP",
+            DeleteType:DeleteType
+        }
+        axios({
+            method: "post",
+            url: props.url + "/moh/DeleteInvoice/",
+            data: data,
+            headers: { content_type: "application/json" },
+        }).then((res) => {
+            
+            if (res.data.Info == "authorized") {
+                clearInvoice();
+                getInvoicesHistory();
+                
+            } else if (res.data.Info == "Failed") {
+                console.log("erowwww");
+            }
+            
+        }).catch((error) => {
+            console.error("Error in getInvoicesHistory:", error);
+            // Handle error (e.g., set error state)
+        });
+        
+    };
+
     useEffect(() => {
         try {
             setErrorMessage('');
@@ -351,17 +418,18 @@ const handleSelectChange = (e) => {
                         className="h-8 mr-2"
                         onClick={() =>{
                             //if(selectedInvoice!=""){
-                                if(props.propertiesAreEqual==false){
+                            //     if(props.propertiesAreEqual==false && selectedInvoice!="" && selectedInvoice !=undefined){
                                 
-                                console.log(props.propertiesAreEqual);
-                                console.log("lklklkk")
-                                console.log(selectedInvoice);
-                                setDiscardOldInvoiceModalShow(true);
-                            }
-                            else{
+                            //     console.log(props.propertiesAreEqual);
+                            //     console.log("lklklkk")
+                            //     console.log(selectedInvoice);
+                            //     setDiscardOldInvoiceModalShow(true);
+                            // }
+                            // else{
                             
-                                props.inv("");
-                            }
+                            //     props.inv("");
+                            // }
+                            props.inv("");
                             
                         } }
                     />
@@ -645,20 +713,21 @@ const handleSelectChange = (e) => {
                                                             setEditPPrice(si["PPrice"]);
                                                             setEditPQUnit(si["PQUnit"]);
                                                             setEditPQty(si["PQty"]);
-                                                            if(EditType=="3"){
-                                                                setEditInitialPrice(si["uprice"]);
-                                                            }
-                                                            else if(EditType=="2"){
-                                                                let initialPrice = si["uprice"]*si["PQty"]
-                                                                setEditInitialPrice(initialPrice);
-                                                            }
-                                                            else if(EditType=="1"){
-                                                                let initialPrice = si["uprice"]*si["PQty"]*si["PQUnit"]
-                                                                setEditInitialPrice(initialPrice);
-                                                            }
-                                                            else{
-                                                                setEditInitialPrice(si["uprice"]);
-                                                            }
+                                                            setEditInitialPrice(si["InitialPrice"]);
+                                                            // if(EditType=="3"){
+                                                            //     setEditInitialPrice(si["uprice"]);
+                                                            // }
+                                                            // else if(EditType=="2"){
+                                                            //     let initialPrice = si["uprice"]*si["PQty"]
+                                                            //     setEditInitialPrice(initialPrice);
+                                                            // }
+                                                            // else if(EditType=="1"){
+                                                            //     let initialPrice = si["uprice"]*si["PQty"]*si["PQUnit"]
+                                                            //     setEditInitialPrice(initialPrice);
+                                                            // }
+                                                            // else{
+                                                            //     setEditInitialPrice(si["uprice"]);
+                                                            // }
                                                             
 
                                                             
@@ -707,7 +776,7 @@ const handleSelectChange = (e) => {
                             </div>
                             <div className="flex flex-row justify-between max-w-[60rem]">
                                 <Button className="my-2" variant="danger" onClick={() => {
-                                    if(props.propertiesAreEqual==false){
+                                    if(props.propertiesAreEqual==false && localStorage.getItem("InvoiceHistory")!=null && localStorage.getItem("InvoiceHistory")!=undefined && localStorage.getItem("InvoiceHistory")!=""){
                                         setDiscardModalShow(true)
                                     }
                                     else{
@@ -746,7 +815,7 @@ const handleSelectChange = (e) => {
                                     //     console.log(props.Client["id"]);
                                     //     console.log(props.setSelectedItems.length);
                                    // if((props.Client["id"]!=undefined && props.Client["id"]!="") || props.SelectedItems.length > 0){
-                                    if(props.propertiesAreEqual==false){
+                                    if(props.propertiesAreEqual==false || (props.SelectedItems!=[] && props.SelectedItems!=undefined && props.SelectedItems!="")){
                                         console.log("hhey")
                                         console.log(props.Client["id"]);
                                         console.log(props.SelectedItems);
@@ -769,7 +838,27 @@ const handleSelectChange = (e) => {
                                 }}>
                                     Clear Invoice
                                 </Button>
-                                
+                                <Button className="my-2"  variant="danger" onClick={() => {
+                                    let permission="1";
+                                    if(permission =="1"){
+                                        if(selectedInvoice!=undefined && selectedInvoice!="" && selectedInvoice!=null ){
+                                            setDeleteInvoiceModal(true);
+                                        }
+                                        
+                                        else{
+                                            setNoSavedToDelete(true);
+                                        }
+                                    }
+                                    else{
+                                        setDeletePermission(true);
+                                    }
+                                    
+
+                                    
+                                    
+                                }}>
+                                    Delete Invoice
+                                </Button>
                                 <Button
                                     className="my-2"
                                     variant="primary"
@@ -1054,7 +1143,8 @@ const handleSelectChange = (e) => {
                                         TotalPieces:EditTotalPieces,
                                         PPrice:PPriceT,
                                         BPUnit:EditDBPUnit,
-                                        SPUnit:EditDSPUnit
+                                        SPUnit:EditDSPUnit,
+                                        InitialPrice:EditInitialPrice
                                     };
                                     console.log("edipricee",tempa[EditIdx]["uprice"]);
                                     let pAreEqual= true;
@@ -1113,6 +1203,14 @@ const handleSelectChange = (e) => {
                                     setIdOptions([]);
                                     
                                     props.setSelectedItems(tempa);
+                                    let accName=props.Client;
+                                    let items=props.SelectedItems;
+                                    let json = {accName,items};
+                                    let jsonString = JSON.stringify(json); // Convert data object to JSON string
+
+                                    console.log("ghayrik enti",jsonString);
+                                    localStorage.setItem("sales",jsonString);
+                                    console.log(localStorage.getItem('sales'));
                                 }}>
                                 Apply
                             </Button>
@@ -1125,18 +1223,54 @@ const handleSelectChange = (e) => {
 
                                     let tempa = [...props.SelectedItems]; // Create a copy of SelectedItems array
                                     if(selectedInvoice!=undefined && selectedInvoice!=null && selectedInvoice!=""){
-                                        RemoveItem(tempa[EditIdx],"ITEM");
-                                    }
+                                        if(props.SelectedItems.length==1){ //knt hon
+                                            setDeleteLastItemFromHistory(true);
+                                        }else{
+                                            tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
+                                            tempa.forEach((item, index) => {
+                                                item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
+                                            });
+
+                                            let accName=props.Client;
+                                           
+                                            
+                                            let items=tempa;
+                                         
+                                            let json = {accName,items};
+                                            let jsonString = JSON.stringify(json); // Convert data object to JSON string
+                                
+                                            
+                                            
+                                            props.setSelectedItems(tempa);
+                                            localStorage.setItem("sales",jsonString);
+                                            props.setSelectedItems(tempa);
+                                        //  props.setpropertiesAreEqual(false);
+                                            setErrorMessage('');
+                                            RemoveItem(tempa[EditIdx],"ITEM");
+
+                                        }
+                                        
+                                    }else{
                                     tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
                                     tempa.forEach((item, index) => {
                                         item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
                                     });
-
-                                    localStorage.setItem("sales",tempa);
+                                    let accName=props.Client;
+                                   
+                                    
+                                    let items=tempa;
+                                    
+                                    let json = {accName,items};
+                                    let jsonString = JSON.stringify(json); // Convert data object to JSON string
+                        
+                                   
+                                    
+                                    
                                     props.setSelectedItems(tempa);
+                                    localStorage.setItem("sales",jsonString);
                                   //  props.setpropertiesAreEqual(false);
                                     setErrorMessage('');
-                                    
+                                }
                                     
                                 }}>
                                 Remove
@@ -1153,6 +1287,8 @@ const handleSelectChange = (e) => {
                 type={"SA_AP"}
                 Client={props.Client}
                 items={props.SelectedItems}
+                selectedInvoice={selectedInvoice}
+                setSelectedInvoice={setSelectedInvoice}
             />
             <DiscardInvoiceModal modalShow={discardModalShow} setModalShow={setDiscardModalShow} exit={props.inv} callBack={discardInvoice} />
             <Modal
@@ -1230,7 +1366,7 @@ const handleSelectChange = (e) => {
                     </div>
                 </Modal.Footer>
             </Modal>
-            <Modal
+            {/* <Modal
                 show={SearchAccountModalShow}
                 onHide={() => setSearchAccountModalShow(false)}
                 size="lg"
@@ -1265,7 +1401,7 @@ const handleSelectChange = (e) => {
                         >Yes</Button>
                     </div>
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
             <Modal
                 show={EmptyAlertModalShow}
                 onHide={() => setEmptyAlertModalShow(false)}
@@ -1344,6 +1480,127 @@ const handleSelectChange = (e) => {
                         }
                         }
                         >Yes</Button> */}
+                    </div>
+                </Modal.Footer>
+            </Modal>
+            <Modal
+                show={SearchAccountModalShow}
+                onHide={() => setSearchAccountModalShow(false)}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                backdrop="static"
+                keyboard={false}
+                centered>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">Change Invoice Account</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>Are You Sure You Want To Change the Account Invoice From {props.Client.id} to {newAccount} ?</h4>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="flex flex-row w-full justify-around">
+                        <Button onClick={()=>setSearchAccountModalShow(false)}>No</Button>
+                        <Button variant="danger" onClick={()=>{
+                        //props.callBack()
+                        
+                        
+                       
+                       getInvoiceOptions();
+                        setModalShow(true);
+                       // setSelectedInvoice("");
+                        setSearchAccountModalShow(false);
+                        childRef.current.selectHandler(props.handlingAccWhenChanging,"fromParent");
+                        
+                        
+                        
+                        }
+                        }
+                        >Yes</Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal
+                show={DeleteLastItemFromHistory}
+                onHide={() => setDeleteLastItemFromHistory(false)}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                backdrop="static"
+                keyboard={false}
+                centered>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">Deleting Last Item</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h3>Deleting This Item will let The Invoice Empty<br></br> <h3>Delete The Invoice <strong>Or</strong> Add A New Item Before Deleting This One</h3></h3>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="flex flex-row w-full justify-around">
+                        <Button onClick={()=>setDeleteLastItemFromHistory(false)}>OK</Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal
+                show={DeleteInvoiceModal}
+                onHide={() => setDeleteInvoiceModal(false)}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                backdrop="static"
+                keyboard={false}
+                centered>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">Deleting Invoice</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h3>Are You sure You Want Proceed in Deleting The Invoice?</h3>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="flex flex-row w-full justify-around">
+                        <Button variant="danger" onClick={()=>{setDeleteInvoiceModal(false);DeleteInvoice(props.SelectedItems,props.Client,"INV");}}>Yes</Button>
+                        <Button onClick={()=>setDeleteInvoiceModal(false)}>No</Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
+            <Modal
+                show={DeletePermission}
+                onHide={() => setDeletePermission(false)}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">Delete Permission</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h3>You Don't Have Permission To Delete Invoice.</h3>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="flex flex-row w-full justify-around">
+                        
+                        <Button variant="danger"  
+                        onClick={()=>setDeletePermission(false)}
+                        >Ok</Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
+            <Modal
+                show={NoSavedToDelete}
+                onHide={() => setNoSavedToDelete(false)}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">Delete Failed</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h3>There is No Saved Invoice To Delete it.</h3>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="flex flex-row w-full justify-around">
+                        
+                        <Button variant="primary"  
+                        onClick={()=>setNoSavedToDelete(false)}
+                        >Ok</Button>
                     </div>
                 </Modal.Footer>
             </Modal>

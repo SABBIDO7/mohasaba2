@@ -11,7 +11,7 @@ export default function ConfirmPostInvoiceModal(props) {
                 aria-labelledby="contained-modal-title-vcenter"
                 centered>
                 <Modal.Header >
-                    <Modal.Title id="contained-modal-title-vcenter">Confirm Invoice?</Modal.Title>
+                    <Modal.Title id="contained-modal-title-vcenter">Save Invoice?</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="flex flex-row justify-around w[100%]">
@@ -30,6 +30,7 @@ export default function ConfirmPostInvoiceModal(props) {
 
         }else{
             props.setModalShow(false)
+            props.setSelectedInvoice("")
             props.postInvoice(props.type,props.Client,props.items);
             console.log("/*/*/*/*/*/*/*/**/");
             console.log(props.type,props.Client,props.items);

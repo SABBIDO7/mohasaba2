@@ -1,10 +1,11 @@
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { useCookies } from "react-cookie";
+import { Location } from "react-router-dom";
 
 const navigation = [
     { name: "Accounting", href: "/Accounting" },
@@ -18,7 +19,7 @@ function classNames(...classes) {
 
 export default function Header(props) {
     const [cookies, setCookie] = useCookies(["token"]);
-
+    const location = useLocation();
     return (
         <>
             <Disclosure as="nav" className="bg-slate-700 navBar ease-linear">
@@ -51,6 +52,8 @@ export default function Header(props) {
                                     <div className="hidden sm:ml-6 sm:block">
                                         <div className="flex space-x-4">
                                             {navigation.map((item) => (
+                                                
+                                               
                                                 <NavLink
                                                     key={item.name}
                                                     to={item.href}
@@ -89,9 +92,14 @@ export default function Header(props) {
                                                 setCookie("token", "", {
                                                     path: "/",
                                                 });
-                                                             localStorage.removeItem("username");
-          localStorage.removeItem("token");
-localStorage.removeItem("password");                                             localStorage.removeItem("compname");
+                                                localStorage.removeItem("username");
+                                                localStorage.removeItem("token");
+                                                                                localStorage.removeItem("password");            localStorage.removeItem("compname");
+                                                                                localStorage.removeItem("propertiesAreEqual");
+
+localStorage.removeItem("Sbranch");
+localStorage.removeItem("Abranch");
+localStorage.removeItem("SalePrice");
                                                 window.location.href = props.url;
                                             }}>
                                             Sign out
@@ -136,6 +144,8 @@ localStorage.removeItem("password");                                            
                 )}
             </Disclosure>
             <div>{props.children}</div>
+
+            
         </>
     );
 }

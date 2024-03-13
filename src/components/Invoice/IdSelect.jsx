@@ -111,8 +111,7 @@ const IdSelect = forwardRef((props,ref) => {
                 </Modal.Header>
                 <Modal.Body className="h-[43rem] overflow-y-auto">
     {props.options.map((io, idx) => {
-        console.log("Solution")
-        console.log(props.sOption);
+     
         let temptax = io["Tax"] == "" || undefined ? 0 : io["Tax"];
 
         return (
@@ -134,6 +133,15 @@ const IdSelect = forwardRef((props,ref) => {
                             setsItemPUnit(io["PUnit"]);
                             setsItemPQunit(io["PQUnit"]);
                             {sItemDBPUnit && sItemDBPUnit.trim() !== '' ? setsItemPType("3"): sItemPUnit && sItemPUnit.trim() !== ''?setsItemPType("2"):setsItemPType("1")}
+                            if(sItemDBPUnit && sItemDBPUnit.trim() !== ''){
+                                setsItemPType("3")
+                            }
+                            else if(sItemDSPUnit && sItemDSPUnit.trim() !== ''){
+                                setsItemPType("2")
+                            }
+                            else if(sItemPUnit && sItemPUnit.trim() != ''){
+                                setsItemPType("1")
+                            }
                            // setsItemPType("1");
                             setsItemPPrice(io["PPrice"]);
                             setsItemBPUnit(io["BPUnit"]);
@@ -621,7 +629,8 @@ const IdSelect = forwardRef((props,ref) => {
                 TotalPieces:sItemTotalPieces,
                 PPrice:sItemPPrice,
                 BPUnit:sItemDBPUnit,
-                SPUnit:sItemDSPUnit
+                SPUnit:sItemDSPUnit,
+                InitialPrice:sItemInitial
 
 
             },

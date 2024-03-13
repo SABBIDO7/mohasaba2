@@ -20,7 +20,17 @@ export default function Invoice(props) {
         Info:"No Invoice Created",
         msg:"No Invoice Created"
     });
-    const [propertiesAreEqual, setpropertiesAreEqual] = useState(true);
+    let p=true;
+    if(localStorage.getItem("propertiesAreEqual")=="true"){
+
+        p=true;
+    }else if(localStorage.getItem("propertiesAreEqual")=="false"){
+        p=false;
+    }
+    else{
+        p=true
+    }
+    const [propertiesAreEqual, setpropertiesAreEqual] = useState(p);
     const [handlingAccWhenChanging,sethandlingAccWhenChanging] = useState();
     function sInvoiceHandler(e) {
         setSInvoice(e);
