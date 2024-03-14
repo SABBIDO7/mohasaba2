@@ -43,6 +43,12 @@ function LoginModal(props) {
             localStorage.setItem("Sbranch",response.data.Sbranch);
             localStorage.setItem("Abranch",response.data.Abranch);
             localStorage.setItem("SalePrice",response.data.SalePrice);
+            localStorage.setItem("DeleteInvoice",response.data.Permissions["DeleteInvoice"]);
+            localStorage.setItem("DeleteItem",response.data.Permissions["DeleteItem"]);
+            localStorage.setItem("Discount",response.data.Permissions["Discount"]);
+            localStorage.setItem("Price",response.data.Permissions["Price"]);
+            localStorage.setItem("CallInvoice",response.data.Permissions["CallInvoice"]);
+
             props.UserDataHandler(response.data.compname, response.data.name, response.data.token);
             
 

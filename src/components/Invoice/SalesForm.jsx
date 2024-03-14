@@ -12,7 +12,8 @@ import axios from "axios";
 import ConfirmPostInvoiceModal from "./ConfirmPostInvoiceModal";
 import DiscardInvoiceModal from "./DiscardInvoicemodal";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faSave  } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faSave , faLock } from '@fortawesome/free-solid-svg-icons';
+
 
 export default function SalesForm(props) {
     const [vInput, setvInput] = useState("");
@@ -78,7 +79,8 @@ export default function SalesForm(props) {
     const [DeleteInvoiceModal,setDeleteInvoiceModal] =useState(false);
     const [DeletePermission,setDeletePermission] =useState(false);
     const [NoSavedToDelete,setNoSavedToDelete] =useState(false);
-    
+    const [performCalculation, setPerformCalculation] = useState(false);
+
     const inputRef = useRef(null);
     const selectRef = useRef(null);
     const selectInvRef = useRef(null);
@@ -115,13 +117,16 @@ export default function SalesForm(props) {
                 total = EditInitialPrice / (EditPQty * EditPQUnit);
             }
             setEditPrice(parseFloat(total).toFixed(3));
+            console.log("hsebet men use effect calculateUprice");
         };
-        if(EditPPrice=="P"){
+        if(EditPPrice=="P" && performCalculation){
 
             calculateUprice();
         }
         
-    }, [EditType]);
+        
+        
+    }, [EditType,performCalculation]);
 
     useEffect(() => {
         // Calculate total pieces based on other inputs whenever they change
@@ -308,7 +313,7 @@ const handleSelectChange = (e) => {
         const currentDate = new Date();
         const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
         const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
-
+        let invoiceTotal = (finalTotal+finalTax) - item["Total"] ;
         let data ={
             item:item,
             DateDeleted:formattedDate,
@@ -317,7 +322,9 @@ const handleSelectChange = (e) => {
             compname:localStorage.getItem("compname"),
             RefNo:selectedInvoice,
             type:"SA_AP",
-            DeleteType:DeleteType
+            DeleteType:DeleteType,
+            invoiceTotal:invoiceTotal
+
         }
         axios({
             method: "post",
@@ -327,8 +334,6 @@ const handleSelectChange = (e) => {
         }).then((res) => {
             
             if (res.data.Info == "authorized") {
-                
-                
             } else if (res.data.Info == "Failed") {
                 console.log("*****///removedddd sucesss/////******");
             }
@@ -407,6 +412,8 @@ const handleSelectChange = (e) => {
     }, [props.afterSubmitModal]);
 
 
+    const allowPriceChanges = localStorage.getItem("Price") !== "N";
+    const allowDiscountChanges = localStorage.getItem("Discount") !== "N";
 
     return (
         <>
@@ -531,7 +538,13 @@ const handleSelectChange = (e) => {
                                             setswitchBetweenInvoicesModalShow(true);
                                         }
                                         else{
-                                            handleSelectChange(e.target.value);
+                                            let CallInvoice = localStorage.getItem("CallInvoice");
+                                            if(CallInvoice=="Y"){
+                                                handleSelectChange(e.target.value);
+                                            }else{
+                                                setDeletePermission({ show: true, message: "You don't have permission To Call Invoices From History." });
+                                            }
+                                            
                                         }
                                         
 
@@ -698,10 +711,12 @@ const handleSelectChange = (e) => {
                                                             setShow(true);
                                                             setEditItem(si);
                                                             setEditQty(si["qty"]);
-                                                            setEditPrice(si["uprice"]);
+                                                            
+
                                                             setEditIdx(idx);
                                                             setEditTax(tax);
                                                             setEditBranch(si["branch"]);
+                                                            setEditInitialPrice(si["InitialPrice"]);
                                                             setEditDiscount(si["discount"]);
                                                             setEditLno(si["lno"]);
                                                             setEditTotal(si["Total"]);
@@ -713,7 +728,11 @@ const handleSelectChange = (e) => {
                                                             setEditPPrice(si["PPrice"]);
                                                             setEditPQUnit(si["PQUnit"]);
                                                             setEditPQty(si["PQty"]);
-                                                            setEditInitialPrice(si["InitialPrice"]);
+                                                            
+                                                            setEditPrice(si["uprice"]);
+                                                            console.log("hsebet men uprice waat ekbos edit");
+                                                            setPerformCalculation(false);
+
                                                             // if(EditType=="3"){
                                                             //     setEditInitialPrice(si["uprice"]);
                                                             // }
@@ -776,7 +795,9 @@ const handleSelectChange = (e) => {
                             </div>
                             <div className="flex flex-row justify-between max-w-[60rem]">
                                 <Button className="my-2" variant="danger" onClick={() => {
-                                    if(props.propertiesAreEqual==false && localStorage.getItem("InvoiceHistory")!=null && localStorage.getItem("InvoiceHistory")!=undefined && localStorage.getItem("InvoiceHistory")!=""){
+                                    // if(props.propertiesAreEqual==false && localStorage.getItem("InvoiceHistory")!=null && localStorage.getItem("InvoiceHistory")!=undefined && localStorage.getItem("InvoiceHistory")!="")
+                                    if(props.propertiesAreEqual==false)
+                                    {
                                         setDiscardModalShow(true)
                                     }
                                     else{
@@ -815,7 +836,7 @@ const handleSelectChange = (e) => {
                                     //     console.log(props.Client["id"]);
                                     //     console.log(props.setSelectedItems.length);
                                    // if((props.Client["id"]!=undefined && props.Client["id"]!="") || props.SelectedItems.length > 0){
-                                    if(props.propertiesAreEqual==false || (props.SelectedItems!=[] && props.SelectedItems!=undefined && props.SelectedItems!="")){
+                                    if(props.propertiesAreEqual==false && (props.SelectedItems!=[] && props.SelectedItems!=undefined && props.SelectedItems!="")){
                                         console.log("hhey")
                                         console.log(props.Client["id"]);
                                         console.log(props.SelectedItems);
@@ -839,8 +860,12 @@ const handleSelectChange = (e) => {
                                     Clear Invoice
                                 </Button>
                                 <Button className="my-2"  variant="danger" onClick={() => {
-                                    let permission="1";
-                                    if(permission =="1"){
+                                    let DeleteInvoicePermission = localStorage.getItem("DeleteInvoice")
+                                    if(DeleteInvoicePermission =="N"){
+                                        setDeletePermission({ show: true, message: "You don't have permission to delete invoice." }); 
+                                    }
+                                    else{
+                                                                          
                                         if(selectedInvoice!=undefined && selectedInvoice!="" && selectedInvoice!=null ){
                                             setDeleteInvoiceModal(true);
                                         }
@@ -848,9 +873,6 @@ const handleSelectChange = (e) => {
                                         else{
                                             setNoSavedToDelete(true);
                                         }
-                                    }
-                                    else{
-                                        setDeletePermission(true);
                                     }
                                     
 
@@ -966,6 +988,7 @@ const handleSelectChange = (e) => {
                             value={EditType}
                             onChange={(e) => {
                                 setEditType(e.target.value);
+                                setPerformCalculation(true);
                             }}
                         >
                             {/* {EditDBPUnit && EditDBPUnit.trim() !== '' ? setEditType("3"): EditDPUnit && EditDPUnit.trim() !== ''?setEditType("2"):setEditType("1")} */}
@@ -1013,7 +1036,9 @@ const handleSelectChange = (e) => {
             </div>
                        
                         <div className="flex items-center">
-                <label htmlFor="itemPrice" className="w-1/4">Uprice:</label>
+                <label htmlFor="itemPrice" className="w-1/4">Uprice: {!allowPriceChanges && (        
+                    <FontAwesomeIcon icon={faLock} className="text-gray-400" />
+                )}</label>
                 <input
               
                     type="number"
@@ -1022,14 +1047,19 @@ const handleSelectChange = (e) => {
                     value={EditPrice}
                     onChange={(e) => {
                         setEditPrice(e.target.value);
+                        console.log("hsebet men on change");
+
                     }}
+                    readOnly={!allowPriceChanges}
                 />
             </div>
                         
 
                        
                         <div className="flex items-center">
-                            <label htmlFor="itemDiscount" className="w-1/4">Discount %:</label>
+                            <label htmlFor="itemDiscount" className="w-1/4">Discount %: {!allowDiscountChanges && (        
+                    <FontAwesomeIcon icon={faLock} className="text-gray-400" />
+                )}</label>
                             <input
                             
                                     type={"number"}
@@ -1039,7 +1069,9 @@ const handleSelectChange = (e) => {
                                 onChange={(e) => {
                                     setEditDiscount(e.target.value);
                                 }}
+                                readOnly={!allowDiscountChanges}
                             />
+                           
                         </div>
                         
                         <div className="flex items-center">
@@ -1223,32 +1255,45 @@ const handleSelectChange = (e) => {
 
                                     let tempa = [...props.SelectedItems]; // Create a copy of SelectedItems array
                                     if(selectedInvoice!=undefined && selectedInvoice!=null && selectedInvoice!=""){
-                                        if(props.SelectedItems.length==1){ //knt hon
+                                        // if(props.SelectedItems.length==1){ 
+                                        //     setDeleteLastItemFromHistory(true);
+                                        // }
+                                        
+                                            let DeleteItemPermission = localStorage.getItem("DeleteItem");
+                                            if(DeleteItemPermission == "Y"){
+                                                if(props.SelectedItems.length==1){ 
                                             setDeleteLastItemFromHistory(true);
-                                        }else{
-                                            tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
-                                            tempa.forEach((item, index) => {
-                                                item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
-                                            });
+                                                }else{
 
-                                            let accName=props.Client;
-                                           
-                                            
-                                            let items=tempa;
-                                         
-                                            let json = {accName,items};
-                                            let jsonString = JSON.stringify(json); // Convert data object to JSON string
-                                
-                                            
-                                            
-                                            props.setSelectedItems(tempa);
-                                            localStorage.setItem("sales",jsonString);
-                                            props.setSelectedItems(tempa);
-                                        //  props.setpropertiesAreEqual(false);
-                                            setErrorMessage('');
-                                            RemoveItem(tempa[EditIdx],"ITEM");
+                                                
+                                                    tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
+                                                tempa.forEach((item, index) => {
+                                                    item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
+                                                });
 
-                                        }
+                                                let accName=props.Client;
+                                            
+                                                
+                                                let items=tempa;
+                                            
+                                                let json = {accName,items};
+                                                let jsonString = JSON.stringify(json); // Convert data object to JSON string
+                                    
+                                                
+                                                
+                                                props.setSelectedItems(tempa);
+                                                localStorage.setItem("sales",jsonString);
+                                                props.setSelectedItems(tempa);
+                                            //  props.setpropertiesAreEqual(false);
+                                                setErrorMessage('');
+                                                RemoveItem(tempa[EditIdx],"ITEM");
+                                            }
+                                            }else{
+                                                setDeletePermission({ show: true, message: "You don't have permission to delete Item From invoice." });
+                                            }
+                                            
+
+                                        
                                         
                                     }else{
                                     tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
@@ -1289,6 +1334,8 @@ const handleSelectChange = (e) => {
                 items={props.SelectedItems}
                 selectedInvoice={selectedInvoice}
                 setSelectedInvoice={setSelectedInvoice}
+                finalTotal={finalTotal}
+                finalTax={finalTax}
             />
             <DiscardInvoiceModal modalShow={discardModalShow} setModalShow={setDiscardModalShow} exit={props.inv} callBack={discardInvoice} />
             <Modal
@@ -1557,32 +1604,32 @@ const handleSelectChange = (e) => {
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="flex flex-row w-full justify-around">
+                    <Button onClick={()=>setDeleteInvoiceModal(false)}>No</Button>
                         <Button variant="danger" onClick={()=>{setDeleteInvoiceModal(false);DeleteInvoice(props.SelectedItems,props.Client,"INV");}}>Yes</Button>
-                        <Button onClick={()=>setDeleteInvoiceModal(false)}>No</Button>
+                        
                     </div>
                 </Modal.Footer>
             </Modal>
             <Modal
-                show={DeletePermission}
-                onHide={() => setDeletePermission(false)}
+                show={DeletePermission.show}
+                onHide={() => setDeletePermission({ ...DeletePermission, show: false })}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
-                centered>
+                centered
+                >
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">Delete Permission</Modal.Title>
+                    <Modal.Title id="contained-modal-title-vcenter">Permission Denied</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h3>You Don't Have Permission To Delete Invoice.</h3>
+                    <h3>{DeletePermission.message || "Permission denied."}</h3> {/* Display the message */}
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="flex flex-row w-full justify-around">
-                        
-                        <Button variant="danger"  
-                        onClick={()=>setDeletePermission(false)}
-                        >Ok</Button>
+                    <Button variant="primary" onClick={() => setDeletePermission({ ...DeletePermission, show: false })}>Ok</Button>
                     </div>
                 </Modal.Footer>
             </Modal>
+
             <Modal
                 show={NoSavedToDelete}
                 onHide={() => setNoSavedToDelete(false)}

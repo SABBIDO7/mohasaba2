@@ -3,6 +3,9 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import plus from "../../media/plus.png";
 import minus from "../../media/minus.png";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLock } from '@fortawesome/free-solid-svg-icons';
+
 
 const IdSelect = forwardRef((props,ref) => {
     const [modalShow, setModalShow] = useState(false);
@@ -94,6 +97,9 @@ const IdSelect = forwardRef((props,ref) => {
         
     }, [sItemPrice]);
 
+    const allowPriceChanges = localStorage.getItem("Price") !== "N";
+    const allowDiscountChanges = localStorage.getItem("Discount") !== "N";
+
     return (
         <>
             {/* <Button variant="primary" onClick={() => setModalShow(true)}>
@@ -132,15 +138,18 @@ const IdSelect = forwardRef((props,ref) => {
                             setsItemPQty(io["PQty"]);
                             setsItemPUnit(io["PUnit"]);
                             setsItemPQunit(io["PQUnit"]);
-                            {sItemDBPUnit && sItemDBPUnit.trim() !== '' ? setsItemPType("3"): sItemPUnit && sItemPUnit.trim() !== ''?setsItemPType("2"):setsItemPType("1")}
+                            // {sItemDBPUnit && sItemDBPUnit.trim() !== '' ? setsItemPType("3"): sItemPUnit && sItemPUnit.trim() !== ''?setsItemPType("2"):setsItemPType("1")}
                             if(sItemDBPUnit && sItemDBPUnit.trim() !== ''){
-                                setsItemPType("3")
+                                setsItemPType("3");
+                             
                             }
                             else if(sItemDSPUnit && sItemDSPUnit.trim() !== ''){
                                 setsItemPType("2")
+                               
                             }
                             else if(sItemPUnit && sItemPUnit.trim() != ''){
                                 setsItemPType("1")
+                                
                             }
                            // setsItemPType("1");
                             setsItemPPrice(io["PPrice"]);
@@ -370,7 +379,10 @@ const IdSelect = forwardRef((props,ref) => {
                             />
                         </div>
             <div className="flex items-center">
-                <label htmlFor="itemPrice" className="w-1/4">Uprice:</label>
+                <label htmlFor="itemPrice" className="w-1/4">Uprice: {!allowPriceChanges && (        
+                    <FontAwesomeIcon icon={faLock} className="text-gray-400" />
+                )}</label>
+                
                 <input
                     id="itemPrice"
                     type="number"
@@ -378,13 +390,20 @@ const IdSelect = forwardRef((props,ref) => {
                     placeholder="Unit Price"
                     value={sItemPrice}
                     onChange={(e) => {
+                        if (allowPriceChanges) {
                         setsItemPrice(e.target.value);
-                        
+                        }
+
                     }}
+                    readOnly={!allowPriceChanges}
+
                 />
+               
             </div>
             <div className="flex items-center">
-                <label htmlFor="itemDiscount" className="w-1/4">Discount %:</label>
+                <label htmlFor="itemDiscount" className="w-1/4">Discount %: {!allowDiscountChanges && (        
+                    <FontAwesomeIcon icon={faLock} className="text-gray-400" />
+                )}</label>
                 <input
                     id="itemDiscount"
                     type="number"
@@ -395,6 +414,7 @@ const IdSelect = forwardRef((props,ref) => {
                         setsItemDiscount(e.target.value);
                         
                     }}
+                    readOnly={!allowDiscountChanges}
                 />
             </div>
             <div className="flex items-center">

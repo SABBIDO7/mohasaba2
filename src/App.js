@@ -128,7 +128,13 @@ function App() {
             if(SalePrice=="" || SalePrice == null){
               localStorage.setItem("SalePrice",data.SalePrice);
             }
-            
+            localStorage.setItem("DeleteInvoice",data.Permissions["DeleteInvoice"]);
+            localStorage.setItem("DeleteItem",data.Permissions["DeleteItem"]);
+            localStorage.setItem("Discount",data.Permissions["Discount"]);
+            localStorage.setItem("Price",data.Permissions["Price"]);
+            localStorage.setItem("CallInvoice",data.Permissions["CallInvoice"]);
+          
+
             
            } else {
              if (isVerified) {

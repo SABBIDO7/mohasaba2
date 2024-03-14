@@ -154,7 +154,7 @@ export default function Invoice(props) {
             });
     }
 
-    function postInvoice(type, acc, items) {
+    function postInvoice(type, acc, items,InvoiceTotal) {
         let tempItem = "";
 
         items.forEach((item) => {
@@ -185,7 +185,7 @@ export default function Invoice(props) {
             accname: acc.name,
             items: items,
             username: localStorage.getItem("username"),
-
+            invoiceTotal:InvoiceTotal
         };
         console.log("n bl invoice");
         console.log(data);
