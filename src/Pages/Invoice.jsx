@@ -13,7 +13,7 @@ import jsPDF from 'jspdf';
 export default function Invoice(props) {
     const [Client, setClient] = useState("");
     const [SelectedItems, setSelectedItems] = useState([]);
-
+    const [RemovedItems,setRemovedItems] = useState([]);
     const [sInvoice, setSInvoice] = useState("");
     
     const [invResponse, setInvResponse] = useState({
@@ -44,6 +44,8 @@ export default function Invoice(props) {
     const [branches, setBranches] = useState([]);
 
     const [afterSubmitModal, setafterSubmitModal] = useState(false);
+    const [afterSubmitModal2, setafterSubmitModal2] = useState(false);
+
     function discardInvoice(){
         
     }
@@ -124,6 +126,10 @@ export default function Invoice(props) {
                                 setpropertiesAreEqual={setpropertiesAreEqual}
                                 sethandlingAccWhenChanging={sethandlingAccWhenChanging}
                                 handlingAccWhenChanging={handlingAccWhenChanging}
+                                RemovedItems={RemovedItems}
+                                setRemovedItems={setRemovedItems}
+                                setafterSubmitModal2={setafterSubmitModal2}
+                                afterSubmitModal2={afterSubmitModal2}
                                 
                             />
                           
@@ -154,7 +160,7 @@ export default function Invoice(props) {
             });
     }
 
-    function postInvoice(type, acc, items,InvoiceTotal) {
+    function postInvoice(type, acc, items,InvoiceTotal,RemovedItems) {
         let tempItem = "";
 
         items.forEach((item) => {
@@ -184,6 +190,7 @@ export default function Invoice(props) {
             Abranch : localStorage.getItem("Abranch"),
             accname: acc.name,
             items: items,
+            RemovedItems:RemovedItems,
             username: localStorage.getItem("username"),
             invoiceTotal:InvoiceTotal
         };
@@ -197,12 +204,12 @@ export default function Invoice(props) {
         }).then((res) => {
             
             if (res.data.Info == "authorized") {
-                setInvResponse(
-                    {
-                        Info:"Successful",
-                        msg:"Sales Invoice Created Successfully"
-                    }
-                );
+                // setInvResponse(
+                //     {
+                //         Info:"Successful",
+                //         msg:"Sales Invoice Created Successfully"
+                //     }
+                // );
                 
                 //discardInvoice()
                 setClient({
@@ -213,11 +220,12 @@ export default function Invoice(props) {
                     time:"",
                 })
                 setSelectedItems([])
+                console.log("y2");
                 localStorage.setItem("sales", "")
                 setpropertiesAreEqual(true);
                 localStorage.setItem("InvoiceHistory","");
                 downloadPDF(data);
-               
+                setafterSubmitModal(true)
                 
             } else if (res.data.Info == "Failed") {
                 setInvResponse(
@@ -226,8 +234,10 @@ export default function Invoice(props) {
                         msg:res.data.msg
                     }
                 )
+                setafterSubmitModal(true);
+                setafterSubmitModal2(true)
+
             }
-            setafterSubmitModal(true)
         });
     }
 
@@ -235,8 +245,8 @@ export default function Invoice(props) {
         return (
             <>
                 <Modal
-                    show={afterSubmitModal}
-                    onHide={() => setafterSubmitModal(false)}
+                    show={afterSubmitModal2}
+                    onHide={() => setafterSubmitModal2(false)}
                     size="lg"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered>
@@ -248,7 +258,7 @@ export default function Invoice(props) {
                         
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={()=>{setafterSubmitModal(false)}}>Close</Button>
+                        <Button onClick={()=>{setafterSubmitModal2(false)}}>Close</Button>
                     </Modal.Footer>
                 </Modal>
             </>

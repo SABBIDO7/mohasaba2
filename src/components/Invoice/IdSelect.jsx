@@ -492,10 +492,14 @@ const IdSelect = forwardRef((props,ref) => {
                 props.setnewAccount(e["AccNo"]);
             
                 props.sethandlingAccWhenChanging(e);
+                console.log(typeof(props.Client.id));
+                console.log(typeof(props.newAccount));
+                if(props.Client.id !== props.newAccount){
+                    props.setSearchAccountModalShow(true);
+                    console.log("fetit fidderrrrr");
+                    return;
+                }
                 
-                props.setSearchAccountModalShow(true);
-                
-                return;
             }
             props.setClient({
                 id:"",
@@ -537,6 +541,7 @@ const IdSelect = forwardRef((props,ref) => {
                 },
 
                 items: props.si,
+                RemovedItems:props.RemovedItems
             });
             localStorage.setItem("InvoiceHistory","");
             props.setpropertiesAreEqual(false);
@@ -676,6 +681,7 @@ const IdSelect = forwardRef((props,ref) => {
         props.handleSave({
             accName: props.Client,
             items: tempsi,
+            RemovedItems:props.RemovedItems
         });
         props.setpropertiesAreEqual(false)
         props.setvInput("");
