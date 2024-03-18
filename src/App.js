@@ -133,7 +133,34 @@ function App() {
             localStorage.setItem("Discount",data.Permissions["Discount"]);
             localStorage.setItem("Price",data.Permissions["Price"]);
             localStorage.setItem("CallInvoice",data.Permissions["CallInvoice"]);
-          
+            localStorage.setItem(
+              "SA_AP",
+              data.Permissions["SalesForm"]
+            );
+            localStorage.setItem(
+              "SR_AP",
+              data.Permissions["SalesReturnForm"]
+            );
+            localStorage.setItem(
+              "OD_AP",
+              data.Permissions["OrderForm"]
+            );
+            localStorage.setItem(
+              "PI_AP",
+              data.Permissions["PurchaseForm"]
+            );
+            localStorage.setItem(
+              "PR_AP",
+              data.Permissions["PurchaseReturnForm"]
+            );
+            localStorage.setItem(
+              "SAT_AP",
+              data.Permissions["BranchTransferForm"]
+            );
+            localStorage.setItem(
+              "SalesUnderZero",
+             data.Permissions["SalesUnderZero"]
+            );
 
             
            } else {

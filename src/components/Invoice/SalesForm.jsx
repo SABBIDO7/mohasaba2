@@ -84,8 +84,39 @@ export default function SalesForm(props) {
   const [NoSavedToDelete, setNoSavedToDelete] = useState(false);
   const [performCalculation, setPerformCalculation] = useState(false);
   const [ErrorModal, setErrorModal] = useState(false);
-  const [selectedFormOption, setSelectedFormOption] = useState("Sales");
+  const [SwitchFormOption, setSwitchFormOption] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
+  const handleHeaderClick = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const formOptionProcessing = (option) => {
+    // props.Client != undefined &&
+    //     props.Client != "" &&
+    //     props.Client != null) ||
+    //   props.SelectedItems.length > 0 ||
+    //   props.RemoveItems.length > 0 ||
+    //   (selectedInvoice != undefined && selectedInvoice != undefined) ||
+    if (option === props.selectedFormOption) {
+      setDialogOpen(false);
+      return;
+    } else if (localStorage.getItem(option) == "N") {
+      setDeletePermission({
+        show: true,
+        message: "You don't Have Permission To Access " + option + " Form",
+      });
+      return;
+    } else {
+      props.setSelectedFormOption(option);
+      setDialogOpen(false);
+      return;
+    }
+  };
   const inputRef = useRef(null);
   const selectRef = useRef(null);
   const selectInvRef = useRef(null);
@@ -165,6 +196,22 @@ export default function SalesForm(props) {
     }
   }, [props.RemovedItems]);
 
+  useEffect(() => {
+    if (props.selectedFormOption == "SA_AP") {
+      props.setSelectedFormOptionDisplay("Sales Form");
+    } else if (props.selectedFormOption == "SR_AP") {
+      props.setSelectedFormOptionDisplay("SalesReturn Form");
+    } else if (props.selectedFormOption == "OD_AP") {
+      props.setSelectedFormOptionDisplay("Order Form");
+    } else if (props.selectedFormOption == "PI_AP") {
+      props.setSelectedFormOptionDisplay("Purchase Form");
+    } else if (props.selectedFormOption == "PR_AP") {
+      props.setSelectedFormOptionDisplay("PurchaseReturn Form");
+    } else if (props.selectedFormOption == "SAT_AP") {
+      props.setSelectedFormOptionDisplay("BranchTransfer Form");
+    }
+  }, [props.selectedFormOption]);
+
   // Function to handle the change event of the select element
   const handleSelectChange = (e) => {
     const selectedValue = e;
@@ -183,6 +230,7 @@ export default function SalesForm(props) {
         RefNo: "",
         date: "",
         time: "",
+        balance: "",
       });
 
       localStorage.setItem("InvoiceHistory", selectedValue);
@@ -224,6 +272,7 @@ export default function SalesForm(props) {
               date: response.data.InvProfile[0]["date"],
               time: response.data.InvProfile[0]["time"],
               RefNo: response.data.InvProfile[0]["RefNo"],
+              balance: response.data.InvProfile[0]["id"],
             },
 
             items: response.data.Invoices,
@@ -383,7 +432,7 @@ export default function SalesForm(props) {
     // });
   };
 
-  const DeleteInvoice = (items, client, DeleteType) => {
+  const DeleteInvoice = (items, RemovedItems, client, DeleteType) => {
     const currentDate = new Date();
     const formattedDate = `${
       currentDate.getMonth() + 1
@@ -392,15 +441,17 @@ export default function SalesForm(props) {
 
     let data = {
       item: items,
+      RemovedItems: RemovedItems,
       client: client,
       DateDeleted: formattedDate,
       TimeDeleted: formattedTime,
       username: localStorage.getItem("username"),
       compname: localStorage.getItem("compname"),
       RefNo: selectedInvoice,
-      type: "SA_AP",
+      type: props.selectedFormOption,
       DeleteType: DeleteType,
     };
+
     axios({
       method: "post",
       url: props.url + "/moh/DeleteInvoice/",
@@ -451,12 +502,12 @@ export default function SalesForm(props) {
 
   return (
     <div className="w-[100%] h-[100%]">
-      <div className="w-[100%] h-[100%] m-auto flex flex-col pt-2  ">
-        <div className="flex flex-row w-full h-[5%] ">
+      <div className="w-[100%] h-[100%] m-auto flex flex-col pt-1  ">
+        <div className="flex flex-row w-full h-[3%] ">
           <img
             src={backbutton}
             alt="Back"
-            className="h-8 mr-2 ml-1"
+            className="h-[100%] mr-2 ml-1"
             onClick={() => {
               //if(selectedInvoice!=""){
               //     if(props.propertiesAreEqual==false && selectedInvoice!="" && selectedInvoice !=undefined){
@@ -473,16 +524,14 @@ export default function SalesForm(props) {
               props.inv("");
             }}
           />
-          <h4>Sales Invoice</h4>
+          <h6 className="h-[100%]">Sales Invoice</h6>
         </div>
-        <div className="h-[15%]">
-          <div className="my-2 px-2 w-[90%] h-[100%]  mx-auto flex flex-row items-center">
+        <div className="h-[12%]">
+          <div className=" px-2 w-[97.5%] h-[100%]  mx-auto flex flex-row items-center">
             <div className="flex items-center">
               <i className="fas fa-search text-gray-500 mr-2"></i>{" "}
               {/* Magnifying glass icon */}
-              <span className="font-semibold text-lg text-gray-700">
-                Search:
-              </span>
+              <h2 className="font-semibold text-2xl text-gray-700">Search:</h2>
             </div>
             <div className="flex-grow ml-4 relative w-[40%]">
               <input
@@ -534,12 +583,12 @@ export default function SalesForm(props) {
             </div>
           </div>
         </div>
-        <div className=" w-[90%] shadow-lg mx-auto h-[80%] rounded p-2">
+        <div className=" w-[97.5%] shadow-lg mx-auto h-[85%] rounded p-2">
           <div className="flex flex-col justify-between h-[100%]">
             {" "}
             {/* Model content*/}
-            <div className="h-[19%] mb-[1%] flex flex-col justify-center items-center">
-              <select
+            <div className="h-[10%] flex flex-col justify-center items-center">
+              {/* <select
                 className="p-2 h-[100%]  rounded border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-lg "
                 value={selectedFormOption}
                 onChange={(e) => setSelectedFormOption(e.target.value)}
@@ -550,9 +599,37 @@ export default function SalesForm(props) {
                 <option value="ReturnInvoice">
                   <h3 className="text-center text-xl">Return Invoice</h3>
                 </option>
-              </select>
+              </select> */}
+              <h1
+                className="text-center text-xl2 text-gray-700"
+                onClick={() => {
+                  if (
+                    props.propertiesAreEqual == false ||
+                    (selectedInvoice != "" && selectedInvoice != undefined)
+                  ) {
+                    setSwitchFormOption({
+                      show: true,
+                      message: (
+                        <div>
+                          You Cannot Change The Form Option Without Saving
+                          Changes.
+                          <br />
+                          Please Save Your Changes First .
+                        </div>
+                      ),
+                      //variable: option,
+                      title: "Unsaved Invoice",
+                    });
+                    return;
+                  } else {
+                    handleHeaderClick();
+                  }
+                }}
+              >
+                {props.selectedFormOptionDisplay}
+              </h1>
             </div>
-            <div className="flex flex-row items-center justify-between mb-2">
+            <div className="flex flex-row items-center justify-between mb-1 h-[15%]">
               <div className="w-[25%] flex flex-row justify-between">
                 <div className="text-xl font-semibold w-fit">Client ID:</div>
 
@@ -588,10 +665,29 @@ export default function SalesForm(props) {
                                 Clear
                             </button>
                              </div> */}
-              <div className="flex flex-row items-center justify-center mb-2">
-                <div className="text-xl font-semibold mr-3">Name:</div>
-                <div>
+              <div className="w-[25%] flex flex-row justify-center">
+                <div className="text-xl font-semibold mr-1">Name:</div>
+                <div className="text-xl font-semibold">
                   {props.Client["name"]}
+                  {/* <input
+                                        type={"text"}
+                                        className="block rounded-md w-[80%] h-[2.3rem] border-gray-400 mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        placeholder={"Client Id"}
+                                        value={Client["name"]}
+                                        disabled
+                                        onChange={(e) => {
+                                            setClient(e.target.value);
+                                        }}
+                                    /> */}
+                </div>
+              </div>
+              <div className="w-[25%] flex flex-row justify-center">
+                <div className="text-xl font-semibold mr-1">Balance:</div>
+                <div className="text-xl font-semibold">
+                  {props.Client["balance"] !== "" &&
+                  props.Client["balance"] !== undefined
+                    ? props.Client["balance"]
+                    : "--"}
                   {/* <input
                                         type={"text"}
                                         className="block rounded-md w-[80%] h-[2.3rem] border-gray-400 mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -647,7 +743,7 @@ export default function SalesForm(props) {
                 </select>
               </div>
             </div>
-            <div className="h-[100%] overflow-auto">
+            <div className="h-[55%] overflow-auto">
               <Table bordered striped responsive>
                 <thead className=" bg-slate-500">
                   <tr className=" whitespace-nowrap ">
@@ -842,15 +938,25 @@ export default function SalesForm(props) {
               </Modal>
             </div>
             <div className="flex flex-col justify-start h-[20%] mb-[1%]">
-              <div className=" font-semibold text-xl ">
-                <div>
-                  {finalTotal.toFixed(3)} + {finalTax.toFixed(3)}
+              <div className=" font-semibold text-xl h-[45%] flex justify-between items-center">
+                <div className="flex justify-between items-center">
+                  <div className="mr-20">
+                    {" "}
+                    <h3>Gross: {finalTotal.toFixed(3)} </h3>
+                  </div>
+                  <div>
+                    {" "}
+                    <h3>TAX: {finalTax.toFixed(3)}</h3>
+                  </div>
                 </div>
-                Total: {(finalTotal + finalTax).toFixed(3)}
+
+                <div className="">
+                  <h3>Total: {(finalTotal + finalTax).toFixed(3)} </h3>
+                </div>
               </div>
-              <div className="flex flex-row justify-between ">
+              <div className="flex flex-row justify-between h-[55%]">
                 <Button
-                  className="my-2 w-[20%]"
+                  className="h-[100%] w-[20%]"
                   variant="danger"
                   onClick={() => {
                     // if(props.propertiesAreEqual==false && localStorage.getItem("InvoiceHistory")!=null && localStorage.getItem("InvoiceHistory")!=undefined && localStorage.getItem("InvoiceHistory")!="")
@@ -879,6 +985,7 @@ export default function SalesForm(props) {
                           RefNo: "",
                           date: "",
                           time: "",
+                          balance: "",
                         });
                         console.log("y10");
                         localStorage.setItem("sales", "");
@@ -889,8 +996,7 @@ export default function SalesForm(props) {
                   Exit
                 </Button>
                 <Button
-                  className="my-2 w-[20%] mx-2 text-lg"
-                  variant="primary"
+                  className="h-[100%] w-[20%] text-lg bg-indigo-500"
                   onClick={() => {
                     //if(props.Client["id"]!=undefined){
                     //     console.log("/*//////////");
@@ -917,7 +1023,7 @@ export default function SalesForm(props) {
                   Clear Invoice
                 </Button>
                 <Button
-                  className="my-2 w-[20%]"
+                  className=" w-[20%]"
                   variant="danger"
                   onClick={() => {
                     let DeleteInvoicePermission =
@@ -943,8 +1049,7 @@ export default function SalesForm(props) {
                   Delete Invoice
                 </Button>
                 <Button
-                  className="my-2 w-[20%]"
-                  variant="primary"
+                  className=" w-[20%] bg-indigo-500"
                   onClick={() => {
                     if (
                       (props.SelectedItems.length == 0 &&
@@ -1450,7 +1555,7 @@ export default function SalesForm(props) {
         setModalShow={setConfirmModalShow}
         postInvoice={props.postInvoice}
         token={props.token}
-        type={"SA_AP"}
+        type={props.selectedFormOption}
         Client={props.Client}
         items={props.SelectedItems}
         RemovedItems={props.RemovedItems}
@@ -1543,6 +1648,7 @@ export default function SalesForm(props) {
                   RefNo: "",
                   date: "",
                   time: "",
+                  balance: "",
                 });
                 props.setSelectedItems([]);
                 props.setRemovedItems([]);
@@ -1799,7 +1905,13 @@ export default function SalesForm(props) {
               variant="danger"
               onClick={() => {
                 setDeleteInvoiceModal(false);
-                DeleteInvoice(props.SelectedItems, props.Client, "INV");
+
+                DeleteInvoice(
+                  props.SelectedItems,
+                  props.RemovedItems,
+                  props.Client,
+                  "INV"
+                );
               }}
             >
               Yes
@@ -1865,6 +1977,35 @@ export default function SalesForm(props) {
       </Modal>
 
       <Modal
+        show={SwitchFormOption.show}
+        onHide={() => setSwitchFormOption({ ...SwitchFormOption, show: false })}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {SwitchFormOption.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h4>{SwitchFormOption.message}</h4> {/* Display the message */}
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="flex flex-row w-full justify-around">
+            <Button
+              variant="primary"
+              onClick={() =>
+                setSwitchFormOption({ ...SwitchFormOption, show: false })
+              }
+            >
+              ok
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
         show={NoSavedToDelete}
         onHide={() => setNoSavedToDelete(false)}
         size="lg"
@@ -1887,6 +2028,59 @@ export default function SalesForm(props) {
           </div>
         </Modal.Footer>
       </Modal>
+      {/* Dialog */}
+      {dialogOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
+          <div className="bg-white p-4 rounded-lg">
+            <h2 className="text-xl font-semibold mb-4">Select an Option:</h2>
+            <div className="grid grid-cols-3 gap-4">
+              {/* Your six boxes here */}
+              <button
+                className="bg-indigo-500 text-white py-4 px-8 rounded-md text-center"
+                onClick={() => formOptionProcessing("SA_AP")}
+              >
+                Sales
+              </button>
+              <button
+                className="bg-indigo-500 text-white py-4 px-8  rounded-md text-center"
+                onClick={() => formOptionProcessing("OD_AP")}
+              >
+                Order
+              </button>
+              <button
+                className="bg-indigo-500 text-white py-4 px-8   rounded-md text-center"
+                onClick={() => formOptionProcessing("PR_AP")}
+              >
+                Purchase Return
+              </button>
+              <button
+                className="bg-indigo-500 text-white py-4 px-8  rounded-md text-center"
+                onClick={() => formOptionProcessing("PI_AP")}
+              >
+                Purchase
+              </button>
+              <button
+                className="bg-indigo-500 text-white py-4 px-8   rounded-md text-center"
+                onClick={() => formOptionProcessing("SR_AP")}
+              >
+                Sales Return
+              </button>
+              <button
+                className="bg-indigo-500 text-white py-4 px-8  rounded-md text-center"
+                onClick={() => formOptionProcessing("SAT_AP")}
+              >
+                Branch Transfer
+              </button>
+            </div>
+            <button
+              className="mt-4 bg-gray-300 hover:bg-gray-400 py-3 px-6  rounded-md"
+              onClick={handleCloseDialog}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
   function getInvoiceOptions() {
@@ -1919,6 +2113,7 @@ export default function SalesForm(props) {
       RefNo: "",
       date: "",
       time: "",
+      balance: "",
     });
     props.setSelectedItems([]);
     props.setRemovedItems([]);
@@ -1943,6 +2138,7 @@ export default function SalesForm(props) {
       RefNo: "",
       date: "",
       time: "",
+      balance: "",
     });
     props.setSelectedItems([]);
     props.setRemovedItems([]);

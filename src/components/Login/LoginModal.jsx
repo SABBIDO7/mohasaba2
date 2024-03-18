@@ -15,20 +15,19 @@ function LoginModal(props) {
   const [vResult, setVresult] = useState("");
   const [warning, setWarning] = useState(false);
 
-  function verify(compname,username, password) {
+  function verify(compname, username, password) {
     var bodyFormData = new FormData();
     if (username == "" || password == "" || compname == "") {
       setVresult("Invalid Username or Password");
       setWarning(true);
-  
     } else {
       bodyFormData.append("compname", compname.toUpperCase());
       bodyFormData.append("username", username.toUpperCase());
       bodyFormData.append("password", password);
-      
+
       axios({
         method: "post",
-        url: props.url+"/moh/login/",
+        url: props.url + "/moh/login/",
         data: bodyFormData,
         headers: { "Content-Type": "multipart/form-data" },
       })
@@ -39,18 +38,61 @@ function LoginModal(props) {
             console.log(response.data.Sbranch);
             localStorage.setItem("username", response.data.name);
             localStorage.setItem("compname", response.data.compname);
-            localStorage.setItem("password",response.data.password);
-            localStorage.setItem("Sbranch",response.data.Sbranch);
-            localStorage.setItem("Abranch",response.data.Abranch);
-            localStorage.setItem("SalePrice",response.data.SalePrice);
-            localStorage.setItem("DeleteInvoice",response.data.Permissions["DeleteInvoice"]);
-            localStorage.setItem("DeleteItem",response.data.Permissions["DeleteItem"]);
-            localStorage.setItem("Discount",response.data.Permissions["Discount"]);
-            localStorage.setItem("Price",response.data.Permissions["Price"]);
-            localStorage.setItem("CallInvoice",response.data.Permissions["CallInvoice"]);
+            localStorage.setItem("password", response.data.password);
+            localStorage.setItem("Sbranch", response.data.Sbranch);
+            localStorage.setItem("Abranch", response.data.Abranch);
+            localStorage.setItem("SalePrice", response.data.SalePrice);
+            localStorage.setItem(
+              "DeleteInvoice",
+              response.data.Permissions["DeleteInvoice"]
+            );
+            localStorage.setItem(
+              "DeleteItem",
+              response.data.Permissions["DeleteItem"]
+            );
+            localStorage.setItem(
+              "Discount",
+              response.data.Permissions["Discount"]
+            );
+            localStorage.setItem("Price", response.data.Permissions["Price"]);
+            localStorage.setItem(
+              "CallInvoice",
+              response.data.Permissions["CallInvoice"]
+            );
+            localStorage.setItem(
+              "SA_AP",
+              response.data.Permissions["SalesForm"]
+            );
+            localStorage.setItem(
+              "SR_AP",
+              response.data.Permissions["SalesReturnForm"]
+            );
+            localStorage.setItem(
+              "OD_AP",
+              response.data.Permissions["OrderForm"]
+            );
+            localStorage.setItem(
+              "PI_AP",
+              response.data.Permissions["PurchaseForm"]
+            );
+            localStorage.setItem(
+              "PR_AP",
+              response.data.Permissions["PurchaseReturnForm"]
+            );
+            localStorage.setItem(
+              "SAT_AP",
+              response.data.Permissions["BranchTransferForm"]
+            );
+            localStorage.setItem(
+              "SalesUnderZero",
+              response.data.Permissions["SalesUnderZero"]
+            );
 
-            props.UserDataHandler(response.data.compname, response.data.name, response.data.token);
-            
+            props.UserDataHandler(
+              response.data.compname,
+              response.data.name,
+              response.data.token
+            );
 
             handleClose();
           } else {
@@ -71,7 +113,6 @@ function LoginModal(props) {
         onHide={handleClose}
         backdrop="static"
         keyboard={false}
-        
       >
         <Modal.Header>
           <Modal.Title>Login</Modal.Title>
