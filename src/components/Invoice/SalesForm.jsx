@@ -78,6 +78,7 @@ export default function SalesForm(props) {
   const [EditPQUnit, setEditPQUnit] = useState();
   const [EditPQty, setEditPQty] = useState();
   const [EditInitialPrice, setEditInitialPrice] = useState();
+  const [EditItemStockQty, setEditItemStockQty] = useState();
   const [DeleteLastItemFromHistory, setDeleteLastItemFromHistory] = useState();
   const [DeleteInvoiceModal, setDeleteInvoiceModal] = useState(false);
   const [DeletePermission, setDeletePermission] = useState(false);
@@ -86,6 +87,9 @@ export default function SalesForm(props) {
   const [ErrorModal, setErrorModal] = useState(false);
   const [SwitchFormOption, setSwitchFormOption] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [SATdialogOpen, setSATDialogOpen] = useState(false);
+  const [SATFromBranch, setSATFromBranch] = useState();
+  const [SATToBranch, setSATToBranch] = useState();
 
   const handleHeaderClick = () => {
     setDialogOpen(true);
@@ -111,6 +115,10 @@ export default function SalesForm(props) {
         message: "You don't Have Permission To Access " + option + " Form",
       });
       return;
+    } else if (option == "SAT_AP") {
+      setDialogOpen(false);
+      setSATDialogOpen(true);
+      console.log("fet bel satttt");
     } else {
       props.setSelectedFormOption(option);
       setDialogOpen(false);
@@ -231,9 +239,11 @@ export default function SalesForm(props) {
         date: "",
         time: "",
         balance: "",
+        address: "",
       });
 
       localStorage.setItem("InvoiceHistory", selectedValue);
+      props.setSelectedFormOption("SA_AP");
     } else {
       setSelectedInvoice(selectedValue);
       localStorage.setItem("InvoiceHistory", selectedValue);
@@ -258,13 +268,13 @@ export default function SalesForm(props) {
       })
         .then((response) => {
           // Handle success response
-          console.log("Response:", response);
-          console.log(response.data.Invoices[0]["RefNo"]);
-
+          console.log("invProfile", response.data.InvProfile[0]);
           props.setSelectedItems(response.data.Invoices);
           props.setClient(response.data.InvProfile[0]);
+          props.setSelectedFormOption(response.data.InvProfile[0]["RefType"]);
           props.setRemovedItems([]);
           //
+
           handleSave({
             accName: {
               id: response.data.InvProfile[0]["id"],
@@ -272,7 +282,8 @@ export default function SalesForm(props) {
               date: response.data.InvProfile[0]["date"],
               time: response.data.InvProfile[0]["time"],
               RefNo: response.data.InvProfile[0]["RefNo"],
-              balance: response.data.InvProfile[0]["id"],
+              balance: response.data.InvProfile[0]["balance"],
+              address: response.data.InvProfile[0]["address"],
             },
 
             items: response.data.Invoices,
@@ -292,10 +303,22 @@ export default function SalesForm(props) {
       const updatedItems = [...props.SelectedItems];
       if (updatedItems[selectedItemIndex]["Note"] !== noteInput) {
         const currentDate = new Date();
-        const formattedDate = `${
-          currentDate.getMonth() + 1
-        }/${currentDate.getDate()}/${currentDate.getFullYear()}`;
-        const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+        const formattedDate = `${currentDate
+          .getDate()
+          .toString()
+          .padStart(2, "0")}/${(currentDate.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}/${currentDate.getFullYear()}`;
+        const formattedTime = `T${currentDate
+          .getHours()
+          .toString()
+          .padStart(2, "0")}:${currentDate
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}:${currentDate
+          .getSeconds()
+          .toString()
+          .padStart(2, "0")}`;
         updatedItems[selectedItemIndex]["DateT"] = formattedDate;
         updatedItems[selectedItemIndex]["TimeT"] = formattedTime;
         console.log("rouhhhhh1");
@@ -389,10 +412,22 @@ export default function SalesForm(props) {
   const RemoveItem = (item, DeleteType) => {
     let tempsi = [];
     const currentDate = new Date();
-    const formattedDate = `${
-      currentDate.getMonth() + 1
-    }/${currentDate.getDate()}/${currentDate.getFullYear()}`;
-    const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+    const formattedDate = `${currentDate
+      .getDate()
+      .toString()
+      .padStart(2, "0")}/${(currentDate.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}/${currentDate.getFullYear()}`;
+    const formattedTime = `T${currentDate
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${currentDate
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}:${currentDate
+      .getSeconds()
+      .toString()
+      .padStart(2, "0")}`;
     //let invoiceTotal = (finalTotal+finalTax) - item["Total"] ;
     console.log("Ana bel remove", item);
     let data = {
@@ -434,10 +469,22 @@ export default function SalesForm(props) {
 
   const DeleteInvoice = (items, RemovedItems, client, DeleteType) => {
     const currentDate = new Date();
-    const formattedDate = `${
-      currentDate.getMonth() + 1
-    }/${currentDate.getDate()}/${currentDate.getFullYear()}`;
-    const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+    const formattedDate = `${currentDate
+      .getDate()
+      .toString()
+      .padStart(2, "0")}/${(currentDate.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}/${currentDate.getFullYear()}`;
+    const formattedTime = `T${currentDate
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${currentDate
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}:${currentDate
+      .getSeconds()
+      .toString()
+      .padStart(2, "0")}`;
 
     let data = {
       item: items,
@@ -492,6 +539,7 @@ export default function SalesForm(props) {
       //setSelectedInvoice("");
       setsOption("Accounts");
       selectInvRef.current.value = "";
+      props.setSelectedFormOption("SA_AP");
     } catch (error) {
       console.log("ERROR");
     }
@@ -603,22 +651,35 @@ export default function SalesForm(props) {
               <h1
                 className="text-center text-xl2 text-gray-700"
                 onClick={() => {
-                  if (
-                    props.propertiesAreEqual == false ||
-                    (selectedInvoice != "" && selectedInvoice != undefined)
-                  ) {
+                  // if (props.propertiesAreEqual == false) {
+                  //   setSwitchFormOption({
+                  //     show: true,
+                  //     message: (
+                  //       <div>
+                  //         You Cannot Change The Form Option Without Saving
+                  //         Changes.
+                  //         <br />
+                  //         Please Save Your Changes First .
+                  //       </div>
+                  //     ),
+                  //     //variable: option,
+                  //     title: "Unsaved Invoice",
+                  //   });
+                  //   return;
+                  // }
+                  if (selectedInvoice != "" && selectedInvoice != undefined) {
                     setSwitchFormOption({
                       show: true,
                       message: (
                         <div>
-                          You Cannot Change The Form Option Without Saving
-                          Changes.
+                          You Cannot Change The Form Option While Calling Old
+                          Invoice.
                           <br />
-                          Please Save Your Changes First .
+                          Please Clear Invoice First .
                         </div>
                       ),
                       //variable: option,
-                      title: "Unsaved Invoice",
+                      title: "Calling Invoice",
                     });
                     return;
                   } else {
@@ -630,81 +691,54 @@ export default function SalesForm(props) {
               </h1>
             </div>
             <div className="flex flex-row items-center justify-between mb-1 h-[15%]">
-              <div className="w-[25%] flex flex-row justify-between">
-                <div className="text-xl font-semibold w-fit">Client ID:</div>
+              <div className="w-[32%] flex flex-column justify-between">
+                <div className="w-full flex flex-row justify-between">
+                  <div className="text-xl font-semibold w-fit">Client ID:</div>
 
-                <input
-                  type={"text"}
-                  className="block rounded-md w-[70%] h-9 border border-gray-400 mx-1 px-2 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white"
-                  placeholder={"Client Id"}
-                  value={props.Client["id"]}
-                  disabled
-                  // onChange={(e) => {
-                  //     setClient(e.target.value);
-                  //     document.getElementById("tf").focus()
-                  // }}
-                />
-              </div>
-              {/* <div className="ml-2">
-                            <button
-                            className="btn btn-danger"
-                             onClick={() => {
-                                props.setClient({
-                                    id:"",
-                                    name:"",
-                                    RefNo:"",
-                                    date:"",
-                                    time:"",
-                                });
-                                props.setSelectedItems([]);
-                                localStorage.setItem("sales", "");
-                                props.setsInvoices([]);
-                                
-                              
-                            }}>
-                                Clear
-                            </button>
-                             </div> */}
-              <div className="w-[25%] flex flex-row justify-center">
-                <div className="text-xl font-semibold mr-1">Name:</div>
-                <div className="text-xl font-semibold">
-                  {props.Client["name"]}
-                  {/* <input
-                                        type={"text"}
-                                        className="block rounded-md w-[80%] h-[2.3rem] border-gray-400 mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                        placeholder={"Client Id"}
-                                        value={Client["name"]}
-                                        disabled
-                                        onChange={(e) => {
-                                            setClient(e.target.value);
-                                        }}
-                                    /> */}
+                  <input
+                    type={"text"}
+                    className="block rounded-md w-[70%] h-9 border border-gray-400 mx-1 px-2 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white"
+                    placeholder={"Client Id"}
+                    value={props.Client["id"]}
+                    disabled
+                  />
+                </div>
+
+                <div className="w-full flex flex-row justify-between">
+                  <div className="text-xl font-semibold mr-1">Name:</div>
+                  <div className="text-xl font-semibold">
+                    {props.Client["name"]}
+                  </div>
                 </div>
               </div>
-              <div className="w-[25%] flex flex-row justify-center">
-                <div className="text-xl font-semibold mr-1">Balance:</div>
-                <div className="text-xl font-semibold">
-                  {props.Client["balance"] !== "" &&
-                  props.Client["balance"] !== undefined
-                    ? props.Client["balance"]
-                    : "--"}
-                  {/* <input
-                                        type={"text"}
-                                        className="block rounded-md w-[80%] h-[2.3rem] border-gray-400 mx-1 px-2 border-[1px] focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                        placeholder={"Client Id"}
-                                        value={Client["name"]}
-                                        disabled
-                                        onChange={(e) => {
-                                            setClient(e.target.value);
-                                        }}
-                                    /> */}
+              <div className="w-[32%] flex flex-column justify-between">
+                <div className="w-full flex flex-row justify-between">
+                  <div className="text-xl font-semibold mr-1">Balance:</div>
+                  <div className="text-xl font-semibold">
+                    {props.Client["balance"] !== "" &&
+                    props.Client["balance"] !== undefined &&
+                    props.Client["balance"] !== null
+                      ? props.Client["balance"].toFixed(3)
+                      : "--"}
+                  </div>
+                </div>
+                <div className="w-full flex flex-row justify-between">
+                  <div className="text-xl font-semibold ">Address:</div>
+                  <div className="text-xl font-semibold">
+                    {" "}
+                    {props.Client["address"] !== "" &&
+                    props.Client["address"] !== undefined &&
+                    props.Client["address"] !== null
+                      ? props.Client["address"]
+                      : "--"}
+                  </div>
                 </div>
               </div>
-              <div className="w-[25%] flex flex-row justify-between">
-                <div className="text-xl font-semibold w-fit">Inv History:</div>
+              <div className="w-[32%] flex flex-row justify-center">
+                <div className="text-xl font-semibold w-fit">Call Inv:</div>
 
                 <select
-                  className="p-[0.5rem] w-[65%] h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
+                  className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
                   ref={selectInvRef}
                   onChange={(e) => {
                     if (props.propertiesAreEqual == false) {
@@ -727,7 +761,7 @@ export default function SalesForm(props) {
                   value={selectedInvoice}
                 >
                   <option value="" className="py-2 text-lg">
-                    Choose invoice
+                    Call invoice
                   </option>
                   {sInvoices.map((inv, idx) => {
                     return (
@@ -881,6 +915,7 @@ export default function SalesForm(props) {
                                   "hsebet men uprice waat ekbos edit"
                                 );
                                 setPerformCalculation(false);
+                                setEditItemStockQty(si["StockQty"]);
 
                                 // if(EditType=="3"){
                                 //     setEditInitialPrice(si["uprice"]);
@@ -986,6 +1021,7 @@ export default function SalesForm(props) {
                           date: "",
                           time: "",
                           balance: "",
+                          address: "",
                         });
                         console.log("y10");
                         localStorage.setItem("sales", "");
@@ -1054,7 +1090,8 @@ export default function SalesForm(props) {
                     if (
                       (props.SelectedItems.length == 0 &&
                         props.RemovedItems.length == 0) ||
-                      props.Client == ""
+                      props.Client == "" ||
+                      props.propertiesAreEqual == true
                     ) {
                       setEmptyAlertModalShow(true);
                       console.log("//**/////");
@@ -1100,6 +1137,8 @@ export default function SalesForm(props) {
         handlingAccWhenChanging={props.handlingAccWhenChanging}
         RemovedItems={props.RemovedItems}
         setRemovedItems={props.setRemovedItems}
+        setDeletePermission={setDeletePermission}
+        DeletePermission={DeletePermission}
       />
 
       <Modal
@@ -1117,6 +1156,8 @@ export default function SalesForm(props) {
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             {EditItem["name"]}
+            <br />
+            Stock: {EditItemStockQty}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="px-6 py-4">
@@ -1338,6 +1379,17 @@ export default function SalesForm(props) {
               <Button
                 variant="primary"
                 onClick={() => {
+                  if (localStorage.getItem("SalesUnderZero") == "N") {
+                    if (EditItemStockQty < EditTotalPieces) {
+                      setDeletePermission({
+                        show: true,
+                        message:
+                          "You Don't Have Permission To Sell Less Than Stock Quantity.",
+                      });
+                      return;
+                    }
+                  }
+
                   let tempa = props.SelectedItems;
 
                   let tempQty;
@@ -1395,6 +1447,7 @@ export default function SalesForm(props) {
                     BPUnit: EditDBPUnit,
                     SPUnit: EditDSPUnit,
                     InitialPrice: EditInitialPrice,
+                    StockQty: EditItemStockQty,
                   };
                   console.log("edipricee", tempa[EditIdx]["uprice"]);
                   let pAreEqual = true;
@@ -1440,10 +1493,22 @@ export default function SalesForm(props) {
 
                     props.setpropertiesAreEqual(false);
                     const currentDate = new Date();
-                    const formattedDate = `${
-                      currentDate.getMonth() + 1
-                    }/${currentDate.getDate()}/${currentDate.getFullYear()}`;
-                    const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+                    const formattedDate = `${currentDate
+                      .getDate()
+                      .toString()
+                      .padStart(2, "0")}/${(currentDate.getMonth() + 1)
+                      .toString()
+                      .padStart(2, "0")}/${currentDate.getFullYear()}`;
+                    const formattedTime = `T${currentDate
+                      .getHours()
+                      .toString()
+                      .padStart(2, "0")}:${currentDate
+                      .getMinutes()
+                      .toString()
+                      .padStart(2, "0")}:${currentDate
+                      .getSeconds()
+                      .toString()
+                      .padStart(2, "0")}`;
                     tempa[EditIdx]["DateT"] = formattedDate;
                     tempa[EditIdx]["TimeT"] = formattedTime;
                   }
@@ -1649,6 +1714,7 @@ export default function SalesForm(props) {
                   date: "",
                   time: "",
                   balance: "",
+                  address: "",
                 });
                 props.setSelectedItems([]);
                 props.setRemovedItems([]);
@@ -1717,13 +1783,15 @@ export default function SalesForm(props) {
           <h4>
             {props.Client["id"] == ""
               ? "No Account Choosen"
+              : props.propertiesAreEqual == true
+              ? "No Changes In Your Invoice"
               : "No Items in your invoice"}
           </h4>
         </Modal.Body>
         <Modal.Footer>
           <div className="flex flex-row w-full justify-around">
             <Button
-              variant="danger"
+              variant="primary"
               onClick={() => setEmptyAlertModalShow(false)}
             >
               Ok
@@ -2081,6 +2149,77 @@ export default function SalesForm(props) {
           </div>
         </div>
       )}
+
+      {SATdialogOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
+          <div className="bg-white p-4 rounded-lg">
+            <h2 className="text-xl font-semibold mb-4">Select Branches:</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {/* Your six boxes here */}
+              <label htmlFor="BranchFrom" className="w-fit">
+                FROM Branch :
+              </label>
+              <select
+                id="itemBranch"
+                className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
+                value={SATFromBranch}
+                onChange={(e) => {
+                  setSATFromBranch(e.target.value);
+                }}
+              >
+                {props.branches.map((br) => {
+                  return (
+                    <option key={br.number} value={br.number}>
+                      {br.number} - {br.name}
+                    </option>
+                  );
+                })}
+              </select>
+              <label htmlFor="itemBranch" className="w-fit">
+                TO Branch:
+              </label>
+              <select
+                id="itemBranch"
+                className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
+                value={SATToBranch}
+                onChange={(e) => {
+                  setSATToBranch(e.target.value);
+                }}
+              >
+                {props.branches.map((br) => {
+                  return (
+                    <option key={br.number} value={br.number}>
+                      {br.number} - {br.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+            <div className="justify-between flex">
+              <button
+                className="mt-4 bg-red-400 hover:bg-red-400 py-3 px-6  rounded-md"
+                onClick={() => {
+                  setSATDialogOpen(false);
+                  setDialogOpen(true);
+                }}
+              >
+                Close
+              </button>
+              <button
+                className="mt-4 bg-indigo-400 hover:bg-indigo-400 py-3 px-6  rounded-md"
+                onClick={() => {
+                  if (SATToBranch != SATFromBranch) {
+                    setSATDialogOpen(false);
+                    props.setSelectedFormOption("SAT_AP");
+                  }
+                }}
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
   function getInvoiceOptions() {
@@ -2114,6 +2253,7 @@ export default function SalesForm(props) {
       date: "",
       time: "",
       balance: "",
+      address: "",
     });
     props.setSelectedItems([]);
     props.setRemovedItems([]);
@@ -2139,6 +2279,7 @@ export default function SalesForm(props) {
       date: "",
       time: "",
       balance: "",
+      address: "",
     });
     props.setSelectedItems([]);
     props.setRemovedItems([]);

@@ -35,6 +35,7 @@ const IdSelect = forwardRef((props, ref) => {
   const [sItemPPrice, setsItemPPrice] = useState();
   const [sItemDBPUnit, setsItemBPUnit] = useState();
   const [sItemDSPUnit, setsItemDSPUnit] = useState();
+  const [sItemStockQty, setsItemStockQty] = useState(0);
 
   const [sItemInitial, setsItemInitial] = useState();
 
@@ -136,6 +137,7 @@ const IdSelect = forwardRef((props, ref) => {
                       setsItemPQty(io["PQty"]);
                       setsItemPUnit(io["PUnit"]);
                       setsItemPQunit(io["PQUnit"]);
+                      setsItemStockQty(io["AvQty"]);
                       // {sItemDBPUnit && sItemDBPUnit.trim() !== '' ? setsItemPType("3"): sItemPUnit && sItemPUnit.trim() !== ''?setsItemPType("2"):setsItemPType("1")}
                       if (sItemDBPUnit && sItemDBPUnit.trim() !== "") {
                         setsItemPType("3");
@@ -269,6 +271,8 @@ const IdSelect = forwardRef((props, ref) => {
             {sItemName}
             <br />
             {sItemNo}
+            <br />
+            Stock: {sItemStockQty}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="px-6 py-4">
@@ -529,6 +533,20 @@ const IdSelect = forwardRef((props, ref) => {
           <div className="flex flex-row-reverse justify-between w-full">
             <Button
               onClick={() => {
+                console.log("feter");
+                console.log(localStorage.getItem("SalesUnderZero"));
+                if (localStorage.getItem("SalesUnderZero") == "N") {
+                  console.log("fety");
+                  if (sItemStockQty < sItemTotalPieces) {
+                    console.log("itemStockkkk");
+                    props.setDeletePermission({
+                      show: true,
+                      message:
+                        "You Don't Have Permission To Sell Less Than Stock Quantity.",
+                    });
+                    return;
+                  }
+                }
                 addItem();
               }}
             >
@@ -563,11 +581,12 @@ const IdSelect = forwardRef((props, ref) => {
         props.sethandlingAccWhenChanging(e);
         console.log(typeof props.Client.id);
         console.log(typeof props.newAccount);
-        if (props.Client.id !== props.newAccount) {
-          props.setSearchAccountModalShow(true);
-          console.log("fetit fidderrrrr");
-          return;
-        }
+        // if (props.Client.id !== props.newAccount) {
+        props.setSearchAccountModalShow(true);
+        return;
+        //   console.log("fetit fidderrrrr");
+        //   return;
+        // }
       }
       props.setClient({
         id: "",
@@ -583,10 +602,22 @@ const IdSelect = forwardRef((props, ref) => {
 
       console.log("ll");
       const currentDate = new Date();
-      const formattedDate = `${
-        currentDate.getMonth() + 1
-      }/${currentDate.getDate()}/${currentDate.getFullYear()}`;
-      const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+      const formattedDate = `${currentDate
+        .getDate()
+        .toString()
+        .padStart(2, "0")}/${(currentDate.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}/${currentDate.getFullYear()}`;
+      const formattedTime = `T${currentDate
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${currentDate
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}:${currentDate
+        .getSeconds()
+        .toString()
+        .padStart(2, "0")}`;
 
       props.setClient({
         id: e["AccNo"],
@@ -599,6 +630,7 @@ const IdSelect = forwardRef((props, ref) => {
             ? ""
             : props.changingAccountInvoiceFromDB,
         balance: e["Balance"],
+        address: e["Address"],
       });
       props.setModalShow(false);
       props.setsOption("Items");
@@ -618,6 +650,7 @@ const IdSelect = forwardRef((props, ref) => {
               ? ""
               : props.changingAccountInvoiceFromDB,
           balance: e["Balance"],
+          address: e["Address"],
         },
 
         items: props.si,
@@ -713,10 +746,22 @@ const IdSelect = forwardRef((props, ref) => {
 
     let Lno = props.si.length + 1;
     const currentDate = new Date();
-    const formattedDate = `${
-      currentDate.getMonth() + 1
-    }/${currentDate.getDate()}/${currentDate.getFullYear()}`;
-    const formattedTime = `T${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+    const formattedDate = `${currentDate
+      .getDate()
+      .toString()
+      .padStart(2, "0")}/${(currentDate.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}/${currentDate.getFullYear()}`;
+    const formattedTime = `T${currentDate
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${currentDate
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}:${currentDate
+      .getSeconds()
+      .toString()
+      .padStart(2, "0")}`;
     tempsi = [
       ...props.si,
       {
@@ -762,6 +807,7 @@ const IdSelect = forwardRef((props, ref) => {
         BPUnit: sItemDBPUnit,
         SPUnit: sItemDSPUnit,
         InitialPrice: sItemInitial,
+        StockQty: sItemStockQty,
       },
     ];
     console.log("*//////////////////////*");
