@@ -179,7 +179,7 @@ function App() {
     };
 
     fetchData(); // Call the function when the component mounts
-
+ 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   

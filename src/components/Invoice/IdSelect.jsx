@@ -659,6 +659,9 @@ const IdSelect = forwardRef((props, ref) => {
       localStorage.setItem("InvoiceHistory", "");
       props.setpropertiesAreEqual(false);
     } else if (props.sOption === "Items") {
+      if (props.selectedFormOption == "CR_AP" || "DB_AP") {
+      } else {
+      }
       let uprice = 0;
 
       // if (e["SPrice1"] != 0) {

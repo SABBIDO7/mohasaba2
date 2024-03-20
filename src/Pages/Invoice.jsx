@@ -30,6 +30,8 @@ export default function Invoice(props) {
   }
   const [propertiesAreEqual, setpropertiesAreEqual] = useState(p);
   const [handlingAccWhenChanging, sethandlingAccWhenChanging] = useState();
+  const [SATFromBranch, setSATFromBranch] = useState();
+  const [SATToBranch, setSATToBranch] = useState();
   function sInvoiceHandler(e) {
     setSInvoice(e);
   }
@@ -37,6 +39,11 @@ export default function Invoice(props) {
   useEffect(() => {
     getBranches();
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("SATFromBranch", SATFromBranch);
+    localStorage.setItem("SATToBranch", SATToBranch);
+  }, [SATFromBranch, SATToBranch]);
 
   const [Hisab, setHisab] = useState([]);
   const [branches, setBranches] = useState([]);
@@ -134,6 +141,10 @@ export default function Invoice(props) {
                   selectedFormOption={selectedFormOption}
                   setSelectedFormOptionDisplay={setSelectedFormOptionDisplay}
                   selectedFormOptionDisplay={selectedFormOptionDisplay}
+                  setSATToBranch={setSATToBranch}
+                  SATToBranch={SATToBranch}
+                  setSATFromBranch={setSATFromBranch}
+                  SATFromBranch={SATFromBranch}
                 />
               </>
             );
@@ -228,6 +239,8 @@ export default function Invoice(props) {
         localStorage.setItem("sales", "");
         setpropertiesAreEqual(true);
         localStorage.setItem("InvoiceHistory", "");
+        setSATToBranch();
+        setSATFromBranch();
         downloadPDF(data);
         setafterSubmitModal(true);
       } else if (res.data.Info == "Failed") {

@@ -88,8 +88,6 @@ export default function SalesForm(props) {
   const [SwitchFormOption, setSwitchFormOption] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [SATdialogOpen, setSATDialogOpen] = useState(false);
-  const [SATFromBranch, setSATFromBranch] = useState();
-  const [SATToBranch, setSATToBranch] = useState();
 
   const handleHeaderClick = () => {
     setDialogOpen(true);
@@ -106,7 +104,7 @@ export default function SalesForm(props) {
     //   props.SelectedItems.length > 0 ||
     //   props.RemoveItems.length > 0 ||
     //   (selectedInvoice != undefined && selectedInvoice != undefined) ||
-    if (option === props.selectedFormOption) {
+    if (option === props.selectedFormOption && option != "SAT_AP") {
       setDialogOpen(false);
       return;
     } else if (localStorage.getItem(option) == "N") {
@@ -119,6 +117,10 @@ export default function SalesForm(props) {
       setDialogOpen(false);
       setSATDialogOpen(true);
       console.log("fet bel satttt");
+    } else if (option == "CR_AP" || option == "DB_AP") {
+      setDialogOpen(false);
+      clearInvoice();
+      props.setSelectedFormOption(option);
     } else {
       props.setSelectedFormOption(option);
       setDialogOpen(false);
@@ -217,6 +219,10 @@ export default function SalesForm(props) {
       props.setSelectedFormOptionDisplay("PurchaseReturn Form");
     } else if (props.selectedFormOption == "SAT_AP") {
       props.setSelectedFormOptionDisplay("BranchTransfer Form");
+    } else if (props.selectedFormOption == "CR_AP") {
+      props.setSelectedFormOptionDisplay("ReceiptVoucher");
+    } else if (props.selectedFormOption == "DB_AP") {
+      props.setSelectedFormOptionDisplay("PaymentVoucher");
     }
   }, [props.selectedFormOption]);
 
@@ -228,6 +234,8 @@ export default function SalesForm(props) {
     console.log(selectedValue);
     console.log("y1");
     localStorage.setItem("sales", "");
+    props.setSATFromBranch();
+    props.setSATToBranch();
     if (selectedValue == "") {
       setSelectedInvoice("");
       props.setSelectedItems([]);
@@ -369,11 +377,11 @@ export default function SalesForm(props) {
         props.setRemovedItems(retrievedJson["RemovedItems"]);
       }
 
+      props.setSATFromBranch(localStorage.getItem("SATFromBranch"));
+      props.setSATToBranch(localStorage.getItem("SATToBranch"));
+
       setSelectedInvoice(localStorage.getItem("InvoiceHistory"));
-      console.log("POPOPOPOP[OPO");
-      console.log(retrievedJson["accName"]);
-      console.log("drinkdrink");
-      console.log(localStorage.getItem("InvoiceHistory"));
+
       if (localStorage.getItem("propertiesAreEqual") == "true") {
         props.setpropertiesAreEqual(true);
       } else if (localStorage.getItem("propertiesAreEqual") == "false") {
@@ -521,11 +529,47 @@ export default function SalesForm(props) {
         // Handle error (e.g., set error state)
       });
   };
+  const getCompanyInfo = async () => {
+    try {
+      const resp = await axios({
+        method: "get",
+        url:
+          props.url + "/moh/getCompanyInfo/" + localStorage.getItem("compname"),
+
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      const data = resp.data;
+
+      if (data.Info === "authorized") {
+        localStorage.setItem("CompName", data.CompanyInfo["CompName"]);
+        localStorage.setItem("CompAdd", data.CompanyInfo["CompAdd"]);
+        localStorage.setItem("CompTell", data.CompanyInfo["CompTell"]);
+        localStorage.setItem("CompEmail", data.CompanyInfo["CompEmail"]);
+        localStorage.setItem("CompTax", data.CompanyInfo["CompTax"]);
+        localStorage.setItem("mainCur", data.CompanyInfo["mainCur"]);
+        localStorage.setItem("Rate", data.CompanyInfo["Rate"]);
+        localStorage.setItem("Cur1", data.CompanyInfo["Cur1"]);
+        localStorage.setItem("Cur2", data.CompanyInfo["Cur2"]);
+        localStorage.setItem("CASH", data.CompanyInfo["CASH"]);
+        localStorage.setItem("VISA1", data.CompanyInfo["VISA1"]);
+        localStorage.setItem("VISA2", data.CompanyInfo["VISA2"]);
+        localStorage.setItem("VISA3", data.CompanyInfo["VISA3"]);
+        localStorage.setItem("VISA4", data.CompanyInfo["VISA4"]);
+        localStorage.setItem("VISA5", data.CompanyInfo["VISA5"]);
+        localStorage.setItem("VISA6", data.CompanyInfo["VISA6"]);
+      }
+    } catch (error) {
+      // Handle errors here if needed
+      console.error("Error fetching data:", error);
+    }
+  };
 
   useEffect(() => {
     try {
       setErrorMessage("");
       handleRetrieve();
+      getCompanyInfo();
     } catch (error) {
       console.log("ERROR");
     }
@@ -635,19 +679,21 @@ export default function SalesForm(props) {
           <div className="flex flex-col justify-between h-[100%]">
             {" "}
             {/* Model content*/}
-            <div className="h-[10%] flex flex-col justify-center items-center">
-              {/* <select
-                className="p-2 h-[100%]  rounded border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-lg "
-                value={selectedFormOption}
-                onChange={(e) => setSelectedFormOption(e.target.value)}
-              >
-                <option value="Sales">
-                  <h3 className="text-center text-xl">Sales Form</h3>
-                </option>
-                <option value="ReturnInvoice">
-                  <h3 className="text-center text-xl">Return Invoice</h3>
-                </option>
-              </select> */}
+            <div className="h-[10%] flex flex-col justify-between items-between">
+              <div className="flex flex-row items-center justify-between">
+                <div>
+                  Currency:{" "}
+                  {localStorage.getItem(
+                    "Cur" + localStorage.getItem("mainCur")
+                  )}
+                </div>
+                <div>
+                  CurRate:{" "}
+                  {localStorage.getItem("Rate") == null || undefined || ""
+                    ? "--"
+                    : localStorage.getItem("Rate")}
+                </div>
+              </div>
               <h1
                 className="text-center text-xl2 text-gray-700"
                 onClick={() => {
@@ -689,6 +735,7 @@ export default function SalesForm(props) {
               >
                 {props.selectedFormOptionDisplay}
               </h1>
+              <div></div>
             </div>
             <div className="flex flex-row items-center justify-between mb-1 h-[15%]">
               <div className="w-[32%] flex flex-column justify-between">
@@ -781,17 +828,30 @@ export default function SalesForm(props) {
               <Table bordered striped responsive>
                 <thead className=" bg-slate-500">
                   <tr className=" whitespace-nowrap ">
-                    <th>LNO</th>
-                    <th>ItemNo</th>
-                    <th>Name</th>
-                    <th>Br</th>
-                    <th>QTY</th>
-                    <th>UPrice</th>
-                    <th>Discount</th>
-                    <th>Tax</th>
-                    <th>Total</th>
-                    <th>Note</th>
-                    <th>Action</th>
+                    {props.selectedFormOption === "CR_AP" ||
+                    props.selectedFormOption === "DB_AP" ? (
+                      <>
+                        <th>LNO</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Cur</th>
+                        <th>Branch</th>
+                      </>
+                    ) : (
+                      <>
+                        <th>LNO</th>
+                        <th>ItemNo</th>
+                        <th>Name</th>
+                        <th>Br</th>
+                        <th>QTY</th>
+                        <th>UPrice</th>
+                        <th>Discount %</th>
+                        <th>Tax %</th>
+                        <th>Total</th>
+                        <th>Note</th>
+                        <th>Action</th>
+                      </>
+                    )}
                   </tr>
                 </thead>
                 <tbody className="bg-white">
@@ -977,16 +1037,41 @@ export default function SalesForm(props) {
                 <div className="flex justify-between items-center">
                   <div className="mr-20">
                     {" "}
-                    <h3>Gross: {finalTotal.toFixed(3)} </h3>
+                    <h4>Gross: {finalTotal.toFixed(3)} </h4>
+                  </div>
+                  <div className="mr-20">
+                    {" "}
+                    <h4>TAX: {finalTax.toFixed(3)}</h4>
                   </div>
                   <div>
-                    {" "}
-                    <h3>TAX: {finalTax.toFixed(3)}</h3>
+                    <h3>
+                      Total: {(finalTotal + finalTax).toFixed(3)}{" "}
+                      {localStorage.getItem(
+                        "Cur" + localStorage.getItem("mainCur")
+                      )}
+                    </h3>
                   </div>
                 </div>
-
-                <div className="">
-                  <h3>Total: {(finalTotal + finalTax).toFixed(3)} </h3>
+                <div>
+                  {localStorage.getItem("mainCur") == "1" ? (
+                    <h4>
+                      Cur2:{" "}
+                      {(
+                        (finalTotal + finalTax) *
+                        localStorage.getItem("Rate")
+                      ).toFixed(3)}{" "}
+                      {localStorage.getItem("Cur2")}
+                    </h4>
+                  ) : (
+                    <h4>
+                      Cur2:{" "}
+                      {(
+                        (finalTotal + finalTax) /
+                        localStorage.getItem("Rate")
+                      ).toFixed(3)}{" "}
+                      {localStorage.getItem("Cur1")}
+                    </h4>
+                  )}{" "}
                 </div>
               </div>
               <div className="flex flex-row justify-between h-[55%]">
@@ -1026,6 +1111,8 @@ export default function SalesForm(props) {
                         console.log("y10");
                         localStorage.setItem("sales", "");
                       }
+                      props.setSATFromBranch();
+                      props.setSATToBranch();
                     }
                   }}
                 >
@@ -1628,6 +1715,10 @@ export default function SalesForm(props) {
         setSelectedInvoice={setSelectedInvoice}
         finalTotal={finalTotal}
         finalTax={finalTax}
+        SATFromBranch={props.SATFromBranch}
+        setSATFromBranch={props.setSATFromBranch}
+        setSATToBranch={props.setSATToBranch}
+        SATToBranch={props.SATToBranch}
       />
       <DiscardInvoiceModal
         modalShow={discardModalShow}
@@ -2139,6 +2230,18 @@ export default function SalesForm(props) {
               >
                 Branch Transfer
               </button>
+              <button
+                className="bg-indigo-500 text-white py-4 px-8 rounded-md text-center"
+                onClick={() => formOptionProcessing("CR_AP")}
+              >
+                Receipt Voucher
+              </button>
+              <button
+                className="bg-indigo-500 text-white py-4 px-8 rounded-md text-center"
+                onClick={() => formOptionProcessing("DB_AP")}
+              >
+                Payment Voucher
+              </button>
             </div>
             <button
               className="mt-4 bg-gray-300 hover:bg-gray-400 py-3 px-6  rounded-md"
@@ -2162,9 +2265,9 @@ export default function SalesForm(props) {
               <select
                 id="itemBranch"
                 className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
-                value={SATFromBranch}
+                value={props.SATFromBranch}
                 onChange={(e) => {
-                  setSATFromBranch(e.target.value);
+                  props.setSATFromBranch(e.target.value);
                 }}
               >
                 {props.branches.map((br) => {
@@ -2181,9 +2284,9 @@ export default function SalesForm(props) {
               <select
                 id="itemBranch"
                 className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
-                value={SATToBranch}
+                value={props.SATToBranch}
                 onChange={(e) => {
-                  setSATToBranch(e.target.value);
+                  props.setSATToBranch(e.target.value);
                 }}
               >
                 {props.branches.map((br) => {
@@ -2208,9 +2311,19 @@ export default function SalesForm(props) {
               <button
                 className="mt-4 bg-indigo-400 hover:bg-indigo-400 py-3 px-6  rounded-md"
                 onClick={() => {
-                  if (SATToBranch != SATFromBranch) {
+                  if (props.SATToBranch != props.SATFromBranch) {
                     setSATDialogOpen(false);
                     props.setSelectedFormOption("SAT_AP");
+                  } else {
+                    setErrorModal({
+                      show: true,
+                      message: (
+                        <div>
+                          You Cannot Transfer To The Same Branch. <br></br>{" "}
+                          Please Choose Different Branches
+                        </div>
+                      ),
+                    });
                   }
                 }}
               >
@@ -2264,6 +2377,8 @@ export default function SalesForm(props) {
     localStorage.setItem("InvoiceHistory", "");
     console.log("selectedInvoice");
     console.log(props.selectedInvoice);
+    props.setSATFromBranch();
+    props.setSATToBranch();
   }
   function clearInvoice() {
     setsOption("Accounts");
@@ -2287,8 +2402,11 @@ export default function SalesForm(props) {
     localStorage.setItem("sales", "");
     localStorage.setItem("InvoiceHistory", "");
     // setsInvoices([]);
+    props.setSelectedFormOption("SA_AP");
 
     setSelectedInvoice("");
     inputRef.current.focus();
+    props.setSATFromBranch();
+    props.setSATToBranch();
   }
 }
