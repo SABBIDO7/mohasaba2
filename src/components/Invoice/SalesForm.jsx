@@ -104,6 +104,9 @@ export default function SalesForm(props) {
     //   props.SelectedItems.length > 0 ||
     //   props.RemoveItems.length > 0 ||
     //   (selectedInvoice != undefined && selectedInvoice != undefined) ||
+    console.log("107", props.selectedFormOption);
+    localStorage.setItem("selectedFormOption", props.selectedFormOption);
+
     if (option === props.selectedFormOption && option != "SAT_AP") {
       setDialogOpen(false);
       return;
@@ -119,9 +122,13 @@ export default function SalesForm(props) {
       console.log("fet bel satttt");
     } else if (option == "CR_AP" || option == "DB_AP") {
       setDialogOpen(false);
+      console.log("125");
       clearInvoice();
+      console.log("126", option);
       props.setSelectedFormOption(option);
+      console.log("101010");
     } else {
+      console.log("131", option);
       props.setSelectedFormOption(option);
       setDialogOpen(false);
       return;
@@ -224,6 +231,10 @@ export default function SalesForm(props) {
     } else if (props.selectedFormOption == "DB_AP") {
       props.setSelectedFormOptionDisplay("PaymentVoucher");
     }
+    console.log("234", props.selectedFormOption);
+    localStorage.setItem("selectedFormOption", props.selectedFormOption);
+
+    setsOption("Accounts");
   }, [props.selectedFormOption]);
 
   // Function to handle the change event of the select element
@@ -251,6 +262,7 @@ export default function SalesForm(props) {
       });
 
       localStorage.setItem("InvoiceHistory", selectedValue);
+      console.log("264", "sa_ap");
       props.setSelectedFormOption("SA_AP");
     } else {
       setSelectedInvoice(selectedValue);
@@ -445,7 +457,7 @@ export default function SalesForm(props) {
       username: localStorage.getItem("username"),
       compname: localStorage.getItem("compname"),
       RefNo: selectedInvoice,
-      type: "SA_AP",
+      type: localStorage.getItem("selectedFormOption"),
       DeleteType: DeleteType,
       //  invoiceTotal:invoiceTotal
     };
@@ -583,7 +595,8 @@ export default function SalesForm(props) {
       //setSelectedInvoice("");
       setsOption("Accounts");
       selectInvRef.current.value = "";
-      props.setSelectedFormOption("SA_AP");
+      console.log("594");
+      props.setSelectedFormOption(localStorage.getItem("selectedFormOption"));
     } catch (error) {
       console.log("ERROR");
     }
@@ -650,7 +663,12 @@ export default function SalesForm(props) {
                 }}
               >
                 <option className="py-2 text-lg">Accounts</option>
-                <option className="py-2 text-lg">Items</option>
+                {props.selectedFormOption != "DB_AP" &&
+                props.selectedFormOption != "CR_AP" ? (
+                  <option className="py-2 text-lg">Items</option>
+                ) : (
+                  <option className="py-2 text-lg">Amount</option>
+                )}
               </select>
             </div>
             <div className="ml-4 w-[30%]">
@@ -663,6 +681,8 @@ export default function SalesForm(props) {
                     sOption == "Items"
                   ) {
                     setItemsWithoutAccount(true);
+                  } else if (sOption == "Amount") {
+                    props.setModalVoucher(true);
                   } else {
                     getInvoiceOptions();
                     setModalShow(true);
@@ -689,7 +709,9 @@ export default function SalesForm(props) {
                 </div>
                 <div>
                   CurRate:{" "}
-                  {localStorage.getItem("Rate") == null || undefined || ""
+                  {localStorage.getItem("Rate") == null ||
+                  localStorage.getItem("Rate") == undefined ||
+                  localStorage.getItem("Rate") == ""
                     ? "--"
                     : localStorage.getItem("Rate")}
                 </div>
@@ -836,6 +858,8 @@ export default function SalesForm(props) {
                         <th>Amount</th>
                         <th>Cur</th>
                         <th>Branch</th>
+                        <th>Note</th>
+                        <th>Action</th>
                       </>
                     ) : (
                       <>
@@ -858,144 +882,219 @@ export default function SalesForm(props) {
                   {
                     //  console.log(SelectedItems);
                     props.SelectedItems.map((si, idx) => {
-                      console.log(si);
                       let total;
-                      if (si["PPrice"] == "U") {
-                        total = parseFloat(
-                          si["uprice"] *
-                            si["TotalPieces"] *
-                            (1 - si["discount"] / 100)
-                        );
-                      } else if (si["PPrice"] == "P") {
-                        total = parseFloat(
-                          si["uprice"] * si["qty"] * (1 - si["discount"] / 100)
-                        );
-
-                        // else if (si["PType"]=="2"){
-                        //     total =  parseFloat(((si["uprice"]/si["PQty"])* si["qty"])*(1-si["discount"]/100));
-
-                        // }
-                        // else if (si["PType"]=="1"){
-                        //     total =  parseFloat(((si["uprice"]/(si["PQty"]*si['PQUnit']))* si["qty"])*(1-si["discount"]/100));
-
-                        // }
-                      }
-
-                      // let total =
-                      //     (si["TotalPieces"] * si["uprice"])  *(1 - si["discount"] / 100);
-
                       let tax = si["tax"] == "" ? 0 : si["tax"];
                       si["tax"] = tax;
-                      let taxAmount = (total * tax) / 100;
-                      finalTotal = finalTotal + total;
-                      // setFtotal(finalTotal);
-                      finalTax = finalTax + taxAmount;
-                      // setFTax(finalTax);
-                      si["TaxTotal"] = taxAmount.toFixed(3);
-                      let totalf;
-                      if (si["PPrice"] == "U") {
-                        totalf = parseFloat(
-                          si["uprice"] *
-                            si["TotalPieces"] *
-                            (1 - si["discount"] / 100) *
-                            (1 + si["tax"] / 100)
-                        ).toFixed(3);
-                      } else if (si["PPrice"] == "P") {
-                        totalf = parseFloat(
-                          si["uprice"] *
-                            si["qty"] *
-                            (1 - si["discount"] / 100) *
-                            (1 + si["tax"] / 100)
-                        ).toFixed(3);
+                      if (
+                        props.selectedFormOption !== "CR_AP" &&
+                        props.selectedFormOption !== "DB_AP"
+                      ) {
+                        console.log(si);
 
-                        // else if(si["PType"]=="2"){
-                        //     totalf =  parseFloat(((si["uprice"]/si["PQty"])* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
-                        // }else if(si["PType"]=="1"){
-                        //     totalf =  parseFloat(((si["uprice"]/(si["PQty"]*si["PQUnit"]))* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
-                        // }
+                        if (si["PPrice"] == "U") {
+                          total = parseFloat(
+                            si["uprice"] *
+                              si["TotalPieces"] *
+                              (1 - si["discount"] / 100)
+                          );
+                        } else if (si["PPrice"] == "P") {
+                          total = parseFloat(
+                            si["uprice"] *
+                              si["qty"] *
+                              (1 - si["discount"] / 100)
+                          );
+
+                          // else if (si["PType"]=="2"){
+                          //     total =  parseFloat(((si["uprice"]/si["PQty"])* si["qty"])*(1-si["discount"]/100));
+
+                          // }
+                          // else if (si["PType"]=="1"){
+                          //     total =  parseFloat(((si["uprice"]/(si["PQty"]*si['PQUnit']))* si["qty"])*(1-si["discount"]/100));
+
+                          // }
+                        }
+
+                        // let total =
+                        //     (si["TotalPieces"] * si["uprice"])  *(1 - si["discount"] / 100);
+
+                        let taxAmount = (total * tax) / 100;
+                        finalTotal = finalTotal + total;
+                        // setFtotal(finalTotal);
+                        finalTax = finalTax + taxAmount;
+                        // setFTax(finalTax);
+                        si["TaxTotal"] = taxAmount.toFixed(3);
+                        let totalf;
+                        if (si["PPrice"] == "U") {
+                          totalf = parseFloat(
+                            si["uprice"] *
+                              si["TotalPieces"] *
+                              (1 - si["discount"] / 100) *
+                              (1 + si["tax"] / 100)
+                          ).toFixed(3);
+                        } else if (si["PPrice"] == "P") {
+                          totalf = parseFloat(
+                            si["uprice"] *
+                              si["qty"] *
+                              (1 - si["discount"] / 100) *
+                              (1 + si["tax"] / 100)
+                          ).toFixed(3);
+
+                          // else if(si["PType"]=="2"){
+                          //     totalf =  parseFloat(((si["uprice"]/si["PQty"])* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
+                          // }else if(si["PType"]=="1"){
+                          //     totalf =  parseFloat(((si["uprice"]/(si["PQty"]*si["PQUnit"]))* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
+                          // }
+                        }
+                        si["Total"] = totalf;
+                      } else {
+                        total = parseFloat(si["uprice"]);
+                        finalTotal = finalTotal + total;
                       }
-                      si["Total"] = totalf;
+
                       return (
                         <tr
                           key={idx}
                           className=" whitespace-nowrap hover:bg-blue-200 select-none "
                         >
-                          <td>{si["lno"]}</td>
-                          <td>{si["no"]}</td>
-                          <td>{si["name"]}</td>
-                          <td>{si["branch"]}</td>
-                          <td>{si["TotalPieces"]}</td>
-                          <td>{si["uprice"]}</td>
-                          <td>{si["discount"]}%</td>
-                          <td>{si["tax"]}%</td>
-                          <td>{si["Total"]}</td>
+                          {props.selectedFormOption === "CR_AP" ||
+                          props.selectedFormOption === "DB_AP" ? (
+                            <>
+                              <td>{si["lno"]}</td>
+                              <td>{si["PType"]}</td>
+                              {/*type payment */}
+                              <td>{si["uprice"]}</td>
+                              {/*Amount */}
+                              <td>{si["PPrice"]}</td>
+                              {/*Cur */}
+                              <td>{si["branch"]}</td>
+                              <td>
+                                {/* Render note icon/button */}
+                                <button
+                                  className="text-blue-500 hover:text-blue-700"
+                                  onClick={() => {
+                                    setShowNoteModal(true);
+                                    setSelectedItemIndex(idx);
+                                    setErrorMessage("");
+                                    setNoteInput(si["Note"] || "");
+                                  }}
+                                >
+                                  Note
+                                </button>
+                              </td>
 
-                          <td>
-                            {/* Render note icon/button */}
-                            <button
-                              className="text-blue-500 hover:text-blue-700"
-                              onClick={() => {
-                                setShowNoteModal(true);
-                                setSelectedItemIndex(idx);
-                                setErrorMessage("");
-                                setNoteInput(si["Note"] || "");
-                              }}
-                            >
-                              Note
-                            </button>
-                          </td>
+                              <td>
+                                <button
+                                  className="text-blue-500 hover:text-blue-700"
+                                  onClick={() => {
+                                    setShow(true);
+                                    setEditItem(si);
 
-                          {/*<td>{taxAmount.toFixed(3)}</td>*/}
-                          <td>
-                            <button
-                              className="text-blue-500 hover:text-blue-700"
-                              onClick={() => {
-                                setShow(true);
-                                setEditItem(si);
-                                setEditQty(si["qty"]);
+                                    setEditIdx(idx);
 
-                                setEditIdx(idx);
-                                setEditTax(tax);
-                                setEditBranch(si["branch"]);
-                                setEditInitialPrice(si["InitialPrice"]);
-                                setEditDiscount(si["discount"]);
-                                setEditLno(si["lno"]);
-                                setEditTotal(si["Total"]);
-                                setEditTotalPieces(si["TotalPieces"]);
-                                setEditType(si["PType"]);
-                                setEditDBPUnit(si["BPUnit"]);
-                                setEditDPUnit(si["PUnit"]);
-                                setEditDSPUnit(si["SPUnit"]);
-                                setEditPPrice(si["PPrice"]);
-                                setEditPQUnit(si["PQUnit"]);
-                                setEditPQty(si["PQty"]);
+                                    setEditBranch(si["branch"]); /* branch */
 
-                                setEditPrice(si["uprice"]);
-                                console.log(
-                                  "hsebet men uprice waat ekbos edit"
-                                );
-                                setPerformCalculation(false);
-                                setEditItemStockQty(si["StockQty"]);
+                                    setEditLno(si["lno"]); /* lno */
 
-                                // if(EditType=="3"){
-                                //     setEditInitialPrice(si["uprice"]);
-                                // }
-                                // else if(EditType=="2"){
-                                //     let initialPrice = si["uprice"]*si["PQty"]
-                                //     setEditInitialPrice(initialPrice);
-                                // }
-                                // else if(EditType=="1"){
-                                //     let initialPrice = si["uprice"]*si["PQty"]*si["PQUnit"]
-                                //     setEditInitialPrice(initialPrice);
-                                // }
-                                // else{
-                                //     setEditInitialPrice(si["uprice"]);
-                                // }
-                              }}
-                            >
-                              <FontAwesomeIcon icon={faEdit} />
-                            </button>
-                          </td>
+                                    setEditType(si["PType"]); /*type */
+
+                                    setEditPPrice(si["PPrice"]); /* Currency */
+
+                                    setEditPrice(si["uprice"]); /* Amount */
+                                    console.log(
+                                      "hsebet men Amount waat ekbos edit"
+                                    );
+                                  }}
+                                >
+                                  <FontAwesomeIcon icon={faEdit} />
+                                </button>
+                              </td>
+                            </>
+                          ) : (
+                            <>
+                              <td>{si["lno"]}</td>
+                              <td>{si["no"]}</td>
+                              <td>{si["name"]}</td>
+                              <td>{si["branch"]}</td>
+                              <td>{si["TotalPieces"]}</td>
+                              <td>{si["uprice"]}</td>
+                              <td>{si["discount"]}%</td>
+                              <td>{si["tax"]}%</td>
+                              <td>{si["Total"]}</td>
+
+                              <td>
+                                {/* Render note icon/button */}
+                                <button
+                                  className="text-blue-500 hover:text-blue-700"
+                                  onClick={() => {
+                                    setShowNoteModal(true);
+                                    setSelectedItemIndex(idx);
+                                    setErrorMessage("");
+                                    setNoteInput(si["Note"] || "");
+                                  }}
+                                >
+                                  Note
+                                </button>
+                              </td>
+
+                              {/*<td>{taxAmount.toFixed(3)}</td>*/}
+                              <td>
+                                <button
+                                  className="text-blue-500 hover:text-blue-700"
+                                  onClick={() => {
+                                    setShow(true);
+                                    setEditItem(si);
+                                    setEditIdx(idx);
+                                    if (
+                                      props.selectedFormOption !== "CR_AP" &&
+                                      props.selectedFormOption !== "DB_AP"
+                                    ) {
+                                    } else {
+                                      setEditQty(si["qty"]);
+
+                                      setEditTax(tax);
+                                      setEditBranch(si["branch"]);
+                                      setEditInitialPrice(si["InitialPrice"]);
+                                      setEditDiscount(si["discount"]);
+                                      setEditLno(si["lno"]);
+                                      setEditTotal(si["Total"]);
+                                      setEditTotalPieces(si["TotalPieces"]);
+                                      setEditType(si["PType"]);
+                                      setEditDBPUnit(si["BPUnit"]);
+                                      setEditDPUnit(si["PUnit"]);
+                                      setEditDSPUnit(si["SPUnit"]);
+                                      setEditPPrice(si["PPrice"]);
+                                      setEditPQUnit(si["PQUnit"]);
+                                      setEditPQty(si["PQty"]);
+
+                                      setEditPrice(si["uprice"]);
+                                      console.log(
+                                        "hsebet men uprice waat ekbos edit"
+                                      );
+                                      setPerformCalculation(false);
+                                      setEditItemStockQty(si["StockQty"]);
+
+                                      // if(EditType=="3"){
+                                      //     setEditInitialPrice(si["uprice"]);
+                                      // }
+                                      // else if(EditType=="2"){
+                                      //     let initialPrice = si["uprice"]*si["PQty"]
+                                      //     setEditInitialPrice(initialPrice);
+                                      // }
+                                      // else if(EditType=="1"){
+                                      //     let initialPrice = si["uprice"]*si["PQty"]*si["PQUnit"]
+                                      //     setEditInitialPrice(initialPrice);
+                                      // }
+                                      // else{
+                                      //     setEditInitialPrice(si["uprice"]);
+                                      // }
+                                    }
+                                  }}
+                                >
+                                  <FontAwesomeIcon icon={faEdit} />
+                                </button>
+                              </td>
+                            </>
+                          )}
                         </tr>
                       );
                     })
@@ -1226,6 +1325,12 @@ export default function SalesForm(props) {
         setRemovedItems={props.setRemovedItems}
         setDeletePermission={setDeletePermission}
         DeletePermission={DeletePermission}
+        setModalItems={props.setModalItems}
+        modalItems={props.modalItems}
+        selectedFormOption={props.selectedFormOption}
+        selectedFormOptionDisplay={props.selectedFormOptionDisplay}
+        modalVoucher={props.modalVoucher}
+        setModalVoucher={props.setModalVoucher}
       />
 
       <Modal
@@ -1240,467 +1345,816 @@ export default function SalesForm(props) {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            {EditItem["name"]}
-            <br />
-            Stock: {EditItemStockQty}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="px-6 py-4">
-          <div className="space-y-3">
-            <div className="flex items-center">
-              <label htmlFor="itemQty" className="w-1/4">
-                Qty:
-              </label>
-              <div className="w-3/4 flex items-center space-x-2">
-                <img
-                  src={minus}
-                  alt="minus"
-                  className="w-1/8 h-6 cursor-pointer"
-                  onClick={() => {
-                    setEditQty(parseInt(EditQty) - 1);
-                  }}
-                />
-                <input
-                  id="itemQty"
-                  type="number"
-                  className="w-1/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
-                  placeholder={"Qty"}
-                  value={EditQty}
-                  onChange={(e) => {
-                    setEditQty(e.target.value);
-                  }}
-                  style={{
-                    "-moz-appearance": "textfield",
-                    appearance: "textfield",
-                  }}
-                />
-                <img
-                  src={plus}
-                  alt="plus"
-                  className="w-1/8 h-6 cursor-pointer"
-                  onClick={() => {
-                    setEditQty(parseInt(EditQty) + 1);
-                  }}
-                />
-                <select
-                  id="itemType"
-                  className="w-1/2 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
-                  value={EditType}
-                  onChange={(e) => {
-                    setEditType(e.target.value);
-                    setPerformCalculation(true);
-                  }}
-                >
-                  {/* {EditDBPUnit && EditDBPUnit.trim() !== '' ? setEditType("3"): EditDPUnit && EditDPUnit.trim() !== ''?setEditType("2"):setEditType("1")} */}
-                  {EditDBPUnit && EditDBPUnit.trim() !== "" && (
-                    <option value="3">{EditDBPUnit}</option>
-                  )}
+        {props.selectedFormOption !== "CR_AP" &&
+        props.selectedFormOption !== "DB_AP" ? (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title id="contained-modal-title-vcenter">
+                {EditItem["name"]}
+                <br />
+                Stock: {EditItemStockQty}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="px-6 py-4">
+              <div className="space-y-3">
+                <div className="flex items-center">
+                  <label htmlFor="itemQty" className="w-1/4">
+                    Qty:
+                  </label>
+                  <div className="w-3/4 flex items-center space-x-2">
+                    <img
+                      src={minus}
+                      alt="minus"
+                      className="w-1/8 h-6 cursor-pointer"
+                      onClick={() => {
+                        setEditQty(parseInt(EditQty) - 1);
+                      }}
+                    />
+                    <input
+                      id="itemQty"
+                      type="number"
+                      className="w-1/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                      placeholder={"Qty"}
+                      value={EditQty}
+                      onChange={(e) => {
+                        setEditQty(e.target.value);
+                      }}
+                      style={{
+                        "-moz-appearance": "textfield",
+                        appearance: "textfield",
+                      }}
+                    />
+                    <img
+                      src={plus}
+                      alt="plus"
+                      className="w-1/8 h-6 cursor-pointer"
+                      onClick={() => {
+                        setEditQty(parseInt(EditQty) + 1);
+                      }}
+                    />
+                    <select
+                      id="itemType"
+                      className="w-1/2 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                      value={EditType}
+                      onChange={(e) => {
+                        setEditType(e.target.value);
+                        setPerformCalculation(true);
+                      }}
+                    >
+                      {/* {EditDBPUnit && EditDBPUnit.trim() !== '' ? setEditType("3"): EditDPUnit && EditDPUnit.trim() !== ''?setEditType("2"):setEditType("1")} */}
+                      {EditDBPUnit && EditDBPUnit.trim() !== "" && (
+                        <option value="3">{EditDBPUnit}</option>
+                      )}
 
-                  {EditDPUnit && EditDPUnit.trim() !== "" && (
-                    <option value="2">{EditDPUnit}</option>
-                  )}
-                  {EditDSPUnit && EditDBPUnit.trim() !== "" && (
-                    <option value="1">{EditDSPUnit}</option>
-                  )}
-                </select>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <label htmlFor="itemPieceTotal" className="w-1/4">
-                Total Qty:
-              </label>
-              <input
-                id="pieceTotal"
-                type="number"
-                readOnly
-                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
-                placeholder="Total Pieces"
-                value={parseFloat(
-                  EditType == "3"
-                    ? EditQty * EditItem["PQty"] * EditItem["PQUnit"]
-                    : EditType == "2"
-                    ? EditQty * EditItem["PQUnit"]
-                    : EditQty
-                ).toFixed(3)}
-                onChange={(e) => {
-                  setEditTotalPieces(
-                    parseFloat(
-                      EditType == "1"
+                      {EditDPUnit && EditDPUnit.trim() !== "" && (
+                        <option value="2">{EditDPUnit}</option>
+                      )}
+                      {EditDSPUnit && EditDBPUnit.trim() !== "" && (
+                        <option value="1">{EditDSPUnit}</option>
+                      )}
+                    </select>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <label htmlFor="itemPieceTotal" className="w-1/4">
+                    Total Qty:
+                  </label>
+                  <input
+                    id="pieceTotal"
+                    type="number"
+                    readOnly
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    placeholder="Total Pieces"
+                    value={parseFloat(
+                      EditType == "3"
                         ? EditQty * EditItem["PQty"] * EditItem["PQUnit"]
                         : EditType == "2"
                         ? EditQty * EditItem["PQUnit"]
                         : EditQty
-                    ).toFixed(3)
-                  );
-                }}
-              />
-            </div>
-            <div className="flex items-center">
-              <label htmlFor="itemBranch" className="w-1/4">
-                Branch:
-              </label>
-              <select
-                id="itemBranch"
-                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
-                value={EditBranch}
-                onChange={(e) => {
-                  setEditBranch(e.target.value);
-                }}
-              >
-                {props.branches.map((br) => {
-                  return (
-                    <option key={br.number} value={br.number}>
-                      {br.number} - {br.name}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-
-            <div className="flex items-center">
-              <label htmlFor="itemPrice" className="w-1/4">
-                Uprice:{" "}
-                {!allowPriceChanges && (
-                  <FontAwesomeIcon icon={faLock} className="text-gray-400" />
-                )}
-              </label>
-              <input
-                type="number"
-                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
-                placeholder={"Uprice"}
-                value={EditPrice}
-                onChange={(e) => {
-                  setEditPrice(e.target.value);
-                  console.log("hsebet men on change");
-                }}
-                readOnly={!allowPriceChanges}
-              />
-            </div>
-
-            <div className="flex items-center">
-              <label htmlFor="itemDiscount" className="w-1/4">
-                Discount %:{" "}
-                {!allowDiscountChanges && (
-                  <FontAwesomeIcon icon={faLock} className="text-gray-400" />
-                )}
-              </label>
-              <input
-                type={"number"}
-                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
-                placeholder={"Discount"}
-                value={EditDiscount}
-                onChange={(e) => {
-                  setEditDiscount(e.target.value);
-                }}
-                readOnly={!allowDiscountChanges}
-              />
-            </div>
-
-            <div className="flex items-center">
-              <label htmlFor="itemTax" className="w-1/4">
-                Tax %:
-              </label>
-              <input
-                type={"number"}
-                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
-                placeholder={"Tax"}
-                value={EditTax}
-                onChange={(e) => {
-                  setEditTax(e.target.value);
-                }}
-              />
-            </div>
-
-            <div className="flex items-center">
-              <label htmlFor="itemTotal" className="w-1/4">
-                Total:
-              </label>
-              <input
-                id="itemTotal"
-                type="number"
-                readOnly
-                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
-                placeholder="Total"
-                value={
-                  EditPPrice == "U"
-                    ? parseFloat(
-                        EditPrice *
-                          EditTotalPieces *
-                          (1 - EditDiscount / 100) *
-                          (1 + EditTax / 100)
-                      ).toFixed(3)
-                    : EditPPrice == "P" &&
-                      parseFloat(
-                        EditPrice *
-                          EditQty *
-                          (1 - EditDiscount / 100) *
-                          (1 + EditTax / 100)
-                      ).toFixed(3)
-                }
-                onChange={(e) => {
-                  setEditTotal(e.target.value);
-                }}
-              />
-            </div>
-            {errorMessage && (
-              <div className="text-red-500 mb-2">{errorMessage}</div>
-            )}
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <div className="flex flex-row-reverse justify-between w-[100%]">
-            <div className="flex flex-row align-middle justify-between">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setShow(false);
-                  setIdOptions([]);
-                  setErrorMessage("");
-                }}
-              >
-                Close
-              </Button>
-              <div className="w-3"></div>
-              <Button
-                variant="primary"
-                onClick={() => {
-                  if (localStorage.getItem("SalesUnderZero") == "N") {
-                    if (EditItemStockQty < EditTotalPieces) {
-                      setDeletePermission({
-                        show: true,
-                        message:
-                          "You Don't Have Permission To Sell Less Than Stock Quantity.",
-                      });
-                      return;
-                    }
-                  }
-
-                  let tempa = props.SelectedItems;
-
-                  let tempQty;
-                  if (EditQty === 0) {
-                    tempQty = 1;
-                  } else {
-                    tempQty = EditQty;
-                  }
-
-                  let PQUnitT = tempa[EditIdx]["PQUnit"];
-                  let PQtyT = tempa[EditIdx]["PQty"];
-                  let PUnitT = tempa[EditIdx]["PUnit"];
-                  let DateTT = tempa[EditIdx]["DateT"];
-                  let TimeTT = tempa[EditIdx]["TimeT"];
-
-                  let NoteT = tempa[EditIdx]["Note"];
-                  let PPriceT = tempa[EditIdx]["PPrice"];
-                  let oldtempa = tempa[EditIdx];
-
-                  let totalConditions =
-                    EditPPrice == "U"
-                      ? parseFloat(
-                          EditPrice *
-                            EditTotalPieces *
-                            (1 - EditDiscount / 100) *
-                            (1 + EditTax / 100)
-                        ).toFixed(3)
-                      : EditPPrice == "P" &&
+                    ).toFixed(3)}
+                    onChange={(e) => {
+                      setEditTotalPieces(
                         parseFloat(
-                          EditPrice *
-                            EditQty *
-                            (1 - EditDiscount / 100) *
-                            (1 + EditTax / 100)
-                        ).toFixed(3);
-                  tempa[EditIdx] = {
-                    no: EditItem.no,
-                    name: EditItem.name,
-                    qty: tempQty,
-                    uprice: parseFloat(EditPrice).toFixed(3),
-                    discount: EditDiscount,
-                    branch: EditBranch,
-                    lno: EditLno,
-                    PQty: PQtyT,
-                    PUnit: PUnitT,
-                    tax: EditTax,
-                    TaxTotal: (totalConditions * EditTax).toFixed(3),
-                    Total: totalConditions,
-                    Note: NoteT,
-                    DateT: DateTT,
-                    TimeT: TimeTT,
-                    PQUnit: PQUnitT,
-                    PType: EditType,
-                    TotalPieces: EditTotalPieces,
-                    PPrice: PPriceT,
-                    BPUnit: EditDBPUnit,
-                    SPUnit: EditDSPUnit,
-                    InitialPrice: EditInitialPrice,
-                    StockQty: EditItemStockQty,
-                  };
-                  console.log("edipricee", tempa[EditIdx]["uprice"]);
-                  let pAreEqual = true;
-                  if (oldtempa["qty"] !== tempa[EditIdx]["qty"]) {
-                    pAreEqual = false;
-                  }
+                          EditType == "1"
+                            ? EditQty * EditItem["PQty"] * EditItem["PQUnit"]
+                            : EditType == "2"
+                            ? EditQty * EditItem["PQUnit"]
+                            : EditQty
+                        ).toFixed(3)
+                      );
+                    }}
+                  />
+                </div>
+                <div className="flex items-center">
+                  <label htmlFor="itemBranch" className="w-1/4">
+                    Branch:
+                  </label>
+                  <select
+                    id="itemBranch"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    value={EditBranch}
+                    onChange={(e) => {
+                      setEditBranch(e.target.value);
+                    }}
+                  >
+                    {props.branches.map((br) => {
+                      return (
+                        <option key={br.number} value={br.number}>
+                          {br.number} - {br.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
 
-                  if (oldtempa["uprice"] !== tempa[EditIdx]["uprice"]) {
-                    pAreEqual = false;
-                  }
-                  if (oldtempa["branch"] !== tempa[EditIdx]["branch"]) {
-                    pAreEqual = false;
-                  }
-                  if (oldtempa["discount"] !== tempa[EditIdx]["discount"]) {
-                    pAreEqual = false;
-                  }
-                  if (oldtempa["tax"] !== tempa[EditIdx]["tax"]) {
-                    pAreEqual = false;
-                  }
+                <div className="flex items-center">
+                  <label htmlFor="itemPrice" className="w-1/4">
+                    Uprice:{" "}
+                    {!allowPriceChanges && (
+                      <FontAwesomeIcon
+                        icon={faLock}
+                        className="text-gray-400"
+                      />
+                    )}
+                  </label>
+                  <input
+                    type="number"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    placeholder={"Uprice"}
+                    value={EditPrice}
+                    onChange={(e) => {
+                      setEditPrice(e.target.value);
+                      console.log("hsebet men on change");
+                    }}
+                    readOnly={!allowPriceChanges}
+                  />
+                </div>
 
-                  // for (const key in oldtempa) {
-                  //     if (key === "Total" || key==="TaxTotal") {
-                  //         console.log("FETTT TOAL");
-                  //         continue; // Skip the Total field
-                  //     }
-                  //     const oldValue = parseFloat(oldtempa[key]).toFixed(3); // Convert to number and fix precision
-                  //     const newValue = parseFloat(tempa[EditIdx][key]).toFixed(3);
-                  //     if (oldValue !== newValue) {
-                  //         propertiesAreEqual = false;
-                  //         console.log(oldtempa[key]);
-                  //         console.log(tempa[EditIdx][key]);
-                  //         console.log(propertiesAreEqual);
-                  //         break;
-                  //     }
-                  // }
-                  // if (tempa[EditIdx]["uprice"]==0.000){
-                  //     setErrorMessage("Unit Price cannot be 0. Please enter a valid value.");
-                  //     return;
+                <div className="flex items-center">
+                  <label htmlFor="itemDiscount" className="w-1/4">
+                    Discount %:{" "}
+                    {!allowDiscountChanges && (
+                      <FontAwesomeIcon
+                        icon={faLock}
+                        className="text-gray-400"
+                      />
+                    )}
+                  </label>
+                  <input
+                    type={"number"}
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    placeholder={"Discount"}
+                    value={EditDiscount}
+                    onChange={(e) => {
+                      setEditDiscount(e.target.value);
+                    }}
+                    readOnly={!allowDiscountChanges}
+                  />
+                </div>
 
-                  // }
-                  else if (!pAreEqual) {
-                    console.log("rouhhhhhhhhhhhh");
+                <div className="flex items-center">
+                  <label htmlFor="itemTax" className="w-1/4">
+                    Tax %:
+                  </label>
+                  <input
+                    type={"number"}
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    placeholder={"Tax"}
+                    value={EditTax}
+                    onChange={(e) => {
+                      setEditTax(e.target.value);
+                    }}
+                  />
+                </div>
 
-                    props.setpropertiesAreEqual(false);
-                    const currentDate = new Date();
-                    const formattedDate = `${currentDate
-                      .getDate()
-                      .toString()
-                      .padStart(2, "0")}/${(currentDate.getMonth() + 1)
-                      .toString()
-                      .padStart(2, "0")}/${currentDate.getFullYear()}`;
-                    const formattedTime = `T${currentDate
-                      .getHours()
-                      .toString()
-                      .padStart(2, "0")}:${currentDate
-                      .getMinutes()
-                      .toString()
-                      .padStart(2, "0")}:${currentDate
-                      .getSeconds()
-                      .toString()
-                      .padStart(2, "0")}`;
-                    tempa[EditIdx]["DateT"] = formattedDate;
-                    tempa[EditIdx]["TimeT"] = formattedTime;
-                  }
-                  setErrorMessage("");
+                <div className="flex items-center">
+                  <label htmlFor="itemTotal" className="w-1/4">
+                    Total:
+                  </label>
+                  <input
+                    id="itemTotal"
+                    type="number"
+                    readOnly
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    placeholder="Total"
+                    value={
+                      EditPPrice == "U"
+                        ? parseFloat(
+                            EditPrice *
+                              EditTotalPieces *
+                              (1 - EditDiscount / 100) *
+                              (1 + EditTax / 100)
+                          ).toFixed(3)
+                        : EditPPrice == "P" &&
+                          parseFloat(
+                            EditPrice *
+                              EditQty *
+                              (1 - EditDiscount / 100) *
+                              (1 + EditTax / 100)
+                          ).toFixed(3)
+                    }
+                    onChange={(e) => {
+                      setEditTotal(e.target.value);
+                    }}
+                  />
+                </div>
+                {errorMessage && (
+                  <div className="text-red-500 mb-2">{errorMessage}</div>
+                )}
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <div className="flex flex-row-reverse justify-between w-[100%]">
+                <div className="flex flex-row align-middle justify-between">
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setShow(false);
+                      setIdOptions([]);
+                      setErrorMessage("");
+                    }}
+                  >
+                    Close
+                  </Button>
+                  <div className="w-3"></div>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      if (localStorage.getItem("SalesUnderZero") == "N") {
+                        if (EditItemStockQty < EditTotalPieces) {
+                          setDeletePermission({
+                            show: true,
+                            message:
+                              "You Don't Have Permission To Sell Less Than Stock Quantity.",
+                          });
+                          return;
+                        }
+                      }
 
-                  setShow(false);
-                  setIdOptions([]);
+                      let tempa = props.SelectedItems;
 
-                  props.setSelectedItems(tempa);
-                  let accName = props.Client;
-                  let items = props.SelectedItems;
-                  let RemovedItems = props.RemovedItems;
-                  let json = { accName, items, RemovedItems };
-                  let jsonString = JSON.stringify(json); // Convert data object to JSON string
-
-                  console.log("ghayrik enti", jsonString);
-                  localStorage.setItem("sales", jsonString);
-                  console.log(localStorage.getItem("sales"));
-                }}
-              >
-                Apply
-              </Button>
-            </div>
-            <div className="flex flex-row align-middle justify-between">
-              <Button
-                variant="danger"
-                onClick={() => {
-                  setShow(false);
-
-                  let tempa = [...props.SelectedItems]; // Create a copy of SelectedItems array
-                  if (
-                    selectedInvoice != undefined &&
-                    selectedInvoice != null &&
-                    selectedInvoice != ""
-                  ) {
-                    // if(props.SelectedItems.length==1){
-                    //     setDeleteLastItemFromHistory(true);
-                    // }
-
-                    let DeleteItemPermission =
-                      localStorage.getItem("DeleteItem");
-                    if (DeleteItemPermission == "Y") {
-                      if (props.SelectedItems.length == 1) {
-                        setDeleteLastItemFromHistory(true);
+                      let tempQty;
+                      if (EditQty === 0) {
+                        tempQty = 1;
                       } else {
-                        RemoveItem(tempa[EditIdx], "ITEM");
+                        tempQty = EditQty;
+                      }
 
+                      let PQUnitT = tempa[EditIdx]["PQUnit"];
+                      let PQtyT = tempa[EditIdx]["PQty"];
+                      let PUnitT = tempa[EditIdx]["PUnit"];
+                      let DateTT = tempa[EditIdx]["DateT"];
+                      let TimeTT = tempa[EditIdx]["TimeT"];
+
+                      let NoteT = tempa[EditIdx]["Note"];
+                      let PPriceT = tempa[EditIdx]["PPrice"];
+                      let oldtempa = tempa[EditIdx];
+
+                      let totalConditions =
+                        EditPPrice == "U"
+                          ? parseFloat(
+                              EditPrice *
+                                EditTotalPieces *
+                                (1 - EditDiscount / 100) *
+                                (1 + EditTax / 100)
+                            ).toFixed(3)
+                          : EditPPrice == "P" &&
+                            parseFloat(
+                              EditPrice *
+                                EditQty *
+                                (1 - EditDiscount / 100) *
+                                (1 + EditTax / 100)
+                            ).toFixed(3);
+                      tempa[EditIdx] = {
+                        no: EditItem.no,
+                        name: EditItem.name,
+                        qty: tempQty,
+                        uprice: parseFloat(EditPrice).toFixed(3),
+                        discount: EditDiscount,
+                        branch: EditBranch,
+                        lno: EditLno,
+                        PQty: PQtyT,
+                        PUnit: PUnitT,
+                        tax: EditTax,
+                        TaxTotal: (totalConditions * EditTax).toFixed(3),
+                        Total: totalConditions,
+                        Note: NoteT,
+                        DateT: DateTT,
+                        TimeT: TimeTT,
+                        PQUnit: PQUnitT,
+                        PType: EditType,
+                        TotalPieces: EditTotalPieces,
+                        PPrice: PPriceT,
+                        BPUnit: EditDBPUnit,
+                        SPUnit: EditDSPUnit,
+                        InitialPrice: EditInitialPrice,
+                        StockQty: EditItemStockQty,
+                      };
+                      console.log("edipricee", tempa[EditIdx]["uprice"]);
+                      let pAreEqual = true;
+                      if (oldtempa["qty"] !== tempa[EditIdx]["qty"]) {
+                        pAreEqual = false;
+                      }
+
+                      if (oldtempa["uprice"] !== tempa[EditIdx]["uprice"]) {
+                        pAreEqual = false;
+                      }
+                      if (oldtempa["branch"] !== tempa[EditIdx]["branch"]) {
+                        pAreEqual = false;
+                      }
+                      if (oldtempa["discount"] !== tempa[EditIdx]["discount"]) {
+                        pAreEqual = false;
+                      }
+                      if (oldtempa["tax"] !== tempa[EditIdx]["tax"]) {
+                        pAreEqual = false;
+                      }
+
+                      // for (const key in oldtempa) {
+                      //     if (key === "Total" || key==="TaxTotal") {
+                      //         console.log("FETTT TOAL");
+                      //         continue; // Skip the Total field
+                      //     }
+                      //     const oldValue = parseFloat(oldtempa[key]).toFixed(3); // Convert to number and fix precision
+                      //     const newValue = parseFloat(tempa[EditIdx][key]).toFixed(3);
+                      //     if (oldValue !== newValue) {
+                      //         propertiesAreEqual = false;
+                      //         console.log(oldtempa[key]);
+                      //         console.log(tempa[EditIdx][key]);
+                      //         console.log(propertiesAreEqual);
+                      //         break;
+                      //     }
+                      // }
+                      // if (tempa[EditIdx]["uprice"]==0.000){
+                      //     setErrorMessage("Unit Price cannot be 0. Please enter a valid value.");
+                      //     return;
+
+                      // }
+                      else if (!pAreEqual) {
+                        console.log("rouhhhhhhhhhhhh");
+
+                        props.setpropertiesAreEqual(false);
+                        const currentDate = new Date();
+                        const formattedDate = `${currentDate
+                          .getDate()
+                          .toString()
+                          .padStart(2, "0")}/${(currentDate.getMonth() + 1)
+                          .toString()
+                          .padStart(2, "0")}/${currentDate.getFullYear()}`;
+                        const formattedTime = `T${currentDate
+                          .getHours()
+                          .toString()
+                          .padStart(2, "0")}:${currentDate
+                          .getMinutes()
+                          .toString()
+                          .padStart(2, "0")}:${currentDate
+                          .getSeconds()
+                          .toString()
+                          .padStart(2, "0")}`;
+                        tempa[EditIdx]["DateT"] = formattedDate;
+                        tempa[EditIdx]["TimeT"] = formattedTime;
+                      }
+                      setErrorMessage("");
+
+                      setShow(false);
+                      setIdOptions([]);
+
+                      props.setSelectedItems(tempa);
+                      let accName = props.Client;
+                      let items = props.SelectedItems;
+                      let RemovedItems = props.RemovedItems;
+                      let json = { accName, items, RemovedItems };
+                      let jsonString = JSON.stringify(json); // Convert data object to JSON string
+
+                      console.log("ghayrik enti", jsonString);
+                      localStorage.setItem("sales", jsonString);
+                      console.log(localStorage.getItem("sales"));
+                    }}
+                  >
+                    Apply
+                  </Button>
+                </div>
+                <div className="flex flex-row align-middle justify-between">
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      setShow(false);
+
+                      let tempa = [...props.SelectedItems]; // Create a copy of SelectedItems array
+                      if (
+                        selectedInvoice != undefined &&
+                        selectedInvoice != null &&
+                        selectedInvoice != ""
+                      ) {
+                        // if(props.SelectedItems.length==1){
+                        //     setDeleteLastItemFromHistory(true);
+                        // }
+
+                        let DeleteItemPermission =
+                          localStorage.getItem("DeleteItem");
+                        if (DeleteItemPermission == "Y") {
+                          if (props.SelectedItems.length == 1) {
+                            setDeleteLastItemFromHistory(true);
+                          } else {
+                            RemoveItem(tempa[EditIdx], "ITEM");
+
+                            tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
+                            tempa.forEach((item, index) => {
+                              item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
+                            });
+
+                            props.setSelectedItems(tempa);
+                            let accName = props.Client;
+
+                            let items = tempa;
+
+                            let RemovedItems = props.RemovedItems;
+                            let json = { accName, items, RemovedItems };
+                            // let json = {accName,items}
+                            let jsonString = JSON.stringify(json); // Convert data object to JSON string
+
+                            console.log("y22");
+
+                            localStorage.setItem("sales", jsonString);
+                            console.log("heyyy", localStorage.getItem("sales"));
+
+                            props.setpropertiesAreEqual(false);
+                            setErrorMessage("");
+                          }
+                        } else {
+                          setDeletePermission({
+                            show: true,
+                            message:
+                              "You don't have permission to delete Item From invoice.",
+                          });
+                        }
+                      } else {
                         tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
                         tempa.forEach((item, index) => {
                           item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
                         });
-
                         props.setSelectedItems(tempa);
                         let accName = props.Client;
 
                         let items = tempa;
 
                         let RemovedItems = props.RemovedItems;
+
                         let json = { accName, items, RemovedItems };
-                        // let json = {accName,items}
+                        //let json = {accName,items}
                         let jsonString = JSON.stringify(json); // Convert data object to JSON string
 
-                        console.log("y22");
-
                         localStorage.setItem("sales", jsonString);
-                        console.log("heyyy", localStorage.getItem("sales"));
 
                         props.setpropertiesAreEqual(false);
                         setErrorMessage("");
                       }
-                    } else {
-                      setDeletePermission({
-                        show: true,
-                        message:
-                          "You don't have permission to delete Item From invoice.",
-                      });
-                    }
-                  } else {
-                    tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
-                    tempa.forEach((item, index) => {
-                      item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
-                    });
-                    props.setSelectedItems(tempa);
-                    let accName = props.Client;
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              </div>
+            </Modal.Footer>
+          </>
+        ) : (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title id="contained-modal-title-vcenter">
+                {props.selectedFormOptionDisplay}
+                <br />
+                {props.Client["id"]}
+                <br />
+                {props.Client["name"]}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="px-6 py-4">
+              <div className="space-y-3">
+                <div className="flex items-center">
+                  <label htmlFor="itemBranch" className="w-1/4">
+                    Branch:
+                  </label>
+                  <select
+                    id="itemBranch"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    value={EditBranch}
+                    onChange={(e) => {
+                      setEditBranch(e.target.value);
+                    }}
+                  >
+                    {props.branches.map((br) => (
+                      <option key={br.number} value={br.number}>
+                        {br.number} - {br.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex items-center">
+                  <label htmlFor="itemQty" className="w-1/4">
+                    Payment Type:
+                  </label>
+                  <div className="flex items-center w-3/4">
+                    <select
+                      id="itemType"
+                      className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                      value={EditType}
+                      onChange={(e) => {
+                        setEditType(e.target.value);
+                      }}
+                    >
+                      <option value="">Choose Payment Type</option>
+                      {localStorage.getItem("CASH") &&
+                        localStorage.getItem("CASH") !== "" && (
+                          <option value={localStorage.getItem("CASH")}>
+                            {localStorage.getItem("CASH")}
+                          </option>
+                        )}
+                      {localStorage.getItem("VISA1") &&
+                        localStorage.getItem("VISA1") !== "" && (
+                          <option value={localStorage.getItem("VISA1")}>
+                            {localStorage.getItem("VISA1")}
+                          </option>
+                        )}
+                      {localStorage.getItem("VISA2") &&
+                        localStorage.getItem("VISA2") !== "" && (
+                          <option value={localStorage.getItem("VISA2")}>
+                            {localStorage.getItem("VISA2")}
+                          </option>
+                        )}
+                      {localStorage.getItem("VISA3") &&
+                        localStorage.getItem("VISA3") !== "" && (
+                          <option value={localStorage.getItem("VISA3")}>
+                            {localStorage.getItem("VISA3")}
+                          </option>
+                        )}
+                      {localStorage.getItem("VISA4") &&
+                        localStorage.getItem("VISA4") !== "" && (
+                          <option value={localStorage.getItem("VISA4")}>
+                            {localStorage.getItem("VISA4")}
+                          </option>
+                        )}
+                      {localStorage.getItem("VISA5") &&
+                        localStorage.getItem("VISA5") !== "" && (
+                          <option value={localStorage.getItem("VISA5")}>
+                            {localStorage.getItem("VISA5")}
+                          </option>
+                        )}
+                      {localStorage.getItem("VISA6") &&
+                        localStorage.getItem("VISA6") !== "" && (
+                          <option value={localStorage.getItem("VISA6")}>
+                            {localStorage.getItem("VISA6")}
+                          </option>
+                        )}
+                    </select>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <label htmlFor="itemQty" className="w-1/4">
+                    Currency:
+                  </label>
+                  <div className="flex items-center w-3/4">
+                    <select
+                      id="itemType"
+                      className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                      value={EditPPrice}
+                      onChange={(e) => {
+                        setEditPPrice(e.target.value);
+                      }}
+                    >
+                      {localStorage.getItem("Cur1") &&
+                        localStorage.getItem("Cur1") !== "" && (
+                          <option value={localStorage.getItem("Cur1")}>
+                            {localStorage.getItem("Cur1")}
+                          </option>
+                        )}
+                      {localStorage.getItem("Cur2") &&
+                        localStorage.getItem("Cur2") !== "" && (
+                          <option value={localStorage.getItem("Cur2")}>
+                            {localStorage.getItem("Cur2")}
+                          </option>
+                        )}
+                    </select>
+                  </div>
+                </div>
 
-                    let items = tempa;
+                <div className="flex items-center">
+                  <label htmlFor="itemPrice" className="w-1/4">
+                    Amount:{" "}
+                  </label>
 
-                    let RemovedItems = props.RemovedItems;
+                  <input
+                    id="itemPrice"
+                    type="number"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    placeholder="Amount"
+                    value={EditPrice}
+                    onChange={(e) => {
+                      setEditPrice(e.target.value);
+                    }}
+                  />
+                </div>
 
-                    let json = { accName, items, RemovedItems };
-                    //let json = {accName,items}
-                    let jsonString = JSON.stringify(json); // Convert data object to JSON string
+                <div className="text-red-500 mb-2">{errorMessage}</div>
+              </div>
+            </Modal.Body>
 
-                    localStorage.setItem("sales", jsonString);
+            <Modal.Footer>
+              <div className="flex flex-row-reverse justify-between w-[100%]">
+                <div className="flex flex-row align-middle justify-between">
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setShow(false);
+                      setIdOptions([]);
+                      setErrorMessage("");
+                    }}
+                  >
+                    Close
+                  </Button>
+                  <div className="w-3"></div>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      let tempa = props.SelectedItems;
 
-                    props.setpropertiesAreEqual(false);
-                    setErrorMessage("");
-                  }
-                }}
-              >
-                Remove
-              </Button>
-            </div>
-          </div>
-        </Modal.Footer>
+                      let PQUnitT = tempa[EditIdx]["PQUnit"];
+                      let PQtyT = tempa[EditIdx]["PQty"];
+                      let PUnitT = tempa[EditIdx]["PUnit"];
+                      let DateTT = tempa[EditIdx]["DateT"];
+                      let TimeTT = tempa[EditIdx]["TimeT"];
+
+                      let NoteT = tempa[EditIdx]["Note"];
+                      let PPriceT = tempa[EditIdx]["PPrice"];
+                      let oldtempa = tempa[EditIdx];
+
+                      tempa[EditIdx] = {
+                        no: EditItem.no,
+                        name: EditItem.name,
+                        qty: tempa[EditIdx]["qty"],
+                        uprice: parseFloat(EditPrice).toFixed(3),
+                        discount: EditDiscount,
+                        branch: EditBranch,
+                        lno: EditLno,
+                        PQty: PQtyT,
+                        PUnit: PUnitT,
+                        tax: EditTax,
+                        TaxTotal: tempa[EditIdx]["TaxTotal"],
+                        Total: tempa[EditIdx]["Total"],
+                        Note: NoteT,
+                        DateT: DateTT,
+                        TimeT: TimeTT,
+                        PQUnit: PQUnitT,
+                        PType: EditType,
+                        TotalPieces: EditTotalPieces,
+                        PPrice: PPriceT,
+                        BPUnit: EditDBPUnit,
+                        SPUnit: EditDSPUnit,
+                        InitialPrice: EditInitialPrice,
+                        StockQty: EditItemStockQty,
+                      };
+
+                      let pAreEqual = true;
+
+                      if (oldtempa["uprice"] !== tempa[EditIdx]["uprice"]) {
+                        pAreEqual = false;
+                      }
+                      if (oldtempa["branch"] !== tempa[EditIdx]["branch"]) {
+                        pAreEqual = false;
+                      }
+                      if (oldtempa["PPrice"] !== tempa[EditIdx]["PPrice"]) {
+                        pAreEqual = false;
+                      }
+                      if (oldtempa["PType"] !== tempa[EditIdx]["PType"]) {
+                        pAreEqual = false;
+                      } else if (!pAreEqual) {
+                        console.log("rouhhhhhhhhhhhh");
+
+                        props.setpropertiesAreEqual(false);
+                        const currentDate = new Date();
+                        const formattedDate = `${currentDate
+                          .getDate()
+                          .toString()
+                          .padStart(2, "0")}/${(currentDate.getMonth() + 1)
+                          .toString()
+                          .padStart(2, "0")}/${currentDate.getFullYear()}`;
+                        const formattedTime = `T${currentDate
+                          .getHours()
+                          .toString()
+                          .padStart(2, "0")}:${currentDate
+                          .getMinutes()
+                          .toString()
+                          .padStart(2, "0")}:${currentDate
+                          .getSeconds()
+                          .toString()
+                          .padStart(2, "0")}`;
+                        tempa[EditIdx]["DateT"] = formattedDate;
+                        tempa[EditIdx]["TimeT"] = formattedTime;
+                      }
+                      setErrorMessage("");
+
+                      setShow(false);
+                      setIdOptions([]);
+
+                      props.setSelectedItems(tempa);
+                      console.log("-------------------------3---3-3-3");
+                      console.log(props.SelectedItems);
+                      let accName = props.Client;
+                      let items = props.SelectedItems;
+                      let RemovedItems = props.RemovedItems;
+                      let json = { accName, items, RemovedItems };
+                      let jsonString = JSON.stringify(json); // Convert data object to JSON string
+
+                      console.log("ghayrik enti", jsonString);
+                      localStorage.setItem("sales", jsonString);
+                      console.log(localStorage.getItem("sales"));
+                    }}
+                  >
+                    Apply
+                  </Button>
+                </div>
+                <div className="flex flex-row align-middle justify-between">
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      setShow(false);
+
+                      let tempa = [...props.SelectedItems]; // Create a copy of SelectedItems array
+                      if (
+                        selectedInvoice != undefined &&
+                        selectedInvoice != null &&
+                        selectedInvoice != ""
+                      ) {
+                        // if(props.SelectedItems.length==1){
+                        //     setDeleteLastItemFromHistory(true);
+                        // }
+
+                        let DeleteItemPermission =
+                          localStorage.getItem("DeleteItem");
+                        if (DeleteItemPermission == "Y") {
+                          if (props.SelectedItems.length == 1) {
+                            setDeleteLastItemFromHistory(true);
+                          } else {
+                            RemoveItem(tempa[EditIdx], "ITEM");
+
+                            tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
+                            tempa.forEach((item, index) => {
+                              item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
+                            });
+
+                            props.setSelectedItems(tempa);
+                            let accName = props.Client;
+
+                            let items = tempa;
+
+                            let RemovedItems = props.RemovedItems;
+                            let json = { accName, items, RemovedItems };
+                            // let json = {accName,items}
+                            let jsonString = JSON.stringify(json); // Convert data object to JSON string
+
+                            console.log("y22");
+
+                            localStorage.setItem("sales", jsonString);
+                            console.log("heyyy", localStorage.getItem("sales"));
+
+                            props.setpropertiesAreEqual(false);
+                            setErrorMessage("");
+                          }
+                        } else {
+                          setDeletePermission({
+                            show: true,
+                            message:
+                              "You don't have permission to delete Item From invoice.",
+                          });
+                        }
+                      } else {
+                        tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
+                        tempa.forEach((item, index) => {
+                          item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
+                        });
+                        props.setSelectedItems(tempa);
+                        let accName = props.Client;
+
+                        let items = tempa;
+
+                        let RemovedItems = props.RemovedItems;
+
+                        let json = { accName, items, RemovedItems };
+                        //let json = {accName,items}
+                        let jsonString = JSON.stringify(json); // Convert data object to JSON string
+
+                        localStorage.setItem("sales", jsonString);
+
+                        props.setpropertiesAreEqual(false);
+                        setErrorMessage("");
+                      }
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              </div>
+            </Modal.Footer>
+          </>
+        )}
       </Modal>
       <ConfirmPostInvoiceModal
         modalShow={confirmModalShow}
@@ -2402,11 +2856,13 @@ export default function SalesForm(props) {
     localStorage.setItem("sales", "");
     localStorage.setItem("InvoiceHistory", "");
     // setsInvoices([]);
+    console.log("2853");
     props.setSelectedFormOption("SA_AP");
 
     setSelectedInvoice("");
     inputRef.current.focus();
     props.setSATFromBranch();
     props.setSATToBranch();
+    console.log("y777");
   }
 }

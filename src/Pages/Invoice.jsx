@@ -13,9 +13,10 @@ export default function Invoice(props) {
   const [SelectedItems, setSelectedItems] = useState([]);
   const [RemovedItems, setRemovedItems] = useState([]);
   const [sInvoice, setSInvoice] = useState("");
-  const [selectedFormOption, setSelectedFormOption] = useState("SA_AP");
-  const [selectedFormOptionDisplay, setSelectedFormOptionDisplay] =
-    useState("Sales Form");
+  const [selectedFormOption, setSelectedFormOption] = useState(
+    localStorage.getItem("selectedFormOption")
+  );
+  const [selectedFormOptionDisplay, setSelectedFormOptionDisplay] = useState();
   const [invResponse, setInvResponse] = useState({
     Info: "No Invoice Created",
     msg: "No Invoice Created",
@@ -32,6 +33,9 @@ export default function Invoice(props) {
   const [handlingAccWhenChanging, sethandlingAccWhenChanging] = useState();
   const [SATFromBranch, setSATFromBranch] = useState();
   const [SATToBranch, setSATToBranch] = useState();
+  const [modalItems, setModalItems] = useState(false);
+  const [modalVoucher, setModalVoucher] = useState(false);
+
   function sInvoiceHandler(e) {
     setSInvoice(e);
   }
@@ -145,6 +149,10 @@ export default function Invoice(props) {
                   SATToBranch={SATToBranch}
                   setSATFromBranch={setSATFromBranch}
                   SATFromBranch={SATFromBranch}
+                  setModalItems={setModalItems}
+                  modalItems={modalItems}
+                  modalVoucher={modalVoucher}
+                  setModalVoucher={setModalVoucher}
                 />
               </>
             );
@@ -209,6 +217,7 @@ export default function Invoice(props) {
       RemovedItems: RemovedItems,
       username: localStorage.getItem("username"),
       invoiceTotal: InvoiceTotal,
+      Cur: localStorage.getItem("mainCur"),
     };
     console.log("n bl invoice");
     console.log(data);

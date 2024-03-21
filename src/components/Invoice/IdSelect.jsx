@@ -14,12 +14,10 @@ import { faLock } from "@fortawesome/free-solid-svg-icons";
 const IdSelect = forwardRef((props, ref) => {
   const [modalShow, setModalShow] = useState(false);
 
-  const [modalItems, setModalItems] = useState(false);
-
   const [sItemNo, setsItemNo] = useState("");
   const [sItemName, setsItemName] = useState("");
   const [sItemQty, setsItemQty] = useState();
-  const [sItemPrice, setsItemPrice] = useState();
+  const [sItemPrice, setsItemPrice] = useState(0);
   const [sItemTax, setsItemTax] = useState();
   const [sItemDiscount, setsItemDiscount] = useState();
   const [sItemBranch, setsItemBranch] = useState("");
@@ -31,8 +29,10 @@ const IdSelect = forwardRef((props, ref) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [sItemPQUnit, setsItemPQunit] = useState();
   const [sItemPType, setsItemPType] = useState("");
-  const [sItemTotalPieces, setTotalPieces] = useState(1);
   const [sItemPPrice, setsItemPPrice] = useState();
+
+  const [sItemTotalPieces, setTotalPieces] = useState(1);
+
   const [sItemDBPUnit, setsItemBPUnit] = useState();
   const [sItemDSPUnit, setsItemDSPUnit] = useState();
   const [sItemStockQty, setsItemStockQty] = useState(0);
@@ -46,6 +46,19 @@ const IdSelect = forwardRef((props, ref) => {
     },
   }));
 
+  useEffect(() => {
+    if (
+      props.selectedFormOption == "CR_AP" ||
+      props.selectedFormOption == "DB_AP"
+    ) {
+      setsItemPPrice(
+        localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
+      );
+      setsItemBranch(props.branches[0]["number"]);
+      setsItemPrice(0);
+      setsItemPType("");
+    }
+  }, []);
   useEffect(() => {
     // Calculate total pieces based on other inputs whenever they change
     const calculateTotalPieces = () => {
@@ -87,7 +100,14 @@ const IdSelect = forwardRef((props, ref) => {
     const UpriceZeroCheck = () => {
       console.log("klop2");
       if (parseFloat(sItemPrice).toFixed(3) == 0) {
-        setErrorMessage("The Item Price is 0 !");
+        if (
+          props.selectedFormOption != "DB_AP" &&
+          props.selectedFormOption != "CR_AP"
+        ) {
+          setErrorMessage("The Item Price is 0 !");
+        } else {
+          setErrorMessage("The Amount is 0 !");
+        }
       } else {
         setErrorMessage("");
       }
@@ -257,9 +277,10 @@ const IdSelect = forwardRef((props, ref) => {
       <Modal
         backdrop="static"
         keyboard={false}
-        show={modalItems}
+        show={props.modalItems}
         onHide={() => {
-          setModalItems(false);
+          props.setModalItems(false);
+
           props.setModalShow(true);
           setErrorMessage("");
         }}
@@ -555,8 +576,206 @@ const IdSelect = forwardRef((props, ref) => {
             <Button
               onClick={() => {
                 setErrorMessage("");
-                setModalItems(false);
+                props.setModalItems(false);
                 props.setModalShow(true);
+              }}
+              variant="danger"
+            >
+              Close
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        backdrop="static"
+        keyboard={false}
+        show={props.modalVoucher}
+        onHide={() => {
+          props.setModalVoucher(false);
+
+          setErrorMessage("");
+        }}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {props.selectedFormOptionDisplay}
+            <br />
+            {props.Client["id"]}
+            <br />
+            {props.Client["name"]}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="px-6 py-4">
+          <div className="space-y-3">
+            <div className="flex items-center">
+              <label htmlFor="itemBranch" className="w-1/4">
+                Branch:
+              </label>
+              <select
+                id="itemBranch"
+                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                value={sItemBranch}
+                onChange={(e) => {
+                  setsItemBranch(e.target.value);
+                }}
+              >
+                {props.branches.map((br) => (
+                  <option key={br.number} value={br.number}>
+                    {br.number} - {br.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="itemQty" className="w-1/4">
+                Payment Type:
+              </label>
+              <div className="flex items-center w-3/4">
+                <select
+                  id="itemType"
+                  className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                  value={sItemPType}
+                  onChange={(e) => {
+                    setsItemPType(e.target.value);
+                  }}
+                >
+                  <option value="">Choose Payment Type</option>
+                  {localStorage.getItem("CASH") &&
+                    localStorage.getItem("CASH") !== "" && (
+                      <option value={localStorage.getItem("CASH")}>
+                        {localStorage.getItem("CASH")}
+                      </option>
+                    )}
+                  {localStorage.getItem("VISA1") &&
+                    localStorage.getItem("VISA1") !== "" && (
+                      <option value={localStorage.getItem("VISA1")}>
+                        {localStorage.getItem("VISA1")}
+                      </option>
+                    )}
+                  {localStorage.getItem("VISA2") &&
+                    localStorage.getItem("VISA2") !== "" && (
+                      <option value={localStorage.getItem("VISA2")}>
+                        {localStorage.getItem("VISA2")}
+                      </option>
+                    )}
+                  {localStorage.getItem("VISA3") &&
+                    localStorage.getItem("VISA3") !== "" && (
+                      <option value={localStorage.getItem("VISA3")}>
+                        {localStorage.getItem("VISA3")}
+                      </option>
+                    )}
+                  {localStorage.getItem("VISA4") &&
+                    localStorage.getItem("VISA4") !== "" && (
+                      <option value={localStorage.getItem("VISA4")}>
+                        {localStorage.getItem("VISA4")}
+                      </option>
+                    )}
+                  {localStorage.getItem("VISA5") &&
+                    localStorage.getItem("VISA5") !== "" && (
+                      <option value={localStorage.getItem("VISA5")}>
+                        {localStorage.getItem("VISA5")}
+                      </option>
+                    )}
+                  {localStorage.getItem("VISA6") &&
+                    localStorage.getItem("VISA6") !== "" && (
+                      <option value={localStorage.getItem("VISA6")}>
+                        {localStorage.getItem("VISA6")}
+                      </option>
+                    )}
+                </select>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="itemQty" className="w-1/4">
+                Currency:
+              </label>
+              <div className="flex items-center w-3/4">
+                <select
+                  id="itemType"
+                  className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                  value={sItemPPrice}
+                  onChange={(e) => {
+                    setsItemPPrice(e.target.value);
+                  }}
+                >
+                  {localStorage.getItem("mainCur") == "1" ? (
+                    <>
+                      {localStorage.getItem("Cur1") &&
+                        localStorage.getItem("Cur1") !== "" && (
+                          <option value={localStorage.getItem("Cur1")}>
+                            {localStorage.getItem("Cur1")}
+                          </option>
+                        )}
+                      {localStorage.getItem("Cur2") &&
+                        localStorage.getItem("Cur2") !== "" && (
+                          <option value={localStorage.getItem("Cur2")}>
+                            {localStorage.getItem("Cur2")}
+                          </option>
+                        )}
+                    </>
+                  ) : (
+                    <>
+                      {localStorage.getItem("Cur2") &&
+                        localStorage.getItem("Cur2") !== "" && (
+                          <option value={localStorage.getItem("Cur2")}>
+                            {localStorage.getItem("Cur2")}
+                          </option>
+                        )}
+                      {localStorage.getItem("Cur1") &&
+                        localStorage.getItem("Cur1") !== "" && (
+                          <option value={localStorage.getItem("Cur1")}>
+                            {localStorage.getItem("Cur1")}
+                          </option>
+                        )}
+                    </>
+                  )}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex items-center">
+              <label htmlFor="itemPrice" className="w-1/4">
+                Amount:{" "}
+              </label>
+
+              <input
+                id="itemPrice"
+                type="number"
+                className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                placeholder="Amount"
+                value={sItemPrice}
+                onChange={(e) => {
+                  setsItemPrice(e.target.value);
+                }}
+              />
+            </div>
+
+            <div className="text-red-500 mb-2">{errorMessage}</div>
+          </div>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <div className="flex flex-row-reverse justify-between w-full">
+            <Button
+              onClick={() => {
+                if (sItemPType == "") {
+                  setErrorMessage("You Have To Choose Payment Type");
+                  return;
+                }
+                console.log("feter");
+
+                addItem();
+              }}
+            >
+              Add Amount
+            </Button>
+            <Button
+              onClick={() => {
+                setErrorMessage("");
+                props.setModalVoucher(false);
               }}
               variant="danger"
             >
@@ -633,7 +852,14 @@ const IdSelect = forwardRef((props, ref) => {
         address: e["Address"],
       });
       props.setModalShow(false);
-      props.setsOption("Items");
+      if (
+        props.selectedFormOption == "CR_AP" ||
+        props.selectedFormOption == "DB_AP"
+      ) {
+        props.setsOption("Amount");
+      } else {
+        props.setsOption("Items");
+      }
       props.setvInput("");
       props.setOption([]);
       document.getElementById("tf").focus();
@@ -659,9 +885,6 @@ const IdSelect = forwardRef((props, ref) => {
       localStorage.setItem("InvoiceHistory", "");
       props.setpropertiesAreEqual(false);
     } else if (props.sOption === "Items") {
-      if (props.selectedFormOption == "CR_AP" || "DB_AP") {
-      } else {
-      }
       let uprice = 0;
 
       // if (e["SPrice1"] != 0) {
@@ -713,7 +936,7 @@ const IdSelect = forwardRef((props, ref) => {
         // }
       }
       //setsItemTotal(((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
-      setModalItems(true);
+      props.setModalItems(true);
       props.setModalShow(false);
       //setsItemBranch(props.branches[0]["number"]);
       let ItemBranch = "";
@@ -844,7 +1067,7 @@ const IdSelect = forwardRef((props, ref) => {
     //     return;
     // }
     props.ssi(tempsi);
-    setModalItems(false);
+    props.setModalItems(false);
     props.handleSave({
       accName: props.Client,
       items: tempsi,
@@ -854,6 +1077,35 @@ const IdSelect = forwardRef((props, ref) => {
     props.setvInput("");
     props.setOption([]);
     document.getElementById("tf").focus();
+    if (
+      props.selectedFormOption == "CR_AP" ||
+      props.selectedFormOption == "DB_AP"
+    ) {
+      props.setModalVoucher(false);
+
+      setsItemPPrice(
+        localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
+      );
+      setsItemBranch(props.branches[0]["number"]);
+      setsItemPrice("0");
+
+      setsItemPType("");
+      setsItemNo("");
+      setsItemName("");
+      setsItemQty();
+      setsItemPQty();
+      setsItemPQunit();
+      setsItemPUnit("");
+      setsItemDiscount();
+      setsItemTax();
+      setsItemTaxTotal(0);
+      setsItemTotal(0);
+      setsItemStockQty(0);
+      setTotalPieces(0);
+      setsItemDSPUnit("");
+      setsItemBPUnit("");
+      setsItemInitial();
+    }
   }
 });
 
