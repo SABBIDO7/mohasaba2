@@ -161,6 +161,10 @@ function App() {
               "SalesUnderZero",
              data.Permissions["SalesUnderZero"]
             );
+            localStorage.setItem(
+              "ChangeBranch",
+             data.Permissions["ChangeBranch"]
+            );
 
             
            } else {

@@ -87,6 +87,10 @@ function LoginModal(props) {
               "SalesUnderZero",
               response.data.Permissions["SalesUnderZero"]
             );
+            localStorage.setItem(
+              "ChangeBranch",
+              response.data.Permissions["ChangeBranch"]
+            );
 
             props.UserDataHandler(
               response.data.compname,

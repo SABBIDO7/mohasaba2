@@ -29,9 +29,9 @@ export default function SalesForm(props) {
 
   const [EditItem, setEditItem] = useState({});
   const [EditQty, setEditQty] = useState("");
-  const [EditPrice, setEditPrice] = useState("");
+  const [EditPrice, setEditPrice] = useState(0);
   const [EditBranch, setEditBranch] = useState("");
-  const [EditTax, setEditTax] = useState("");
+  const [EditTax, setEditTax] = useState(0);
   const [EditDiscount, setEditDiscount] = useState("");
   const [EditLno, setEditLno] = useState("");
 
@@ -1044,50 +1044,45 @@ export default function SalesForm(props) {
                                     setShow(true);
                                     setEditItem(si);
                                     setEditIdx(idx);
-                                    if (
-                                      props.selectedFormOption !== "CR_AP" &&
-                                      props.selectedFormOption !== "DB_AP"
-                                    ) {
-                                    } else {
-                                      setEditQty(si["qty"]);
 
-                                      setEditTax(tax);
-                                      setEditBranch(si["branch"]);
-                                      setEditInitialPrice(si["InitialPrice"]);
-                                      setEditDiscount(si["discount"]);
-                                      setEditLno(si["lno"]);
-                                      setEditTotal(si["Total"]);
-                                      setEditTotalPieces(si["TotalPieces"]);
-                                      setEditType(si["PType"]);
-                                      setEditDBPUnit(si["BPUnit"]);
-                                      setEditDPUnit(si["PUnit"]);
-                                      setEditDSPUnit(si["SPUnit"]);
-                                      setEditPPrice(si["PPrice"]);
-                                      setEditPQUnit(si["PQUnit"]);
-                                      setEditPQty(si["PQty"]);
+                                    setEditQty(si["qty"]);
 
-                                      setEditPrice(si["uprice"]);
-                                      console.log(
-                                        "hsebet men uprice waat ekbos edit"
-                                      );
-                                      setPerformCalculation(false);
-                                      setEditItemStockQty(si["StockQty"]);
+                                    setEditTax(tax);
+                                    setEditBranch(si["branch"]);
+                                    setEditInitialPrice(si["InitialPrice"]);
+                                    setEditDiscount(si["discount"]);
+                                    setEditLno(si["lno"]);
+                                    setEditTotal(si["Total"]);
+                                    setEditTotalPieces(si["TotalPieces"]);
+                                    setEditType(si["PType"]);
+                                    setEditDBPUnit(si["BPUnit"]);
+                                    setEditDPUnit(si["PUnit"]);
+                                    setEditDSPUnit(si["SPUnit"]);
+                                    setEditPPrice(si["PPrice"]);
+                                    setEditPQUnit(si["PQUnit"]);
+                                    setEditPQty(si["PQty"]);
 
-                                      // if(EditType=="3"){
-                                      //     setEditInitialPrice(si["uprice"]);
-                                      // }
-                                      // else if(EditType=="2"){
-                                      //     let initialPrice = si["uprice"]*si["PQty"]
-                                      //     setEditInitialPrice(initialPrice);
-                                      // }
-                                      // else if(EditType=="1"){
-                                      //     let initialPrice = si["uprice"]*si["PQty"]*si["PQUnit"]
-                                      //     setEditInitialPrice(initialPrice);
-                                      // }
-                                      // else{
-                                      //     setEditInitialPrice(si["uprice"]);
-                                      // }
-                                    }
+                                    setEditPrice(si["uprice"]);
+                                    console.log(
+                                      "hsebet men uprice waat ekbos edit"
+                                    );
+                                    setPerformCalculation(false);
+                                    setEditItemStockQty(si["StockQty"]);
+
+                                    // if(EditType=="3"){
+                                    //     setEditInitialPrice(si["uprice"]);
+                                    // }
+                                    // else if(EditType=="2"){
+                                    //     let initialPrice = si["uprice"]*si["PQty"]
+                                    //     setEditInitialPrice(initialPrice);
+                                    // }
+                                    // else if(EditType=="1"){
+                                    //     let initialPrice = si["uprice"]*si["PQty"]*si["PQUnit"]
+                                    //     setEditInitialPrice(initialPrice);
+                                    // }
+                                    // else{
+                                    //     setEditInitialPrice(si["uprice"]);
+                                    // }
                                   }}
                                 >
                                   <FontAwesomeIcon icon={faEdit} />
@@ -1653,19 +1648,28 @@ export default function SalesForm(props) {
                       console.log("edipricee", tempa[EditIdx]["uprice"]);
                       let pAreEqual = true;
                       if (oldtempa["qty"] !== tempa[EditIdx]["qty"]) {
+                        console.log("fetttt qty");
                         pAreEqual = false;
                       }
 
-                      if (oldtempa["uprice"] !== tempa[EditIdx]["uprice"]) {
+                      if (oldtempa["uprice"] != tempa[EditIdx]["uprice"]) {
+                        console.log("fetttt uprice");
+
                         pAreEqual = false;
                       }
                       if (oldtempa["branch"] !== tempa[EditIdx]["branch"]) {
+                        console.log("fetttt branch");
                         pAreEqual = false;
                       }
                       if (oldtempa["discount"] !== tempa[EditIdx]["discount"]) {
+                        console.log("fetttt disc");
                         pAreEqual = false;
                       }
+                      console.log("oldtempa", oldtempa["tax"]);
+                      console.log("tempa edsittxt", tempa[EditIdx]["tax"]);
                       if (oldtempa["tax"] !== tempa[EditIdx]["tax"]) {
+                        console.log("fetttt tax");
+                        console.log(oldtempa["tax"], tempa[EditIdx]["tax"]);
                         pAreEqual = false;
                       }
 
@@ -1689,7 +1693,7 @@ export default function SalesForm(props) {
                       //     return;
 
                       // }
-                      else if (!pAreEqual) {
+                      if (!pAreEqual) {
                         console.log("rouhhhhhhhhhhhh");
 
                         props.setpropertiesAreEqual(false);
@@ -1980,6 +1984,7 @@ export default function SalesForm(props) {
                       let PQtyT = tempa[EditIdx]["PQty"];
                       let PUnitT = tempa[EditIdx]["PUnit"];
                       let DateTT = tempa[EditIdx]["DateT"];
+                      console.log(DateTT, "hon aamenaayit l date l adim edit");
                       let TimeTT = tempa[EditIdx]["TimeT"];
 
                       let NoteT = tempa[EditIdx]["Note"];
@@ -1988,30 +1993,30 @@ export default function SalesForm(props) {
 
                       tempa[EditIdx] = {
                         no: EditItem.no,
-                        name: EditItem.name,
+                        name: tempa[EditIdx]["name"],
                         qty: tempa[EditIdx]["qty"],
                         uprice: parseFloat(EditPrice).toFixed(3),
-                        discount: EditDiscount,
+                        discount: tempa[EditIdx]["discount"],
                         branch: EditBranch,
                         lno: EditLno,
-                        PQty: PQtyT,
-                        PUnit: PUnitT,
-                        tax: EditTax,
+                        PQty: tempa[EditIdx]["PQty"],
+                        PUnit: tempa[EditIdx]["PUnit"],
+                        tax: tempa[EditIdx]["tax"],
                         TaxTotal: tempa[EditIdx]["TaxTotal"],
-                        Total: tempa[EditIdx]["Total"],
+                        Total: parseFloat(EditPrice).toFixed(3),
                         Note: NoteT,
                         DateT: DateTT,
                         TimeT: TimeTT,
-                        PQUnit: PQUnitT,
+                        PQUnit: tempa[EditIdx]["PQUnit"],
                         PType: EditType,
-                        TotalPieces: EditTotalPieces,
+                        TotalPieces: tempa[EditIdx]["TotalPieces"],
                         PPrice: PPriceT,
-                        BPUnit: EditDBPUnit,
-                        SPUnit: EditDSPUnit,
-                        InitialPrice: EditInitialPrice,
-                        StockQty: EditItemStockQty,
+                        BPUnit: tempa[EditIdx]["BPUnit"],
+                        SPUnit: tempa[EditIdx]["SPUnit"],
+                        InitialPrice: tempa[EditIdx]["InitialPrice"],
+                        StockQty: tempa[EditIdx]["StockQty"],
                       };
-
+                      console.log("*//////ana bel edit vouchers///****");
                       let pAreEqual = true;
 
                       if (oldtempa["uprice"] !== tempa[EditIdx]["uprice"]) {
@@ -2047,6 +2052,10 @@ export default function SalesForm(props) {
                           .toString()
                           .padStart(2, "0")}`;
                         tempa[EditIdx]["DateT"] = formattedDate;
+                        console.log(
+                          formattedDate,
+                          "hon aamenaayit l date l jdid edit"
+                        );
                         tempa[EditIdx]["TimeT"] = formattedTime;
                       }
                       setErrorMessage("");

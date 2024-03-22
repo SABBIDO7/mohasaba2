@@ -16,28 +16,28 @@ const IdSelect = forwardRef((props, ref) => {
 
   const [sItemNo, setsItemNo] = useState("");
   const [sItemName, setsItemName] = useState("");
-  const [sItemQty, setsItemQty] = useState();
+  const [sItemQty, setsItemQty] = useState(1);
   const [sItemPrice, setsItemPrice] = useState(0);
-  const [sItemTax, setsItemTax] = useState();
-  const [sItemDiscount, setsItemDiscount] = useState();
+  const [sItemTax, setsItemTax] = useState(0);
+  const [sItemDiscount, setsItemDiscount] = useState(0);
   const [sItemBranch, setsItemBranch] = useState("");
-  const [sItemPQty, setsItemPQty] = useState("");
+  const [sItemPQty, setsItemPQty] = useState(1);
   const [sItemPUnit, setsItemPUnit] = useState("");
   const [sItemNote, setsItemNote] = useState("");
   const [sItemTaxTotal, setsItemTaxTotal] = useState(0);
   const [sItemTotal, setsItemTotal] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
-  const [sItemPQUnit, setsItemPQunit] = useState();
+  const [sItemPQUnit, setsItemPQunit] = useState(1);
   const [sItemPType, setsItemPType] = useState("");
-  const [sItemPPrice, setsItemPPrice] = useState();
+  const [sItemPPrice, setsItemPPrice] = useState(0);
 
   const [sItemTotalPieces, setTotalPieces] = useState(1);
 
-  const [sItemDBPUnit, setsItemBPUnit] = useState();
-  const [sItemDSPUnit, setsItemDSPUnit] = useState();
+  const [sItemDBPUnit, setsItemBPUnit] = useState("");
+  const [sItemDSPUnit, setsItemDSPUnit] = useState("");
   const [sItemStockQty, setsItemStockQty] = useState(0);
 
-  const [sItemInitial, setsItemInitial] = useState();
+  const [sItemInitial, setsItemInitial] = useState(1);
 
   useImperativeHandle(ref, () => ({
     // Define functions here
@@ -118,6 +118,7 @@ const IdSelect = forwardRef((props, ref) => {
 
   const allowPriceChanges = localStorage.getItem("Price") !== "N";
   const allowDiscountChanges = localStorage.getItem("Discount") !== "N";
+  const allowBranchChanges = localStorage.getItem("ChangeBranch") !== "N";
 
   return (
     <>
@@ -315,15 +316,21 @@ const IdSelect = forwardRef((props, ref) => {
 
             <div className="flex items-center">
               <label htmlFor="itemBranch" className="w-1/4">
-                Branch:
+                Branch:{" "}
+                {!allowBranchChanges && (
+                  <FontAwesomeIcon icon={faLock} className="text-gray-400" />
+                )}
               </label>
               <select
                 id="itemBranch"
                 className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                 value={sItemBranch}
                 onChange={(e) => {
-                  setsItemBranch(e.target.value);
+                  if (allowBranchChanges) {
+                    setsItemBranch(e.target.value);
+                  }
                 }}
+                readOnly={!allowBranchChanges}
               >
                 {props.branches.map((br) => (
                   <option key={br.number} value={br.number}>
@@ -827,6 +834,7 @@ const IdSelect = forwardRef((props, ref) => {
         .padStart(2, "0")}/${(currentDate.getMonth() + 1)
         .toString()
         .padStart(2, "0")}/${currentDate.getFullYear()}`;
+
       const formattedTime = `T${currentDate
         .getHours()
         .toString()
@@ -851,6 +859,7 @@ const IdSelect = forwardRef((props, ref) => {
         balance: e["Balance"],
         address: e["Address"],
       });
+
       props.setModalShow(false);
       if (
         props.selectedFormOption == "CR_AP" ||
@@ -882,6 +891,7 @@ const IdSelect = forwardRef((props, ref) => {
         items: props.si,
         RemovedItems: props.RemovedItems,
       });
+      console.log("selecthandler", props.Client);
       localStorage.setItem("InvoiceHistory", "");
       props.setpropertiesAreEqual(false);
     } else if (props.sOption === "Items") {
@@ -988,6 +998,7 @@ const IdSelect = forwardRef((props, ref) => {
       .getSeconds()
       .toString()
       .padStart(2, "0")}`;
+
     tempsi = [
       ...props.si,
       {
@@ -1036,6 +1047,7 @@ const IdSelect = forwardRef((props, ref) => {
         StockQty: sItemStockQty,
       },
     ];
+
     console.log("*//////////////////////*");
     console.log(tempsi);
     if (sItemPPrice == "U") {
@@ -1066,6 +1078,7 @@ const IdSelect = forwardRef((props, ref) => {
     //     setErrorMessage("Unit Price cannot be 0. Please enter a valid value.");
     //     return;
     // }
+
     props.ssi(tempsi);
     props.setModalItems(false);
     props.handleSave({
@@ -1087,24 +1100,24 @@ const IdSelect = forwardRef((props, ref) => {
         localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
       );
       setsItemBranch(props.branches[0]["number"]);
-      setsItemPrice("0");
+      setsItemPrice(0);
 
       setsItemPType("");
       setsItemNo("");
       setsItemName("");
-      setsItemQty();
-      setsItemPQty();
-      setsItemPQunit();
+      setsItemQty(1);
+
+      setsItemPQunit(0);
       setsItemPUnit("");
-      setsItemDiscount();
-      setsItemTax();
+      setsItemDiscount(0);
+      setsItemTax(0);
       setsItemTaxTotal(0);
       setsItemTotal(0);
       setsItemStockQty(0);
       setTotalPieces(0);
       setsItemDSPUnit("");
       setsItemBPUnit("");
-      setsItemInitial();
+      setsItemInitial(0);
     }
   }
 });
