@@ -70,7 +70,7 @@ const IdSelect = forwardRef((props, ref) => {
       } else {
         total = sItemQty;
       }
-      setTotalPieces(parseFloat(total).toFixed(3));
+      setTotalPieces(parseFloat(total));
     };
 
     calculateTotalPieces();
@@ -87,7 +87,7 @@ const IdSelect = forwardRef((props, ref) => {
       } else {
         total = sItemInitial / (sItemPQty * sItemPQUnit);
       }
-      setsItemPrice(parseFloat(total).toFixed(3));
+      setsItemPrice(parseFloat(total));
     };
     if (sItemPPrice == "P") {
       console.log("klop");
@@ -99,7 +99,7 @@ const IdSelect = forwardRef((props, ref) => {
     // Calculate total pieces based on other inputs whenever they change
     const UpriceZeroCheck = () => {
       console.log("klop2");
-      if (parseFloat(sItemPrice).toFixed(3) == 0) {
+      if (parseFloat(sItemPrice) == 0) {
         if (
           props.selectedFormOption != "DB_AP" &&
           props.selectedFormOption != "CR_AP"
@@ -535,19 +535,19 @@ const IdSelect = forwardRef((props, ref) => {
                           sItemTotalPieces *
                           (1 - sItemDiscount / 100) *
                           (1 + sItemTax / 100)
-                      ).toFixed(3)
+                      )
                     : sItemPPrice == "P" &&
                       parseFloat(
                         sItemPrice *
                           sItemQty *
                           (1 - sItemDiscount / 100) *
                           (1 + sItemTax / 100)
-                      ).toFixed(3)
+                      )
                 }
                 onChange={(e) => {
                   // if(sItemPrice=="" || sItemPrice==undefined){
                   // }
-                  // setsItemTotal(((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
+                  // setsItemTotal(((sItemPrice* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)));
                   // console.log(sItemTotal);
                 }}
               />
@@ -858,6 +858,7 @@ const IdSelect = forwardRef((props, ref) => {
             : props.changingAccountInvoiceFromDB,
         balance: e["Balance"],
         address: e["Address"],
+        cur: e["Cur"],
       });
 
       props.setModalShow(false);
@@ -886,6 +887,7 @@ const IdSelect = forwardRef((props, ref) => {
               : props.changingAccountInvoiceFromDB,
           balance: e["Balance"],
           address: e["Address"],
+          cur: e["Cur"],
         },
 
         items: props.si,
@@ -920,32 +922,28 @@ const IdSelect = forwardRef((props, ref) => {
       setsItemPrice(uprice);
       if (sItemPPrice == "U") {
         setsItemTotal(
-          (
-            sItemPrice *
+          sItemPrice *
             sItemTotalPieces *
             (1 - sItemDiscount / 100) *
             (1 + sItemTax / 100)
-          ).toFixed(3)
         );
       } else if (sItemPPrice == "P") {
         setsItemTotal(
-          (
-            sItemPrice *
+          sItemPrice *
             sItemQty *
             (1 - sItemDiscount / 100) *
             (1 + sItemTax / 100)
-          ).toFixed(3)
         );
 
         // else if(sItemPPrice=="2"){
-        //     setsItemTotal((((sItemPrice/sItemPQty)* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
+        //     setsItemTotal((((sItemPrice/sItemPQty)* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)));
 
         // }
         // else if(sItemPPrice=="1"){
-        //     setsItemTotal((((sItemPrice/(sItemPQty*sItemPQUnit)* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3)));
+        //     setsItemTotal((((sItemPrice/(sItemPQty*sItemPQUnit)* sItemQty)*(1-sItemDiscount/100)*(1 +sItemTax/100))));
         // }
       }
-      //setsItemTotal(((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)).toFixed(3));
+      //setsItemTotal(((sItemPrice* sItemTotalPieces)*(1-sItemDiscount/100)*(1 +sItemTax/100)));
       props.setModalItems(true);
       props.setModalShow(false);
       //setsItemBranch(props.branches[0]["number"]);
@@ -1005,35 +1003,36 @@ const IdSelect = forwardRef((props, ref) => {
         no: sItemNo,
         name: sItemName,
         qty: tempQty,
-        uprice: parseFloat(uprice).toFixed(3),
+        uprice: parseFloat(uprice),
         discount: discount,
         branch: sItemBranch,
         lno: Lno,
         PQty: sItemPQty,
         PUnit: sItemPUnit,
         tax: tax,
-        TaxTotal: sItemTaxTotal.toFixed(3),
+        TaxTotal: sItemTaxTotal,
+
         Total:
-          sItemPPrice == "U"
-            ? (
-                parseFloat(uprice) *
-                parseFloat(sItemTotalPieces) *
-                (1 - parseFloat(discount) / 100) *
-                (1 + parseFloat(sItemTax) / 100)
-              ).toFixed(3)
+          props.selectedFormOption == "CR_AP" ||
+          props.selectedFormOption == "DB_AP"
+            ? sItemPPrice !=
+              localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
+              ? sItemPrice / localStorage.getItem("Rate")
+              : sItemPrice
+            : sItemPPrice == "U"
+            ? parseFloat(uprice) *
+              parseFloat(sItemTotalPieces) *
+              (1 - parseFloat(discount) / 100) *
+              (1 + parseFloat(sItemTax) / 100)
             : sItemPPrice == "P"
-            ? (
-                parseFloat(uprice) *
-                parseFloat(sItemQty) *
-                (1 - parseFloat(discount) / 100) *
-                (1 + parseFloat(sItemTax) / 100)
-              ).toFixed(3)
-            : (
-                parseFloat(uprice) *
-                parseFloat(sItemQty) *
-                (1 - parseFloat(discount) / 100) *
-                (1 + parseFloat(sItemTax) / 100)
-              ).toFixed(3),
+            ? parseFloat(uprice) *
+              parseFloat(sItemQty) *
+              (1 - parseFloat(discount) / 100) *
+              (1 + parseFloat(sItemTax) / 100)
+            : parseFloat(uprice) *
+              parseFloat(sItemQty) *
+              (1 - parseFloat(discount) / 100) *
+              (1 + parseFloat(sItemTax) / 100),
         Note: sItemNote,
         DateT: formattedDate,
         TimeT: formattedTime,
@@ -1052,28 +1051,24 @@ const IdSelect = forwardRef((props, ref) => {
     console.log(tempsi);
     if (sItemPPrice == "U") {
       setsItemTotal(
-        (
-          parseFloat(uprice) *
+        parseFloat(uprice) *
           parseFloat(sItemTotalPieces) *
           (1 - parseFloat(discount) / 100) *
           (1 + parseFloat(sItemTax) / 100)
-        ).toFixed(3)
       );
     } else if (sItemPPrice == "P") {
       setsItemTotal(
-        (
-          parseFloat(uprice) *
+        parseFloat(uprice) *
           parseFloat(sItemQty) *
           (1 - parseFloat(discount) / 100) *
           (1 + parseFloat(sItemTax) / 100)
-        ).toFixed(3)
       );
     }
 
     console.log(sItemTotal);
     console.log("--=");
-    console.log("hhhhhhhhhhhhhhh", parseFloat(uprice).toFixed(3));
-    // if (parseFloat(uprice).toFixed(3)==0.000){
+    console.log("hhhhhhhhhhhhhhh", parseFloat(uprice));
+    // if (parseFloat(uprice)==0.000){
     //     console.log("uiuiuuuuuuuiuiiuu");
     //     setErrorMessage("Unit Price cannot be 0. Please enter a valid value.");
     //     return;

@@ -88,7 +88,7 @@ export default function SalesForm(props) {
   const [SwitchFormOption, setSwitchFormOption] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [SATdialogOpen, setSATDialogOpen] = useState(false);
-
+  const formatter = new Intl.NumberFormat("en-US");
   const handleHeaderClick = () => {
     setDialogOpen(true);
   };
@@ -153,7 +153,7 @@ export default function SalesForm(props) {
       } else {
         total = EditQty;
       }
-      setEditTotalPieces(parseFloat(total).toFixed(3));
+      setEditTotalPieces(parseFloat(total));
     };
 
     calculateTotalPieces();
@@ -169,7 +169,7 @@ export default function SalesForm(props) {
       } else {
         total = EditInitialPrice / (EditPQty * EditPQUnit);
       }
-      setEditPrice(parseFloat(total).toFixed(3));
+      setEditPrice(parseFloat(total));
       console.log("hsebet men use effect calculateUprice");
     };
     if (EditPPrice == "P" && performCalculation) {
@@ -181,7 +181,7 @@ export default function SalesForm(props) {
     // Calculate total pieces based on other inputs whenever they change
     const UpriceZeroCheck = () => {
       console.log("klop2");
-      if (parseFloat(EditPrice).toFixed(3) == 0) {
+      if (parseFloat(EditPrice) == 0) {
         setErrorMessage("The Item Price is 0 !");
       } else {
         setErrorMessage("");
@@ -259,6 +259,7 @@ export default function SalesForm(props) {
         time: "",
         balance: "",
         address: "",
+        cur: "",
       });
 
       localStorage.setItem("InvoiceHistory", selectedValue);
@@ -304,6 +305,7 @@ export default function SalesForm(props) {
               RefNo: response.data.InvProfile[0]["RefNo"],
               balance: response.data.InvProfile[0]["balance"],
               address: response.data.InvProfile[0]["address"],
+              address: response.data.InvProfile[0]["cur"],
             },
 
             items: response.data.Invoices,
@@ -701,12 +703,27 @@ export default function SalesForm(props) {
             {/* Model content*/}
             <div className="h-[10%] flex flex-col justify-between items-between">
               <div className="flex flex-row items-center justify-between">
-                <div>
-                  Currency:{" "}
-                  {localStorage.getItem(
-                    "Cur" + localStorage.getItem("mainCur")
-                  )}
+                <div className="flex flex-row ">
+                  <div className="flex flex-row ">
+                    <div>CompCurrency: </div>
+                    <div>
+                      {localStorage.getItem(
+                        "Cur" + localStorage.getItem("mainCur")
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-row ml-[10%]">
+                    <div>AccCurrency: </div>
+                    <div>
+                      {props.Client["cur"] != undefined &&
+                      props.Client["cur"] != null &&
+                      props.Client["cur"] != ""
+                        ? props.Client["cur"]
+                        : "--"}
+                    </div>
+                  </div>
                 </div>
+
                 <div>
                   CurRate:{" "}
                   {localStorage.getItem("Rate") == null ||
@@ -922,7 +939,7 @@ export default function SalesForm(props) {
                         // setFtotal(finalTotal);
                         finalTax = finalTax + taxAmount;
                         // setFTax(finalTax);
-                        si["TaxTotal"] = taxAmount.toFixed(3);
+                        si["TaxTotal"] = taxAmount;
                         let totalf;
                         if (si["PPrice"] == "U") {
                           totalf = parseFloat(
@@ -930,24 +947,26 @@ export default function SalesForm(props) {
                               si["TotalPieces"] *
                               (1 - si["discount"] / 100) *
                               (1 + si["tax"] / 100)
-                          ).toFixed(3);
+                          );
                         } else if (si["PPrice"] == "P") {
                           totalf = parseFloat(
                             si["uprice"] *
                               si["qty"] *
                               (1 - si["discount"] / 100) *
                               (1 + si["tax"] / 100)
-                          ).toFixed(3);
+                          );
 
                           // else if(si["PType"]=="2"){
-                          //     totalf =  parseFloat(((si["uprice"]/si["PQty"])* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
+                          //     totalf =  parseFloat(((si["uprice"]/si["PQty"])* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100));
                           // }else if(si["PType"]=="1"){
-                          //     totalf =  parseFloat(((si["uprice"]/(si["PQty"]*si["PQUnit"]))* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100)).toFixed(3);
+                          //     totalf =  parseFloat(((si["uprice"]/(si["PQty"]*si["PQUnit"]))* si["qty"])*(1-si["discount"]/100)*(1 +si["tax"]/100));
                           // }
                         }
                         si["Total"] = totalf;
                       } else {
-                        total = parseFloat(si["uprice"]);
+                        console.log(si["Total"]);
+                        total = parseFloat(si["Total"]);
+                        console.log("+++++++++", total);
                         finalTotal = finalTotal + total;
                       }
 
@@ -1036,7 +1055,7 @@ export default function SalesForm(props) {
                                 </button>
                               </td>
 
-                              {/*<td>{taxAmount.toFixed(3)}</td>*/}
+                              {/*<td>{taxAmount}</td>*/}
                               <td>
                                 <button
                                   className="text-blue-500 hover:text-blue-700"
@@ -1131,11 +1150,11 @@ export default function SalesForm(props) {
                 <div className="flex justify-between items-center">
                   <div className="mr-20">
                     {" "}
-                    <h4>Gross: {finalTotal.toFixed(3)} </h4>
+                    <h4>Gross: {finalTotal.toLocaleString()} </h4>
                   </div>
                   <div className="mr-20">
                     {" "}
-                    <h4>TAX: {finalTax.toFixed(3)}</h4>
+                    <h4>TAX: {finalTax.toLocaleString()}</h4>
                   </div>
                   <div>
                     <h3>
@@ -1153,7 +1172,7 @@ export default function SalesForm(props) {
                       {(
                         (finalTotal + finalTax) *
                         localStorage.getItem("Rate")
-                      ).toFixed(3)}{" "}
+                      ).toLocaleString()}{" "}
                       {localStorage.getItem("Cur2")}
                     </h4>
                   ) : (
@@ -1162,7 +1181,7 @@ export default function SalesForm(props) {
                       {(
                         (finalTotal + finalTax) /
                         localStorage.getItem("Rate")
-                      ).toFixed(3)}{" "}
+                      ).toLocaleString()}{" "}
                       {localStorage.getItem("Cur1")}
                     </h4>
                   )}{" "}
@@ -1201,6 +1220,7 @@ export default function SalesForm(props) {
                           time: "",
                           balance: "",
                           address: "",
+                          cur: "",
                         });
                         console.log("y10");
                         localStorage.setItem("sales", "");
@@ -1426,7 +1446,7 @@ export default function SalesForm(props) {
                         : EditType == "2"
                         ? EditQty * EditItem["PQUnit"]
                         : EditQty
-                    ).toFixed(3)}
+                    )}
                     onChange={(e) => {
                       setEditTotalPieces(
                         parseFloat(
@@ -1435,7 +1455,7 @@ export default function SalesForm(props) {
                             : EditType == "2"
                             ? EditQty * EditItem["PQUnit"]
                             : EditQty
-                        ).toFixed(3)
+                        )
                       );
                     }}
                   />
@@ -1539,14 +1559,14 @@ export default function SalesForm(props) {
                               EditTotalPieces *
                               (1 - EditDiscount / 100) *
                               (1 + EditTax / 100)
-                          ).toFixed(3)
+                          )
                         : EditPPrice == "P" &&
                           parseFloat(
                             EditPrice *
                               EditQty *
                               (1 - EditDiscount / 100) *
                               (1 + EditTax / 100)
-                          ).toFixed(3)
+                          )
                     }
                     onChange={(e) => {
                       setEditTotal(e.target.value);
@@ -1612,26 +1632,26 @@ export default function SalesForm(props) {
                                 EditTotalPieces *
                                 (1 - EditDiscount / 100) *
                                 (1 + EditTax / 100)
-                            ).toFixed(3)
+                            )
                           : EditPPrice == "P" &&
                             parseFloat(
                               EditPrice *
                                 EditQty *
                                 (1 - EditDiscount / 100) *
                                 (1 + EditTax / 100)
-                            ).toFixed(3);
+                            );
                       tempa[EditIdx] = {
                         no: EditItem.no,
                         name: EditItem.name,
                         qty: tempQty,
-                        uprice: parseFloat(EditPrice).toFixed(3),
+                        uprice: parseFloat(EditPrice),
                         discount: EditDiscount,
                         branch: EditBranch,
                         lno: EditLno,
                         PQty: PQtyT,
                         PUnit: PUnitT,
                         tax: EditTax,
-                        TaxTotal: (totalConditions * EditTax).toFixed(3),
+                        TaxTotal: totalConditions * EditTax,
                         Total: totalConditions,
                         Note: NoteT,
                         DateT: DateTT,
@@ -1678,8 +1698,8 @@ export default function SalesForm(props) {
                       //         console.log("FETTT TOAL");
                       //         continue; // Skip the Total field
                       //     }
-                      //     const oldValue = parseFloat(oldtempa[key]).toFixed(3); // Convert to number and fix precision
-                      //     const newValue = parseFloat(tempa[EditIdx][key]).toFixed(3);
+                      //     const oldValue = parseFloat(oldtempa[key]); // Convert to number and fix precision
+                      //     const newValue = parseFloat(tempa[EditIdx][key]);
                       //     if (oldValue !== newValue) {
                       //         propertiesAreEqual = false;
                       //         console.log(oldtempa[key]);
@@ -1988,14 +2008,14 @@ export default function SalesForm(props) {
                       let TimeTT = tempa[EditIdx]["TimeT"];
 
                       let NoteT = tempa[EditIdx]["Note"];
-                      let PPriceT = tempa[EditIdx]["PPrice"];
+                      let PPriceT = EditPPrice;
                       let oldtempa = tempa[EditIdx];
 
                       tempa[EditIdx] = {
                         no: EditItem.no,
                         name: tempa[EditIdx]["name"],
                         qty: tempa[EditIdx]["qty"],
-                        uprice: parseFloat(EditPrice).toFixed(3),
+                        uprice: parseFloat(EditPrice),
                         discount: tempa[EditIdx]["discount"],
                         branch: EditBranch,
                         lno: EditLno,
@@ -2003,7 +2023,14 @@ export default function SalesForm(props) {
                         PUnit: tempa[EditIdx]["PUnit"],
                         tax: tempa[EditIdx]["tax"],
                         TaxTotal: tempa[EditIdx]["TaxTotal"],
-                        Total: parseFloat(EditPrice).toFixed(3),
+                        Total:
+                          EditPPrice !=
+                          localStorage.getItem(
+                            "Cur" + localStorage.getItem("mainCur")
+                          )
+                            ? parseFloat(EditPrice) /
+                              localStorage.getItem("Rate")
+                            : parseFloat(EditPrice),
                         Note: NoteT,
                         DateT: DateTT,
                         TimeT: TimeTT,
@@ -2269,6 +2296,7 @@ export default function SalesForm(props) {
                   time: "",
                   balance: "",
                   address: "",
+                  cur: "",
                 });
                 props.setSelectedItems([]);
                 props.setRemovedItems([]);
@@ -2830,6 +2858,7 @@ export default function SalesForm(props) {
       time: "",
       balance: "",
       address: "",
+      cur: "",
     });
     props.setSelectedItems([]);
     props.setRemovedItems([]);
@@ -2858,6 +2887,7 @@ export default function SalesForm(props) {
       time: "",
       balance: "",
       address: "",
+      cur: "",
     });
     props.setSelectedItems([]);
     props.setRemovedItems([]);
