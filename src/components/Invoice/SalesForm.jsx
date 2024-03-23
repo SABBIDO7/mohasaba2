@@ -2017,7 +2017,7 @@ export default function SalesForm(props) {
                       if (EditType == "") {
                         setErrorMessage("You Have To Choose Payment Type");
                         return;
-                      } else if (PPriceT == "") {
+                      } else if (EditPPrice == "") {
                         setErrorMessage("You Have To Choose Currency Type");
                         return;
                       } else if (EditBranch == "") {
