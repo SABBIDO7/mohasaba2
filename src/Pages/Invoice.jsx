@@ -217,7 +217,12 @@ export default function Invoice(props) {
       RemovedItems: RemovedItems,
       username: localStorage.getItem("username"),
       invoiceTotal: InvoiceTotal,
+      // Cur:
+      //   acc.cur == localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
+      //     ? "1"
+      //     : "2",
       Cur: localStorage.getItem("mainCur"),
+      Rate: Client["Rate"],
     };
     console.log("n bl invoice");
     console.log(data);

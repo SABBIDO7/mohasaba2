@@ -123,7 +123,10 @@ export default function SalesForm(props) {
     } else if (option == "CR_AP" || option == "DB_AP") {
       setDialogOpen(false);
       console.log("125");
-      clearInvoice();
+      if (props.propertiesAreEqual == false && props.SelectedItems.length > 0) {
+        clearInvoice();
+      }
+
       console.log("126", option);
       props.setSelectedFormOption(option);
       console.log("101010");
@@ -260,6 +263,7 @@ export default function SalesForm(props) {
         balance: "",
         address: "",
         cur: "",
+        Rate: "",
       });
 
       localStorage.setItem("InvoiceHistory", selectedValue);
@@ -305,7 +309,8 @@ export default function SalesForm(props) {
               RefNo: response.data.InvProfile[0]["RefNo"],
               balance: response.data.InvProfile[0]["balance"],
               address: response.data.InvProfile[0]["address"],
-              address: response.data.InvProfile[0]["cur"],
+              cur: response.data.InvProfile[0]["cur"],
+              Rate: response.data.InvProfile[0]["Rate"],
             },
 
             items: response.data.Invoices,
@@ -373,7 +378,6 @@ export default function SalesForm(props) {
     localStorage.setItem("sales", jsonString);
     props.setpropertiesAreEqual(true);
   };
-
   const handleRetrieve = () => {
     const jsonString = localStorage.getItem("sales");
     console.log("ila hona w tantahi", jsonString);
@@ -562,7 +566,14 @@ export default function SalesForm(props) {
         localStorage.setItem("CompEmail", data.CompanyInfo["CompEmail"]);
         localStorage.setItem("CompTax", data.CompanyInfo["CompTax"]);
         localStorage.setItem("mainCur", data.CompanyInfo["mainCur"]);
-        localStorage.setItem("Rate", data.CompanyInfo["Rate"]);
+        if (
+          props.Client["id"] == "" ||
+          props.Client["id"] == undefined ||
+          props.Client["id"] == null
+        ) {
+          localStorage.setItem("Rate", data.CompanyInfo["Rate"]);
+        }
+
         localStorage.setItem("Cur1", data.CompanyInfo["Cur1"]);
         localStorage.setItem("Cur2", data.CompanyInfo["Cur2"]);
         localStorage.setItem("CASH", data.CompanyInfo["CASH"]);
@@ -719,18 +730,18 @@ export default function SalesForm(props) {
                       props.Client["cur"] != null &&
                       props.Client["cur"] != ""
                         ? props.Client["cur"]
-                        : "--"}
+                        : "-"}
                     </div>
                   </div>
                 </div>
 
                 <div>
                   CurRate:{" "}
-                  {localStorage.getItem("Rate") == null ||
-                  localStorage.getItem("Rate") == undefined ||
-                  localStorage.getItem("Rate") == ""
+                  {props.Client["Rate"] == null ||
+                  props.Client["Rate"] == undefined ||
+                  props.Client["Rate"] == ""
                     ? "--"
-                    : localStorage.getItem("Rate")}
+                    : props.Client["Rate"]}
                 </div>
               </div>
               <h1
@@ -1158,7 +1169,7 @@ export default function SalesForm(props) {
                   </div>
                   <div>
                     <h3>
-                      Total: {(finalTotal + finalTax).toFixed(3)}{" "}
+                      Total: {(finalTotal + finalTax).toLocaleString()}{" "}
                       {localStorage.getItem(
                         "Cur" + localStorage.getItem("mainCur")
                       )}
@@ -1169,10 +1180,12 @@ export default function SalesForm(props) {
                   {localStorage.getItem("mainCur") == "1" ? (
                     <h4>
                       Cur2:{" "}
-                      {(
-                        (finalTotal + finalTax) *
-                        localStorage.getItem("Rate")
-                      ).toLocaleString()}{" "}
+                      {finalTotal != 0
+                        ? (
+                            (finalTotal + finalTax) *
+                            props.Client["Rate"]
+                          ).toLocaleString()
+                        : "0"}{" "}
                       {localStorage.getItem("Cur2")}
                     </h4>
                   ) : (
@@ -1180,7 +1193,7 @@ export default function SalesForm(props) {
                       Cur2:{" "}
                       {(
                         (finalTotal + finalTax) /
-                        localStorage.getItem("Rate")
+                        props.Client["Rate"]
                       ).toLocaleString()}{" "}
                       {localStorage.getItem("Cur1")}
                     </h4>
@@ -1220,7 +1233,8 @@ export default function SalesForm(props) {
                           time: "",
                           balance: "",
                           address: "",
-                          cur: "",
+
+                          Rate: "",
                         });
                         console.log("y10");
                         localStorage.setItem("sales", "");
@@ -1944,6 +1958,8 @@ export default function SalesForm(props) {
                         setEditPPrice(e.target.value);
                       }}
                     >
+                      <option value="">Choose Currency Type</option>
+
                       {localStorage.getItem("Cur1") &&
                         localStorage.getItem("Cur1") !== "" && (
                           <option value={localStorage.getItem("Cur1")}>
@@ -1998,6 +2014,16 @@ export default function SalesForm(props) {
                   <Button
                     variant="primary"
                     onClick={() => {
+                      if (EditType == "") {
+                        setErrorMessage("You Have To Choose Payment Type");
+                        return;
+                      } else if (PPriceT == "") {
+                        setErrorMessage("You Have To Choose Currency Type");
+                        return;
+                      } else if (EditBranch == "") {
+                        setErrorMessage("You Have To Choose A Branch");
+                        return;
+                      }
                       let tempa = props.SelectedItems;
 
                       let PQUnitT = tempa[EditIdx]["PQUnit"];
@@ -2020,17 +2046,26 @@ export default function SalesForm(props) {
                         branch: EditBranch,
                         lno: EditLno,
                         PQty: tempa[EditIdx]["PQty"],
-                        PUnit: tempa[EditIdx]["PUnit"],
-                        tax: tempa[EditIdx]["tax"],
-                        TaxTotal: tempa[EditIdx]["TaxTotal"],
-                        Total:
-                          EditPPrice !=
+                        PUnit:
+                          PPriceT ==
                           localStorage.getItem(
                             "Cur" + localStorage.getItem("mainCur")
                           )
-                            ? parseFloat(EditPrice) /
-                              localStorage.getItem("Rate")
-                            : parseFloat(EditPrice),
+                            ? "1"
+                            : "2",
+                        tax: tempa[EditIdx]["tax"],
+                        TaxTotal: tempa[EditIdx]["TaxTotal"],
+                        Total:
+                          // EditPPrice !=
+                          // localStorage.getItem(
+                          //   "Cur" + localStorage.getItem("mainCur")
+                          // )
+                          //   ? parseFloat(EditPrice) /
+                          //     localStorage.getItem("Rate")
+                          //   : parseFloat(EditPrice),
+                          EditPPrice != props.Client["cur"]
+                            ? EditPrice / props.Client["Rate"]
+                            : EditPrice,
                         Note: NoteT,
                         DateT: DateTT,
                         TimeT: TimeTT,
@@ -2297,6 +2332,7 @@ export default function SalesForm(props) {
                   balance: "",
                   address: "",
                   cur: "",
+                  Rate: "",
                 });
                 props.setSelectedItems([]);
                 props.setRemovedItems([]);
@@ -2837,6 +2873,7 @@ export default function SalesForm(props) {
     axios({
       method: "POST",
       url: props.url + "/INVOICE_DATA_SELECT/",
+
       data: data,
       headers: { "Content-Type": "application/json" },
     })
@@ -2859,6 +2896,7 @@ export default function SalesForm(props) {
       balance: "",
       address: "",
       cur: "",
+      Rate: "",
     });
     props.setSelectedItems([]);
     props.setRemovedItems([]);
@@ -2888,6 +2926,7 @@ export default function SalesForm(props) {
       balance: "",
       address: "",
       cur: "",
+      Rate: "",
     });
     props.setSelectedItems([]);
     props.setRemovedItems([]);
@@ -2903,5 +2942,6 @@ export default function SalesForm(props) {
     props.setSATFromBranch();
     props.setSATToBranch();
     console.log("y777");
+    getCompanyInfo();
   }
 }

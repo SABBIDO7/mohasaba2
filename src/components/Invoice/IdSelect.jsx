@@ -47,19 +47,6 @@ const IdSelect = forwardRef((props, ref) => {
   }));
 
   useEffect(() => {
-    if (
-      props.selectedFormOption == "CR_AP" ||
-      props.selectedFormOption == "DB_AP"
-    ) {
-      setsItemPPrice(
-        localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
-      );
-      setsItemBranch(props.branches[0]["number"]);
-      setsItemPrice(0);
-      setsItemPType("");
-    }
-  }, []);
-  useEffect(() => {
     // Calculate total pieces based on other inputs whenever they change
     const calculateTotalPieces = () => {
       let total = 0;
@@ -115,6 +102,22 @@ const IdSelect = forwardRef((props, ref) => {
 
     UpriceZeroCheck();
   }, [sItemPrice]);
+
+  useEffect(() => {
+    if (
+      props.selectedFormOption == "CR_AP" ||
+      props.selectedFormOption == "DB_AP"
+    ) {
+      // setsItemPPrice(
+      //   localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
+      // );
+      setsItemPPrice("");
+      //setsItemBranch(props.branches[0]["number"]);
+      setsItemBranch("");
+      setsItemPrice(0);
+      setsItemPType("");
+    }
+  }, []);
 
   const allowPriceChanges = localStorage.getItem("Price") !== "N";
   const allowDiscountChanges = localStorage.getItem("Discount") !== "N";
@@ -629,6 +632,8 @@ const IdSelect = forwardRef((props, ref) => {
                   setsItemBranch(e.target.value);
                 }}
               >
+                <option value="">Choose Branch</option>
+
                 {props.branches.map((br) => (
                   <option key={br.number} value={br.number}>
                     {br.number} - {br.name}
@@ -708,6 +713,7 @@ const IdSelect = forwardRef((props, ref) => {
                     setsItemPPrice(e.target.value);
                   }}
                 >
+                  <option value="">Choose Currency Type</option>
                   {localStorage.getItem("mainCur") == "1" ? (
                     <>
                       {localStorage.getItem("Cur1") &&
@@ -771,6 +777,12 @@ const IdSelect = forwardRef((props, ref) => {
                 if (sItemPType == "") {
                   setErrorMessage("You Have To Choose Payment Type");
                   return;
+                } else if (sItemPPrice == "") {
+                  setErrorMessage("You Have To Choose Currency Type");
+                  return;
+                } else if (sItemBranch == "") {
+                  setErrorMessage("You Have To Choose A Branch");
+                  return;
                 }
                 console.log("feter");
 
@@ -821,6 +833,9 @@ const IdSelect = forwardRef((props, ref) => {
         date: "",
         time: "",
         balance: "",
+        cur: "",
+        Rate: "",
+        address: "",
       });
       // props.ssi([])
       // localStorage.setItem("sales", "")
@@ -859,6 +874,7 @@ const IdSelect = forwardRef((props, ref) => {
         balance: e["Balance"],
         address: e["Address"],
         cur: e["Cur"],
+        Rate: localStorage.getItem("Rate"),
       });
 
       props.setModalShow(false);
@@ -888,6 +904,7 @@ const IdSelect = forwardRef((props, ref) => {
           balance: e["Balance"],
           address: e["Address"],
           cur: e["Cur"],
+          Rate: localStorage.getItem("Rate"),
         },
 
         items: props.si,
@@ -996,7 +1013,7 @@ const IdSelect = forwardRef((props, ref) => {
       .getSeconds()
       .toString()
       .padStart(2, "0")}`;
-
+    console.log("//******ALERT******//", sItemPPrice);
     tempsi = [
       ...props.si,
       {
@@ -1008,16 +1025,23 @@ const IdSelect = forwardRef((props, ref) => {
         branch: sItemBranch,
         lno: Lno,
         PQty: sItemPQty,
-        PUnit: sItemPUnit,
+        PUnit:
+          sItemPPrice ==
+          localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
+            ? "1"
+            : "2",
         tax: tax,
         TaxTotal: sItemTaxTotal,
 
         Total:
           props.selectedFormOption == "CR_AP" ||
           props.selectedFormOption == "DB_AP"
-            ? sItemPPrice !=
-              localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
-              ? sItemPrice / localStorage.getItem("Rate")
+            ? // ? sItemPPrice !=
+              //   localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
+              //   ? sItemPrice / localStorage.getItem("Rate")
+              //   : sItemPrice
+              sItemPPrice != props.Client["cur"]
+              ? sItemPrice / props.Client["Rate"]
               : sItemPrice
             : sItemPPrice == "U"
             ? parseFloat(uprice) *
@@ -1091,10 +1115,8 @@ const IdSelect = forwardRef((props, ref) => {
     ) {
       props.setModalVoucher(false);
 
-      setsItemPPrice(
-        localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
-      );
-      setsItemBranch(props.branches[0]["number"]);
+      setsItemPPrice("");
+      setsItemBranch("");
       setsItemPrice(0);
 
       setsItemPType("");
