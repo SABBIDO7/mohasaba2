@@ -43,10 +43,11 @@ export default function Invoice(props) {
   useEffect(() => {
     getBranches();
   }, []);
-
   useEffect(() => {
     localStorage.setItem("SATFromBranch", SATFromBranch);
     localStorage.setItem("SATToBranch", SATToBranch);
+    console.log("watch ouuttttttttt", SATFromBranch);
+    console.log("watch ouuttttttttt", SATToBranch);
   }, [SATFromBranch, SATToBranch]);
 
   const [Hisab, setHisab] = useState([]);
@@ -203,12 +204,24 @@ export default function Invoice(props) {
         item.tax +
         "!";
     });
+    console.log("**//---", acc.RefNo);
+
     let data = {
       compname: localStorage.getItem("compname"),
       type: type,
       accno: acc.id,
-      accDate: acc.date,
-      accTime: acc.time,
+      accDate:
+        selectedFormOption == "SAT_AP"
+          ? acc.date != undefined && acc.date != null && acc.date != ""
+            ? acc.date
+            : items[0]["DateT"]
+          : acc.date,
+      accTime:
+        selectedFormOption == "SAT_AP"
+          ? acc.time != undefined && acc.time != null && acc.time != ""
+            ? acc.time
+            : items[0]["TimeT"]
+          : acc.time,
       accRefNo: acc.RefNo,
       Sbranch: localStorage.getItem("Sbranch"),
       Abranch: localStorage.getItem("Abranch"),
@@ -222,7 +235,18 @@ export default function Invoice(props) {
       //     ? "1"
       //     : "2",
       Cur: localStorage.getItem("mainCur"),
-      Rate: Client["Rate"],
+      Rate:
+        Client["Rate"] == null ||
+        Client["Rate"] == undefined ||
+        Client["Rate"] == ""
+          ? localStorage.getItem("Rate") != undefined &&
+            localStorage.getItem("Rate") != "" &&
+            localStorage.getItem("Rate") != null
+            ? localStorage.getItem("Rate")
+            : undefined
+          : Client["Rate"],
+      SATFromBranch: SATFromBranch,
+      SATToBranch: SATToBranch,
     };
     console.log("n bl invoice");
     console.log(data);

@@ -121,6 +121,18 @@ export default function SalesForm(props) {
       setSATDialogOpen(true);
       console.log("fet bel satttt");
     } else if (option == "CR_AP" || option == "DB_AP") {
+      setSwitchFormOption({
+        show: true,
+        message: (
+          <div>
+            Are You Sure YouWant To Change Form Option?
+            <br />
+            You Will Lost Your Items.
+          </div>
+        ),
+        //variable: option,
+        title: "Calling New Form",
+      });
       setDialogOpen(false);
       console.log("125");
       if (props.propertiesAreEqual == false && props.SelectedItems.length > 0) {
@@ -133,6 +145,8 @@ export default function SalesForm(props) {
     } else {
       console.log("131", option);
       props.setSelectedFormOption(option);
+      props.setSATFromBranch();
+      props.setSATToBranch();
       setDialogOpen(false);
       return;
     }
@@ -229,6 +243,18 @@ export default function SalesForm(props) {
       props.setSelectedFormOptionDisplay("PurchaseReturn Form");
     } else if (props.selectedFormOption == "SAT_AP") {
       props.setSelectedFormOptionDisplay("BranchTransfer Form");
+      setsOption("Items");
+      props.setClient({
+        id: "",
+        name: "",
+        RefNo: "",
+        date: "",
+        time: "",
+        balance: "",
+        address: "",
+        cur: "",
+        Rate: "",
+      });
     } else if (props.selectedFormOption == "CR_AP") {
       props.setSelectedFormOptionDisplay("ReceiptVoucher");
     } else if (props.selectedFormOption == "DB_AP") {
@@ -236,8 +262,14 @@ export default function SalesForm(props) {
     }
     console.log("234", props.selectedFormOption);
     localStorage.setItem("selectedFormOption", props.selectedFormOption);
-
-    setsOption("Accounts");
+    if (
+      props.selectedFormOption != "SAT_AP" &&
+      props.Client["id"] != "" &&
+      props.Client["id"] != undefined &&
+      props.Client["id"] != null
+    ) {
+      setsOption("Accounts");
+    }
   }, [props.selectedFormOption]);
 
   // Function to handle the change event of the select element
@@ -298,6 +330,8 @@ export default function SalesForm(props) {
           props.setClient(response.data.InvProfile[0]);
           props.setSelectedFormOption(response.data.InvProfile[0]["RefType"]);
           props.setRemovedItems([]);
+          props.setSATFromBranch(response.data.InvProfile[0]["Branch"]);
+          props.setSATToBranch(response.data.InvProfile[0]["TBranch"]);
           //
 
           handleSave({
@@ -397,7 +431,7 @@ export default function SalesForm(props) {
 
       props.setSATFromBranch(localStorage.getItem("SATFromBranch"));
       props.setSATToBranch(localStorage.getItem("SATToBranch"));
-
+      console.log("watchhttttt2222", localStorage.getItem("SATToBranch"));
       setSelectedInvoice(localStorage.getItem("InvoiceHistory"));
 
       if (localStorage.getItem("propertiesAreEqual") == "true") {
@@ -560,6 +594,7 @@ export default function SalesForm(props) {
       const data = resp.data;
 
       if (data.Info === "authorized") {
+        console.log("men info", data.CompanyInfo);
         localStorage.setItem("CompName", data.CompanyInfo["CompName"]);
         localStorage.setItem("CompAdd", data.CompanyInfo["CompAdd"]);
         localStorage.setItem("CompTell", data.CompanyInfo["CompTell"]);
@@ -571,6 +606,7 @@ export default function SalesForm(props) {
           props.Client["id"] == undefined ||
           props.Client["id"] == null
         ) {
+          console.log("fet aw mafetet");
           localStorage.setItem("Rate", data.CompanyInfo["Rate"]);
         }
 
@@ -675,7 +711,9 @@ export default function SalesForm(props) {
                   setvInput("");
                 }}
               >
-                <option className="py-2 text-lg">Accounts</option>
+                {props.selectedFormOption != "SAT_AP" && (
+                  <option className="py-2 text-lg">Accounts</option>
+                )}
                 {props.selectedFormOption != "DB_AP" &&
                 props.selectedFormOption != "CR_AP" ? (
                   <option className="py-2 text-lg">Items</option>
@@ -691,7 +729,8 @@ export default function SalesForm(props) {
                   if (
                     (props.Client["id"] == "" ||
                       props.Client["id"] == undefined) &&
-                    sOption == "Items"
+                    sOption == "Items" &&
+                    props.selectedFormOption != "SAT_AP"
                   ) {
                     setItemsWithoutAccount(true);
                   } else if (sOption == "Amount") {
@@ -733,6 +772,36 @@ export default function SalesForm(props) {
                         : "-"}
                     </div>
                   </div>
+                  {props.SATFromBranch != undefined &&
+                    props.SATFromBranch != null &&
+                    props.SATFromBranch != "" &&
+                    props.SATToBranch != undefined &&
+                    props.SATToBranch != null &&
+                    props.SATToBranch != "" && (
+                      <>
+                        <div className="flex flex-row ml-[10%]">
+                          <div>BF: </div>
+                          <div>
+                            {props.SATFromBranch != undefined &&
+                            props.SATFromBranch != null &&
+                            props.SATFromBranch != ""
+                              ? props.SATFromBranch
+                              : "-"}
+                          </div>
+                        </div>
+
+                        <div className="flex flex-row ml-[10%]">
+                          <div>BT: </div>
+                          <div>
+                            {props.SATToBranch != undefined &&
+                            props.SATToBranch != null &&
+                            props.SATToBranch != ""
+                              ? props.SATToBranch
+                              : "-"}
+                          </div>
+                        </div>
+                      </>
+                    )}
                 </div>
 
                 <div>
@@ -740,7 +809,11 @@ export default function SalesForm(props) {
                   {props.Client["Rate"] == null ||
                   props.Client["Rate"] == undefined ||
                   props.Client["Rate"] == ""
-                    ? "--"
+                    ? localStorage.getItem("Rate") != undefined &&
+                      localStorage.getItem("Rate") != "" &&
+                      localStorage.getItem("Rate") != null
+                      ? localStorage.getItem("Rate")
+                      : "--"
                     : props.Client["Rate"]}
                 </div>
               </div>
@@ -860,8 +933,17 @@ export default function SalesForm(props) {
                   <option value="" className="py-2 text-lg">
                     Call invoice
                   </option>
+
                   {sInvoices.map((inv, idx) => {
-                    return (
+                    return inv["RefType"] == "SAT_AP" ? (
+                      <option
+                        value={inv["RefNo"]}
+                        key={idx}
+                        className="py-2 text-lg"
+                      >
+                        {inv["RefType"]}_{inv["RefNo"]}
+                      </option>
+                    ) : (
                       <option
                         value={inv["RefNo"]}
                         key={idx}
@@ -1303,10 +1385,11 @@ export default function SalesForm(props) {
                   className=" w-[20%] bg-indigo-500"
                   onClick={() => {
                     if (
-                      (props.SelectedItems.length == 0 &&
+                      ((props.SelectedItems.length == 0 &&
                         props.RemovedItems.length == 0) ||
-                      props.Client == "" ||
-                      props.propertiesAreEqual == true
+                        props.Client == "" ||
+                        props.propertiesAreEqual == true) &&
+                      props.selectedFormOption != "SAT_AP"
                     ) {
                       setEmptyAlertModalShow(true);
                       console.log("//**/////");
@@ -2786,15 +2869,16 @@ export default function SalesForm(props) {
             <h2 className="text-xl font-semibold mb-4">Select Branches:</h2>
             <div className="grid grid-cols-2 gap-4">
               {/* Your six boxes here */}
-              <label htmlFor="BranchFrom" className="w-fit">
+              <label htmlFor="itemFromBranch" className="w-fit">
                 FROM Branch :
               </label>
               <select
-                id="itemBranch"
+                id="itemFromBranch"
                 className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
                 value={props.SATFromBranch}
                 onChange={(e) => {
-                  props.setSATFromBranch(e.target.value);
+                  document.getElementById("itemFromBranch").value =
+                    e.target.value;
                 }}
               >
                 {props.branches.map((br) => {
@@ -2805,15 +2889,16 @@ export default function SalesForm(props) {
                   );
                 })}
               </select>
-              <label htmlFor="itemBranch" className="w-fit">
+              <label htmlFor="itemToBranch" className="w-fit">
                 TO Branch:
               </label>
               <select
-                id="itemBranch"
+                id="itemToBranch"
                 className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
                 value={props.SATToBranch}
                 onChange={(e) => {
-                  props.setSATToBranch(e.target.value);
+                  document.getElementById("itemToBranch").value =
+                    e.target.value;
                 }}
               >
                 {props.branches.map((br) => {
@@ -2838,7 +2923,19 @@ export default function SalesForm(props) {
               <button
                 className="mt-4 bg-indigo-400 hover:bg-indigo-400 py-3 px-6  rounded-md"
                 onClick={() => {
-                  if (props.SATToBranch != props.SATFromBranch) {
+                  const itemFromBranchValue =
+                    document.getElementById("itemFromBranch").value;
+
+                  // Get the selected value from the second select element
+                  const itemToBranchValue =
+                    document.getElementById("itemToBranch").value;
+                  console.log("itemFromBranchValue", itemFromBranchValue);
+                  console.log("itemToBranchValue", itemToBranchValue);
+                  if (itemFromBranchValue != itemToBranchValue) {
+                    props.setSATToBranch(itemToBranchValue);
+                    props.setSATFromBranch(itemFromBranchValue);
+                    localStorage.setItem("SATFromBranch", itemFromBranchValue);
+                    localStorage.setItem("SATToBranch", itemToBranchValue);
                     setSATDialogOpen(false);
                     props.setSelectedFormOption("SAT_AP");
                   } else {
@@ -2869,11 +2966,15 @@ export default function SalesForm(props) {
       option: sOption,
       value: vInput,
       username: localStorage.getItem("compname"),
+      SATFromBranch:
+        props.selectedFormOption != "SAT_AP" ? "N" : props.SATFromBranch,
+      SATToBranch:
+        props.selectedFormOption != "SAT_AP" ? "N" : props.SATToBranch,
     };
+
     axios({
       method: "POST",
       url: props.url + "/INVOICE_DATA_SELECT/",
-
       data: data,
       headers: { "Content-Type": "application/json" },
     })
