@@ -14,6 +14,7 @@ import DiscardInvoiceModal from "./DiscardInvoicemodal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faSave, faLock } from "@fortawesome/free-solid-svg-icons";
 import "../../index.css"; // Import the CSS file
+import ItemStockDetails from "./ItemStockDetails";
 
 export default function SalesForm(props) {
   const [vInput, setvInput] = useState("");
@@ -88,6 +89,9 @@ export default function SalesForm(props) {
   const [SwitchFormOption, setSwitchFormOption] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [SATdialogOpen, setSATDialogOpen] = useState(false);
+  const [ItemStockDetailsShow, setItemStockDetailsShow] = useState(false);
+  const [ItemDetailsModalData, setItemDetailsModalData] = useState();
+
   const formatter = new Intl.NumberFormat("en-US");
   const handleHeaderClick = () => {
     setDialogOpen(true);
@@ -121,22 +125,23 @@ export default function SalesForm(props) {
       setSATDialogOpen(true);
       console.log("fet bel satttt");
     } else if (option == "CR_AP" || option == "DB_AP") {
-      setSwitchFormOption({
-        show: true,
-        message: (
-          <div>
-            Are You Sure YouWant To Change Form Option?
-            <br />
-            You Will Lost Your Items.
-          </div>
-        ),
-        //variable: option,
-        title: "Calling New Form",
-      });
-      setDialogOpen(false);
       console.log("125");
       if (props.propertiesAreEqual == false && props.SelectedItems.length > 0) {
-        clearInvoice();
+        setSwitchFormOption({
+          show: true,
+          message: (
+            <div>
+              Are You Sure You Want To Change Form Option?
+              <br />
+              You Will Lost Your Items.
+            </div>
+          ),
+          //variable: option,
+          title: "Calling New Form",
+          variable: option,
+        });
+        setDialogOpen(false);
+        return;
       }
 
       console.log("126", option);
@@ -232,17 +237,17 @@ export default function SalesForm(props) {
 
   useEffect(() => {
     if (props.selectedFormOption == "SA_AP") {
-      props.setSelectedFormOptionDisplay("Sales Form");
+      props.setSelectedFormOptionDisplay("Sales");
     } else if (props.selectedFormOption == "SR_AP") {
-      props.setSelectedFormOptionDisplay("SalesReturn Form");
+      props.setSelectedFormOptionDisplay("Sales Return");
     } else if (props.selectedFormOption == "OD_AP") {
-      props.setSelectedFormOptionDisplay("Order Form");
+      props.setSelectedFormOptionDisplay("Order");
     } else if (props.selectedFormOption == "PI_AP") {
-      props.setSelectedFormOptionDisplay("Purchase Form");
+      props.setSelectedFormOptionDisplay("Purchase");
     } else if (props.selectedFormOption == "PR_AP") {
-      props.setSelectedFormOptionDisplay("PurchaseReturn Form");
+      props.setSelectedFormOptionDisplay("Purchase Return");
     } else if (props.selectedFormOption == "SAT_AP") {
-      props.setSelectedFormOptionDisplay("BranchTransfer Form");
+      props.setSelectedFormOptionDisplay("Branch Transfer");
       setsOption("Items");
       props.setClient({
         id: "",
@@ -256,9 +261,9 @@ export default function SalesForm(props) {
         Rate: "",
       });
     } else if (props.selectedFormOption == "CR_AP") {
-      props.setSelectedFormOptionDisplay("ReceiptVoucher");
+      props.setSelectedFormOptionDisplay("Receipt Voucher");
     } else if (props.selectedFormOption == "DB_AP") {
-      props.setSelectedFormOptionDisplay("PaymentVoucher");
+      props.setSelectedFormOptionDisplay("Payment Voucher");
     }
     console.log("234", props.selectedFormOption);
     localStorage.setItem("selectedFormOption", props.selectedFormOption);
@@ -332,6 +337,12 @@ export default function SalesForm(props) {
           props.setRemovedItems([]);
           props.setSATFromBranch(response.data.InvProfile[0]["Branch"]);
           props.setSATToBranch(response.data.InvProfile[0]["TBranch"]);
+          if (response.data.InvProfile[0]["RefType"] == "SAT_AP") {
+            setsOption("Items");
+          } else {
+            setsOption("Accounts");
+          }
+
           //
 
           handleSave({
@@ -772,19 +783,19 @@ export default function SalesForm(props) {
                         : "-"}
                     </div>
                   </div>
-                  {props.SATFromBranch != undefined &&
-                    props.SATFromBranch != null &&
-                    props.SATFromBranch != "" &&
-                    props.SATToBranch != undefined &&
-                    props.SATToBranch != null &&
-                    props.SATToBranch != "" && (
+                  {props.SATFromBranch !== undefined &&
+                    props.SATFromBranch !== null &&
+                    props.SATFromBranch !== "" &&
+                    props.SATToBranch !== undefined &&
+                    props.SATToBranch !== null &&
+                    props.SATToBranch !== "" && (
                       <>
                         <div className="flex flex-row ml-[10%]">
                           <div>BF: </div>
                           <div>
-                            {props.SATFromBranch != undefined &&
-                            props.SATFromBranch != null &&
-                            props.SATFromBranch != ""
+                            {props.SATFromBranch !== undefined &&
+                            props.SATFromBranch !== null &&
+                            props.SATFromBranch !== ""
                               ? props.SATFromBranch
                               : "-"}
                           </div>
@@ -793,9 +804,9 @@ export default function SalesForm(props) {
                         <div className="flex flex-row ml-[10%]">
                           <div>BT: </div>
                           <div>
-                            {props.SATToBranch != undefined &&
+                            {props.SATToBranch !== undefined &&
                             props.SATToBranch != null &&
-                            props.SATToBranch != ""
+                            props.SATToBranch !== ""
                               ? props.SATToBranch
                               : "-"}
                           </div>
@@ -849,6 +860,7 @@ export default function SalesForm(props) {
                       ),
                       //variable: option,
                       title: "Calling Invoice",
+                      variable: "",
                     });
                     return;
                   } else {
@@ -984,6 +996,12 @@ export default function SalesForm(props) {
                         <th>Total</th>
                         <th>Note</th>
                         <th>Action</th>
+                        <ItemStockDetails
+                          show={ItemStockDetailsShow}
+                          onHide={() => ItemStockDetailsShow(false)}
+                          data={ItemDetailsModalData}
+                          url={props.url}
+                        />
                       </>
                     )}
                   </tr>
@@ -1067,6 +1085,12 @@ export default function SalesForm(props) {
                         <tr
                           key={idx}
                           className=" whitespace-nowrap hover:bg-blue-200 select-none "
+                          onDoubleClick={() => {
+                            setModalShow(true);
+                            setItemDetailsModalData({
+                              ItemNo: si["no"],
+                            });
+                          }}
                         >
                           {props.selectedFormOption === "CR_AP" ||
                           props.selectedFormOption === "DB_AP" ? (
@@ -2763,12 +2787,27 @@ export default function SalesForm(props) {
         <Modal.Footer>
           <div className="flex flex-row w-full justify-around">
             <Button
-              variant="primary"
-              onClick={() =>
-                setSwitchFormOption({ ...SwitchFormOption, show: false })
-              }
+              variant="danger"
+              onClick={() => {
+                if (
+                  SwitchFormOption.variable == "DB_AP" ||
+                  SwitchFormOption.variable == "CR_AP"
+                ) {
+                  clearInvoice();
+                  props.setSelectedFormOption(SwitchFormOption.variable);
+                }
+                setSwitchFormOption({ ...SwitchFormOption, show: false });
+              }}
             >
-              ok
+              Yes
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                setSwitchFormOption({ ...SwitchFormOption, show: false });
+              }}
+            >
+              No
             </Button>
           </div>
         </Modal.Footer>
