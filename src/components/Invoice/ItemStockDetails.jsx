@@ -8,7 +8,6 @@ import Table from "react-bootstrap/Table";
 export default function ItemStockDetails(props) {
   const [isLoading, setLoading] = useState(true);
   const [Double, setDouble] = useState([]);
-  const [Date, setDate] = useState("");
 
   useEffect(() => {
     fetch(
@@ -16,15 +15,14 @@ export default function ItemStockDetails(props) {
         "/moh/" +
         localStorage.getItem("compname") +
         "/ItemStockDetails/Double/" +
-        props.data["ItemNo"] +
+        "00000000000" +
         "/"
     )
       .then((resp) => resp.json())
       .then((data) => {
         if (data.Info === "authorized") {
-          setDouble(data.double);
+          setDouble(data.stockDetails);
           setLoading(false);
-          setDate(data.double[0]["TDate"]);
         } else {
         }
       })
@@ -47,16 +45,10 @@ export default function ItemStockDetails(props) {
             closeButton
             className="border-0 position-absolute start-0"
           ></Modal.Header>
-          <Modal.Title className="ms-5 me-5">
-            {props.data.type}-{props.data.no} | {Date}
-          </Modal.Title>
+          <Modal.Title className="ms-5 me-5">WareHouse</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className=" max-h-[30rem] overflow-y-scroll">
-            <div className=" whitespace-normal text-center text-lg font-bold">
-              {props.data.AccNo} - {props.data.AccName}
-            </div>
-            <div></div>
             {isLoading ? (
               <Spinner animation="border" role="status" disabled={true}>
                 <span className="visually-hidden">Loading...</span>
@@ -65,8 +57,6 @@ export default function ItemStockDetails(props) {
               <Table striped bordered responsive className=" mt-2 ">
                 <thead>
                   <tr className="bg-slate-500">
-                    <th>ItemNo</th>
-                    <th>Item Name</th>
                     <th>Branch</th>
                     <th>Qty</th>
                   </tr>
@@ -75,11 +65,9 @@ export default function ItemStockDetails(props) {
                   {Double.map((DB) => {
                     return (
                       <tr
-                        key={uuid()}
+                        key={DB["key"]}
                         className="hover:bg-blue-200 whitespace-nowrap"
                       >
-                        <td>{DB["ItemNo"]}</td>
-                        <td>{DB["ItemName"]}</td>
                         <td>{DB["Branch"]}</td>
                         <td>{DB["Qty"]}</td>
                       </tr>

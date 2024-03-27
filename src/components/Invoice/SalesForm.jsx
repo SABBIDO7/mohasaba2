@@ -998,7 +998,7 @@ export default function SalesForm(props) {
                         <th>Action</th>
                         <ItemStockDetails
                           show={ItemStockDetailsShow}
-                          onHide={() => ItemStockDetailsShow(false)}
+                          onHide={() => setItemStockDetailsShow(false)}
                           data={ItemDetailsModalData}
                           url={props.url}
                         />
@@ -1086,9 +1086,10 @@ export default function SalesForm(props) {
                           key={idx}
                           className=" whitespace-nowrap hover:bg-blue-200 select-none "
                           onDoubleClick={() => {
-                            setModalShow(true);
+                            setItemStockDetailsShow(true);
                             setItemDetailsModalData({
                               ItemNo: si["no"],
+                              ItemName: si["name"],
                             });
                           }}
                         >
