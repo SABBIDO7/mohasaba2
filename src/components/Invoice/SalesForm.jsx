@@ -90,7 +90,10 @@ export default function SalesForm(props) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [SATdialogOpen, setSATDialogOpen] = useState(false);
   const [ItemStockDetailsShow, setItemStockDetailsShow] = useState(false);
-  const [ItemDetailsModalData, setItemDetailsModalData] = useState();
+  const [ItemDetailsModalData, setItemDetailsModalData] = useState({
+    ItemNo: "",
+    ItemName: "",
+  });
 
   const formatter = new Intl.NumberFormat("en-US");
   const handleHeaderClick = () => {
@@ -996,12 +999,6 @@ export default function SalesForm(props) {
                         <th>Total</th>
                         <th>Note</th>
                         <th>Action</th>
-                        <ItemStockDetails
-                          show={ItemStockDetailsShow}
-                          onHide={() => setItemStockDetailsShow(false)}
-                          data={ItemDetailsModalData}
-                          url={props.url}
-                        />
                       </>
                     )}
                   </tr>
@@ -1469,6 +1466,20 @@ export default function SalesForm(props) {
         modalVoucher={props.modalVoucher}
         setModalVoucher={props.setModalVoucher}
       />
+      {ItemStockDetails ? (
+        <ItemStockDetails
+          show={ItemStockDetailsShow}
+          onHide={() => {
+            setItemStockDetailsShow(false);
+            setItemDetailsModalData({
+              ItemNo: "",
+              ItemName: "",
+            });
+          }}
+          data={ItemDetailsModalData}
+          url={props.url}
+        />
+      ) : null}
 
       <Modal
         backdrop="static"
@@ -1718,7 +1729,10 @@ export default function SalesForm(props) {
                     variant="primary"
                     onClick={() => {
                       if (localStorage.getItem("SalesUnderZero") == "N") {
-                        if (EditItemStockQty < EditTotalPieces) {
+                        if (
+                          EditItemStockQty &&
+                          EditItemStockQty < EditTotalPieces
+                        ) {
                           setDeletePermission({
                             show: true,
                             message:

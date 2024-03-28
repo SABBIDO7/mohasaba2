@@ -38,6 +38,7 @@ const IdSelect = forwardRef((props, ref) => {
   const [sItemStockQty, setsItemStockQty] = useState(0);
 
   const [sItemInitial, setsItemInitial] = useState(1);
+  const [sItemBranchesStock, setsItemBranchesStock] = useState({});
 
   useImperativeHandle(ref, () => ({
     // Define functions here
@@ -161,7 +162,12 @@ const IdSelect = forwardRef((props, ref) => {
                       setsItemPQty(io["PQty"]);
                       setsItemPUnit(io["PUnit"]);
                       setsItemPQunit(io["PQUnit"]);
-                      setsItemStockQty(io["AvQty"]);
+
+                      // setsItemBranchesStock(
+                      //   Object.entries(io["branchesStock"])
+                      // );
+                      setsItemBranchesStock(io["branchesStock"]);
+
                       // {sItemDBPUnit && sItemDBPUnit.trim() !== '' ? setsItemPType("3"): sItemPUnit && sItemPUnit.trim() !== ''?setsItemPType("2"):setsItemPType("1")}
                       if (sItemDBPUnit && sItemDBPUnit.trim() !== "") {
                         setsItemPType("3");
@@ -190,24 +196,17 @@ const IdSelect = forwardRef((props, ref) => {
                             </p>
                           )}
                         </div>
-                        <div>
-                          {/*io["ItemName2"] && <p className="me-3 mb-0"><strong>ItemName2:</strong> {io["ItemName2"]}</p>*/}
-                          {
-                            <p className="me-3 mb-0">
-                              <strong>QtyBal:</strong>{" "}
-                              {io["AvQty"] != null && io["AvQty"] != ""
-                                ? io["AvQty"]
-                                : "--"}
-                            </p>
-                          }
-                          {
-                            <p className="me-3 mb-0">
-                              <strong>Br:</strong>{" "}
-                              {io["Branch"] != null && io["Branch"] != ""
-                                ? io["Branch"]
-                                : "--"}
-                            </p>
-                          }
+                        <div className="flex flex-wrap">
+                          {Object.entries(io["branchesStock"]).map(
+                            ([key, value], idxbr) => (
+                              <div key={idxbr} className="w-1/3">
+                                <p className="me-3 mb-0">
+                                  <strong>{key}:</strong>{" "}
+                                  {value != null && value !== "" ? value : "--"}
+                                </p>
+                              </div>
+                            )
+                          )}
                         </div>
                       </div>
                     </div>
@@ -298,6 +297,17 @@ const IdSelect = forwardRef((props, ref) => {
             {sItemNo}
             <br />
             Stock: {sItemStockQty}
+            <br />
+            <div className="grid grid-cols-6 gap-0.1">
+              {Object.entries(sItemBranchesStock).map(([key, value], idxbr) => (
+                <div key={idxbr} className="">
+                  <p className="mb-0">
+                    <strong>{key}:</strong>{" "}
+                    {value != null && value !== "" ? value : "--"}
+                  </p>
+                </div>
+              ))}
+            </div>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="px-6 py-4">
@@ -568,7 +578,7 @@ const IdSelect = forwardRef((props, ref) => {
                 console.log(localStorage.getItem("SalesUnderZero"));
                 if (localStorage.getItem("SalesUnderZero") == "N") {
                   console.log("fety");
-                  if (sItemStockQty < sItemTotalPieces) {
+                  if (sItemStockQty && sItemStockQty < sItemTotalPieces) {
                     console.log("itemStockkkk");
                     props.setDeletePermission({
                       show: true,
@@ -965,20 +975,26 @@ const IdSelect = forwardRef((props, ref) => {
       props.setModalShow(false);
       //setsItemBranch(props.branches[0]["number"]);
       let ItemBranch = "";
-      if (
-        e["Branch"] == "" ||
-        e["Branch"] == null ||
-        e["Branch"] == undefined
-      ) {
-        ItemBranch = localStorage.getItem("Sbranch");
-      } else {
-        ItemBranch = e["Branch"];
-      }
+      // if (
+      //   e["Branch"] == "" ||
+      //   e["Branch"] == null ||
+      //   e["Branch"] == undefined
+      // ) {
+      ItemBranch = localStorage.getItem("Sbranch");
+
+      // else {
+      //   ItemBranch = e["Branch"];
+      // }
       if (ItemBranch == "" || ItemBranch == null || ItemBranch == undefined) {
         ItemBranch = "1";
       }
 
       setsItemBranch(ItemBranch);
+      const entries = Object.entries(e["branchesStock"]);
+      const [key, value] =
+        entries.find(([key, value]) => key === `Br${ItemBranch}`) || [];
+      setsItemStockQty(value);
+
       props.setpropertiesAreEqual(false);
     }
   }
@@ -1030,7 +1046,11 @@ const IdSelect = forwardRef((props, ref) => {
           localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
             ? "1"
             : "2",
-        tax: tax,
+        tax:
+          props.selectedFormOption == "CR_AP" ||
+          props.selectedFormOption == "DB_AP"
+            ? props.Client["Rate"]
+            : tax,
         TaxTotal: sItemTaxTotal,
 
         Total:

@@ -10,26 +10,29 @@ export default function ItemStockDetails(props) {
   const [Double, setDouble] = useState([]);
 
   useEffect(() => {
-    fetch(
-      props.url +
-        "/moh/" +
-        localStorage.getItem("compname") +
-        "/ItemStockDetails/Double/" +
-        "00000000000" +
-        "/"
-    )
-      .then((resp) => resp.json())
-      .then((data) => {
-        if (data.Info === "authorized") {
-          setDouble(data.stockDetails);
-          setLoading(false);
-        } else {
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    if (props.show == true) {
+      fetch(
+        props.url +
+          "/moh/" +
+          localStorage.getItem("compname") +
+          "/ItemStockDetails/Double/" +
+          props.data["ItemNo"] +
+          "/"
+      )
+        .then((resp) => resp.json())
+        .then((data) => {
+          if (data.Info === "authorized") {
+            setDouble(data.stockDetails);
+            setLoading(false);
+            console.log("ccoonnsss", data.stockDetails);
+          } else {
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [props.data]);
 
   return (
     <>
