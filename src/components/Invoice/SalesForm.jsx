@@ -80,6 +80,7 @@ export default function SalesForm(props) {
   const [EditPQty, setEditPQty] = useState();
   const [EditInitialPrice, setEditInitialPrice] = useState();
   const [EditItemStockQty, setEditItemStockQty] = useState();
+  const [EditItemBranchesStock, setEditItemBranchesStock] = useState();
   const [DeleteLastItemFromHistory, setDeleteLastItemFromHistory] = useState();
   const [DeleteInvoiceModal, setDeleteInvoiceModal] = useState(false);
   const [DeletePermission, setDeletePermission] = useState(false);
@@ -291,6 +292,13 @@ export default function SalesForm(props) {
     props.setSATFromBranch();
     props.setSATToBranch();
     if (selectedValue == "") {
+      if (
+        selectedInvoice != "" &&
+        selectedInvoice != "" &&
+        selectedInvoice != null
+      ) {
+        ReleaseInvoice();
+      }
       setSelectedInvoice("");
       props.setSelectedItems([]);
       props.setRemovedItems([]);
@@ -310,8 +318,8 @@ export default function SalesForm(props) {
       console.log("264", "sa_ap");
       props.setSelectedFormOption("SA_AP");
     } else {
-      setSelectedInvoice(selectedValue);
-      localStorage.setItem("InvoiceHistory", selectedValue);
+      // setSelectedInvoice(selectedValue);
+      // localStorage.setItem("InvoiceHistory", selectedValue);
       // Send Axios request with the selected value
       axios({
         method: "get", // or 'get', 'put', 'delete', etc.
@@ -332,44 +340,88 @@ export default function SalesForm(props) {
         },
       })
         .then((response) => {
-          // Handle success response
-          console.log("invProfile", response.data.InvProfile[0]);
-          props.setSelectedItems(response.data.Invoices);
-          props.setClient(response.data.InvProfile[0]);
-          props.setSelectedFormOption(response.data.InvProfile[0]["RefType"]);
-          props.setRemovedItems([]);
-          props.setSATFromBranch(response.data.InvProfile[0]["Branch"]);
-          props.setSATToBranch(response.data.InvProfile[0]["TBranch"]);
-          if (response.data.InvProfile[0]["RefType"] == "SAT_AP") {
-            setsOption("Items");
+          if (response.data.Info == "authorized") {
+            // Handle success response
+            console.log("invProfile", response.data.InvProfile[0]);
+            props.setSelectedItems(response.data.Invoices);
+            console.log("muy", response.data.Invoices);
+            props.setClient(response.data.InvProfile[0]);
+            props.setSelectedFormOption(response.data.InvProfile[0]["RefType"]);
+            props.setRemovedItems([]);
+            props.setSATFromBranch(response.data.InvProfile[0]["Branch"]);
+            props.setSATToBranch(response.data.InvProfile[0]["TBranch"]);
+
+            if (response.data.InvProfile[0]["RefType"] == "SAT_AP") {
+              setsOption("Items");
+            } else {
+              setsOption("Accounts");
+            }
+
+            //
+
+            handleSave({
+              accName: {
+                id: response.data.InvProfile[0]["id"],
+                name: response.data.InvProfile[0]["name"],
+                date: response.data.InvProfile[0]["date"],
+                time: response.data.InvProfile[0]["time"],
+                RefNo: response.data.InvProfile[0]["RefNo"],
+                balance: response.data.InvProfile[0]["balance"],
+                address: response.data.InvProfile[0]["address"],
+                cur: response.data.InvProfile[0]["cur"],
+                Rate: response.data.InvProfile[0]["Rate"],
+              },
+
+              items: response.data.Invoices,
+              RemovedItems: [],
+            });
+            setSelectedInvoice(selectedValue);
+            localStorage.setItem("InvoiceHistory", selectedValue);
           } else {
-            setsOption("Accounts");
+            setErrorModal({
+              show: true,
+              message: <div>{response.data.message}</div>,
+              title: "Invoice Unavailable",
+            });
           }
-
-          //
-
-          handleSave({
-            accName: {
-              id: response.data.InvProfile[0]["id"],
-              name: response.data.InvProfile[0]["name"],
-              date: response.data.InvProfile[0]["date"],
-              time: response.data.InvProfile[0]["time"],
-              RefNo: response.data.InvProfile[0]["RefNo"],
-              balance: response.data.InvProfile[0]["balance"],
-              address: response.data.InvProfile[0]["address"],
-              cur: response.data.InvProfile[0]["cur"],
-              Rate: response.data.InvProfile[0]["Rate"],
-            },
-
-            items: response.data.Invoices,
-            RemovedItems: [],
-          });
         })
         .catch((error) => {
           // Handle error
           console.error("Error:", error);
         });
     }
+  };
+  const ReleaseInvoice = () => {
+    axios({
+      method: "post", // or 'get', 'put', 'delete', etc.
+      url:
+        props.url +
+        "/moh/ReleaseInvoice/" +
+        localStorage.getItem("compname") +
+        "/" +
+        localStorage.getItem("username") +
+        "/" +
+        selectedInvoice +
+        "/",
+      headers: {
+        "Content-Type": "application/json",
+        // Add any additional headers if needed
+      },
+    })
+      .then((response) => {
+        if (response.data.Info == "authorized") {
+        } else {
+          setErrorModal({
+            show: true,
+            message: <div>{response.data.message}</div>,
+            title: "Release Invoice",
+          });
+        }
+      })
+      .catch((error) => {
+        // Handle error
+        console.error("Error:", error);
+      });
   };
 
   const handleNoteSave = () => {
@@ -585,12 +637,16 @@ export default function SalesForm(props) {
           getInvoicesHistory();
         } else if (res.data.Info == "Failed") {
           console.log("erowwww");
-          setErrorModal({ show: true, message: res.data.msg });
+          setErrorModal({
+            show: true,
+            message: res.data.msg,
+            title: "Error Occured",
+          });
         }
       })
       .catch((error) => {
         console.error("Error in getInvoicesHistory:", error);
-        setErrorModal({ show: true, message: error });
+        setErrorModal({ show: true, message: error, title: "Error Occured" });
 
         // Handle error (e.g., set error state)
       });
@@ -786,19 +842,17 @@ export default function SalesForm(props) {
                         : "-"}
                     </div>
                   </div>
-                  {props.SATFromBranch !== undefined &&
-                    props.SATFromBranch !== null &&
-                    props.SATFromBranch !== "" &&
-                    props.SATToBranch !== undefined &&
-                    props.SATToBranch !== null &&
-                    props.SATToBranch !== "" && (
+                  {props.SATFromBranch != "undefined" &&
+                    props.SATFromBranch != null &&
+                    props.SATFromBranch != "" &&
+                    props.SATToBranch != "undefined" &&
+                    props.SATToBranch != null &&
+                    props.SATToBranch != "" && (
                       <>
                         <div className="flex flex-row ml-[10%]">
                           <div>BF: </div>
                           <div>
-                            {props.SATFromBranch !== undefined &&
-                            props.SATFromBranch !== null &&
-                            props.SATFromBranch !== ""
+                            {props.SATFromBranch !== "undefined"
                               ? props.SATFromBranch
                               : "-"}
                           </div>
@@ -807,7 +861,7 @@ export default function SalesForm(props) {
                         <div className="flex flex-row ml-[10%]">
                           <div>BT: </div>
                           <div>
-                            {props.SATToBranch !== undefined &&
+                            {props.SATToBranch !== "undefined" &&
                             props.SATToBranch != null &&
                             props.SATToBranch !== ""
                               ? props.SATToBranch
@@ -851,7 +905,7 @@ export default function SalesForm(props) {
                   //   return;
                   // }
                   if (selectedInvoice != "" && selectedInvoice != undefined) {
-                    setSwitchFormOption({
+                    setErrorModal({
                       show: true,
                       message: (
                         <div>
@@ -862,7 +916,7 @@ export default function SalesForm(props) {
                         </div>
                       ),
                       //variable: option,
-                      title: "Calling Invoice",
+                      title: "Form Option",
                       variable: "",
                     });
                     return;
@@ -903,7 +957,9 @@ export default function SalesForm(props) {
                     {props.Client["balance"] !== "" &&
                     props.Client["balance"] !== undefined &&
                     props.Client["balance"] !== null
-                      ? props.Client["balance"].toFixed(3)
+                      ? props.Client["balance"].toLocaleString() +
+                        " " +
+                        props.Client["cur"]
                       : "--"}
                   </div>
                 </div>
@@ -944,6 +1000,7 @@ export default function SalesForm(props) {
                     }
                   }}
                   value={selectedInvoice}
+                  onClick={getInvoicesHistory}
                 >
                   <option value="" className="py-2 text-lg">
                     Call invoice
@@ -1175,6 +1232,10 @@ export default function SalesForm(props) {
                                 <button
                                   className="text-blue-500 hover:text-blue-700"
                                   onClick={() => {
+                                    console.log(
+                                      "mn hon natakalam",
+                                      si["BranchesStock"]
+                                    );
                                     setShow(true);
                                     setEditItem(si);
                                     setEditIdx(idx);
@@ -1202,6 +1263,9 @@ export default function SalesForm(props) {
                                     );
                                     setPerformCalculation(false);
                                     setEditItemStockQty(si["StockQty"]);
+                                    setEditItemBranchesStock(
+                                      si["BranchesStock"]
+                                    );
 
                                     // if(EditType=="3"){
                                     //     setEditInitialPrice(si["uprice"]);
@@ -1501,6 +1565,20 @@ export default function SalesForm(props) {
                 {EditItem["name"]}
                 <br />
                 Stock: {EditItemStockQty}
+                {EditItemBranchesStock && (
+                  <div className="grid grid-cols-6 gap-1">
+                    {Object.entries(EditItemBranchesStock).map(
+                      ([key, value], idxbr) => (
+                        <div key={idxbr} className="">
+                          <p className="text-base">
+                            <strong className="text-base">{key}:</strong>{" "}
+                            {value != null && value !== "" ? value : "--"}
+                          </p>
+                        </div>
+                      )
+                    )}
+                  </div>
+                )}
               </Modal.Title>
             </Modal.Header>
             <Modal.Body className="px-6 py-4">
@@ -1606,9 +1684,18 @@ export default function SalesForm(props) {
                     }}
                   >
                     {props.branches.map((br) => {
+                      let stockOfBranch = 0;
+                      for (const key in EditItemBranchesStock) {
+                        const formattedKey = /^Br(\d+)$/.test(key)
+                          ? key.match(/^Br(\d+)$/)[1]
+                          : key;
+                        if (formattedKey == br.number) {
+                          stockOfBranch = EditItemBranchesStock[key];
+                        }
+                      }
                       return (
                         <option key={br.number} value={br.number}>
-                          {br.number} - {br.name}
+                          {br.number} - {br.name} - ({stockOfBranch})
                         </option>
                       );
                     })}
@@ -1800,6 +1887,7 @@ export default function SalesForm(props) {
                         SPUnit: EditDSPUnit,
                         InitialPrice: EditInitialPrice,
                         StockQty: EditItemStockQty,
+                        BranchesStock: EditItemBranchesStock,
                       };
                       console.log("edipricee", tempa[EditIdx]["uprice"]);
                       let pAreEqual = true;
@@ -2199,6 +2287,7 @@ export default function SalesForm(props) {
                         SPUnit: tempa[EditIdx]["SPUnit"],
                         InitialPrice: tempa[EditIdx]["InitialPrice"],
                         StockQty: tempa[EditIdx]["StockQty"],
+                        BranchesStock: tempa[EditIdx]["BranchesStock"],
                       };
                       console.log("*//////ana bel edit vouchers///****");
                       let pAreEqual = true;
@@ -2766,7 +2855,7 @@ export default function SalesForm(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Error Occured
+            {ErrorModal.title}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -3001,6 +3090,7 @@ export default function SalesForm(props) {
                           Please Choose Different Branches
                         </div>
                       ),
+                      title: "Branch Transfer",
                     });
                   }
                 }}
@@ -3058,6 +3148,13 @@ export default function SalesForm(props) {
     console.log("y7");
     localStorage.setItem("sales", "");
     props.setpropertiesAreEqual(true);
+    if (
+      selectedInvoice != "" &&
+      selectedInvoice != "" &&
+      selectedInvoice != null
+    ) {
+      ReleaseInvoice();
+    }
     setSelectedInvoice("");
     localStorage.setItem("InvoiceHistory", "");
     console.log("selectedInvoice");
@@ -3091,12 +3188,19 @@ export default function SalesForm(props) {
     // setsInvoices([]);
     console.log("2853");
     props.setSelectedFormOption("SA_AP");
-
+    if (
+      selectedInvoice != "" &&
+      selectedInvoice != "" &&
+      selectedInvoice != null
+    ) {
+      ReleaseInvoice();
+    }
     setSelectedInvoice("");
     inputRef.current.focus();
     props.setSATFromBranch();
     props.setSATToBranch();
     console.log("y777");
+
     getCompanyInfo();
   }
 }

@@ -48,7 +48,9 @@ export default function ItemStockDetails(props) {
             closeButton
             className="border-0 position-absolute start-0"
           ></Modal.Header>
-          <Modal.Title className="ms-5 me-5">WareHouse</Modal.Title>
+          <Modal.Title className="ms-5 me-5">
+            {props.data["ItemName"]}-WareHouse
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className=" max-h-[30rem] overflow-y-scroll">
@@ -61,6 +63,7 @@ export default function ItemStockDetails(props) {
                 <thead>
                   <tr className="bg-slate-500">
                     <th>Branch</th>
+                    <th>BranchName</th>
                     <th>Qty</th>
                   </tr>
                 </thead>
@@ -72,6 +75,7 @@ export default function ItemStockDetails(props) {
                         className="hover:bg-blue-200 whitespace-nowrap"
                       >
                         <td>{DB["Branch"]}</td>
+                        <td>{DB["BranchName"]}</td>
                         <td>{DB["Qty"]}</td>
                       </tr>
                     );

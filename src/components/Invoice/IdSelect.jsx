@@ -65,6 +65,18 @@ const IdSelect = forwardRef((props, ref) => {
   }, [sItemQty, sItemPQty, sItemPQUnit, sItemPType]);
 
   useEffect(() => {
+    if (sItemBranch != "" && sItemBranchesStock != {}) {
+      for (const key in sItemBranchesStock) {
+        const formattedKey = /^Br(\d+)$/.test(key)
+          ? key.match(/^Br(\d+)$/)[1]
+          : key;
+        if (formattedKey == sItemBranch) {
+          setsItemStockQty(sItemBranchesStock[key]);
+        }
+      }
+    }
+  }, [sItemBranch]);
+  useEffect(() => {
     // Calculate total pieces based on other inputs whenever they change
     const calculateUprice = () => {
       let total = 0;
@@ -196,18 +208,22 @@ const IdSelect = forwardRef((props, ref) => {
                             </p>
                           )}
                         </div>
-                        <div className="flex flex-wrap">
-                          {Object.entries(io["branchesStock"]).map(
-                            ([key, value], idxbr) => (
-                              <div key={idxbr} className="w-1/3">
-                                <p className="me-3 mb-0">
-                                  <strong>{key}:</strong>{" "}
-                                  {value != null && value !== "" ? value : "--"}
-                                </p>
-                              </div>
-                            )
-                          )}
-                        </div>
+                        {io["branchesStock"] && (
+                          <div className="flex flex-wrap">
+                            {Object.entries(io["branchesStock"]).map(
+                              ([key, value], idxbr) => (
+                                <div key={idxbr} className="w-1/3">
+                                  <p className="me-3 mb-0">
+                                    <strong>{key}:</strong>{" "}
+                                    {value != null && value !== ""
+                                      ? value
+                                      : "--"}
+                                  </p>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -260,7 +276,7 @@ const IdSelect = forwardRef((props, ref) => {
                           <p className="me-3 mb-0">
                             <strong>Balance:</strong>
                             {io["Balance"] != null && io["Balance"] != ""
-                              ? io["Balance"]
+                              ? " " + io["Balance"].toLocaleString()
                               : "--"}
                           </p>
                         </div>
@@ -298,11 +314,11 @@ const IdSelect = forwardRef((props, ref) => {
             <br />
             Stock: {sItemStockQty}
             <br />
-            <div className="grid grid-cols-6 gap-0.1">
+            <div className="grid grid-cols-6 gap-1">
               {Object.entries(sItemBranchesStock).map(([key, value], idxbr) => (
                 <div key={idxbr} className="">
-                  <p className="mb-0">
-                    <strong>{key}:</strong>{" "}
+                  <p className="text-base">
+                    <strong className="text-base">{key}:</strong>{" "}
                     {value != null && value !== "" ? value : "--"}
                   </p>
                 </div>
@@ -345,11 +361,22 @@ const IdSelect = forwardRef((props, ref) => {
                 }}
                 readOnly={!allowBranchChanges}
               >
-                {props.branches.map((br) => (
-                  <option key={br.number} value={br.number}>
-                    {br.number} - {br.name}
-                  </option>
-                ))}
+                {props.branches.map((br) => {
+                  let stockOfBranch = 0;
+                  for (const key in sItemBranchesStock) {
+                    const formattedKey = /^Br(\d+)$/.test(key)
+                      ? key.match(/^Br(\d+)$/)[1]
+                      : key;
+                    if (formattedKey == br.number) {
+                      stockOfBranch = sItemBranchesStock[key];
+                    }
+                  }
+                  return (
+                    <option key={br.number} value={br.number}>
+                      {br.number} - {br.name} - ({stockOfBranch})
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <div className="flex items-center">
@@ -1042,10 +1069,13 @@ const IdSelect = forwardRef((props, ref) => {
         lno: Lno,
         PQty: sItemPQty,
         PUnit:
-          sItemPPrice ==
-          localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
-            ? "1"
-            : "2",
+          props.selectedFormOption == "CR_AP" ||
+          props.selectedFormOption == "DB_AP"
+            ? sItemPPrice ==
+              localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
+              ? "1"
+              : "2"
+            : sItemPUnit,
         tax:
           props.selectedFormOption == "CR_AP" ||
           props.selectedFormOption == "DB_AP"
@@ -1088,6 +1118,7 @@ const IdSelect = forwardRef((props, ref) => {
         SPUnit: sItemDSPUnit,
         InitialPrice: sItemInitial,
         StockQty: sItemStockQty,
+        BranchesStock: sItemBranchesStock,
       },
     ];
 

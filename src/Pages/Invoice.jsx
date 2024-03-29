@@ -230,13 +230,13 @@ export default function Invoice(props) {
       RemovedItems: RemovedItems,
       username: localStorage.getItem("username"),
       invoiceTotal: InvoiceTotal,
-      Cur:
-        acc.cur == localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
-          ? localStorage.getItem("mainCur")
-          : localStorage.getItem("mainCur") == "1"
-          ? "2"
-          : localStorage.getItem("mainCur") == "2" && "1",
-      // Cur: localStorage.getItem("mainCur"),
+      // Cur:
+      //   acc.cur == localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
+      //     ? localStorage.getItem("mainCur")
+      //     : localStorage.getItem("mainCur") == "1"
+      //     ? "2"
+      //     : localStorage.getItem("mainCur") == "2" && "1",
+      Cur: localStorage.getItem("mainCur"),
       Rate:
         Client["Rate"] == null ||
         Client["Rate"] == undefined ||
