@@ -211,16 +211,21 @@ const IdSelect = forwardRef((props, ref) => {
                         {io["branchesStock"] && (
                           <div className="flex flex-wrap">
                             {Object.entries(io["branchesStock"]).map(
-                              ([key, value], idxbr) => (
-                                <div key={idxbr} className="w-1/3">
-                                  <p className="me-3 mb-0">
-                                    <strong>{key}:</strong>{" "}
-                                    {value != null && value !== ""
-                                      ? value
-                                      : "--"}
-                                  </p>
-                                </div>
-                              )
+                              ([key, value], idxbr) => {
+                                if (
+                                  value != "0" &&
+                                  value != null &&
+                                  value !== ""
+                                ) {
+                                  return (
+                                    <div key={idxbr}>
+                                      <p className="me-3 mb-0">
+                                        <strong>{key}:</strong> {value}
+                                      </p>
+                                    </div>
+                                  );
+                                }
+                              }
                             )}
                           </div>
                         )}

@@ -1326,28 +1326,10 @@ export default function SalesForm(props) {
             </div>
             <div className="flex flex-col justify-start h-[20%] mb-[1%]">
               <div className=" font-semibold text-xl h-[45%] flex justify-between items-center">
-                <div className="flex justify-between items-center">
-                  <div className="mr-20">
-                    {" "}
-                    <h4>Gross: {finalTotal.toLocaleString()} </h4>
-                  </div>
-                  <div className="mr-20">
-                    {" "}
-                    <h4>TAX: {finalTax.toLocaleString()}</h4>
-                  </div>
-                  <div>
-                    <h3>
-                      Total: {(finalTotal + finalTax).toLocaleString()}{" "}
-                      {localStorage.getItem(
-                        "Cur" + localStorage.getItem("mainCur")
-                      )}
-                    </h3>
-                  </div>
-                </div>
                 <div>
                   {localStorage.getItem("mainCur") == "1" ? (
                     <h4>
-                      Cur2:{" "}
+                      EC:{" "}
                       {finalTotal != 0
                         ? (
                             (finalTotal + finalTax) *
@@ -1366,6 +1348,24 @@ export default function SalesForm(props) {
                       {localStorage.getItem("Cur1")}
                     </h4>
                   )}{" "}
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="mr-20">
+                    {" "}
+                    <h4>Gross: {finalTotal.toLocaleString()} </h4>
+                  </div>
+                  <div className="mr-20">
+                    {" "}
+                    <h4>TAX: {finalTax.toLocaleString()}</h4>
+                  </div>
+                  <div>
+                    <h3>
+                      Total: {(finalTotal + finalTax).toLocaleString()}{" "}
+                      {localStorage.getItem(
+                        "Cur" + localStorage.getItem("mainCur")
+                      )}
+                    </h3>
+                  </div>
                 </div>
               </div>
               <div className="flex flex-row justify-between h-[55%]">
@@ -1568,14 +1568,18 @@ export default function SalesForm(props) {
                 {EditItemBranchesStock && (
                   <div className="grid grid-cols-6 gap-1">
                     {Object.entries(EditItemBranchesStock).map(
-                      ([key, value], idxbr) => (
-                        <div key={idxbr} className="">
-                          <p className="text-base">
-                            <strong className="text-base">{key}:</strong>{" "}
-                            {value != null && value !== "" ? value : "--"}
-                          </p>
-                        </div>
-                      )
+                      ([key, value], idxbr) => {
+                        if (value != "0" && value != null && value !== "") {
+                          return (
+                            <div key={idxbr} className="">
+                              <p className="text-base">
+                                <strong className="text-base">{key}:</strong>{" "}
+                                {value}
+                              </p>
+                            </div>
+                          );
+                        }
+                      }
                     )}
                   </div>
                 )}
@@ -1695,7 +1699,8 @@ export default function SalesForm(props) {
                       }
                       return (
                         <option key={br.number} value={br.number}>
-                          {br.number} - {br.name} - ({stockOfBranch})
+                          {br.number} - {br.name}{" "}
+                          {stockOfBranch != "0" && -{ stockOfBranch }}
                         </option>
                       );
                     })}
