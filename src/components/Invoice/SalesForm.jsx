@@ -74,12 +74,14 @@ export default function SalesForm(props) {
   const [changingAccountInvoiceFromDB, setchangingAccountInvoiceFromDB] =
     useState("");
   const [EditType, setEditType] = useState("");
-  const [EditTotalPieces, setEditTotalPieces] = useState();
+  const [EditTotalPieces, setEditTotalPieces] = useState(1);
   const [newAccount, setnewAccount] = useState("");
   const [EditPQUnit, setEditPQUnit] = useState();
   const [EditPQty, setEditPQty] = useState();
   const [EditInitialPrice, setEditInitialPrice] = useState();
-  const [EditItemStockQty, setEditItemStockQty] = useState();
+  const [EditItemStockQty, setEditItemStockQty] = useState(0);
+  const [EditItemTotalStockQty, setEditItemTotalStockQty] = useState(0);
+
   const [EditItemBranchesStock, setEditItemBranchesStock] = useState();
   const [DeleteLastItemFromHistory, setDeleteLastItemFromHistory] = useState();
   const [DeleteInvoiceModal, setDeleteInvoiceModal] = useState(false);
@@ -1266,6 +1268,9 @@ export default function SalesForm(props) {
                                     setEditItemBranchesStock(
                                       si["BranchesStock"]
                                     );
+                                    setEditItemTotalStockQty(
+                                      si["TotalStockQty"]
+                                    );
 
                                     // if(EditType=="3"){
                                     //     setEditInitialPrice(si["uprice"]);
@@ -1564,7 +1569,9 @@ export default function SalesForm(props) {
               <Modal.Title id="contained-modal-title-vcenter">
                 {EditItem["name"]}
                 <br />
-                Stock: {EditItemStockQty}
+                {EditItem["no"]}
+                <br></br>
+                Stock: {EditItemTotalStockQty}
                 {EditItemBranchesStock && (
                   <div className="grid grid-cols-6 gap-1">
                     {Object.entries(EditItemBranchesStock).map(
@@ -1606,6 +1613,19 @@ export default function SalesForm(props) {
                       className="w-1/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                       placeholder={"Qty"}
                       value={EditQty}
+                      onKeyPress={(e) => {
+                        // Allow only numeric values and a single minus sign at the start
+                        if (
+                          // If the pressed key is not a digit or minus sign and it's not a control key
+                          (!/[0-9-]/.test(e.key) && !e.ctrlKey && !e.metaKey) ||
+                          // If the pressed key is a minus sign and it's not at the beginning or there's already a minus sign
+                          (e.key === "-" &&
+                            (e.target.selectionStart !== 0 ||
+                              e.target.value.includes("-")))
+                        ) {
+                          e.preventDefault(); // Prevent the default action (typing the character)
+                        }
+                      }}
                       onChange={(e) => {
                         setEditQty(e.target.value);
                       }}
@@ -1699,8 +1719,13 @@ export default function SalesForm(props) {
                       }
                       return (
                         <option key={br.number} value={br.number}>
-                          {br.number} - {br.name}{" "}
-                          {stockOfBranch != "0" && -{ stockOfBranch }}
+                          {br.number} - {br.name} - (
+                          {stockOfBranch != "0" &&
+                          stockOfBranch != undefined &&
+                          stockOfBranch != ""
+                            ? stockOfBranch
+                            : "-"}
+                          )
                         </option>
                       );
                     })}
@@ -1893,6 +1918,7 @@ export default function SalesForm(props) {
                         InitialPrice: EditInitialPrice,
                         StockQty: EditItemStockQty,
                         BranchesStock: EditItemBranchesStock,
+                        TotalStockQty: EditItemTotalStockQty,
                       };
                       console.log("edipricee", tempa[EditIdx]["uprice"]);
                       let pAreEqual = true;

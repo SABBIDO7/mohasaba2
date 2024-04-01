@@ -39,7 +39,7 @@ const IdSelect = forwardRef((props, ref) => {
 
   const [sItemInitial, setsItemInitial] = useState(1);
   const [sItemBranchesStock, setsItemBranchesStock] = useState({});
-
+  const [sItemTotalStockQty, setsItemTotalStockQty] = useState(0);
   useImperativeHandle(ref, () => ({
     // Define functions here
     selectHandler: (e, idx) => {
@@ -227,6 +227,10 @@ const IdSelect = forwardRef((props, ref) => {
                                 }
                               }
                             )}
+                            <div>
+                              <strong>Stock :</strong>
+                              {io["Stock"]}
+                            </div>
                           </div>
                         )}
                       </div>
@@ -317,7 +321,7 @@ const IdSelect = forwardRef((props, ref) => {
             <br />
             {sItemNo}
             <br />
-            Stock: {sItemStockQty}
+            Stock: {sItemTotalStockQty}
             <br />
             <div className="grid grid-cols-6 gap-1">
               {Object.entries(sItemBranchesStock).map(([key, value], idxbr) => (
@@ -397,7 +401,7 @@ const IdSelect = forwardRef((props, ref) => {
                     setsItemQty(parseInt(sItemQty) - 1);
                   }}
                 />
-                <input
+                {/* <input
                   id="itemQty"
                   type="text"
                   className="w-25 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
@@ -463,7 +467,22 @@ const IdSelect = forwardRef((props, ref) => {
                       e.preventDefault(); // Prevent the default action (typing the character)
                     }
                   }}
-                />
+                /> */}
+                <input
+                  id="itemQty"
+                  type="number"
+                  className="w-25 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                  placeholder="Quantity"
+                  value={sItemQty}
+                  onChange={(e) => {
+                    setsItemQty(e.target.value);
+                  }}
+                  style={{
+                    "-moz-appearance": "textfield",
+                    appearance: "textfield",
+                  }}
+                ></input>
+
                 <img
                   src={plus}
                   alt="plus"
@@ -1026,7 +1045,7 @@ const IdSelect = forwardRef((props, ref) => {
       const [key, value] =
         entries.find(([key, value]) => key === `Br${ItemBranch}`) || [];
       setsItemStockQty(value);
-
+      setsItemTotalStockQty(e["Stock"]);
       props.setpropertiesAreEqual(false);
     }
   }
@@ -1124,6 +1143,7 @@ const IdSelect = forwardRef((props, ref) => {
         InitialPrice: sItemInitial,
         StockQty: sItemStockQty,
         BranchesStock: sItemBranchesStock,
+        TotalStockQty: sItemTotalStockQty,
       },
     ];
 
@@ -1191,6 +1211,7 @@ const IdSelect = forwardRef((props, ref) => {
       setsItemDSPUnit("");
       setsItemBPUnit("");
       setsItemInitial(0);
+      setsItemTotalStockQty(0);
     }
   }
 });
