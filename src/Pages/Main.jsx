@@ -21,6 +21,7 @@ export default function Main(props){
          setCookie("token", "", {
       path: "/"
     });
+    localStorage.clear();
         window.location.reload()
     }
     window.scrollTo(0,0)

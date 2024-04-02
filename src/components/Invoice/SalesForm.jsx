@@ -117,7 +117,7 @@ export default function SalesForm(props) {
     console.log("107", props.selectedFormOption);
     localStorage.setItem("selectedFormOption", props.selectedFormOption);
 
-    if (option === props.selectedFormOption && option != "SAT_AP") {
+    if (option === props.selectedFormOption) {
       setDialogOpen(false);
       return;
     } else if (localStorage.getItem(option) == "N") {
@@ -153,6 +153,7 @@ export default function SalesForm(props) {
       console.log("126", option);
       props.setSelectedFormOption(option);
       console.log("101010");
+      setDialogOpen(false);
     } else {
       console.log("131", option);
       props.setSelectedFormOption(option);
@@ -220,6 +221,7 @@ export default function SalesForm(props) {
   }, [EditPrice]);
 
   useEffect(() => {
+    console.log("223");
     localStorage.setItem("propertiesAreEqual", props.propertiesAreEqual);
 
     console.log("bl use effect", localStorage.getItem("propertiesAreEqual"));
@@ -255,17 +257,6 @@ export default function SalesForm(props) {
     } else if (props.selectedFormOption == "SAT_AP") {
       props.setSelectedFormOptionDisplay("Branch Transfer");
       setsOption("Items");
-      props.setClient({
-        id: "",
-        name: "",
-        RefNo: "",
-        date: "",
-        time: "",
-        balance: "",
-        address: "",
-        cur: "",
-        Rate: "",
-      });
     } else if (props.selectedFormOption == "CR_AP") {
       props.setSelectedFormOptionDisplay("Receipt Voucher");
     } else if (props.selectedFormOption == "DB_AP") {
@@ -273,11 +264,17 @@ export default function SalesForm(props) {
     }
     console.log("234", props.selectedFormOption);
     localStorage.setItem("selectedFormOption", props.selectedFormOption);
+    if (props.selectedFormOption != "SAT_AP") {
+      props.setSATFromBranch();
+      props.setSATToBranch();
+      localStorage.setItem("SATFromBranch", "");
+      localStorage.setItem("SATToBranch", "");
+    }
     if (
       props.selectedFormOption != "SAT_AP" &&
-      props.Client["id"] != "" &&
-      props.Client["id"] != undefined &&
-      props.Client["id"] != null
+      (props.Client["id"] == "" ||
+        props.Client["id"] == undefined ||
+        props.Client["id"] == null)
     ) {
       setsOption("Accounts");
     }
@@ -319,7 +316,15 @@ export default function SalesForm(props) {
       localStorage.setItem("InvoiceHistory", selectedValue);
       console.log("264", "sa_ap");
       props.setSelectedFormOption("SA_AP");
+      setsOption("Accounts");
     } else {
+      if (
+        selectedInvoice != "" &&
+        selectedInvoice != "" &&
+        selectedInvoice != null
+      ) {
+        ReleaseInvoice();
+      }
       // setSelectedInvoice(selectedValue);
       // localStorage.setItem("InvoiceHistory", selectedValue);
       // Send Axios request with the selected value
@@ -348,15 +353,30 @@ export default function SalesForm(props) {
             props.setSelectedItems(response.data.Invoices);
             console.log("muy", response.data.Invoices);
             props.setClient(response.data.InvProfile[0]);
+            console.log("shikishikida", response.data.InvProfile[0]);
             props.setSelectedFormOption(response.data.InvProfile[0]["RefType"]);
             props.setRemovedItems([]);
             props.setSATFromBranch(response.data.InvProfile[0]["Branch"]);
             props.setSATToBranch(response.data.InvProfile[0]["TBranch"]);
 
+            localStorage.setItem(
+              "SATFromBranch",
+              response.data.InvProfile[0]["Branch"]
+            );
+            localStorage.setItem(
+              "SATToBranch",
+              response.data.InvProfile[0]["TBranch"]
+            );
+
             if (response.data.InvProfile[0]["RefType"] == "SAT_AP") {
               setsOption("Items");
+            } else if (
+              response.data.InvProfile[0]["RefType"] == "CR_AP" ||
+              response.data.InvProfile[0]["RefType"] == "DB_AP"
+            ) {
+              setsOption("Amounts");
             } else {
-              setsOption("Accounts");
+              setsOption("Items");
             }
 
             //
@@ -451,6 +471,7 @@ export default function SalesForm(props) {
         updatedItems[selectedItemIndex]["DateT"] = formattedDate;
         updatedItems[selectedItemIndex]["TimeT"] = formattedTime;
         console.log("rouhhhhh1");
+        console.log("false455");
         props.setpropertiesAreEqual(false);
       }
       updatedItems[selectedItemIndex]["Note"] = noteInput;
@@ -497,17 +518,18 @@ export default function SalesForm(props) {
         props.setRemovedItems(retrievedJson["RemovedItems"]);
       }
 
-      props.setSATFromBranch(localStorage.getItem("SATFromBranch"));
-      props.setSATToBranch(localStorage.getItem("SATToBranch"));
-      console.log("watchhttttt2222", localStorage.getItem("SATToBranch"));
       setSelectedInvoice(localStorage.getItem("InvoiceHistory"));
 
       if (localStorage.getItem("propertiesAreEqual") == "true") {
         props.setpropertiesAreEqual(true);
       } else if (localStorage.getItem("propertiesAreEqual") == "false") {
+        console.log("false508");
         props.setpropertiesAreEqual(false);
       }
     }
+    props.setSATFromBranch(localStorage.getItem("SATFromBranch"));
+    props.setSATToBranch(localStorage.getItem("SATToBranch"));
+    console.log("watchhttttt2222", localStorage.getItem("SATToBranch"));
   };
 
   const getInvoicesHistory = () => {
@@ -702,6 +724,7 @@ export default function SalesForm(props) {
     try {
       setErrorMessage("");
       handleRetrieve();
+
       getCompanyInfo();
     } catch (error) {
       console.log("ERROR");
@@ -714,10 +737,21 @@ export default function SalesForm(props) {
       // handleSelectChange("");
       // selectRef.current.value = "Accounts";
       //setSelectedInvoice("");
-      setsOption("Accounts");
+      if (props.selectedFormOption == "SAT_AP") {
+        setsOption("Items");
+      } else if (
+        props.selectedFormOption == "CR_AP" ||
+        props.selectedFormOption == "DB_AP"
+      ) {
+        setsOption("Amounts");
+      } else {
+        setsOption("Accounts");
+      }
+
       selectInvRef.current.value = "";
       console.log("594");
       props.setSelectedFormOption(localStorage.getItem("selectedFormOption"));
+      getCompanyInfo();
     } catch (error) {
       console.log("ERROR");
     }
@@ -1142,11 +1176,16 @@ export default function SalesForm(props) {
                           key={idx}
                           className=" whitespace-nowrap hover:bg-blue-200 select-none "
                           onDoubleClick={() => {
-                            setItemStockDetailsShow(true);
-                            setItemDetailsModalData({
-                              ItemNo: si["no"],
-                              ItemName: si["name"],
-                            });
+                            if (
+                              props.selectedFormOption != "CR_AP" ||
+                              props.selectedFormOption != "DB_AP"
+                            ) {
+                              setItemStockDetailsShow(true);
+                              setItemDetailsModalData({
+                                ItemNo: si["no"],
+                                ItemName: si["name"],
+                              });
+                            }
                           }}
                         >
                           {props.selectedFormOption === "CR_AP" ||
@@ -1476,16 +1515,26 @@ export default function SalesForm(props) {
                   className=" w-[20%] bg-indigo-500"
                   onClick={() => {
                     if (
-                      ((props.SelectedItems.length == 0 &&
+                      (props.SelectedItems.length == 0 &&
                         props.RemovedItems.length == 0) ||
-                        props.Client == "" ||
-                        props.propertiesAreEqual == true) &&
-                      props.selectedFormOption != "SAT_AP"
+                      (props.Client &&
+                        props.Client.id === "" &&
+                        props.Client.name === "" &&
+                        props.Client.RefNo === "" &&
+                        props.Client.date === "" &&
+                        props.Client.time === "" &&
+                        props.Client.balance === "" &&
+                        props.Client.address === "" &&
+                        props.Client.cur === "" &&
+                        props.Client.Rate === "") ||
+                      props.propertiesAreEqual == true
                     ) {
                       setEmptyAlertModalShow(true);
                       console.log("//**/////");
                       console.log(props.Client);
                     } else {
+                      console.log("//****/////");
+                      console.log(props.Client);
                       setConfirmModalShow(true);
                     }
                   }}
@@ -1535,7 +1584,9 @@ export default function SalesForm(props) {
         modalVoucher={props.modalVoucher}
         setModalVoucher={props.setModalVoucher}
       />
-      {ItemStockDetails ? (
+      {ItemStockDetails &&
+      props.selectedFormOption != "CR_AP" &&
+      props.selectedFormOption != "DB_AP" ? (
         <ItemStockDetails
           show={ItemStockDetailsShow}
           onHide={() => {
@@ -1613,21 +1664,29 @@ export default function SalesForm(props) {
                       className="w-1/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                       placeholder={"Qty"}
                       value={EditQty}
-                      onKeyPress={(e) => {
-                        // Allow only numeric values and a single minus sign at the start
-                        if (
-                          // If the pressed key is not a digit or minus sign and it's not a control key
-                          (!/[0-9-]/.test(e.key) && !e.ctrlKey && !e.metaKey) ||
-                          // If the pressed key is a minus sign and it's not at the beginning or there's already a minus sign
-                          (e.key === "-" &&
-                            (e.target.selectionStart !== 0 ||
-                              e.target.value.includes("-")))
-                        ) {
-                          e.preventDefault(); // Prevent the default action (typing the character)
-                        }
-                      }}
                       onChange={(e) => {
                         setEditQty(e.target.value);
+                      }}
+                      onBlur={(e) => {
+                        if (
+                          e.target.value == null ||
+                          e.target.value == "" ||
+                          e.target.value == "-" ||
+                          e.target.value == 0
+                        ) {
+                          e.target.value = 1;
+                          setEditQty(e.target.value);
+                        }
+                      }}
+                      onKeyPress={(e) => {
+                        if (
+                          e.key === "-" && // If the pressed key is a minus symbol
+                          // And not at the beginning of the input
+                          e.target.value.includes("-")
+                        ) {
+                          // Or if the minus symbol is already present
+                          e.preventDefault(); // Prevent the default action (typing the minus symbol)
+                        }
                       }}
                       style={{
                         "-moz-appearance": "textfield",
@@ -1970,7 +2029,7 @@ export default function SalesForm(props) {
                       // }
                       if (!pAreEqual) {
                         console.log("rouhhhhhhhhhhhh");
-
+                        console.log("false1983");
                         props.setpropertiesAreEqual(false);
                         const currentDate = new Date();
                         const formattedDate = `${currentDate
@@ -2055,7 +2114,7 @@ export default function SalesForm(props) {
 
                             localStorage.setItem("sales", jsonString);
                             console.log("heyyy", localStorage.getItem("sales"));
-
+                            console.log("false2068");
                             props.setpropertiesAreEqual(false);
                             setErrorMessage("");
                           }
@@ -2083,7 +2142,7 @@ export default function SalesForm(props) {
                         let jsonString = JSON.stringify(json); // Convert data object to JSON string
 
                         localStorage.setItem("sales", jsonString);
-
+                        console.log("false2096");
                         props.setpropertiesAreEqual(false);
                         setErrorMessage("");
                       }
@@ -2336,7 +2395,7 @@ export default function SalesForm(props) {
                         pAreEqual = false;
                       } else if (!pAreEqual) {
                         console.log("rouhhhhhhhhhhhh");
-
+                        console.log("false2349");
                         props.setpropertiesAreEqual(false);
                         const currentDate = new Date();
                         const formattedDate = `${currentDate
@@ -2427,7 +2486,7 @@ export default function SalesForm(props) {
 
                             localStorage.setItem("sales", jsonString);
                             console.log("heyyy", localStorage.getItem("sales"));
-
+                            console.log("false2440");
                             props.setpropertiesAreEqual(false);
                             setErrorMessage("");
                           }
@@ -2455,7 +2514,7 @@ export default function SalesForm(props) {
                         let jsonString = JSON.stringify(json); // Convert data object to JSON string
 
                         localStorage.setItem("sales", jsonString);
-
+                        console.log("false2468");
                         props.setpropertiesAreEqual(false);
                         setErrorMessage("");
                       }
@@ -2641,7 +2700,7 @@ export default function SalesForm(props) {
         </Modal.Header>
         <Modal.Body>
           <h4>
-            {props.Client["id"] == ""
+            {props.Client["id"] == "" && props.selectedFormOption != "SAT_AP"
               ? "No Account Choosen"
               : props.propertiesAreEqual == true
               ? "No Changes In Your Invoice"
@@ -3049,11 +3108,10 @@ export default function SalesForm(props) {
               <select
                 id="itemFromBranch"
                 className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
-                value={props.SATFromBranch}
-                onChange={(e) => {
-                  document.getElementById("itemFromBranch").value =
-                    e.target.value;
-                }}
+                // value={props.SATFromBranch}
+                // onChange={(e) => {
+                //   props.setSATFromBranch(e.target.value);
+                // }}
               >
                 {props.branches.map((br) => {
                   return (
@@ -3069,11 +3127,10 @@ export default function SalesForm(props) {
               <select
                 id="itemToBranch"
                 className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
-                value={props.SATToBranch}
-                onChange={(e) => {
-                  document.getElementById("itemToBranch").value =
-                    e.target.value;
-                }}
+                // value={props.SATToBranch}
+                // onChange={(e) => {
+                //   props.setSATToBranch(e.target.value);
+                // }}
               >
                 {props.branches.map((br) => {
                   return (
@@ -3097,32 +3154,75 @@ export default function SalesForm(props) {
               <button
                 className="mt-4 bg-indigo-400 hover:bg-indigo-400 py-3 px-6  rounded-md"
                 onClick={() => {
-                  const itemFromBranchValue =
-                    document.getElementById("itemFromBranch").value;
-
-                  // Get the selected value from the second select element
-                  const itemToBranchValue =
-                    document.getElementById("itemToBranch").value;
-                  console.log("itemFromBranchValue", itemFromBranchValue);
-                  console.log("itemToBranchValue", itemToBranchValue);
-                  if (itemFromBranchValue != itemToBranchValue) {
-                    props.setSATToBranch(itemToBranchValue);
-                    props.setSATFromBranch(itemFromBranchValue);
-                    localStorage.setItem("SATFromBranch", itemFromBranchValue);
-                    localStorage.setItem("SATToBranch", itemToBranchValue);
+                  console.log(
+                    "batal lebnen",
+                    props.SelectedItems,
+                    props.RemovedItems,
+                    props.Client["id"]
+                  );
+                  if (
+                    props.SelectedItems != [] &&
+                    props.SelectedItems != undefined &&
+                    props.RemovedItems != [] &&
+                    props.RemovedItems != undefined &&
+                    props.Client["id"] != "" &&
+                    props.Client["id"] != undefined
+                  ) {
                     setSATDialogOpen(false);
-                    props.setSelectedFormOption("SAT_AP");
-                  } else {
                     setErrorModal({
                       show: true,
                       message: (
                         <div>
-                          You Cannot Transfer To The Same Branch. <br></br>{" "}
-                          Please Choose Different Branches
+                          There Is UnSaved Data. <br></br> Please Save Or Clear
+                          Invoice Before Changing Form Option.
                         </div>
                       ),
                       title: "Branch Transfer",
                     });
+                    return;
+                  } else {
+                    const itemFromBranchValue =
+                      document.getElementById("itemFromBranch").value;
+
+                    // Get the selected value from the second select element
+                    const itemToBranchValue =
+                      document.getElementById("itemToBranch").value;
+                    console.log("itemFromBranchValue", itemFromBranchValue);
+                    console.log("itemToBranchValue", itemToBranchValue);
+                    if (itemFromBranchValue != itemToBranchValue) {
+                      props.setSATToBranch(itemToBranchValue);
+                      props.setSATFromBranch(itemFromBranchValue);
+
+                      localStorage.setItem("SATToBranch", itemToBranchValue);
+                      localStorage.setItem(
+                        "SATFromBranch",
+                        itemFromBranchValue
+                      );
+                      setSATDialogOpen(false);
+                      props.setClient({
+                        id: "",
+                        name: "",
+                        RefNo: "",
+                        date: "",
+                        time: "",
+                        balance: "",
+                        address: "",
+                        cur: "",
+                        Rate: "",
+                      });
+                      props.setSelectedFormOption("SAT_AP");
+                    } else {
+                      setErrorModal({
+                        show: true,
+                        message: (
+                          <div>
+                            You Cannot Transfer To The Same Branch. <br></br>{" "}
+                            Please Choose Different Branches
+                          </div>
+                        ),
+                        title: "Branch Transfer",
+                      });
+                    }
                   }
                 }}
               >

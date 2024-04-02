@@ -25,6 +25,7 @@ export default function Invoice(props) {
   if (localStorage.getItem("propertiesAreEqual") == "true") {
     p = true;
   } else if (localStorage.getItem("propertiesAreEqual") == "false") {
+    console.log("false28");
     p = false;
   } else {
     p = true;
@@ -43,12 +44,12 @@ export default function Invoice(props) {
   useEffect(() => {
     getBranches();
   }, []);
-  useEffect(() => {
-    localStorage.setItem("SATFromBranch", SATFromBranch);
-    localStorage.setItem("SATToBranch", SATToBranch);
-    console.log("watch ouuttttttttt", SATFromBranch);
-    console.log("watch ouuttttttttt", SATToBranch);
-  }, [SATFromBranch, SATToBranch]);
+  // useEffect(() => {
+  //   localStorage.setItem("SATFromBranch", SATFromBranch);
+  //   localStorage.setItem("SATToBranch", SATToBranch);
+  //   console.log("watch ouuttttttttt", SATFromBranch);
+  //   console.log("watch ouuttttttttt", SATToBranch);
+  // }, [SATFromBranch, SATToBranch]);
 
   const [Hisab, setHisab] = useState([]);
   const [branches, setBranches] = useState([]);
@@ -205,7 +206,7 @@ export default function Invoice(props) {
         "!";
     });
     console.log("**//---", acc.RefNo);
-
+    console.log("maambariff shou yali", acc);
     let data = {
       compname: localStorage.getItem("compname"),
       type: type,
@@ -222,6 +223,7 @@ export default function Invoice(props) {
             ? acc.time
             : items[0]["TimeT"]
           : acc.time,
+
       accRefNo: acc.RefNo,
       Sbranch: localStorage.getItem("Sbranch"),
       Abranch: localStorage.getItem("Abranch"),

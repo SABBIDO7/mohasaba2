@@ -477,6 +477,27 @@ const IdSelect = forwardRef((props, ref) => {
                   onChange={(e) => {
                     setsItemQty(e.target.value);
                   }}
+                  onBlur={(e) => {
+                    if (
+                      e.target.value == null ||
+                      e.target.value == "" ||
+                      e.target.value == "-" ||
+                      e.target.value == 0
+                    ) {
+                      e.target.value = 1;
+                      setsItemQty(e.target.value);
+                    }
+                  }}
+                  onKeyPress={(e) => {
+                    if (
+                      e.key === "-" && // If the pressed key is a minus symbol
+                      // And not at the beginning of the input
+                      e.target.value.includes("-")
+                    ) {
+                      // Or if the minus symbol is already present
+                      e.preventDefault(); // Prevent the default action (typing the minus symbol)
+                    }
+                  }}
                   style={{
                     "-moz-appearance": "textfield",
                     appearance: "textfield",
@@ -973,6 +994,7 @@ const IdSelect = forwardRef((props, ref) => {
       });
       console.log("selecthandler", props.Client);
       localStorage.setItem("InvoiceHistory", "");
+      console.log("false997");
       props.setpropertiesAreEqual(false);
     } else if (props.sOption === "Items") {
       let uprice = 0;
@@ -1046,6 +1068,7 @@ const IdSelect = forwardRef((props, ref) => {
         entries.find(([key, value]) => key === `Br${ItemBranch}`) || [];
       setsItemStockQty(value);
       setsItemTotalStockQty(e["Stock"]);
+      console.log("false1071");
       props.setpropertiesAreEqual(false);
     }
   }
@@ -1181,6 +1204,7 @@ const IdSelect = forwardRef((props, ref) => {
       items: tempsi,
       RemovedItems: props.RemovedItems,
     });
+    console.log("false1207");
     props.setpropertiesAreEqual(false);
     props.setvInput("");
     props.setOption([]);
