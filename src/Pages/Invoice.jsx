@@ -13,9 +13,7 @@ export default function Invoice(props) {
   const [SelectedItems, setSelectedItems] = useState([]);
   const [RemovedItems, setRemovedItems] = useState([]);
   const [sInvoice, setSInvoice] = useState("");
-  const [selectedFormOption, setSelectedFormOption] = useState(
-    localStorage.getItem("selectedFormOption")
-  );
+
   const [selectedFormOptionDisplay, setSelectedFormOptionDisplay] = useState();
   const [invResponse, setInvResponse] = useState({
     Info: "No Invoice Created",
@@ -30,7 +28,21 @@ export default function Invoice(props) {
   } else {
     p = true;
   }
+  let selectedForm = "";
+  if (
+    localStorage.getItem("selectedFormOption") != "null" &&
+    localStorage.getItem("selectedFormOption") != "" &&
+    localStorage.getItem("selectedFormOption") != "undefined" &&
+    localStorage.getItem("selectedFormOption") != null
+  ) {
+    selectedForm = localStorage.getItem("selectedFormOption");
+    console.log("jjjjjjjjjj", selectedForm);
+  } else {
+    selectedForm = "SA_AP";
+    console.log("hhhhhhhhhhhhhhh", selectedForm);
+  }
   const [propertiesAreEqual, setpropertiesAreEqual] = useState(p);
+  const [selectedFormOption, setSelectedFormOption] = useState(selectedForm);
   const [handlingAccWhenChanging, sethandlingAccWhenChanging] = useState();
   const [SATFromBranch, setSATFromBranch] = useState();
   const [SATToBranch, setSATToBranch] = useState();
