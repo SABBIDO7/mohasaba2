@@ -965,10 +965,11 @@ export default function SalesForm(props) {
               </h1>
               <div></div>
             </div>
-            <div className="flex flex-row items-center justify-between mb-1 h-[15%]">
+            <div className="randomNameClass  ">
+              {/**if mobile 40% if web 15% */}
               <div className="w-[32%] flex flex-column justify-between">
                 <div className="w-full flex flex-row justify-between">
-                  <div className="text-xl font-semibold w-fit">Client ID:</div>
+                  <div className="text-xl font-semibold w-fit">Client:</div>
 
                   <input
                     type={"text"}
@@ -1012,7 +1013,7 @@ export default function SalesForm(props) {
                 </div>
               </div>
               <div className="w-[32%] flex flex-row justify-center">
-                <div className="text-xl font-semibold w-fit">Call Inv:</div>
+                <div className="text-xl font-semibold w-fit">Call:</div>
 
                 <select
                   className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
@@ -1064,7 +1065,9 @@ export default function SalesForm(props) {
                 </select>
               </div>
             </div>
-            <div className="h-[55%] overflow-auto">
+            <div className="randomClassName2 ">
+              {" "}
+              {/**if mobile 30% if web 55% */}
               <Table bordered striped responsive>
                 <thead className=" bg-slate-500">
                   <tr className=" whitespace-nowrap ">

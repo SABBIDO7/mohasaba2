@@ -10,7 +10,7 @@ import { Location } from "react-router-dom";
 const navigation = [
   { name: "Accounting", href: "/Accounting" },
   { name: "Inventory", href: "/Inventory" },
-  { name: "Invoice", href: "/Invoice" },
+  { name: "Transactions", href: "/Invoice" },
 ];
 
 function classNames(...classes) {

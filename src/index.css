@@ -55,3 +55,44 @@ a {
 option:hover {
     background-color: #f5f5f5; /* Hover background color */
 }
+
+/* For mobile */
+@media screen and (max-width: 1000px) {
+  .randomNameClass {
+
+    display:flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    height: 40%;
+    
+  }
+}
+
+/* For web */
+@media screen and (min-width: 1001px) {
+  .randomNameClass  {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    height: 15%;
+
+  }
+}
+@media screen and (max-width: 1000px) {
+  .randomClassName2  {
+    overflow: auto;
+    height: 30%;
+  }
+}
+
+/* For web */
+@media screen and (min-width: 1001px) {
+  .randomClassName2 {
+    overflow: auto;
+    height: 55%;
+  }
+}
