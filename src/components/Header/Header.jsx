@@ -88,8 +88,7 @@ export default function Header(props) {
                           path: "/",
                         });
                         localStorage.clear();
-                        //window.location.href = props.url;
-                        window.location.reload();
+                        window.location.href = "/";
                       }}
                     >
                       Sign out

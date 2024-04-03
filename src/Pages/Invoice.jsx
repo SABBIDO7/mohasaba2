@@ -125,56 +125,47 @@ export default function Invoice(props) {
   return (
     <div className="h-[90vh] overscroll-contain">
       {(() => {
-        switch (sInvoice) {
-          case "":
-            return <InvoiceTypeSelect url={props.url} inv={sInvoiceHandler} />;
-          case "Sales":
-            // setSelectedFormOption("SA_AP");
-            // setSelectedFormOptionDisplay("Sales Form");
-            return (
-              <>
-                <SalesForm
-                  url={props.url}
-                  inv={sInvoiceHandler}
-                  token={props.token}
-                  hisab={Hisab}
-                  postInvoice={postInvoice}
-                  branches={branches}
-                  setafterSubmitModal={setafterSubmitModal}
-                  afterSubmitModal={afterSubmitModal}
-                  discardInvoice={discardInvoice}
-                  Client={Client}
-                  setClient={setClient}
-                  SelectedItems={SelectedItems}
-                  setSelectedItems={setSelectedItems}
-                  propertiesAreEqual={propertiesAreEqual}
-                  setpropertiesAreEqual={setpropertiesAreEqual}
-                  sethandlingAccWhenChanging={sethandlingAccWhenChanging}
-                  handlingAccWhenChanging={handlingAccWhenChanging}
-                  RemovedItems={RemovedItems}
-                  setRemovedItems={setRemovedItems}
-                  setafterSubmitModal2={setafterSubmitModal2}
-                  afterSubmitModal2={afterSubmitModal2}
-                  setSelectedFormOption={setSelectedFormOption}
-                  selectedFormOption={selectedFormOption}
-                  setSelectedFormOptionDisplay={setSelectedFormOptionDisplay}
-                  selectedFormOptionDisplay={selectedFormOptionDisplay}
-                  setSATToBranch={setSATToBranch}
-                  SATToBranch={SATToBranch}
-                  setSATFromBranch={setSATFromBranch}
-                  SATFromBranch={SATFromBranch}
-                  setModalItems={setModalItems}
-                  modalItems={modalItems}
-                  modalVoucher={modalVoucher}
-                  setModalVoucher={setModalVoucher}
-                />
-              </>
-            );
-          case "won":
-            return null;
-          case "lost":
-            return null;
-        }
+        // setSelectedFormOption("SA_AP");
+        // setSelectedFormOptionDisplay("Sales Form");
+        return (
+          <>
+            <SalesForm
+              url={props.url}
+              inv={sInvoiceHandler}
+              token={props.token}
+              hisab={Hisab}
+              postInvoice={postInvoice}
+              branches={branches}
+              setafterSubmitModal={setafterSubmitModal}
+              afterSubmitModal={afterSubmitModal}
+              discardInvoice={discardInvoice}
+              Client={Client}
+              setClient={setClient}
+              SelectedItems={SelectedItems}
+              setSelectedItems={setSelectedItems}
+              propertiesAreEqual={propertiesAreEqual}
+              setpropertiesAreEqual={setpropertiesAreEqual}
+              sethandlingAccWhenChanging={sethandlingAccWhenChanging}
+              handlingAccWhenChanging={handlingAccWhenChanging}
+              RemovedItems={RemovedItems}
+              setRemovedItems={setRemovedItems}
+              setafterSubmitModal2={setafterSubmitModal2}
+              afterSubmitModal2={afterSubmitModal2}
+              setSelectedFormOption={setSelectedFormOption}
+              selectedFormOption={selectedFormOption}
+              setSelectedFormOptionDisplay={setSelectedFormOptionDisplay}
+              selectedFormOptionDisplay={selectedFormOptionDisplay}
+              setSATToBranch={setSATToBranch}
+              SATToBranch={SATToBranch}
+              setSATFromBranch={setSATFromBranch}
+              SATFromBranch={SATFromBranch}
+              setModalItems={setModalItems}
+              modalItems={modalItems}
+              modalVoucher={modalVoucher}
+              setModalVoucher={setModalVoucher}
+            />
+          </>
+        );
       })()}
       <AfterSubmit />
     </div>

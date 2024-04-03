@@ -964,7 +964,7 @@ const IdSelect = forwardRef((props, ref) => {
         props.selectedFormOption == "CR_AP" ||
         props.selectedFormOption == "DB_AP"
       ) {
-        props.setsOption("Amount");
+        props.setsOption("Amounts");
       } else {
         props.setsOption("Items");
       }

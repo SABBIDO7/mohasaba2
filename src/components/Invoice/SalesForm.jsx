@@ -374,7 +374,7 @@ export default function SalesForm(props) {
               response.data.InvProfile[0]["RefType"] == "CR_AP" ||
               response.data.InvProfile[0]["RefType"] == "DB_AP"
             ) {
-              setsOption("Amounts");
+              setsOption("Amounts"); //hon
             } else {
               setsOption("Items");
             }
@@ -824,7 +824,7 @@ export default function SalesForm(props) {
                 props.selectedFormOption != "CR_AP" ? (
                   <option className="py-2 text-lg">Items</option>
                 ) : (
-                  <option className="py-2 text-lg">Amount</option>
+                  <option className="py-2 text-lg">Amounts</option>
                 )}
               </select>
             </div>
@@ -839,7 +839,7 @@ export default function SalesForm(props) {
                     props.selectedFormOption != "SAT_AP"
                   ) {
                     setItemsWithoutAccount(true);
-                  } else if (sOption == "Amount") {
+                  } else if (sOption == "Amounts") {
                     props.setModalVoucher(true);
                   } else {
                     getInvoiceOptions();
@@ -1177,7 +1177,7 @@ export default function SalesForm(props) {
                           className=" whitespace-nowrap hover:bg-blue-200 select-none "
                           onDoubleClick={() => {
                             if (
-                              props.selectedFormOption != "CR_AP" ||
+                              props.selectedFormOption != "CR_AP" &&
                               props.selectedFormOption != "DB_AP"
                             ) {
                               setItemStockDetailsShow(true);
@@ -1435,6 +1435,13 @@ export default function SalesForm(props) {
 
                         setsOption("Accounts");
                         setvInput("");
+                        if (
+                          selectedInvoice != "" &&
+                          selectedInvoice != "" &&
+                          selectedInvoice != null
+                        ) {
+                          ReleaseInvoice();
+                        }
                         setSelectedInvoice("");
 
                         props.setClient({
@@ -1526,7 +1533,8 @@ export default function SalesForm(props) {
                         props.Client.balance === "" &&
                         props.Client.address === "" &&
                         props.Client.cur === "" &&
-                        props.Client.Rate === "") ||
+                        props.Client.Rate === "" &&
+                        props.selectedFormOption != "SAT_AP") ||
                       props.propertiesAreEqual == true
                     ) {
                       setEmptyAlertModalShow(true);
@@ -3263,6 +3271,14 @@ export default function SalesForm(props) {
       });
   }
   function discardInvoice() {
+    console.log("selectedinvoiceexit", selectedInvoice);
+    if (
+      selectedInvoice != "" &&
+      selectedInvoice != "" &&
+      selectedInvoice != null
+    ) {
+      ReleaseInvoice();
+    }
     props.setClient({
       id: "",
       name: "",
@@ -3279,13 +3295,7 @@ export default function SalesForm(props) {
     console.log("y7");
     localStorage.setItem("sales", "");
     props.setpropertiesAreEqual(true);
-    if (
-      selectedInvoice != "" &&
-      selectedInvoice != "" &&
-      selectedInvoice != null
-    ) {
-      ReleaseInvoice();
-    }
+
     setSelectedInvoice("");
     localStorage.setItem("InvoiceHistory", "");
     console.log("selectedInvoice");
