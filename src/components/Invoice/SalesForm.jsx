@@ -103,6 +103,33 @@ export default function SalesForm(props) {
     setDialogOpen(true);
   };
 
+  const EmptyVariable = () => {
+    setEditItem({});
+    setEditIdx(0);
+    setEditQty("");
+    setEditTax(0); //hhh
+    setEditBranch("");
+    setEditInitialPrice();
+    setEditDiscount("");
+    setEditLno("");
+    setEditTotal(1);
+
+    setEditTotalPieces(1);
+
+    setEditType("");
+    setEditDBPUnit();
+    setEditDPUnit();
+    setEditDSPUnit();
+    setEditPPrice();
+    setEditPQUnit();
+    setEditPQty();
+    setEditItemStockQty(0);
+    setEditItemBranchesStock();
+    setEditItemTotalStockQty(0);
+
+    setEditPrice(0);
+  };
+
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
@@ -191,7 +218,7 @@ export default function SalesForm(props) {
     // Calculate total pieces based on other inputs whenever they change
     const calculateUprice = () => {
       let total = 0;
-      if (EditType === "3") {
+      if (EditType === "1") {
         total = EditInitialPrice;
       } else if (EditType === "2") {
         total = EditInitialPrice / EditPQty;
@@ -258,6 +285,9 @@ export default function SalesForm(props) {
       props.setSelectedFormOptionDisplay("Branch Transfer");
       setsOption("Items");
     } else if (props.selectedFormOption == "CR_AP") {
+      if (sOption == "Items") {
+        setsOption("Amounts");
+      }
       props.setSelectedFormOptionDisplay("Receipt Voucher");
     } else if (props.selectedFormOption == "DB_AP") {
       props.setSelectedFormOptionDisplay("Payment Voucher");
@@ -751,6 +781,16 @@ export default function SalesForm(props) {
       selectInvRef.current.value = "";
       console.log("594");
       props.setSelectedFormOption(localStorage.getItem("selectedFormOption"));
+      if (
+        localStorage.getItem("selectedFormOption") == "CR_AP" ||
+        localStorage.getItem("selectedFormOption") == "DB_AP"
+      ) {
+        setsOption("Accounts");
+      } else if (localStorage.getItem("selectedFormOption") == "SAT_AP") {
+        setsOption("Items");
+      } else {
+        setsOption("Accounts");
+      }
       getCompanyInfo();
     } catch (error) {
       console.log("ERROR");
@@ -781,7 +821,8 @@ export default function SalesForm(props) {
 
               //     props.inv("");
               // }
-              props.inv("");
+              window.location.href = "/";
+              // props.inv("");
             }}
           />
           <h6 className="h-[100%]">Sales Invoice</h6>
@@ -840,7 +881,20 @@ export default function SalesForm(props) {
                   ) {
                     setItemsWithoutAccount(true);
                   } else if (sOption == "Amounts") {
-                    props.setModalVoucher(true);
+                    if (
+                      props.Client["id"] == undefined ||
+                      props.Client["id"] == "undefined" ||
+                      props.Client["id"] == "" ||
+                      props.Client["id"] == null
+                    ) {
+                      setErrorModal({
+                        show: true,
+                        message: <div>You Should Choose An Account First.</div>,
+                        title: "No Account",
+                      });
+                    } else {
+                      props.setModalVoucher(true);
+                    }
                   } else {
                     getInvoiceOptions();
                     setModalShow(true);
@@ -861,7 +915,7 @@ export default function SalesForm(props) {
               <div className="flex flex-row items-center justify-between">
                 <div className="flex flex-row ">
                   <div className="flex flex-row ">
-                    <div>CompCurrency: </div>
+                    <div>CompCur: </div>
                     <div>
                       {localStorage.getItem(
                         "Cur" + localStorage.getItem("mainCur")
@@ -869,7 +923,7 @@ export default function SalesForm(props) {
                     </div>
                   </div>
                   <div className="flex flex-row ml-[10%]">
-                    <div>AccCurrency: </div>
+                    <div>AccCur: </div>
                     <div>
                       {props.Client["cur"] != undefined &&
                       props.Client["cur"] != null &&
@@ -1221,7 +1275,10 @@ export default function SalesForm(props) {
                                 <button
                                   className="text-blue-500 hover:text-blue-700"
                                   onClick={() => {
+                                    EmptyVariable();
+
                                     setShow(true);
+
                                     setEditItem(si);
 
                                     setEditIdx(idx);
@@ -1276,11 +1333,10 @@ export default function SalesForm(props) {
                                 <button
                                   className="text-blue-500 hover:text-blue-700"
                                   onClick={() => {
-                                    console.log(
-                                      "mn hon natakalam",
-                                      si["BranchesStock"]
-                                    );
+                                    EmptyVariable();
+                                    //hhhh
                                     setShow(true);
+
                                     setEditItem(si);
                                     setEditIdx(idx);
 
@@ -1723,14 +1779,14 @@ export default function SalesForm(props) {
                     >
                       {/* {EditDBPUnit && EditDBPUnit.trim() !== '' ? setEditType("3"): EditDPUnit && EditDPUnit.trim() !== ''?setEditType("2"):setEditType("1")} */}
                       {EditDBPUnit && EditDBPUnit.trim() !== "" && (
-                        <option value="3">{EditDBPUnit}</option>
+                        <option value="1">{EditDBPUnit}</option>
                       )}
 
                       {EditDPUnit && EditDPUnit.trim() !== "" && (
                         <option value="2">{EditDPUnit}</option>
                       )}
-                      {EditDSPUnit && EditDBPUnit.trim() !== "" && (
-                        <option value="1">{EditDSPUnit}</option>
+                      {EditDSPUnit && EditDSPUnit.trim() !== "" && (
+                        <option value="3">{EditDSPUnit}</option>
                       )}
                     </select>
                   </div>
@@ -1746,7 +1802,7 @@ export default function SalesForm(props) {
                     className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
                     placeholder="Total Pieces"
                     value={parseFloat(
-                      EditType == "3"
+                      EditType == "1"
                         ? EditQty * EditItem["PQty"] * EditItem["PQUnit"]
                         : EditType == "2"
                         ? EditQty * EditItem["PQUnit"]
@@ -1907,6 +1963,7 @@ export default function SalesForm(props) {
                       setShow(false);
                       setIdOptions([]);
                       setErrorMessage("");
+                      EmptyVariable();
                     }}
                   >
                     Close
@@ -2077,6 +2134,7 @@ export default function SalesForm(props) {
                       console.log("ghayrik enti", jsonString);
                       localStorage.setItem("sales", jsonString);
                       console.log(localStorage.getItem("sales"));
+                      EmptyVariable();
                     }}
                   >
                     Apply
@@ -2157,6 +2215,7 @@ export default function SalesForm(props) {
                         props.setpropertiesAreEqual(false);
                         setErrorMessage("");
                       }
+                      EmptyVariable();
                     }}
                   >
                     Remove
@@ -2317,6 +2376,7 @@ export default function SalesForm(props) {
                       setShow(false);
                       setIdOptions([]);
                       setErrorMessage("");
+                      EmptyVariable();
                     }}
                   >
                     Close
@@ -2374,9 +2434,19 @@ export default function SalesForm(props) {
                           //   ? parseFloat(EditPrice) /
                           //     localStorage.getItem("Rate")
                           //   : parseFloat(EditPrice),
-                          EditPPrice != props.Client["cur"]
-                            ? EditPrice / props.Client["Rate"]
+                          EditPPrice !=
+                          localStorage.getItem(
+                            "Cur" + localStorage.getItem("mainCur")
+                          )
+                            ? localStorage.getItem(
+                                "Cur" + localStorage.getItem("mainCur")
+                              ) == localStorage.getItem("Cur1")
+                              ? EditPrice / props.Client["Rate"]
+                              : EditPrice * props.Client["Rate"]
                             : EditPrice,
+                        // EditPPrice != props.Client["cur"]
+                        //   ? EditPrice / props.Client["Rate"]
+                        //   : EditPrice,
                         Note: NoteT,
                         DateT: DateTT,
                         TimeT: TimeTT,
@@ -2449,6 +2519,7 @@ export default function SalesForm(props) {
                       console.log("ghayrik enti", jsonString);
                       localStorage.setItem("sales", jsonString);
                       console.log(localStorage.getItem("sales"));
+                      EmptyVariable();
                     }}
                   >
                     Apply
@@ -2529,6 +2600,7 @@ export default function SalesForm(props) {
                         props.setpropertiesAreEqual(false);
                         setErrorMessage("");
                       }
+                      EmptyVariable();
                     }}
                   >
                     Remove

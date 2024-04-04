@@ -13,7 +13,7 @@ export default function Main(props) {
     document.getElementById("Inventory").click();
   }
   function invoiceClick() {
-    document.getElementById("Invoice").click();
+    document.getElementById("Transactions").click();
   }
   function logout() {
     setCookie("token", "", {
@@ -56,7 +56,7 @@ export default function Main(props) {
           aria-pressed="true"
           onClick={invoiceClick}
         >
-          Invoice
+          Transcations
         </a>
       </div>
       <div className="my-5">

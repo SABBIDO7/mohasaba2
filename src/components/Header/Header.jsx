@@ -76,7 +76,7 @@ export default function Header(props) {
                     <NavDropdown.Item
                       className=" items-center "
                       onClick={() => {
-                        window.location.href = props.url;
+                        window.location.href = "/";
                       }}
                     >
                       Main Menu

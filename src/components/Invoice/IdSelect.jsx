@@ -40,6 +40,8 @@ const IdSelect = forwardRef((props, ref) => {
   const [sItemInitial, setsItemInitial] = useState(1);
   const [sItemBranchesStock, setsItemBranchesStock] = useState({});
   const [sItemTotalStockQty, setsItemTotalStockQty] = useState(0);
+  const [pageOpenTrigger, setpageOpenTrigger] = useState(false);
+
   useImperativeHandle(ref, () => ({
     // Define functions here
     selectHandler: (e, idx) => {
@@ -51,7 +53,7 @@ const IdSelect = forwardRef((props, ref) => {
     // Calculate total pieces based on other inputs whenever they change
     const calculateTotalPieces = () => {
       let total = 0;
-      if (sItemPType === "3") {
+      if (sItemPType === "1") {
         total = sItemQty * sItemPQty * sItemPQUnit;
       } else if (sItemPType === "2") {
         total = sItemQty * sItemPQUnit;
@@ -59,6 +61,8 @@ const IdSelect = forwardRef((props, ref) => {
         total = sItemQty;
       }
       setTotalPieces(parseFloat(total));
+      console.log("SHAYEKLEEEEEEE", total);
+      console.log("SHAYEKLEEEEEEE", sItemPType);
     };
 
     calculateTotalPieces();
@@ -80,7 +84,7 @@ const IdSelect = forwardRef((props, ref) => {
     // Calculate total pieces based on other inputs whenever they change
     const calculateUprice = () => {
       let total = 0;
-      if (sItemPType === "3") {
+      if (sItemPType === "1") {
         total = sItemInitial;
       } else if (sItemPType === "2") {
         total = sItemInitial / sItemPQty;
@@ -94,6 +98,18 @@ const IdSelect = forwardRef((props, ref) => {
       calculateUprice();
     }
   }, [sItemPType]);
+
+  useEffect(() => {
+    if (sItemDBPUnit && sItemDBPUnit.trim() !== "") {
+      setsItemPType("1");
+    } else if (sItemPUnit && sItemPUnit.trim() != "") {
+      setsItemPType("2");
+    } else if (sItemDSPUnit && sItemDSPUnit.trim() !== "") {
+      setsItemPType("3");
+    } else {
+      setsItemPType("");
+    }
+  }, [sItemDBPUnit, sItemDSPUnit, sItemPUnit]);
 
   useEffect(() => {
     // Calculate total pieces based on other inputs whenever they change
@@ -115,22 +131,39 @@ const IdSelect = forwardRef((props, ref) => {
 
     UpriceZeroCheck();
   }, [sItemPrice]);
-
-  useEffect(() => {
-    if (
-      props.selectedFormOption == "CR_AP" ||
-      props.selectedFormOption == "DB_AP"
-    ) {
-      // setsItemPPrice(
-      //   localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
-      // );
-      setsItemPPrice("");
-      //setsItemBranch(props.branches[0]["number"]);
-      setsItemBranch("");
-      setsItemPrice(0);
-      setsItemPType("");
-    }
-  }, []);
+  const EmptyVariables = (variableSting) => {
+    setsItemPPrice("");
+    //setsItemBranch(props.branches[0]["number"]);
+    setsItemBranch("");
+    setsItemPrice(0);
+    setsItemPType("");
+    setsItemPPrice("");
+    setsItemBranch("");
+    setsItemPrice(0);
+    setsItemPType("");
+    setsItemNo("");
+    setsItemName("");
+    setsItemQty(1);
+    setsItemPQunit(0);
+    setsItemPUnit("");
+    setsItemDiscount(0);
+    setsItemTax(0);
+    setsItemTaxTotal(0);
+    setsItemTotal(0);
+    setsItemStockQty(0);
+    setTotalPieces(0);
+    setsItemDSPUnit("");
+    setsItemBPUnit("");
+    setsItemInitial(0);
+    setsItemTotalStockQty(0);
+    console.log("FETETTTTTT", variableSting);
+  };
+  // useEffect(() => {
+  //   if (pageOpenTrigger == true) {
+  //     EmptyVariables("USEEFFECT");
+  //     setpageOpenTrigger(false);
+  //   }
+  // }, [pageOpenTrigger]);
 
   const allowPriceChanges = localStorage.getItem("Price") !== "N";
   const allowDiscountChanges = localStorage.getItem("Discount") !== "N";
@@ -165,6 +198,8 @@ const IdSelect = forwardRef((props, ref) => {
                     onClick={(e) => {
                       console.log("kkjjjhhgg");
                       console.log(io);
+                      EmptyVariables("USEEFFECT");
+
                       selectHandler(io, idx);
                       setsItemNo(io["ItemNo"]);
                       setsItemName(io["ItemName"]);
@@ -181,17 +216,11 @@ const IdSelect = forwardRef((props, ref) => {
                       setsItemBranchesStock(io["branchesStock"]);
 
                       // {sItemDBPUnit && sItemDBPUnit.trim() !== '' ? setsItemPType("3"): sItemPUnit && sItemPUnit.trim() !== ''?setsItemPType("2"):setsItemPType("1")}
-                      if (sItemDBPUnit && sItemDBPUnit.trim() !== "") {
-                        setsItemPType("3");
-                      } else if (sItemDSPUnit && sItemDSPUnit.trim() !== "") {
-                        setsItemPType("2");
-                      } else if (sItemPUnit && sItemPUnit.trim() != "") {
-                        setsItemPType("1");
-                      }
-                      // setsItemPType("1");
                       setsItemPPrice(io["PPrice"]);
                       setsItemBPUnit(io["BPUnit"]);
                       setsItemDSPUnit(io["SPUnit"]);
+
+                      // setsItemPType("1");
                     }}
                   >
                     <div className="card-body">
@@ -521,14 +550,14 @@ const IdSelect = forwardRef((props, ref) => {
                   }}
                 >
                   {sItemDBPUnit && sItemDBPUnit.trim() !== "" && (
-                    <option value="3">{sItemDBPUnit}</option>
+                    <option value="1">{sItemDBPUnit}</option>
                   )}
                   {sItemPUnit && sItemPUnit.trim() !== "" && (
                     <option value="2">{sItemPUnit}</option>
                   )}
 
                   {sItemDSPUnit && sItemDSPUnit.trim() !== "" && (
-                    <option value="1">{sItemDSPUnit}</option>
+                    <option value="3">{sItemDSPUnit}</option>
                   )}
                 </select>
               </div>
@@ -1137,8 +1166,12 @@ const IdSelect = forwardRef((props, ref) => {
               //   localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
               //   ? sItemPrice / localStorage.getItem("Rate")
               //   : sItemPrice
-              sItemPPrice != props.Client["cur"]
-              ? sItemPrice / props.Client["Rate"]
+              sItemPPrice !=
+              localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
+              ? localStorage.getItem("Cur" + localStorage.getItem("mainCur")) ==
+                localStorage.getItem("Cur1")
+                ? sItemPrice / props.Client["Rate"]
+                : sItemPrice * props.Client["Rate"]
               : sItemPrice
             : sItemPPrice == "U"
             ? parseFloat(uprice) *
@@ -1209,33 +1242,34 @@ const IdSelect = forwardRef((props, ref) => {
     props.setvInput("");
     props.setOption([]);
     document.getElementById("tf").focus();
+    EmptyVariables("USEEFFECT");
     if (
       props.selectedFormOption == "CR_AP" ||
       props.selectedFormOption == "DB_AP"
     ) {
       props.setModalVoucher(false);
 
-      setsItemPPrice("");
-      setsItemBranch("");
-      setsItemPrice(0);
+      // setsItemPPrice("");
+      // setsItemBranch("");
+      // setsItemPrice(0);
 
-      setsItemPType("");
-      setsItemNo("");
-      setsItemName("");
-      setsItemQty(1);
+      // setsItemPType("");
+      // setsItemNo("");
+      // setsItemName("");
+      // setsItemQty(1);
 
-      setsItemPQunit(0);
-      setsItemPUnit("");
-      setsItemDiscount(0);
-      setsItemTax(0);
-      setsItemTaxTotal(0);
-      setsItemTotal(0);
-      setsItemStockQty(0);
-      setTotalPieces(0);
-      setsItemDSPUnit("");
-      setsItemBPUnit("");
-      setsItemInitial(0);
-      setsItemTotalStockQty(0);
+      // setsItemPQunit(0);
+      // setsItemPUnit("");
+      // setsItemDiscount(0);
+      // setsItemTax(0);
+      // setsItemTaxTotal(0);
+      // setsItemTotal(0);
+      // setsItemStockQty(0);
+      // setTotalPieces(0);
+      // setsItemDSPUnit("");
+      // setsItemBPUnit("");
+      // setsItemInitial(0);
+      // setsItemTotalStockQty(0);
     }
   }
 });

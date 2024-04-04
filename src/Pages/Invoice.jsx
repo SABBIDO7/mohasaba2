@@ -293,6 +293,7 @@ export default function Invoice(props) {
           Info: "Failed",
           msg: res.data.msg,
         });
+        setSelectedFormOption("SA_AP");
         setafterSubmitModal(true);
         setafterSubmitModal2(true);
       }

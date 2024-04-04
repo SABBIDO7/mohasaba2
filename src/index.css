@@ -62,7 +62,7 @@ option:hover {
 
     display:flex;
     flex-direction: row;
-    align-items: end;
+    align-items: flex-end;
     justify-content: space-between;
     margin-bottom: 1rem;
     height: 40%;
