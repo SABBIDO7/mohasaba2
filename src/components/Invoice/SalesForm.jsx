@@ -825,14 +825,14 @@ export default function SalesForm(props) {
               // props.inv("");
             }}
           />
-          <h6 className="h-[100%]">Sales Invoice</h6>
+          {/* <h6 className="h-[100%]">Sales Invoice</h6> */}
         </div>
         <div className="h-[12%]">
           <div className=" px-2 w-[97.5%] h-[100%]  mx-auto flex flex-row items-center">
             <div className="flex items-center">
               <i className="fas fa-search text-gray-500 mr-2"></i>{" "}
               {/* Magnifying glass icon */}
-              <h2 className="font-semibold text-2xl text-gray-700">Search:</h2>
+              {/* <h2 className="font-semibold text-2xl text-gray-700">Search:</h2> */}
             </div>
             <div className="flex-grow ml-4 relative w-[40%]">
               <input
@@ -911,11 +911,11 @@ export default function SalesForm(props) {
           <div className="flex flex-col justify-between h-[100%]">
             {" "}
             {/* Model content*/}
-            <div className="h-[10%] flex flex-col justify-between items-between">
+            <div className="invoiceRateOption">
               <div className="flex flex-row items-center justify-between">
                 <div className="flex flex-row ">
                   <div className="flex flex-row ">
-                    <div>CompCur: </div>
+                    {/* <div>CompCur: </div> */}
                     <div>
                       {localStorage.getItem(
                         "Cur" + localStorage.getItem("mainCur")
@@ -923,7 +923,7 @@ export default function SalesForm(props) {
                     </div>
                   </div>
                   <div className="flex flex-row ml-[10%]">
-                    <div>AccCur: </div>
+                    {/* <div>AccCur: </div> */}
                     <div>
                       {props.Client["cur"] != undefined &&
                       props.Client["cur"] != null &&
@@ -963,7 +963,7 @@ export default function SalesForm(props) {
                 </div>
 
                 <div>
-                  CurRate:{" "}
+                  {/* CurRate:{" "} */}
                   {props.Client["Rate"] == null ||
                   props.Client["Rate"] == undefined ||
                   props.Client["Rate"] == ""
@@ -1019,9 +1019,9 @@ export default function SalesForm(props) {
               </h1>
               <div></div>
             </div>
-            <div className="randomNameClass  ">
+            <div className="clientBalCall">
               {/**if mobile 40% if web 15% */}
-              <div className="w-[32%] flex flex-column justify-between">
+              <div className="w-[32%] flex flex-column justify-between items-end">
                 <div className="w-full flex flex-row justify-between">
                   <div className="text-xl font-semibold w-fit">Client:</div>
 
@@ -1035,7 +1035,7 @@ export default function SalesForm(props) {
                 </div>
 
                 <div className="w-full flex flex-row justify-between">
-                  <div className="text-xl font-semibold mr-1">Name:</div>
+                  {/* <div className="text-xl font-semibold mr-1">Name:</div> */}
                   <div className="text-xl font-semibold">
                     {props.Client["name"]}
                   </div>
@@ -1043,7 +1043,7 @@ export default function SalesForm(props) {
               </div>
               <div className="w-[32%] flex flex-column justify-between">
                 <div className="w-full flex flex-row justify-between">
-                  <div className="text-xl font-semibold mr-1">Balance:</div>
+                  <div className="text-xl font-semibold mr-1">Bal:</div>
                   <div className="text-xl font-semibold">
                     {props.Client["balance"] !== "" &&
                     props.Client["balance"] !== undefined &&
@@ -1055,19 +1055,18 @@ export default function SalesForm(props) {
                   </div>
                 </div>
                 <div className="w-full flex flex-row justify-between">
-                  <div className="text-xl font-semibold ">Address:</div>
+                  {/* <div className="text-xl font-semibold ">Address:</div> */}
                   <div className="text-xl font-semibold">
                     {" "}
                     {props.Client["address"] !== "" &&
-                    props.Client["address"] !== undefined &&
-                    props.Client["address"] !== null
-                      ? props.Client["address"]
-                      : "--"}
+                      props.Client["address"] !== undefined &&
+                      props.Client["address"] !== null &&
+                      props.Client["address"]}
                   </div>
                 </div>
               </div>
               <div className="w-[32%] flex flex-row justify-center">
-                <div className="text-xl font-semibold w-fit">Call:</div>
+                {/* <div className="text-xl font-semibold w-fit">Call:</div> */}
 
                 <select
                   className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
@@ -1119,7 +1118,7 @@ export default function SalesForm(props) {
                 </select>
               </div>
             </div>
-            <div className="randomClassName2 ">
+            <div className="itemsTable ">
               {" "}
               {/**if mobile 30% if web 55% */}
               <Table bordered striped responsive>
@@ -1428,8 +1427,8 @@ export default function SalesForm(props) {
               </Modal>
             </div>
             <div className="flex flex-col justify-start h-[20%] mb-[1%]">
-              <div className=" font-semibold text-xl h-[45%] flex justify-between items-center">
-                <div>
+              <div className="InvoiceFooterCalculation">
+                <div className="InvoiceEqCur">
                   {localStorage.getItem("mainCur") == "1" ? (
                     <h4>
                       EC:{" "}
@@ -1443,7 +1442,7 @@ export default function SalesForm(props) {
                     </h4>
                   ) : (
                     <h4>
-                      Cur2:{" "}
+                      EC:{" "}
                       {(
                         (finalTotal + finalTax) /
                         props.Client["Rate"]
@@ -1452,22 +1451,23 @@ export default function SalesForm(props) {
                     </h4>
                   )}{" "}
                 </div>
-                <div className="flex justify-between items-center">
-                  <div className="mr-20">
+                <div className="flex flex-row justify-end items-center">
+                  <div className="InvoiceGross">
                     {" "}
                     <h4>Gross: {finalTotal.toLocaleString()} </h4>
                   </div>
-                  <div className="mr-20">
+                  <div className="InvoiceTax">
                     {" "}
                     <h4>TAX: {finalTax.toLocaleString()}</h4>
                   </div>
+
                   <div>
-                    <h3>
+                    <h4>
                       Total: {(finalTotal + finalTax).toLocaleString()}{" "}
                       {localStorage.getItem(
                         "Cur" + localStorage.getItem("mainCur")
                       )}
-                    </h3>
+                    </h4>
                   </div>
                 </div>
               </div>
@@ -3115,8 +3115,8 @@ export default function SalesForm(props) {
       </Modal>
       {/* Dialog */}
       {dialogOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
-          <div className="bg-white p-4 rounded-lg">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 ">
+          <div className="FormOptionContainer">
             <h2 className="text-xl font-semibold mb-4">Select an Option:</h2>
             <div className="grid grid-cols-3 gap-4">
               {/* Your six boxes here */}

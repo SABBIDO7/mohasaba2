@@ -58,21 +58,59 @@ option:hover {
 
 /* For mobile */
 @media screen and (max-width: 1000px) {
-  .randomNameClass {
-
-    display:flex;
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    height: 40%;
-    
-  }
+  
 }
 
 /* For web */
 @media screen and (min-width: 1001px) {
-  .randomNameClass  {
+
+}
+@media screen and (max-width: 1000px) {
+  .itemsTable  {
+    overflow: auto;
+    height: 30%!important;
+  }
+  .FormOptionContainer {
+    width: 80%;
+    height: 90%;
+    overflow: auto;
+
+  }
+  .clientBalCall {
+
+    display:flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 0.1rem;
+    height: 20%!important;
+    
+  }
+  .InvoiceFooterCalculation{
+    justify-content: end!important;
+  }
+  .InvoiceEqCur{
+    display: none!important;
+  
+  }
+  .InvoiceGross{
+    display:none!important;
+  }
+  .InvoiceTax{
+    display:none!important;
+  }
+  .invoiceRateOption{
+    height: 20%!important;
+  }
+}
+
+/* For web */
+
+  .itemsTable {
+    overflow: auto;
+    height: 55%;
+  }
+  .clientBalCall  {
     display:flex;
     flex-direction: row;
     align-items: center;
@@ -81,18 +119,43 @@ option:hover {
     height: 15%;
 
   }
+
+.FormOptionContainer {
+  background-color: #fff;
+  padding: 1rem; /* Adjust padding as needed */
+  border-radius: 0.5rem; /* Adjust border radius as needed */
+
 }
-@media screen and (max-width: 1000px) {
-  .randomClassName2  {
-    overflow: auto;
-    height: 30%;
-  }
+.invoiceRateOption {
+  height: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: space-between; /* or justify-items: space-between; depending on your needs */
 }
 
-/* For web */
-@media screen and (min-width: 1001px) {
-  .randomClassName2 {
-    overflow: auto;
-    height: 55%;
-  }
+@media screen and (max-width: 1000px) {
+  
+}
+
+.InvoiceFooterCalculation{
+  font-weight: 600;
+  font-size: 1.25rem;
+  height: 45%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.InvoiceEqCur{
+  display: block;
+
+}
+.InvoiceGross{
+  display:block;
+  margin-right: 20px;
+}
+.InvoiceTax{
+  display:block;
+  margin-right: 20px;
 }

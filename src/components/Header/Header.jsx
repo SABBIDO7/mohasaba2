@@ -24,7 +24,7 @@ export default function Header(props) {
     <>
       <Disclosure as="nav" className="bg-slate-700 navBar ease-linear">
         {({ open }) => (
-          <>
+          <div>
             <div className=" w-screen absolute text-center font-semibold text-2xl h-14 justify-center flex flex-col text-black">
               <div>{props.compname.toUpperCase()}</div>
             </div>
@@ -44,7 +44,7 @@ export default function Header(props) {
                 </div>
                 <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                   <div className="hidden sm:ml-6 sm:block">
-                    <div className="flex space-x-4">
+                    <div className="flex  sm:space-x-1 md:space-x-1 lg:space-x-4 xl:space-x-5">
                       {navigation.map((item) => (
                         <NavLink
                           key={item.name}
@@ -130,7 +130,7 @@ export default function Header(props) {
                 ))}
               </div>
             </Disclosure.Panel>
-          </>
+          </div>
         )}
       </Disclosure>
       <div>{props.children}</div>

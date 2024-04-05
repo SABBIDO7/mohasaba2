@@ -24,7 +24,7 @@ function App() {
   const [Compname, setCompname] = useState("")
   const [QuickMenu,setQuickMenu ] = useState(false);
   const [FullScreen,setFullScreen ] = useState(false);
-  const [url,setUrl ] = useState("http://localhost:8000");
+  const [url,setUrl ] = useState("http://192.168.16.131:8000");
   const [cookies, setCookie] = useCookies(["token"]);
 
 
@@ -39,9 +39,17 @@ function App() {
 
   function fullScreenHandler(){
     try{
+      var elem = document.documentElement;
 
       if(!FullScreen){
-        document.body.requestFullscreen()
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
+        }
+        
         setFullScreen(true)
       }
       else if(FullScreen){
@@ -80,6 +88,7 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       if (!isVerified) {
+        setisVerified(null);
         var bodyFormData = new FormData();
         
 
@@ -168,10 +177,10 @@ function App() {
 
             
            } else {
-             if (isVerified) {
+          
                
                setisVerified(false);
-             }
+             
              
            }
          } catch (error) {
@@ -205,25 +214,29 @@ function App() {
   // }
 
   function Quickmenu(){
-    return(
-      <>
-      <motion.div id="QM" className={"fixed top-48 m-auto w-[10rem] flex h-[25rem] bg-gradient-to-r from-gray-500 rounded-3xl z-10 ".concat(QuickMenu?"right-[-10rem]":"right-[-5rem]")} animate={{x: QuickMenu? "-5rem":"5rem" }} >
-          <div  onClick={QuickMenuHandler} className={"absolute left-[-30px] top-[70px] bg-gray-500 p-1 rounded-full transition-all ".concat(QuickMenu?"-rotate-90":"rotate-90")} >
-                <img onClick={QuickMenuHandler} className="QuickMenuToggle w-7 rounded-full bg-gray-600" src={QuickMenuToggle}/>
-          </div>
-          <div className="flex flex-col justify-evenly p-2 tra">
+    // return(
+    //   <>
+    //   <motion.div id="QM" className={"fixed top-48 m-auto w-[10rem] flex h-[25rem] bg-gradient-to-r from-gray-500 rounded-3xl z-10 ".concat(QuickMenu?"right-[-10rem]":"right-[-5rem]")} animate={{x: QuickMenu? "-5rem":"5rem" }} >
+    //       <div  onClick={QuickMenuHandler} className={"absolute left-[-30px] top-[70px] bg-gray-500 p-1 rounded-full transition-all ".concat(QuickMenu?"-rotate-90":"rotate-90")} >
+    //             <img onClick={QuickMenuHandler} className="QuickMenuToggle w-7 rounded-full bg-gray-600" src={QuickMenuToggle}/>
+    //       </div>
+    //       <div className="flex flex-col justify-evenly p-2 tra">
         
-              <Button variant={!FullScreen?"light":"outline-light"} onClick={fullScreenHandler} className=" w-[4.2rem]"><img className="h-[2.8rem] m-auto" src={fullScreenToggle} /></Button>
-              <div></div>
-              <div></div>
-              <div></div>
-          </div>
-          </motion.div>
-      </>
-    )
+    //           <Button variant={!FullScreen?"light":"outline-light"} onClick={fullScreenHandler} className=" w-[4.2rem]"><img className="h-[2.8rem] m-auto" src={fullScreenToggle} /></Button>
+    //           <div></div>
+    //           <div></div>
+    //           <div></div>
+    //       </div>
+    //       </motion.div>
+    //   </>
+    // )
   }
 
+  
   return (
+    <>
+    {isVerified!=null ?
+      (
     <div className="App min-h-[100vh] max-h-[100vh] bg-neutral-300">
       <BrowserRouter>
       {isVerified ? null : (<LoginModal url={url} UserDataHandler={UserDataHandler} />)}
@@ -239,7 +252,21 @@ function App() {
       </BrowserRouter>
      
     </div>
+      ):(
+        // loading indicator designed well at the center of the screen
+        <div className="App min-h-[100vh] max-h-[100vh] bg-neutral-300">
+      <div className="flex justify-center items-center h-screen">
+      <div className="spinner-border text-primary" role="status">
+        <span className="sr-only">Loading...</span>
+      </div>
+    </div>
+    </div>
+      )
+  }
+  </>
   );
+  
+
 }
 
 export default App;
