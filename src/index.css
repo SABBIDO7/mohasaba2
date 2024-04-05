@@ -10,6 +10,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(49, 49, 49);
+  
 }
 
 code {
@@ -18,6 +19,7 @@ code {
 }
 .navBar {
   box-shadow: black 0px 0px 20px 1px;
+  background-color: #44318D;
 }
 a {
   text-decoration-line: none;

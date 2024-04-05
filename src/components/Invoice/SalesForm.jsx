@@ -871,7 +871,7 @@ export default function SalesForm(props) {
             </div>
             <div className="ml-4 w-[30%]">
               <button
-                className="bg-indigo-500 text-white w-full h-[3rem] rounded-md hover:bg-indigo-600 focus:outline-none focus:bg-indigo-600"
+                className="bg-primary text-white w-full h-[3rem] rounded-md hover:bg-primary focus:outline-none focus:bg-primary"
                 onClick={() => {
                   if (
                     (props.Client["id"] == "" ||
@@ -1473,8 +1473,7 @@ export default function SalesForm(props) {
               </div>
               <div className="flex flex-row justify-between h-[55%]">
                 <Button
-                  className="h-[100%] w-[20%]"
-                  variant="danger"
+                  className="h-[100%] w-[20%] bg-primary "
                   onClick={() => {
                     // if(props.propertiesAreEqual==false && localStorage.getItem("InvoiceHistory")!=null && localStorage.getItem("InvoiceHistory")!=undefined && localStorage.getItem("InvoiceHistory")!="")
                     if (props.propertiesAreEqual == false) {
