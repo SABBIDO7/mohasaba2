@@ -202,7 +202,7 @@ export default function SalesForm(props) {
     // Calculate total pieces based on other inputs whenever they change
     const calculateTotalPieces = () => {
       let total = 0;
-      if (EditType === "3") {
+      if (EditType === "1") {
         total = EditQty * EditItem["PQty"] * EditItem["PQUnit"];
       } else if (EditType === "2") {
         total = EditQty * EditItem["PQUnit"];
@@ -2072,6 +2072,10 @@ export default function SalesForm(props) {
                       if (oldtempa["tax"] !== tempa[EditIdx]["tax"]) {
                         console.log("fetttt tax");
                         console.log(oldtempa["tax"], tempa[EditIdx]["tax"]);
+                        pAreEqual = false;
+                      }
+                      if (oldtempa["PType"] !== tempa[EditIdx]["PType"]) {
+                        console.log("fetttt edittype");
                         pAreEqual = false;
                       }
 
