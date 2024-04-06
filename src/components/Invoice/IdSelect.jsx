@@ -28,6 +28,7 @@ const IdSelect = forwardRef((props, ref) => {
   const [sItemTotal, setsItemTotal] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const [sItemPQUnit, setsItemPQunit] = useState(1);
+
   const [sItemPType, setsItemPType] = useState("");
   const [sItemPPrice, setsItemPPrice] = useState(0);
 
@@ -724,9 +725,11 @@ const IdSelect = forwardRef((props, ref) => {
           <Modal.Title id="contained-modal-title-vcenter">
             {props.selectedFormOptionDisplay}
             <br />
+            <div></div>
             {props.Client["id"]}
+            {" - "} {props.Client["name"]}
             <br />
-            {props.Client["name"]}
+            {props.Client["balance"]!=null && props.Client["balance"]!="" && props.Client["balance"]!=undefined &&  props.Client["balance"].toLocaleString()} {props.Client["cur"]}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="px-6 py-4">

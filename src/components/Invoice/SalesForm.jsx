@@ -238,7 +238,14 @@ export default function SalesForm(props) {
     const UpriceZeroCheck = () => {
       console.log("klop2");
       if (parseFloat(EditPrice) == 0) {
-        setErrorMessage("The Item Price is 0 !");
+        if (
+          props.selectedFormOption != "DB_AP" &&
+          props.selectedFormOption != "CR_AP"
+        ) {
+          setErrorMessage("The Item Price is 0 !");
+        } else {
+          setErrorMessage("The Amount is 0 !");
+        }
       } else {
         setErrorMessage("");
       }
@@ -838,7 +845,7 @@ export default function SalesForm(props) {
               <input
                 type="text"
                 ref={inputRef}
-                className="block rounded-md w-full  h-[3rem] border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm"
+                className="block rounded-md w-full  h-[3rem] border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:border-second focus:ring-1 focus:ring-second text-sm"
                 placeholder="Search Value"
                 value={vInput}
                 onChange={(e) => {
@@ -849,7 +856,7 @@ export default function SalesForm(props) {
             </div>
             <div className="ml-4 w-[30%]">
               <select
-                className="p-[0.5rem] w-full h-[3rem] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
+                className="p-[0.5rem] w-full h-[3rem] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-second focus:ring-1 focus:ring-second text-sm font-semibold text-lg"
                 value={sOption}
                 ref={selectRef}
                 onChange={(e) => {
@@ -871,7 +878,7 @@ export default function SalesForm(props) {
             </div>
             <div className="ml-4 w-[30%]">
               <button
-                className="bg-primary text-white w-full h-[3rem] rounded-md hover:bg-primary focus:outline-none focus:bg-primary"
+                className="bg-secondd text-white w-full h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd"
                 onClick={() => {
                   if (
                     (props.Client["id"] == "" ||
@@ -907,7 +914,7 @@ export default function SalesForm(props) {
             </div>
           </div>
         </div>
-        <div className=" w-[97.5%] shadow-lg mx-auto h-[85%] rounded p-2">
+        <div className=" w-[97.5%] shadow-lg mx-auto h-[85%] rounded p-2 bg-third">
           <div className="flex flex-col justify-between h-[100%]">
             {" "}
             {/* Model content*/}
@@ -975,7 +982,7 @@ export default function SalesForm(props) {
                     : props.Client["Rate"]}
                 </div>
               </div>
-              <h1
+              <h2
                 className="text-center text-xl2 text-gray-700"
                 onClick={() => {
                   // if (props.propertiesAreEqual == false) {
@@ -1016,18 +1023,18 @@ export default function SalesForm(props) {
                 }}
               >
                 {props.selectedFormOptionDisplay}
-              </h1>
+              </h2>
               <div></div>
             </div>
             <div className="clientBalCall">
               {/**if mobile 40% if web 15% */}
               <div className="w-[32%] flex flex-column justify-between items-end">
                 <div className="w-full flex flex-row justify-between">
-                  <div className="text-xl font-semibold w-fit">Client:</div>
+                  {/* <div className="text-xl font-semibold w-fit">Client:</div> */}
 
                   <input
                     type={"text"}
-                    className="block rounded-md w-[70%] h-9 border border-gray-400 mx-1 px-2 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white"
+                    className="block rounded-md w-[70%] h-9 border border-gray-400 mx-1 px-2 focus:border-second focus:ring-second sm:text-sm bg-white"
                     placeholder={"Client Id"}
                     value={props.Client["id"]}
                     disabled
@@ -1042,8 +1049,8 @@ export default function SalesForm(props) {
                 </div>
               </div>
               <div className="w-[32%] flex flex-column justify-between">
-                <div className="w-full flex flex-row justify-between">
-                  <div className="text-xl font-semibold mr-1">Bal:</div>
+                <div className="w-full flex flex-row justify-center">
+                  {/* <div className="text-xl font-semibold mr-1">Bal:</div> */}
                   <div className="text-xl font-semibold">
                     {props.Client["balance"] !== "" &&
                     props.Client["balance"] !== undefined &&
@@ -1054,7 +1061,7 @@ export default function SalesForm(props) {
                       : "--"}
                   </div>
                 </div>
-                <div className="w-full flex flex-row justify-between">
+                <div className="w-full flex flex-row justify-center">
                   {/* <div className="text-xl font-semibold ">Address:</div> */}
                   <div className="text-xl font-semibold">
                     {" "}
@@ -1069,7 +1076,7 @@ export default function SalesForm(props) {
                 {/* <div className="text-xl font-semibold w-fit">Call:</div> */}
 
                 <select
-                  className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
+                  className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-second focus:ring-1 focus:ring-second text-sm font-semibold text-lg"
                   ref={selectInvRef}
                   onChange={(e) => {
                     if (props.propertiesAreEqual == false) {
@@ -1093,7 +1100,7 @@ export default function SalesForm(props) {
                   onClick={getInvoicesHistory}
                 >
                   <option value="" className="py-2 text-lg">
-                    Call invoice
+                    ReCall
                   </option>
 
                   {sInvoices.map((inv, idx) => {
@@ -1111,7 +1118,8 @@ export default function SalesForm(props) {
                         key={idx}
                         className="py-2 text-lg"
                       >
-                        {inv["RefType"]}_{inv["RefNo"]}_{inv["AccNo"]}
+                        {inv["RefType"]}_{inv["RefNo"]}_
+                        {inv["AccName"].slice(0, 10)}
                       </option>
                     );
                   })}
@@ -1122,31 +1130,33 @@ export default function SalesForm(props) {
               {" "}
               {/**if mobile 30% if web 55% */}
               <Table bordered striped responsive>
-                <thead className=" bg-slate-500">
+                <thead className=" bg-secondd text-white">
                   <tr className=" whitespace-nowrap ">
                     {props.selectedFormOption === "CR_AP" ||
                     props.selectedFormOption === "DB_AP" ? (
                       <>
-                        <th>LNO</th>
+                        <th>L</th>
                         <th>Type</th>
                         <th>Amount</th>
                         <th>Cur</th>
                         <th>Branch</th>
-                        <th>Note</th>
+                        <th>Notes</th>
                         <th>Action</th>
                       </>
                     ) : (
                       <>
-                        <th>LNO</th>
+                        <th>L</th>
                         <th>ItemNo</th>
-                        <th>Name</th>
+                        <th>Description</th>
                         <th>Br</th>
-                        <th>QTY</th>
+                        <th>PQty</th>
+                        <th>PUnit</th>
+                        <th>TotQTY</th>
                         <th>UPrice</th>
-                        <th>Discount %</th>
-                        <th>Tax %</th>
+                        <th>D %</th>
+                        <th>T %</th>
                         <th>Total</th>
-                        <th>Note</th>
+                        <th>Notes</th>
                         <th>Action</th>
                       </>
                     )}
@@ -1266,7 +1276,7 @@ export default function SalesForm(props) {
                                     setNoteInput(si["Note"] || "");
                                   }}
                                 >
-                                  Note
+                                  Notes
                                 </button>
                               </td>
 
@@ -1306,6 +1316,14 @@ export default function SalesForm(props) {
                               <td>{si["no"]}</td>
                               <td>{si["name"]}</td>
                               <td>{si["branch"]}</td>
+                              <td>{si["qty"]}</td>
+                              <td>
+                                {si["PType"] == "1"
+                                  ? si["BPUnit"]
+                                  : si["PType"] == "2"
+                                  ? si["PUnit"]
+                                  : si["SPUnit"]}
+                              </td>
                               <td>{si["TotalPieces"]}</td>
                               <td>{si["uprice"]}</td>
                               <td>{si["discount"]}%</td>
@@ -1323,7 +1341,7 @@ export default function SalesForm(props) {
                                     setNoteInput(si["Note"] || "");
                                   }}
                                 >
-                                  Note
+                                  Notes
                                 </button>
                               </td>
 
@@ -1429,7 +1447,7 @@ export default function SalesForm(props) {
             <div className="flex flex-col justify-start h-[20%] mb-[1%]">
               <div className="InvoiceFooterCalculation">
                 <div className="InvoiceEqCur">
-                  {localStorage.getItem("mainCur") == "1" ? (
+                  {/* {localStorage.getItem("mainCur") == "1" ? (
                     <h4>
                       EC:{" "}
                       {finalTotal != 0
@@ -1449,16 +1467,16 @@ export default function SalesForm(props) {
                       ).toLocaleString()}{" "}
                       {localStorage.getItem("Cur1")}
                     </h4>
-                  )}{" "}
+                  )}{" "} */}
                 </div>
                 <div className="flex flex-row justify-end items-center">
                   <div className="InvoiceGross">
                     {" "}
-                    <h4>Gross: {finalTotal.toLocaleString()} </h4>
+                    <h4>G: {finalTotal.toLocaleString()} </h4>
                   </div>
                   <div className="InvoiceTax">
                     {" "}
-                    <h4>TAX: {finalTax.toLocaleString()}</h4>
+                    <h4>T: {finalTax!=null && finalTax!="" && finalTax!=undefined && finalTax.toLocaleString()}</h4>
                   </div>
 
                   <div>
@@ -1473,7 +1491,7 @@ export default function SalesForm(props) {
               </div>
               <div className="flex flex-row justify-between h-[55%]">
                 <Button
-                  className="h-[100%] w-[20%] bg-primary "
+                  className="ActionButtons"
                   onClick={() => {
                     // if(props.propertiesAreEqual==false && localStorage.getItem("InvoiceHistory")!=null && localStorage.getItem("InvoiceHistory")!=undefined && localStorage.getItem("InvoiceHistory")!="")
                     if (props.propertiesAreEqual == false) {
@@ -1524,7 +1542,7 @@ export default function SalesForm(props) {
                   Exit
                 </Button>
                 <Button
-                  className="h-[100%] w-[20%] text-lg bg-indigo-500"
+                  className="ActionButtons"
                   onClick={() => {
                     //if(props.Client["id"]!=undefined){
                     //     console.log("/*//////////");
@@ -1548,11 +1566,10 @@ export default function SalesForm(props) {
                     //selectRef.current.value="Accounts";
                   }}
                 >
-                  Clear Invoice
+                  Clear
                 </Button>
                 <Button
-                  className=" w-[20%]"
-                  variant="danger"
+                  className="ActionButtons"
                   onClick={() => {
                     let DeleteInvoicePermission =
                       localStorage.getItem("DeleteInvoice");
@@ -1574,10 +1591,10 @@ export default function SalesForm(props) {
                     }
                   }}
                 >
-                  Delete Invoice
+                  Delete
                 </Button>
                 <Button
-                  className=" w-[20%] bg-indigo-500"
+                  className="ActionButtons"
                   onClick={() => {
                     if (
                       (props.SelectedItems.length == 0 &&
@@ -1727,7 +1744,7 @@ export default function SalesForm(props) {
                     <input
                       id="itemQty"
                       type="number"
-                      className="w-1/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                      className="w-1/4 border rounded-md px-3 py-2 border-gray-400 focus:border-prime focus:ring-prime bg-prime"
                       placeholder={"Qty"}
                       value={EditQty}
                       onChange={(e) => {
@@ -1769,7 +1786,7 @@ export default function SalesForm(props) {
                     />
                     <select
                       id="itemType"
-                      className="w-1/2 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                      className="w-1/2 border rounded-md px-3 py-2 border-gray-400 focus:border-second focus:ring-second"
                       value={EditType}
                       onChange={(e) => {
                         setEditType(e.target.value);
@@ -1798,7 +1815,7 @@ export default function SalesForm(props) {
                     id="pieceTotal"
                     type="number"
                     readOnly
-                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-second focus:ring-second"
                     placeholder="Total Pieces"
                     value={parseFloat(
                       EditType == "1"
@@ -1826,7 +1843,7 @@ export default function SalesForm(props) {
                   </label>
                   <select
                     id="itemBranch"
-                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-second focus:ring-second"
                     value={EditBranch}
                     onChange={(e) => {
                       setEditBranch(e.target.value);
@@ -1869,7 +1886,7 @@ export default function SalesForm(props) {
                   </label>
                   <input
                     type="number"
-                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-second focus:ring-second"
                     placeholder={"Uprice"}
                     value={EditPrice}
                     onChange={(e) => {
@@ -1892,7 +1909,7 @@ export default function SalesForm(props) {
                   </label>
                   <input
                     type={"number"}
-                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-second focus:ring-second"
                     placeholder={"Discount"}
                     value={EditDiscount}
                     onChange={(e) => {
@@ -1908,7 +1925,7 @@ export default function SalesForm(props) {
                   </label>
                   <input
                     type={"number"}
-                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-second focus:ring-second"
                     placeholder={"Tax"}
                     value={EditTax}
                     onChange={(e) => {
@@ -1925,7 +1942,7 @@ export default function SalesForm(props) {
                     id="itemTotal"
                     type="number"
                     readOnly
-                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-second focus:ring-second"
                     placeholder="Total"
                     value={
                       EditPPrice == "U"
@@ -2233,9 +2250,13 @@ export default function SalesForm(props) {
               <Modal.Title id="contained-modal-title-vcenter">
                 {props.selectedFormOptionDisplay}
                 <br />
-                {props.Client["id"]}
+                {props.Client["id"]} {" - "} {props.Client["name"]}
                 <br />
-                {props.Client["name"]}
+                {props.Client["balance"] != null &&
+                  props.Client["balance"] != "" &&
+                  props.Client["balance"] != undefined &&
+                  props.Client["balance"].toLocaleString()}{" "}
+                {props.Client["cur"]}
               </Modal.Title>
             </Modal.Header>
             <Modal.Body className="px-6 py-4">
@@ -2246,7 +2267,7 @@ export default function SalesForm(props) {
                   </label>
                   <select
                     id="itemBranch"
-                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-second focus:ring-second"
                     value={EditBranch}
                     onChange={(e) => {
                       setEditBranch(e.target.value);
@@ -2266,7 +2287,7 @@ export default function SalesForm(props) {
                   <div className="flex items-center w-3/4">
                     <select
                       id="itemType"
-                      className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                      className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-second focus:ring-second"
                       value={EditType}
                       onChange={(e) => {
                         setEditType(e.target.value);
@@ -2325,7 +2346,7 @@ export default function SalesForm(props) {
                   <div className="flex items-center w-3/4">
                     <select
                       id="itemType"
-                      className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                      className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-second focus:ring-second"
                       value={EditPPrice}
                       onChange={(e) => {
                         setEditPPrice(e.target.value);
@@ -2357,7 +2378,7 @@ export default function SalesForm(props) {
                   <input
                     id="itemPrice"
                     type="number"
-                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                    className="w-3/4 border rounded-md px-3 py-2 border-gray-400 focus:border-second focus:ring-second"
                     placeholder="Amount"
                     value={EditPrice}
                     onChange={(e) => {
@@ -3124,49 +3145,49 @@ export default function SalesForm(props) {
             <div className="grid grid-cols-3 gap-4">
               {/* Your six boxes here */}
               <button
-                className="bg-indigo-500 text-white py-4 px-8 rounded-md text-center"
+                className="bg-secondd text-white py-4 px-8 rounded-md text-center"
                 onClick={() => formOptionProcessing("SA_AP")}
               >
                 Sales
               </button>
               <button
-                className="bg-indigo-500 text-white py-4 px-8  rounded-md text-center"
+                className="bg-secondd text-white py-4 px-8  rounded-md text-center"
                 onClick={() => formOptionProcessing("OD_AP")}
               >
                 Order
               </button>
               <button
-                className="bg-indigo-500 text-white py-4 px-8   rounded-md text-center"
+                className="bg-secondd text-white py-4 px-8   rounded-md text-center"
                 onClick={() => formOptionProcessing("PR_AP")}
               >
                 Purchase Return
               </button>
               <button
-                className="bg-indigo-500 text-white py-4 px-8  rounded-md text-center"
+                className="bg-secondd text-white py-4 px-8  rounded-md text-center"
                 onClick={() => formOptionProcessing("PI_AP")}
               >
                 Purchase
               </button>
               <button
-                className="bg-indigo-500 text-white py-4 px-8   rounded-md text-center"
+                className="bg-secondd text-white py-4 px-8   rounded-md text-center"
                 onClick={() => formOptionProcessing("SR_AP")}
               >
                 Sales Return
               </button>
               <button
-                className="bg-indigo-500 text-white py-4 px-8  rounded-md text-center"
+                className="bg-secondd text-white py-4 px-8  rounded-md text-center"
                 onClick={() => formOptionProcessing("SAT_AP")}
               >
                 Branch Transfer
               </button>
               <button
-                className="bg-indigo-500 text-white py-4 px-8 rounded-md text-center"
+                className="bg-secondd text-white py-4 px-8 rounded-md text-center"
                 onClick={() => formOptionProcessing("CR_AP")}
               >
                 Receipt Voucher
               </button>
               <button
-                className="bg-indigo-500 text-white py-4 px-8 rounded-md text-center"
+                className="bg-secondd text-white py-4 px-8 rounded-md text-center"
                 onClick={() => formOptionProcessing("DB_AP")}
               >
                 Payment Voucher
@@ -3193,7 +3214,7 @@ export default function SalesForm(props) {
               </label>
               <select
                 id="itemFromBranch"
-                className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
+                className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-second focus:ring-1 focus:ring-second text-sm font-semibold text-lg"
                 // value={props.SATFromBranch}
                 // onChange={(e) => {
                 //   props.setSATFromBranch(e.target.value);
@@ -3212,7 +3233,7 @@ export default function SalesForm(props) {
               </label>
               <select
                 id="itemToBranch"
-                className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm font-semibold text-lg"
+                className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-second focus:ring-1 focus:ring-second text-sm font-semibold text-lg"
                 // value={props.SATToBranch}
                 // onChange={(e) => {
                 //   props.setSATToBranch(e.target.value);
@@ -3238,7 +3259,7 @@ export default function SalesForm(props) {
                 Close
               </button>
               <button
-                className="mt-4 bg-indigo-400 hover:bg-indigo-400 py-3 px-6  rounded-md"
+                className="mt-4 bg-secondd hover:bg-secondd py-3 px-6  rounded-md"
                 onClick={() => {
                   console.log(
                     "batal lebnen",

@@ -237,7 +237,7 @@ function App() {
     <>
     {isVerified!=null ?
       (
-    <div className="App min-h-[100vh] max-h-[100vh] bg-neutral-300">
+    <div className="App min-h-[100vh] max-h-[100vh] bg-prime">
       <BrowserRouter>
       {isVerified ? null : (<LoginModal url={url} UserDataHandler={UserDataHandler} />)}
         <Header name ={Username} compname={Compname} url={url}>

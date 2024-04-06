@@ -19,8 +19,12 @@ module.exports = {
           '900': '#2a4365',
         },
         // Add new custom colors
-        'primary': '#4CAF50',
-        secondary: '#FFC107',
+        prime: '#008B8B',
+        secondd: '#44318D',
+        third:'cyan',
+        // prime: '#FFA500',
+        
+        
         danger: '#4CAF50',
       },
     },

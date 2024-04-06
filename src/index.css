@@ -19,7 +19,7 @@ code {
 }
 .navBar {
   box-shadow: black 0px 0px 20px 1px;
-  background-color: #44318D;
+  background-color:theme('colors.secondd');
 }
 a {
   text-decoration-line: none;
@@ -129,10 +129,10 @@ option:hover {
 
 }
 .invoiceRateOption {
-  height: 10%;
+  height: 13%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: start;
   align-items: space-between; /* or justify-items: space-between; depending on your needs */
 }
 
@@ -143,7 +143,7 @@ option:hover {
 .InvoiceFooterCalculation{
   font-weight: 600;
   font-size: 1.25rem;
-  height: 45%;
+  height: 42%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -161,3 +161,22 @@ option:hover {
   display:block;
   margin-right: 20px;
 }
+.ActionButtons{
+  background-color: theme('colors.secondd')!important;
+  height: 100%;
+  width: 20%;
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+#contained-modal-title-vcenter{
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+/* .ActionButtonsDanger{
+  background-color: theme('colors.prime')!important;
+  height: 100%;
+  width: 20%;
+  font-weight: 600;
+  font-size: 1.25rem;
+} */
