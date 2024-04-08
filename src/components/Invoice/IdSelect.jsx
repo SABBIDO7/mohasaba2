@@ -49,6 +49,16 @@ const IdSelect = forwardRef((props, ref) => {
       selectHandler(e, idx);
     },
   }));
+  useEffect(() => {
+    if (props.modalVoucher == true) {
+      setsItemPPrice(
+        localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
+      );
+      setsItemPType("CASH");
+      setsItemBranch(localStorage.getItem("Abranch"));
+      console.log("||||kkkkk");
+    }
+  }, [props.modalVoucher]);
 
   useEffect(() => {
     // Calculate total pieces based on other inputs whenever they change
@@ -729,7 +739,11 @@ const IdSelect = forwardRef((props, ref) => {
             {props.Client["id"]}
             {" - "} {props.Client["name"]}
             <br />
-            {props.Client["balance"]!=null && props.Client["balance"]!="" && props.Client["balance"]!=undefined &&  props.Client["balance"].toLocaleString()} {props.Client["cur"]}
+            {props.Client["balance"] != null &&
+              props.Client["balance"] != "" &&
+              props.Client["balance"] != undefined &&
+              props.Client["balance"].toLocaleString()}{" "}
+            {props.Client["cur"]}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="px-6 py-4">

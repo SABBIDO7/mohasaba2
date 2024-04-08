@@ -160,18 +160,28 @@ export default function SalesForm(props) {
     } else if (option == "CR_AP" || option == "DB_AP") {
       console.log("125");
       if (props.propertiesAreEqual == false && props.SelectedItems.length > 0) {
-        setSwitchFormOption({
+        // setSwitchFormOption({
+        //   show: true,
+        //   message: (
+        //     <div>
+        //       Are You Sure You Want To Change Form Option?
+        //       <br />
+        //       You Will Lost Your Items.
+        //     </div>
+        //   ),
+        //   //variable: option,
+        //   title: "Calling New Form",
+        //   variable: option,
+        // });
+        setErrorModal({
           show: true,
           message: (
             <div>
-              Are You Sure You Want To Change Form Option?
-              <br />
-              You Will Lost Your Items.
+              There Is UnSaved Data. <br></br> Please Save Or Clear Invoice
+              Before Changing Form Option.
             </div>
           ),
-          //variable: option,
-          title: "Calling New Form",
-          variable: option,
+          title: option,
         });
         setDialogOpen(false);
         return;
@@ -182,12 +192,58 @@ export default function SalesForm(props) {
       console.log("101010");
       setDialogOpen(false);
     } else {
-      console.log("131", option);
-      props.setSelectedFormOption(option);
-      props.setSATFromBranch();
-      props.setSATToBranch();
-      setDialogOpen(false);
-      return;
+      console.log("kkjkjkjkjkjkjj");
+      if (
+        props.propertiesAreEqual == false &&
+        props.SelectedItems.length > 0 &&
+        option != "CR_AP" &&
+        option != "DB_AP" &&
+        (props.selectedFormOption == "CR_AP" ||
+          props.selectedFormOption == "DB_AP")
+      ) {
+        // setSwitchFormOption({
+        //   show: true,
+        //   message: (
+        //     <div>
+        //       Are You Sure You Want To Change Form Option?
+        //       <br />
+        //       You Will Lost Your Items.
+        //     </div>
+        //   ),
+        //   //variable: option,
+        //   title: "Calling New Form",
+        //   variable: option,
+        // });
+        setErrorModal({
+          show: true,
+          message: (
+            <div>
+              There Is UnSaved Data. <br></br> Please Save Or Clear Invoice
+              Before Changing Form Option.
+            </div>
+          ),
+          title: option,
+        });
+        setDialogOpen(false);
+        return;
+      }
+      // else if (
+      //   props.propertiesAreEqual == false &&
+      //   option != "CR_AP" &&
+      //   option != "DB_AP" &&
+      //   (props.selectedFormOption == "CR_AP" ||
+      //     props.selectedFormOption == "DB_AP")
+      // ) {
+      //   setsOption("Amounts");
+      // }
+      else {
+        console.log("131", option);
+        props.setSelectedFormOption(option);
+        props.setSATFromBranch();
+        props.setSATToBranch();
+        setDialogOpen(false);
+        return;
+      }
     }
   };
   const inputRef = useRef(null);
@@ -280,24 +336,28 @@ export default function SalesForm(props) {
   useEffect(() => {
     if (props.selectedFormOption == "SA_AP") {
       props.setSelectedFormOptionDisplay("Sales");
+      setsOption("Accounts");
     } else if (props.selectedFormOption == "SR_AP") {
       props.setSelectedFormOptionDisplay("Sales Return");
+      setsOption("Accounts");
     } else if (props.selectedFormOption == "OD_AP") {
       props.setSelectedFormOptionDisplay("Order");
+      setsOption("Accounts");
     } else if (props.selectedFormOption == "PI_AP") {
       props.setSelectedFormOptionDisplay("Purchase");
+      setsOption("Accounts");
     } else if (props.selectedFormOption == "PR_AP") {
       props.setSelectedFormOptionDisplay("Purchase Return");
+      setsOption("Accounts");
     } else if (props.selectedFormOption == "SAT_AP") {
       props.setSelectedFormOptionDisplay("Branch Transfer");
       setsOption("Items");
     } else if (props.selectedFormOption == "CR_AP") {
-      if (sOption == "Items") {
-        setsOption("Amounts");
-      }
       props.setSelectedFormOptionDisplay("Receipt Voucher");
+      setsOption("Accounts");
     } else if (props.selectedFormOption == "DB_AP") {
       props.setSelectedFormOptionDisplay("Payment Voucher");
+      setsOption("Accounts");
     }
     console.log("234", props.selectedFormOption);
     localStorage.setItem("selectedFormOption", props.selectedFormOption);
@@ -307,14 +367,23 @@ export default function SalesForm(props) {
       localStorage.setItem("SATFromBranch", "");
       localStorage.setItem("SATToBranch", "");
     }
-    if (
-      props.selectedFormOption != "SAT_AP" &&
-      (props.Client["id"] == "" ||
-        props.Client["id"] == undefined ||
-        props.Client["id"] == null)
-    ) {
-      setsOption("Accounts");
-    }
+    //     if (
+    //       props.selectedFormOption != "SAT_AP" &&
+    //       (props.Client["id"] == "" ||
+    //         props.Client["id"] == undefined ||
+    //         props.Client["id"] == null)
+    //     ) {
+    //       setsOption("Accounts");
+    //     }else if(props.selectedFormOption != "SAT_AP" &&
+    //       props.selectedFormOption != "DB_AP" &&
+    //      props.selectedFormOption != "CR_AP" &&
+    //     (props.Client["id"] != "" &&
+    //       props.Client["id"] != undefined &&
+    //       props.Client["id"] != null)){
+    // setsOption("Items")
+    //     }else{
+
+    //     }
   }, [props.selectedFormOption]);
 
   // Function to handle the change event of the select element
@@ -878,7 +947,7 @@ export default function SalesForm(props) {
             </div>
             <div className="ml-4 w-[30%]">
               <button
-                className="bg-secondd text-white w-full h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd"
+                className="bg-secondd text-white w-full h-[3rem] font-bold rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd"
                 onClick={() => {
                   if (
                     (props.Client["id"] == "" ||
@@ -914,14 +983,14 @@ export default function SalesForm(props) {
             </div>
           </div>
         </div>
-        <div className=" w-[97.5%] shadow-lg mx-auto h-[85%] rounded p-2 bg-third">
+        <div className=" w-[97.5%] shadow-lg mx-auto h-[85%] rounded p-2 bg-third border-gray-300">
           <div className="flex flex-col justify-between h-[100%]">
             {" "}
             {/* Model content*/}
             <div className="invoiceRateOption">
-              <div className="flex flex-row items-center justify-between">
+              <div className="flex flex-row items-center justify-between ">
                 <div className="flex flex-row ">
-                  <div className="flex flex-row ">
+                  <div className="flex flex-row bg-fourth text-black font-semibold rounded p-0.5">
                     {/* <div>CompCur: </div> */}
                     <div>
                       {localStorage.getItem(
@@ -929,7 +998,7 @@ export default function SalesForm(props) {
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-row ml-[10%]">
+                  <div className="flex flex-row ml-[10%] bg-fourth text-black font-semibold rounded p-0.5">
                     {/* <div>AccCur: </div> */}
                     <div>
                       {props.Client["cur"] != undefined &&
@@ -946,7 +1015,7 @@ export default function SalesForm(props) {
                     props.SATToBranch != null &&
                     props.SATToBranch != "" && (
                       <>
-                        <div className="flex flex-row ml-[10%]">
+                        <div className="flex flex-row ml-[10%] bg-fourth text-black font-semibold rounded p-0.5">
                           <div>BF: </div>
                           <div>
                             {props.SATFromBranch !== "undefined"
@@ -955,7 +1024,7 @@ export default function SalesForm(props) {
                           </div>
                         </div>
 
-                        <div className="flex flex-row ml-[10%]">
+                        <div className="flex flex-row ml-[10%] bg-fourth text-black font-semibold rounded p-0.5">
                           <div>BT: </div>
                           <div>
                             {props.SATToBranch !== "undefined" &&
@@ -969,7 +1038,7 @@ export default function SalesForm(props) {
                     )}
                 </div>
 
-                <div>
+                <div className="bg-fourth text-black font-semibold rounded p-0.5">
                   {/* CurRate:{" "} */}
                   {props.Client["Rate"] == null ||
                   props.Client["Rate"] == undefined ||
@@ -983,7 +1052,7 @@ export default function SalesForm(props) {
                 </div>
               </div>
               <h2
-                className="text-center text-xl2 text-gray-700"
+                className="text-center text-xl2 text-secondd font-bold"
                 onClick={() => {
                   // if (props.propertiesAreEqual == false) {
                   //   setSwitchFormOption({
@@ -1041,29 +1110,29 @@ export default function SalesForm(props) {
                   />
                 </div>
 
-                <div className="w-full flex flex-row justify-between">
+                <div className="w-full flex flex-row justify-between bg-fourth text-black rounded p-0.5">
                   {/* <div className="text-xl font-semibold mr-1">Name:</div> */}
-                  <div className="text-xl font-semibold">
+                  <div className="text-xl sm:text-md font-semibold ">
                     {props.Client["name"]}
                   </div>
                 </div>
               </div>
               <div className="w-[32%] flex flex-column justify-between">
-                <div className="w-full flex flex-row justify-center">
+                <div className="w-full h-fit flex flex-row justify-center bg-fourth text-black rounded p-0.5">
                   {/* <div className="text-xl font-semibold mr-1">Bal:</div> */}
-                  <div className="text-xl font-semibold">
+                  <div className="text-xl sm:text-md font-semibold ">
                     {props.Client["balance"] !== "" &&
-                    props.Client["balance"] !== undefined &&
-                    props.Client["balance"] !== null
-                      ? props.Client["balance"].toLocaleString() +
+                      props.Client["balance"] !== undefined &&
+                      props.Client["balance"] !== null &&
+                      props.Client["balance"].toLocaleString() +
                         " " +
-                        props.Client["cur"]
-                      : "--"}
+                        props.Client["cur"]}
                   </div>
                 </div>
-                <div className="w-full flex flex-row justify-center">
+
+                <div className="w-full h-fit flex flex-row justify-center bg-fourth text-black rounded p-0.5 mt-[1%]">
                   {/* <div className="text-xl font-semibold ">Address:</div> */}
-                  <div className="text-xl font-semibold">
+                  <div className="text-xl sm:text-md font-semibold">
                     {" "}
                     {props.Client["address"] !== "" &&
                       props.Client["address"] !== undefined &&
@@ -1151,7 +1220,7 @@ export default function SalesForm(props) {
                         <th>Br</th>
                         <th>PQty</th>
                         <th>PUnit</th>
-                        <th>TotQTY</th>
+                        <th>TQty</th>
                         <th>UPrice</th>
                         <th>D %</th>
                         <th>T %</th>
@@ -1469,23 +1538,27 @@ export default function SalesForm(props) {
                     </h4>
                   )}{" "} */}
                 </div>
-                <div className="flex flex-row justify-end items-center">
+                <div className="flex flex-row justify-end items-center bg-fourth shadow-xl  rounded p-2 sm:rounded p-1">
                   <div className="InvoiceGross">
                     {" "}
-                    <h4>G: {finalTotal.toLocaleString()} </h4>
+                    <div className="text-black font-semibold text-2xl sm: text-md">
+                      G: {finalTotal.toLocaleString()}{" "}
+                    </div>
                   </div>
                   <div className="InvoiceTax">
                     {" "}
-                    <h4>T: {finalTax!=null && finalTax!="" && finalTax!=undefined && finalTax.toLocaleString()}</h4>
+                    <div className="text-black font-semibold text-2xl sm: text-md">
+                      T: {finalTax.toLocaleString()}
+                    </div>
                   </div>
 
                   <div>
-                    <h4>
+                    <div className="text-black font-semibold text-2xl sm: text-md">
                       Total: {(finalTotal + finalTax).toLocaleString()}{" "}
                       {localStorage.getItem(
                         "Cur" + localStorage.getItem("mainCur")
                       )}
-                    </h4>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1497,7 +1570,7 @@ export default function SalesForm(props) {
                     if (props.propertiesAreEqual == false) {
                       setDiscardModalShow(true);
                     } else {
-                      props.inv("");
+                      window.location.href = "/";
                       if (
                         localStorage.getItem("InvoiceHistory") != null &&
                         localStorage.getItem("InvoiceHistory") != undefined &&
@@ -2724,6 +2797,7 @@ export default function SalesForm(props) {
               variant="danger"
               onClick={() => {
                 //props.callBack()
+                window.location.href = "/";
                 props.setpropertiesAreEqual(true);
                 console.log("dirigin", props.propertiesAreEqual);
                 props.inv("");
@@ -3090,13 +3164,9 @@ export default function SalesForm(props) {
             <Button
               variant="danger"
               onClick={() => {
-                if (
-                  SwitchFormOption.variable == "DB_AP" ||
-                  SwitchFormOption.variable == "CR_AP"
-                ) {
-                  clearInvoice();
-                  props.setSelectedFormOption(SwitchFormOption.variable);
-                }
+                clearInvoice();
+                props.setSelectedFormOption(SwitchFormOption.variable);
+
                 setSwitchFormOption({ ...SwitchFormOption, show: false });
               }}
             >
@@ -3362,7 +3432,23 @@ export default function SalesForm(props) {
     })
       .then((res) => {
         if (res.data.Info == "authorized") {
-          setIdOptions(res.data.opp);
+          let lgt = res.data.opp;
+          if (lgt.length > 0) {
+            setIdOptions(res.data.opp);
+          } else {
+            setModalShow(false);
+
+            setErrorModal({
+              show: true,
+              message: (
+                <div>
+                  There Is No {sOption} Matches Your Search <br></br> Please Try
+                  a Different {sOption} .
+                </div>
+              ),
+              title: "Empty " + sOption,
+            });
+          }
         }
       })
       .catch((err) => {

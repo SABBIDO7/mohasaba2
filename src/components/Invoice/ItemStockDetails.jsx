@@ -61,7 +61,7 @@ export default function ItemStockDetails(props) {
             ) : (
               <Table striped bordered responsive className=" mt-2 ">
                 <thead>
-                  <tr className="bg-slate-500">
+                  <tr className="bg-secondd text-white">
                     <th>Branch</th>
                     <th>BranchName</th>
                     <th>Qty</th>
@@ -72,7 +72,7 @@ export default function ItemStockDetails(props) {
                     return (
                       <tr
                         key={DB["key"]}
-                        className="hover:bg-blue-200 whitespace-nowrap"
+                        className="hover:bg-secondd hover:text-white whitespace-nowrap"
                       >
                         <td>{DB["Branch"]}</td>
                         <td>{DB["BranchName"]}</td>

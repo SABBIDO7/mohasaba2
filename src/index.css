@@ -24,6 +24,16 @@ code {
 a {
   text-decoration-line: none;
 }
+button{
+  background-color: theme('colors.secondd')!important;
+  border-color: theme('colors.secondd')!important;
+  color: #fff!important;
+}
+/* Exclude button styles from the Accordion.Body */
+.Accordion.Body > button {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
     /* width */
     ::-webkit-scrollbar {
       width: 10px;
@@ -70,7 +80,7 @@ option:hover {
 @media screen and (max-width: 1000px) {
   .itemsTable  {
     overflow: auto;
-    height: 30%!important;
+    height: 26%!important;
   }
   .FormOptionContainer {
     width: 80%;
@@ -84,8 +94,8 @@ option:hover {
     flex-direction: column;
     align-items: flex-end;
     justify-content: space-between;
-    margin-bottom: 0.1rem;
-    height: 20%!important;
+    margin-bottom: 0.1%!important;
+    height: 17.9%!important;
     
   }
   .InvoiceFooterCalculation{
@@ -102,7 +112,7 @@ option:hover {
     display:none!important;
   }
   .invoiceRateOption{
-    height: 20%!important;
+    height: 22%!important;
   }
 }
 
@@ -110,14 +120,14 @@ option:hover {
 
   .itemsTable {
     overflow: auto;
-    height: 55%;
+    height: 54%;
   }
   .clientBalCall  {
     display:flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1rem;
+    margin-bottom: 1%;
     height: 15%;
 
   }
@@ -148,14 +158,22 @@ option:hover {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+
+  
 }
 .InvoiceEqCur{
   display: block;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Add transition for smooth effect */
+
+  /* Add elevation */
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1); /* Customize elevation as needed */
 
 }
 .InvoiceGross{
   display:block;
   margin-right: 20px;
+  
+ 
 }
 .InvoiceTax{
   display:block;
@@ -165,8 +183,20 @@ option:hover {
   background-color: theme('colors.secondd')!important;
   height: 100%;
   width: 20%;
-  font-weight: bold;
+  font-weight: bold!important;
   font-size: 1.25rem;
+  border-color: theme('colors.fourth')!important;
+  
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Add transition for smooth effect */
+
+  /* Add elevation */
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1); /* Customize elevation as needed */
+  
+}
+/* Hover effect */
+.ActionButtons:hover {
+  background-color:'#000000' /* Your hover color here */;
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2); /* Adjust elevation on hover */
 }
 
 #contained-modal-title-vcenter{

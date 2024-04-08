@@ -25,7 +25,7 @@ export default function Header(props) {
       <Disclosure as="nav" className="bg-slate-700 navBar ease-linear">
         {({ open }) => (
           <div>
-            <div className=" w-screen absolute text-center font-semibold text-2xl h-14 justify-center flex flex-col text-black">
+            <div className=" w-screen absolute text-center font-semibold text-2xl h-14 justify-center flex flex-col text-third">
               <div>{props.compname.toUpperCase()}</div>
             </div>
 
@@ -55,8 +55,8 @@ export default function Header(props) {
                             return (
                               "px-3 py-2 rounded-md text-sm font-medium no-underline " +
                               (isActive
-                                ? "bg-gray-900 text-white"
-                                : "text-gray-300 hover:bg-gray-700 hover:text-white")
+                                ? "bg-third text-secondd"
+                                : "text-third hover:bg-third hover:text-secondd")
                             );
                           }}
                         >
