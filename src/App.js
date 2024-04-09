@@ -20,8 +20,8 @@ import axios from "axios";
 function App() {
   const [token, setToken] = useState("");
   const [isVerified, setisVerified] = useState(false)
-  const [Username, setUsername] = useState("")
-  const [Compname, setCompname] = useState("")
+  const [Username, setUsername] = useState("");
+  const [Compname, setCompname] = useState("");
   const [QuickMenu,setQuickMenu ] = useState(false);
   const [FullScreen,setFullScreen ] = useState(false);
   const [url,setUrl ] = useState("https://pssapi.net:444");

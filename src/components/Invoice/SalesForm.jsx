@@ -904,13 +904,8 @@ export default function SalesForm(props) {
           {/* <h6 className="h-[100%]">Sales Invoice</h6> */}
         </div>
         <div className="h-[12%]">
-          <div className=" px-2 w-[97.5%] h-[100%]  mx-auto flex flex-row items-center">
-            <div className="flex items-center">
-              <i className="fas fa-search text-gray-500 mr-2"></i>{" "}
-              {/* Magnifying glass icon */}
-              {/* <h2 className="font-semibold text-2xl text-gray-700">Search:</h2> */}
-            </div>
-            <div className="flex-grow ml-4 relative w-[40%]">
+          <div className="  w-[97.5%] h-[100%]  mx-auto flex flex-row items-center">
+            <div className="w-[36%]">
               <input
                 type="text"
                 ref={inputRef}
@@ -923,29 +918,7 @@ export default function SalesForm(props) {
                 id="tf"
               />
             </div>
-            <div className="ml-4 w-[30%]">
-              <select
-                className="p-[0.5rem] w-full h-[3rem] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-second focus:ring-1 focus:ring-second text-sm font-semibold text-lg"
-                value={sOption}
-                ref={selectRef}
-                onChange={(e) => {
-                  setsOption(e.target.value);
-                  document.getElementById("tf").focus();
-                  setvInput("");
-                }}
-              >
-                {props.selectedFormOption != "SAT_AP" && (
-                  <option className="py-2 text-lg">Accounts</option>
-                )}
-                {props.selectedFormOption != "DB_AP" &&
-                props.selectedFormOption != "CR_AP" ? (
-                  <option className="py-2 text-lg">Items</option>
-                ) : (
-                  <option className="py-2 text-lg">Amounts</option>
-                )}
-              </select>
-            </div>
-            <div className="ml-4 w-[30%]">
+            <div className="ml-[2%] w-[30%]">
               <button
                 className="bg-secondd text-white w-full h-[3rem] font-bold rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd"
                 onClick={() => {
@@ -981,6 +954,28 @@ export default function SalesForm(props) {
                 Select {sOption}
               </button>
             </div>
+            <div className="ml-[2%] w-[30%] h-[3rem]">
+              <select
+                className=" select-style "
+                value={sOption}
+                ref={selectRef}
+                onChange={(e) => {
+                  setsOption(e.target.value);
+                  document.getElementById("tf").focus();
+                  setvInput("");
+                }}
+              >
+                {props.selectedFormOption != "SAT_AP" && (
+                  <option className="py-2 text-lg">Accounts</option>
+                )}
+                {props.selectedFormOption != "DB_AP" &&
+                props.selectedFormOption != "CR_AP" ? (
+                  <option className="py-2 text-lg">Items</option>
+                ) : (
+                  <option className="py-2 text-lg">Amounts</option>
+                )}
+              </select>
+            </div>
           </div>
         </div>
         <div className=" w-[97.5%] shadow-lg mx-auto h-[85%] rounded p-2 bg-third border-gray-300">
@@ -989,68 +984,85 @@ export default function SalesForm(props) {
             {/* Model content*/}
             <div className="invoiceRateOption">
               <div className="flex flex-row items-center justify-between ">
-                <div className="flex flex-row ">
-                  <div className="flex flex-row bg-fourth text-black font-semibold rounded p-0.5">
-                    {/* <div>CompCur: </div> */}
-                    <div>
-                      {localStorage.getItem(
-                        "Cur" + localStorage.getItem("mainCur")
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex flex-row ml-[10%] bg-fourth text-black font-semibold rounded p-0.5">
-                    {/* <div>AccCur: </div> */}
-                    <div>
-                      {props.Client["cur"] != undefined &&
-                      props.Client["cur"] != null &&
-                      props.Client["cur"] != ""
-                        ? props.Client["cur"]
-                        : "-"}
-                    </div>
-                  </div>
-                  {props.SATFromBranch != "undefined" &&
-                    props.SATFromBranch != null &&
-                    props.SATFromBranch != "" &&
-                    props.SATToBranch != "undefined" &&
-                    props.SATToBranch != null &&
-                    props.SATToBranch != "" && (
-                      <>
-                        <div className="flex flex-row ml-[10%] bg-fourth text-black font-semibold rounded p-0.5">
-                          <div>BF: </div>
-                          <div>
-                            {props.SATFromBranch !== "undefined"
-                              ? props.SATFromBranch
-                              : "-"}
-                          </div>
-                        </div>
+                <div className="w-full flex flex-row justify-between">
+                  {/* <div className="text-xl font-semibold w-fit">Client:</div> */}
 
-                        <div className="flex flex-row ml-[10%] bg-fourth text-black font-semibold rounded p-0.5">
-                          <div>BT: </div>
-                          <div>
-                            {props.SATToBranch !== "undefined" &&
-                            props.SATToBranch != null &&
-                            props.SATToBranch !== ""
-                              ? props.SATToBranch
-                              : "-"}
-                          </div>
-                        </div>
-                      </>
-                    )}
+                  {/* <input
+                    type={"text"}
+                    className="block rounded-md w-1/2 h-100% border border-gray-400 mx-1 px-2 focus:border-second focus:ring-second sm:text-sm bg-white"
+                    placeholder={"Client Id"}
+                    value={props.Client["id"]}
+                    disabled
+                  /> */}
+                  <div className="bg-fourth text-black font-semibold rounded p-0.5 w-50%">
+                    {props.Client["id"]}
+                  </div>
                 </div>
+                <div className="flex flex-row justify-end w-[50%]">
+                  <div className="flex flex-row w-2/3 justify-end">
+                    <div className="flex flex-row bg-fourth text-black font-semibold rounded p-0.5">
+                      {/* <div>CompCur: </div> */}
+                      <div>
+                        {localStorage.getItem(
+                          "Cur" + localStorage.getItem("mainCur")
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-row ml-[10%] bg-fourth text-black font-semibold rounded p-0.5">
+                      {/* <div>AccCur: </div> */}
+                      <div>
+                        {props.Client["cur"] != undefined &&
+                        props.Client["cur"] != null &&
+                        props.Client["cur"] != ""
+                          ? props.Client["cur"]
+                          : "-"}
+                      </div>
+                    </div>
+                    {props.SATFromBranch != "undefined" &&
+                      props.SATFromBranch != null &&
+                      props.SATFromBranch != "" &&
+                      props.SATToBranch != "undefined" &&
+                      props.SATToBranch != null &&
+                      props.SATToBranch != "" && (
+                        <>
+                          <div className="flex flex-row ml-[10%] bg-fourth text-black font-semibold rounded p-0.5">
+                            <div>BF: </div>
+                            <div>
+                              {props.SATFromBranch !== "undefined"
+                                ? props.SATFromBranch
+                                : "-"}
+                            </div>
+                          </div>
 
-                <div className="bg-fourth text-black font-semibold rounded p-0.5">
-                  {/* CurRate:{" "} */}
-                  {props.Client["Rate"] == null ||
-                  props.Client["Rate"] == undefined ||
-                  props.Client["Rate"] == ""
-                    ? localStorage.getItem("Rate") != undefined &&
-                      localStorage.getItem("Rate") != "" &&
-                      localStorage.getItem("Rate") != null
-                      ? localStorage.getItem("Rate")
-                      : "--"
-                    : props.Client["Rate"]}
+                          <div className="flex flex-row ml-[10%] bg-fourth text-black font-semibold rounded p-0.5">
+                            <div>BT: </div>
+                            <div>
+                              {props.SATToBranch !== "undefined" &&
+                              props.SATToBranch != null &&
+                              props.SATToBranch !== ""
+                                ? props.SATToBranch
+                                : "-"}
+                            </div>
+                          </div>
+                        </>
+                      )}
+                  </div>
+
+                  <div className="bg-fourth text-black font-semibold rounded p-0.5 ml-[5%]">
+                    {/* CurRate:{" "} */}
+                    {props.Client["Rate"] == null ||
+                    props.Client["Rate"] == undefined ||
+                    props.Client["Rate"] == ""
+                      ? localStorage.getItem("Rate") != undefined &&
+                        localStorage.getItem("Rate") != "" &&
+                        localStorage.getItem("Rate") != null
+                        ? localStorage.getItem("Rate")
+                        : "--"
+                      : props.Client["Rate"]}
+                  </div>
                 </div>
               </div>
+
               <h2
                 className="text-center text-xl2 text-secondd font-bold"
                 onClick={() => {
@@ -1097,30 +1109,16 @@ export default function SalesForm(props) {
             </div>
             <div className="clientBalCall">
               {/**if mobile 40% if web 15% */}
-              <div className="w-[32%] flex flex-column justify-between items-end">
-                <div className="w-full flex flex-row justify-between">
-                  {/* <div className="text-xl font-semibold w-fit">Client:</div> */}
-
-                  <input
-                    type={"text"}
-                    className="block rounded-md w-[70%] h-9 border border-gray-400 mx-1 px-2 focus:border-second focus:ring-second sm:text-sm bg-white"
-                    placeholder={"Client Id"}
-                    value={props.Client["id"]}
-                    disabled
-                  />
-                </div>
-
-                <div className="w-full flex flex-row justify-between bg-fourth text-black rounded p-0.5">
-                  {/* <div className="text-xl font-semibold mr-1">Name:</div> */}
-                  <div className="text-xl sm:text-md font-semibold ">
-                    {props.Client["name"]}
+              <div className="w-[100%] h-[47.5%] flex flex-row justify-between">
+                <div className="w-[50%] flex flex-column justify-center items-end">
+                  <div className="w-full flex flex-row justify-center bg-fourth text-black rounded p-0.5 h-[100%]">
+                    {/* <div className="text-xl font-semibold mr-1">Name:</div> */}
+                    <div className="Text">{props.Client["name"]}</div>
                   </div>
                 </div>
-              </div>
-              <div className="w-[32%] flex flex-column justify-between">
-                <div className="w-full h-fit flex flex-row justify-center bg-fourth text-black rounded p-0.5">
+                <div className="w-[27%] h-[100%] flex flex-row justify-center bg-fourth text-black rounded p-0.5">
                   {/* <div className="text-xl font-semibold mr-1">Bal:</div> */}
-                  <div className="text-xl sm:text-md font-semibold ">
+                  <div className="Text">
                     {props.Client["balance"] !== "" &&
                       props.Client["balance"] !== undefined &&
                       props.Client["balance"] !== null &&
@@ -1129,70 +1127,73 @@ export default function SalesForm(props) {
                         props.Client["cur"]}
                   </div>
                 </div>
+                <div className="w-[21%] flex flex-row justify-center">
+                  {/* <div className="text-xl font-semibold w-fit">Call:</div> */}
 
-                <div className="w-full h-fit flex flex-row justify-center bg-fourth text-black rounded p-0.5 mt-[1%]">
-                  {/* <div className="text-xl font-semibold ">Address:</div> */}
-                  <div className="text-xl sm:text-md font-semibold">
-                    {" "}
-                    {props.Client["address"] !== "" &&
-                      props.Client["address"] !== undefined &&
-                      props.Client["address"] !== null &&
-                      props.Client["address"]}
-                  </div>
+                  <select
+                    className="select-style"
+                    ref={selectInvRef}
+                    onChange={(e) => {
+                      if (props.propertiesAreEqual == false) {
+                        let intervalue = e.target.value;
+                        setpassSelectedInvoiceToModal(intervalue);
+                        setswitchBetweenInvoicesModalShow(true);
+                      } else {
+                        let CallInvoice = localStorage.getItem("CallInvoice");
+                        if (CallInvoice == "Y") {
+                          handleSelectChange(e.target.value);
+                        } else {
+                          setDeletePermission({
+                            show: true,
+                            message:
+                              "You don't have permission To Call Invoices From History.",
+                          });
+                        }
+                      }
+                    }}
+                    value={selectedInvoice}
+                    onClick={getInvoicesHistory}
+                  >
+                    <option value="" className="optionText">
+                      ReCall
+                    </option>
+
+                    {sInvoices.map((inv, idx) => {
+                      return inv["RefType"] == "SAT_AP" ? (
+                        <option
+                          value={inv["RefNo"]}
+                          key={idx}
+                          className="optionText"
+                        >
+                          {inv["RefType"]}_{inv["RefNo"]}
+                        </option>
+                      ) : (
+                        <option
+                          value={inv["RefNo"]}
+                          key={idx}
+                          className="optionText"
+                        >
+                          {inv["RefType"]}_{inv["RefNo"]}_
+                          {inv["AccName"].slice(0, 10)}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
               </div>
-              <div className="w-[32%] flex flex-row justify-center">
-                {/* <div className="text-xl font-semibold w-fit">Call:</div> */}
-
-                <select
-                  className="p-[0.5rem] w-full h-[100%] rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:border-second focus:ring-1 focus:ring-second text-sm font-semibold text-lg"
-                  ref={selectInvRef}
-                  onChange={(e) => {
-                    if (props.propertiesAreEqual == false) {
-                      let intervalue = e.target.value;
-                      setpassSelectedInvoiceToModal(intervalue);
-                      setswitchBetweenInvoicesModalShow(true);
-                    } else {
-                      let CallInvoice = localStorage.getItem("CallInvoice");
-                      if (CallInvoice == "Y") {
-                        handleSelectChange(e.target.value);
-                      } else {
-                        setDeletePermission({
-                          show: true,
-                          message:
-                            "You don't have permission To Call Invoices From History.",
-                        });
-                      }
-                    }
-                  }}
-                  value={selectedInvoice}
-                  onClick={getInvoicesHistory}
-                >
-                  <option value="" className="py-2 text-lg">
-                    ReCall
-                  </option>
-
-                  {sInvoices.map((inv, idx) => {
-                    return inv["RefType"] == "SAT_AP" ? (
-                      <option
-                        value={inv["RefNo"]}
-                        key={idx}
-                        className="py-2 text-lg"
-                      >
-                        {inv["RefType"]}_{inv["RefNo"]}
-                      </option>
-                    ) : (
-                      <option
-                        value={inv["RefNo"]}
-                        key={idx}
-                        className="py-2 text-lg"
-                      >
-                        {inv["RefType"]}_{inv["RefNo"]}_
-                        {inv["AccName"].slice(0, 10)}
-                      </option>
-                    );
-                  })}
-                </select>
+              <div className="w-[100%] h-[47.5%] flex flex-row bg-fourth text-black rounded p-0.5">
+                <div className="w-[100%] flex flex-row justify-between">
+                  <div className="w-full  flex flex-row justify-center ">
+                    {/* <div className="text-xl font-semibold ">Address:</div> */}
+                    <div className="Text">
+                      {" "}
+                      {props.Client["address"] !== "" &&
+                        props.Client["address"] !== undefined &&
+                        props.Client["address"] !== null &&
+                        props.Client["address"]}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="itemsTable ">
@@ -1329,7 +1330,7 @@ export default function SalesForm(props) {
                               <td>{si["lno"]}</td>
                               <td>{si["PType"]}</td>
                               {/*type payment */}
-                              <td>{si["uprice"]}</td>
+                              <td>{si["uprice"].toLocaleString()}</td>
                               {/*Amount */}
                               <td>{si["PPrice"]}</td>
                               {/*Cur */}
@@ -1394,10 +1395,10 @@ export default function SalesForm(props) {
                                   : si["SPUnit"]}
                               </td>
                               <td>{si["TotalPieces"]}</td>
-                              <td>{si["uprice"]}</td>
+                              <td>{si["uprice"].toLocaleString()}</td>
                               <td>{si["discount"]}%</td>
                               <td>{si["tax"]}%</td>
-                              <td>{si["Total"]}</td>
+                              <td>{si["Total"].toLocaleString()}</td>
 
                               <td>
                                 {/* Render note icon/button */}
@@ -1541,19 +1542,17 @@ export default function SalesForm(props) {
                 <div className="flex flex-row justify-end items-center bg-fourth shadow-xl  rounded p-2 sm:rounded p-1">
                   <div className="InvoiceGross">
                     {" "}
-                    <div className="text-black font-semibold text-2xl sm: text-md">
-                      G: {finalTotal.toLocaleString()}{" "}
+                    <div className="Text">
+                      GT: {finalTotal.toLocaleString()}{" "}
                     </div>
                   </div>
                   <div className="InvoiceTax">
                     {" "}
-                    <div className="text-black font-semibold text-2xl sm: text-md">
-                      T: {finalTax.toLocaleString()}
-                    </div>
+                    <div className="Text">Tx: {finalTax.toLocaleString()}</div>
                   </div>
 
                   <div>
-                    <div className="text-black font-semibold text-2xl sm: text-md">
+                    <div className="Text">
                       Total: {(finalTotal + finalTax).toLocaleString()}{" "}
                       {localStorage.getItem(
                         "Cur" + localStorage.getItem("mainCur")
@@ -3436,6 +3435,7 @@ export default function SalesForm(props) {
           if (lgt.length > 0) {
             setIdOptions(res.data.opp);
           } else {
+            console.log("po", res.data.opp);
             setModalShow(false);
 
             setErrorModal({
