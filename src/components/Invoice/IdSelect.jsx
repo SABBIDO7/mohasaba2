@@ -111,15 +111,22 @@ const IdSelect = forwardRef((props, ref) => {
   }, [sItemPType]);
 
   useEffect(() => {
-    if (sItemDBPUnit && sItemDBPUnit.trim() !== "") {
-      setsItemPType("1");
-    } else if (sItemPUnit && sItemPUnit.trim() != "") {
-      setsItemPType("2");
-    } else if (sItemDSPUnit && sItemDSPUnit.trim() !== "") {
-      setsItemPType("3");
-    } else {
-      setsItemPType("");
-    }
+    const getType = () => {
+      if (sItemDBPUnit && sItemDBPUnit.trim() !== "") {
+        setsItemPType("1");
+        return;
+      } else if (sItemPUnit && sItemPUnit.trim() != "") {
+        setsItemPType("2");
+        return;
+      } else if (sItemDSPUnit && sItemDSPUnit.trim() !== "") {
+        setsItemPType("3");
+        return;
+      } else {
+        setsItemPType("");
+        return;
+      }
+    };
+    getType();
   }, [sItemDBPUnit, sItemDSPUnit, sItemPUnit]);
 
   useEffect(() => {
@@ -151,7 +158,7 @@ const IdSelect = forwardRef((props, ref) => {
     setsItemPPrice("");
     setsItemBranch("");
     setsItemPrice(0);
-    setsItemPType("");
+
     setsItemNo("");
     setsItemName("");
     setsItemQty(1);
@@ -218,7 +225,7 @@ const IdSelect = forwardRef((props, ref) => {
                       setsItemTax(temptax);
                       setsItemDiscount(0);
                       setsItemPQty(io["PQty"]);
-                      setsItemPUnit(io["PUnit"]);
+
                       setsItemPQunit(io["PQUnit"]);
 
                       // setsItemBranchesStock(
@@ -227,8 +234,10 @@ const IdSelect = forwardRef((props, ref) => {
                       setsItemBranchesStock(io["branchesStock"]);
 
                       // {sItemDBPUnit && sItemDBPUnit.trim() !== '' ? setsItemPType("3"): sItemPUnit && sItemPUnit.trim() !== ''?setsItemPType("2"):setsItemPType("1")}
-                      setsItemPPrice(io["PPrice"]);
                       setsItemBPUnit(io["BPUnit"]);
+                      setsItemPUnit(io["PUnit"]);
+                      setsItemPPrice(io["PPrice"]);
+
                       setsItemDSPUnit(io["SPUnit"]);
 
                       // setsItemPType("1");
@@ -530,9 +539,16 @@ const IdSelect = forwardRef((props, ref) => {
                   }}
                   onKeyPress={(e) => {
                     if (
-                      e.key === "-" && // If the pressed key is a minus symbol
-                      // And not at the beginning of the input
-                      e.target.value.includes("-")
+                      (e.key == "-" && // If the pressed key is a minus symbol
+                        // And not at the beginning of the input
+
+                        (e.target.value.includes("-") ||
+                          e.target.value.includes("+"))) ||
+                      (e.key == "+" && // If the pressed key is a minus symbol
+                        // And not at the beginning of the input
+
+                        (e.target.value.includes("-") ||
+                          e.target.value.includes("+")))
                     ) {
                       // Or if the minus symbol is already present
                       e.preventDefault(); // Prevent the default action (typing the minus symbol)
@@ -605,6 +621,34 @@ const IdSelect = forwardRef((props, ref) => {
                     setsItemPrice(e.target.value);
                   }
                 }}
+                onBlur={(e) => {
+                  if (
+                    e.target.value == null ||
+                    e.target.value == "" ||
+                    e.target.value == "-" ||
+                    e.target.value == 0
+                  ) {
+                    e.target.value = 0;
+                    setsItemPrice(e.target.value);
+                  }
+                }}
+                onKeyPress={(e) => {
+                  if (
+                    (e.key == "-" && // If the pressed key is a minus symbol
+                      // And not at the beginning of the input
+
+                      (e.target.value.includes("-") ||
+                        e.target.value.includes("+"))) ||
+                    (e.key == "+" && // If the pressed key is a minus symbol
+                      // And not at the beginning of the input
+
+                      (e.target.value.includes("-") ||
+                        e.target.value.includes("+")))
+                  ) {
+                    // Or if the minus symbol is already present
+                    e.preventDefault(); // Prevent the default action (typing the minus symbol)
+                  }
+                }}
                 readOnly={!allowPriceChanges}
               />
             </div>
@@ -624,6 +668,34 @@ const IdSelect = forwardRef((props, ref) => {
                 onChange={(e) => {
                   setsItemDiscount(e.target.value);
                 }}
+                onBlur={(e) => {
+                  if (
+                    e.target.value == null ||
+                    e.target.value == "" ||
+                    e.target.value == "-" ||
+                    e.target.value == 0
+                  ) {
+                    e.target.value = 0;
+                    setsItemDiscount(e.target.value);
+                  }
+                }}
+                onKeyPress={(e) => {
+                  if (
+                    (e.key == "-" && // If the pressed key is a minus symbol
+                      // And not at the beginning of the input
+
+                      (e.target.value.includes("-") ||
+                        e.target.value.includes("+"))) ||
+                    (e.key == "+" && // If the pressed key is a minus symbol
+                      // And not at the beginning of the input
+
+                      (e.target.value.includes("-") ||
+                        e.target.value.includes("+")))
+                  ) {
+                    // Or if the minus symbol is already present
+                    e.preventDefault(); // Prevent the default action (typing the minus symbol)
+                  }
+                }}
                 readOnly={!allowDiscountChanges}
               />
             </div>
@@ -639,6 +711,23 @@ const IdSelect = forwardRef((props, ref) => {
                 value={sItemTax}
                 onChange={(e) => {
                   setsItemTax(e.target.value);
+                }}
+                onBlur={(e) => {
+                  if (
+                    e.target.value == null ||
+                    e.target.value == "" ||
+                    e.target.value == "-" ||
+                    e.target.value == 0
+                  ) {
+                    e.target.value = 0;
+                    setsItemTax(e.target.value);
+                  }
+                }}
+                onKeyPress={(e) => {
+                  if (e.key === "-") {
+                    // Or if the minus symbol is already present
+                    e.preventDefault(); // Prevent the default action (typing the minus symbol)
+                  }
                 }}
               />
             </div>

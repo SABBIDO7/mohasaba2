@@ -89,7 +89,7 @@ export default function InitialSummery(props) {
           </div>
 
           <Table striped bordered responsive className=" mt-2 ">
-            <thead>
+            <thead className="bg-secondd text-BgTextColor">
               <tr>
                 <th>Type</th>
                 <th>BR</th>
@@ -103,7 +103,7 @@ export default function InitialSummery(props) {
                 return (
                   <tr
                     key={uuid()}
-                    className="hover:bg-secondd hover:text-white"
+                    className="hover:bg-secondd hover:text-BgTextColor whitespace-nowrap"
                   >
                     <td>{state["InvType"]}</td>
                     <td>{state["BR"]}</td>

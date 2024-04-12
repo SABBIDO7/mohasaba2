@@ -34,10 +34,12 @@ module.exports = {
         },
         third:'#FFFEFC',
         fourth: '#E2E8F0',
+        BgTextColor:'#8B0000',
         //secondd: 'hsl(39, 30%, 85%)',
         //secondd: 'hsl(39, 40%, 85%)',
        // secondd: 'hsl(20, 80%, 85%)',
-       secondd: 'hsl(27.5, 80%, 80%)', //hsl (color,saturation, ligtness)
+       //secondd: 'hsl(27.5, 80%, 80%)', //hsl (color,saturation, ligtness)
+       secondd: 'hsl(27.5, 80%, 82%)',
         danger: '#4CAF50',
       },
     },

@@ -909,7 +909,7 @@ export default function SalesForm(props) {
               <input
                 type="text"
                 ref={inputRef}
-                className="block rounded-md w-full  h-[3rem] border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:border-second focus:ring-1 focus:ring-second text-sm"
+                className="text-lg font-semibold block rounded-md w-full  h-[3rem] border border-secondd bg-white px-4 py-2 focus:outline-none focus:border-secondd focus:ring-1 focus:ring-secondd text-lg"
                 placeholder="Search Value"
                 value={vInput}
                 onChange={(e) => {
@@ -920,7 +920,7 @@ export default function SalesForm(props) {
             </div>
             <div className="ml-[2%] w-[30%]">
               <button
-                className="bg-secondd text-white w-full h-[3rem] font-bold rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd"
+                className="bg-secondd text-BgTextColor w-full h-[3rem] font-bold rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd"
                 onClick={() => {
                   if (
                     (props.Client["id"] == "" ||
@@ -984,7 +984,7 @@ export default function SalesForm(props) {
             {/* Model content*/}
             <div className="invoiceRateOption">
               <div className="flex flex-row items-center justify-between ">
-                <div className="w-full flex flex-row justify-between">
+                <div className=" flex flex-row justify-between">
                   {/* <div className="text-xl font-semibold w-fit">Client:</div> */}
 
                   {/* <input
@@ -994,13 +994,53 @@ export default function SalesForm(props) {
                     value={props.Client["id"]}
                     disabled
                   /> */}
-                  <div className="bg-fourth text-black font-semibold rounded p-0.5 w-50%">
-                    {props.Client["id"]}
+                  <div className="bg-fourth text-BgTextColor font-semibold rounded p-0.5 w-50%">
+                    {props.Client["id"] ? props.Client["id"] : "-"}
+                  </div>
+                  <div className="flex flex-row ml-[10%] bg-fourth text-BgTextColor font-semibold rounded p-0.5">
+                    {/* <div>AccCur: </div> */}
+                    <div>
+                      {props.Client["cur"] != undefined &&
+                      props.Client["cur"] != null &&
+                      props.Client["cur"] != ""
+                        ? props.Client["cur"]
+                        : "-"}
+                    </div>
                   </div>
                 </div>
-                <div className="flex flex-row justify-end w-[50%]">
+                <div className=" flex flex-row justify-between">
+                  {props.SATFromBranch != "undefined" &&
+                    props.SATFromBranch != null &&
+                    props.SATFromBranch != "" &&
+                    props.SATToBranch != "undefined" &&
+                    props.SATToBranch != null &&
+                    props.SATToBranch != "" && (
+                      <>
+                        <div className="flex flex-row ml-[10%] bg-fourth text-BgTextColor font-semibold rounded p-0.5">
+                          <div>BF: </div>
+                          <div>
+                            {props.SATFromBranch !== "undefined"
+                              ? props.SATFromBranch
+                              : "-"}
+                          </div>
+                        </div>
+
+                        <div className="flex flex-row ml-[10%] bg-fourth text-BgTextColor font-semibold rounded p-0.5">
+                          <div>BT: </div>
+                          <div>
+                            {props.SATToBranch !== "undefined" &&
+                            props.SATToBranch != null &&
+                            props.SATToBranch !== ""
+                              ? props.SATToBranch
+                              : "-"}
+                          </div>
+                        </div>
+                      </>
+                    )}
+                </div>
+                <div className="flex flex-row justify-end">
                   <div className="flex flex-row w-2/3 justify-end">
-                    <div className="flex flex-row bg-fourth text-black font-semibold rounded p-0.5">
+                    <div className="flex flex-row bg-fourth text-BgTextColor font-semibold rounded p-0.5">
                       {/* <div>CompCur: </div> */}
                       <div>
                         {localStorage.getItem(
@@ -1008,47 +1048,9 @@ export default function SalesForm(props) {
                         )}
                       </div>
                     </div>
-                    <div className="flex flex-row ml-[10%] bg-fourth text-black font-semibold rounded p-0.5">
-                      {/* <div>AccCur: </div> */}
-                      <div>
-                        {props.Client["cur"] != undefined &&
-                        props.Client["cur"] != null &&
-                        props.Client["cur"] != ""
-                          ? props.Client["cur"]
-                          : "-"}
-                      </div>
-                    </div>
-                    {props.SATFromBranch != "undefined" &&
-                      props.SATFromBranch != null &&
-                      props.SATFromBranch != "" &&
-                      props.SATToBranch != "undefined" &&
-                      props.SATToBranch != null &&
-                      props.SATToBranch != "" && (
-                        <>
-                          <div className="flex flex-row ml-[10%] bg-fourth text-black font-semibold rounded p-0.5">
-                            <div>BF: </div>
-                            <div>
-                              {props.SATFromBranch !== "undefined"
-                                ? props.SATFromBranch
-                                : "-"}
-                            </div>
-                          </div>
-
-                          <div className="flex flex-row ml-[10%] bg-fourth text-black font-semibold rounded p-0.5">
-                            <div>BT: </div>
-                            <div>
-                              {props.SATToBranch !== "undefined" &&
-                              props.SATToBranch != null &&
-                              props.SATToBranch !== ""
-                                ? props.SATToBranch
-                                : "-"}
-                            </div>
-                          </div>
-                        </>
-                      )}
                   </div>
 
-                  <div className="bg-fourth text-black font-semibold rounded p-0.5 ml-[5%]">
+                  <div className="bg-fourth text-BgTextColor font-semibold rounded p-0.5 ml-[5%]">
                     {/* CurRate:{" "} */}
                     {props.Client["Rate"] == null ||
                     props.Client["Rate"] == undefined ||
@@ -1064,7 +1066,7 @@ export default function SalesForm(props) {
               </div>
 
               <h2
-                className="text-center text-xl2 text-secondd font-bold"
+                className="text-center text-xl2 text-BgTextColor font-bold"
                 onClick={() => {
                   // if (props.propertiesAreEqual == false) {
                   //   setSwitchFormOption({
@@ -1116,7 +1118,7 @@ export default function SalesForm(props) {
                     <div className="Text">{props.Client["name"]}</div>
                   </div>
                 </div>
-                <div className="w-[27%] h-[100%] flex flex-row justify-center bg-fourth text-black rounded p-0.5">
+                <div className="w-[24%] h-[100%] flex flex-row justify-center bg-fourth text-black rounded p-0.5">
                   {/* <div className="text-xl font-semibold mr-1">Bal:</div> */}
                   <div className="Text">
                     {props.Client["balance"] !== "" &&
@@ -1127,11 +1129,11 @@ export default function SalesForm(props) {
                         props.Client["cur"]}
                   </div>
                 </div>
-                <div className="w-[21%] flex flex-row justify-center">
+                <div className="w-[24%] flex flex-row justify-center">
                   {/* <div className="text-xl font-semibold w-fit">Call:</div> */}
 
                   <select
-                    className="select-style"
+                    className="select-style ReCall-select-style"
                     ref={selectInvRef}
                     onChange={(e) => {
                       if (props.propertiesAreEqual == false) {
@@ -1174,7 +1176,7 @@ export default function SalesForm(props) {
                           className="optionText"
                         >
                           {inv["RefType"]}_{inv["RefNo"]}_
-                          {inv["AccName"].slice(0, 10)}
+                          {inv["AccName"].slice(0, 15)}
                         </option>
                       );
                     })}
@@ -1200,7 +1202,7 @@ export default function SalesForm(props) {
               {" "}
               {/**if mobile 30% if web 55% */}
               <Table bordered striped responsive>
-                <thead className=" bg-secondd text-white">
+                <thead className=" bg-secondd text-BgTextColor">
                   <tr className=" whitespace-nowrap ">
                     {props.selectedFormOption === "CR_AP" ||
                     props.selectedFormOption === "DB_AP" ? (
@@ -1223,8 +1225,8 @@ export default function SalesForm(props) {
                         <th>PUnit</th>
                         <th>TQty</th>
                         <th>UPrice</th>
-                        <th>D %</th>
-                        <th>T %</th>
+                        <th>D%</th>
+                        <th>T%</th>
                         <th>Total</th>
                         <th>Notes</th>
                         <th>Action</th>
@@ -1310,7 +1312,7 @@ export default function SalesForm(props) {
                       return (
                         <tr
                           key={idx}
-                          className=" whitespace-nowrap hover:bg-blue-200 select-none "
+                          className=" hover:bg-secondd hover:text-BgTextColor whitespace-nowrap"
                           onDoubleClick={() => {
                             if (
                               props.selectedFormOption != "CR_AP" &&
@@ -1396,8 +1398,8 @@ export default function SalesForm(props) {
                               </td>
                               <td>{si["TotalPieces"]}</td>
                               <td>{si["uprice"].toLocaleString()}</td>
-                              <td>{si["discount"]}%</td>
-                              <td>{si["tax"]}%</td>
+                              <td>{si["discount"].toLocaleString()}%</td>
+                              <td>{si["tax"].toLocaleString()}%</td>
                               <td>{si["Total"].toLocaleString()}</td>
 
                               <td>
@@ -1514,7 +1516,7 @@ export default function SalesForm(props) {
                 </Modal.Footer>
               </Modal>
             </div>
-            <div className="flex flex-col justify-start h-[20%] mb-[1%]">
+            <div className="flex flex-col justify-center h-[20%] mb-[0.5%]">
               <div className="InvoiceFooterCalculation">
                 <div className="InvoiceEqCur">
                   {/* {localStorage.getItem("mainCur") == "1" ? (
@@ -1539,7 +1541,7 @@ export default function SalesForm(props) {
                     </h4>
                   )}{" "} */}
                 </div>
-                <div className="flex flex-row justify-end items-center bg-fourth shadow-xl  rounded p-2 sm:rounded p-1">
+                <div className="flex flex-row justify-end items-center bg-fourth shadow-l  rounded p-2 sm:rounded p-1 mb-[0.5%]">
                   <div className="InvoiceGross">
                     {" "}
                     <div className="Text">
@@ -1835,9 +1837,16 @@ export default function SalesForm(props) {
                       }}
                       onKeyPress={(e) => {
                         if (
-                          e.key === "-" && // If the pressed key is a minus symbol
-                          // And not at the beginning of the input
-                          e.target.value.includes("-")
+                          (e.key == "-" && // If the pressed key is a minus symbol
+                            // And not at the beginning of the input
+
+                            (e.target.value.includes("-") ||
+                              e.target.value.includes("+"))) ||
+                          (e.key == "+" && // If the pressed key is a minus symbol
+                            // And not at the beginning of the input
+
+                            (e.target.value.includes("-") ||
+                              e.target.value.includes("+")))
                         ) {
                           // Or if the minus symbol is already present
                           e.preventDefault(); // Prevent the default action (typing the minus symbol)
@@ -1965,6 +1974,34 @@ export default function SalesForm(props) {
                       setEditPrice(e.target.value);
                       console.log("hsebet men on change");
                     }}
+                    onBlur={(e) => {
+                      if (
+                        e.target.value == null ||
+                        e.target.value == "" ||
+                        e.target.value == "-" ||
+                        e.target.value == 0
+                      ) {
+                        e.target.value = 0;
+                        setEditPrice(e.target.value);
+                      }
+                    }}
+                    onKeyPress={(e) => {
+                      if (
+                        (e.key == "-" && // If the pressed key is a minus symbol
+                          // And not at the beginning of the input
+
+                          (e.target.value.includes("-") ||
+                            e.target.value.includes("+"))) ||
+                        (e.key == "+" && // If the pressed key is a minus symbol
+                          // And not at the beginning of the input
+
+                          (e.target.value.includes("-") ||
+                            e.target.value.includes("+")))
+                      ) {
+                        // Or if the minus symbol is already present
+                        e.preventDefault(); // Prevent the default action (typing the minus symbol)
+                      }
+                    }}
                     readOnly={!allowPriceChanges}
                   />
                 </div>
@@ -1987,6 +2024,34 @@ export default function SalesForm(props) {
                     onChange={(e) => {
                       setEditDiscount(e.target.value);
                     }}
+                    onBlur={(e) => {
+                      if (
+                        e.target.value == null ||
+                        e.target.value == "" ||
+                        e.target.value == "-" ||
+                        e.target.value == 0
+                      ) {
+                        e.target.value = 0;
+                        setEditDiscount(e.target.value);
+                      }
+                    }}
+                    onKeyPress={(e) => {
+                      if (
+                        (e.key == "-" && // If the pressed key is a minus symbol
+                          // And not at the beginning of the input
+
+                          (e.target.value.includes("-") ||
+                            e.target.value.includes("+"))) ||
+                        (e.key == "+" && // If the pressed key is a minus symbol
+                          // And not at the beginning of the input
+
+                          (e.target.value.includes("-") ||
+                            e.target.value.includes("+")))
+                      ) {
+                        // Or if the minus symbol is already present
+                        e.preventDefault(); // Prevent the default action (typing the minus symbol)
+                      }
+                    }}
                     readOnly={!allowDiscountChanges}
                   />
                 </div>
@@ -2002,6 +2067,23 @@ export default function SalesForm(props) {
                     value={EditTax}
                     onChange={(e) => {
                       setEditTax(e.target.value);
+                    }}
+                    onBlur={(e) => {
+                      if (
+                        e.target.value == null ||
+                        e.target.value == "" ||
+                        e.target.value == "-" ||
+                        e.target.value == 0
+                      ) {
+                        e.target.value = 0;
+                        setEditTax(e.target.value);
+                      }
+                    }}
+                    onKeyPress={(e) => {
+                      if (e.key === "-") {
+                        // Or if the minus symbol is already present
+                        e.preventDefault(); // Prevent the default action (typing the minus symbol)
+                      }
                     }}
                   />
                 </div>
@@ -2034,6 +2116,23 @@ export default function SalesForm(props) {
                     }
                     onChange={(e) => {
                       setEditTotal(e.target.value);
+                    }}
+                    onKeyPress={(e) => {
+                      if (
+                        (e.key == "-" && // If the pressed key is a minus symbol
+                          // And not at the beginning of the input
+
+                          (e.target.value.includes("-") ||
+                            e.target.value.includes("+"))) ||
+                        (e.key == "+" && // If the pressed key is a minus symbol
+                          // And not at the beginning of the input
+
+                          (e.target.value.includes("-") ||
+                            e.target.value.includes("+")))
+                      ) {
+                        // Or if the minus symbol is already present
+                        e.preventDefault(); // Prevent the default action (typing the minus symbol)
+                      }
                     }}
                   />
                 </div>
@@ -3210,60 +3309,62 @@ export default function SalesForm(props) {
       {dialogOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 ">
           <div className="FormOptionContainer">
-            <h2 className="text-xl font-semibold mb-4">Select an Option:</h2>
+            <h2 className="text-xl font-semibold mb-4 text-BgTextColor">
+              Select an Option:
+            </h2>
             <div className="grid grid-cols-3 gap-4">
               {/* Your six boxes here */}
               <button
-                className="bg-secondd text-white py-4 px-8 rounded-md text-center"
+                className="bg-secondd text-BgTextColor font-bold py-4 px-8 rounded-md text-center"
                 onClick={() => formOptionProcessing("SA_AP")}
               >
                 Sales
               </button>
               <button
-                className="bg-secondd text-white py-4 px-8  rounded-md text-center"
+                className="bg-secondd text-BgTextColor font-bold py-4 px-8  rounded-md text-center"
                 onClick={() => formOptionProcessing("OD_AP")}
               >
                 Order
               </button>
               <button
-                className="bg-secondd text-white py-4 px-8   rounded-md text-center"
+                className="bg-secondd text-BgTextColor font-bold py-4 px-8   rounded-md text-center"
                 onClick={() => formOptionProcessing("PR_AP")}
               >
                 Purchase Return
               </button>
               <button
-                className="bg-secondd text-white py-4 px-8  rounded-md text-center"
+                className="bg-secondd text-BgTextColor font-bold py-4 px-8  rounded-md text-center"
                 onClick={() => formOptionProcessing("PI_AP")}
               >
                 Purchase
               </button>
               <button
-                className="bg-secondd text-white py-4 px-8   rounded-md text-center"
+                className="bg-secondd text-BgTextColor font-bold py-4 px-8   rounded-md text-center"
                 onClick={() => formOptionProcessing("SR_AP")}
               >
                 Sales Return
               </button>
               <button
-                className="bg-secondd text-white py-4 px-8  rounded-md text-center"
+                className="bg-secondd text-BgTextColor font-bold py-4 px-8  rounded-md text-center"
                 onClick={() => formOptionProcessing("SAT_AP")}
               >
                 Branch Transfer
               </button>
               <button
-                className="bg-secondd text-white py-4 px-8 rounded-md text-center"
+                className="bg-secondd text-BgTextColor font-bold py-4 px-8 rounded-md text-center"
                 onClick={() => formOptionProcessing("CR_AP")}
               >
                 Receipt Voucher
               </button>
               <button
-                className="bg-secondd text-white py-4 px-8 rounded-md text-center"
+                className="bg-secondd text-BgTextColor font-bold py-4 px-8 rounded-md text-center"
                 onClick={() => formOptionProcessing("DB_AP")}
               >
                 Payment Voucher
               </button>
             </div>
             <button
-              className="mt-4 bg-gray-300 hover:bg-gray-400 py-3 px-6  rounded-md"
+              className="mt-4 bg-gray-300 hover:bg-gray-400 font-bold py-3 px-6  rounded-md"
               onClick={handleCloseDialog}
             >
               Close

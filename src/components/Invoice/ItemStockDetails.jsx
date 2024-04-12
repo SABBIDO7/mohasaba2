@@ -60,8 +60,8 @@ export default function ItemStockDetails(props) {
               </Spinner>
             ) : (
               <Table striped bordered responsive className=" mt-2 ">
-                <thead>
-                  <tr className="bg-secondd text-white">
+                <thead className="bg-secondd text-BgTextColor">
+                  <tr className="">
                     <th>Branch</th>
                     <th>BranchName</th>
                     <th>Qty</th>
@@ -72,7 +72,7 @@ export default function ItemStockDetails(props) {
                     return (
                       <tr
                         key={DB["key"]}
-                        className="hover:bg-secondd hover:text-white whitespace-nowrap"
+                        className="hover:bg-secondd hover:text-BgTextColor whitespace-nowrap"
                       >
                         <td>{DB["Branch"]}</td>
                         <td>{DB["BranchName"]}</td>

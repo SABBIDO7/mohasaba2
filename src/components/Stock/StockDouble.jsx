@@ -66,7 +66,10 @@ export default function StockDouble(props) {
               </Spinner>
             ) : (
               <Table striped bordered responsive className=" mt-2 ">
-                <thead className="bg-secondd text-white">
+                <thead
+                  className="bg-secondd text-BgTextColor
+"
+                >
                   <tr>
                     <th>ItemNo</th>
                     <th>Item Name</th>
@@ -84,7 +87,7 @@ export default function StockDouble(props) {
                     return (
                       <tr
                         key={uuid()}
-                        className="hover:bg-blue-200 whitespace-nowrap"
+                        className="hover:bg-secondd hover:text-BgTextColor whitespace-nowrap"
                       >
                         <td>{DB["ItemNo"]}</td>
                         <td>{DB["ItemName"]}</td>

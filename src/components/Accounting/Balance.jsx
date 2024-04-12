@@ -60,7 +60,7 @@ export default function Balance(props) {
           {/* <h1 className='underline'>Info:</h1> */}
           <div className=" text-center">AccNo: {props.oData["AccNo"]}</div>
           <Table striped bordered responsive className=" mt-2 ">
-            <thead>
+            <thead className="bg-secondd text-BgTextColor">
               <tr>
                 <th>BR</th>
                 <th className="text-center">DB</th>
@@ -72,7 +72,7 @@ export default function Balance(props) {
                 return (
                   <tr
                     key={Br["key"]}
-                    className="hover:bg-secondd hover:text-white"
+                    className="hover:bg-secondd hover:text-BgTextColor whitespace-nowrap"
                   >
                     <td>{Br["Branch"]}</td>
                     <td className=" text-right">

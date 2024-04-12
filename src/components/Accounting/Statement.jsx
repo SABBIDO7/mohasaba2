@@ -276,7 +276,7 @@ export default function Statement(props) {
                         Clear
                       </Button>
                     </div>
-                    <div className="flex flex-col bg-neutral-200 p-1 mb-1 rounded">
+                    <div className="flex flex-col bg-fourth p-1 mb-1 rounded">
                       <div className=" w-[100%] mx-auto flex flex-col">
                         <div className="flex flex-row justify-between items-center align-center">
                           <input
@@ -308,7 +308,7 @@ export default function Statement(props) {
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col bg-neutral-200 mt-1 p-1 rounded">
+                    <div className="flex flex-col bg-fourth mt-1 p-1 rounded">
                       <div className=" w-[100%] mx-auto flex flex-col">
                         <div className="w-[100%] flex flex-row ">
                           <div className="flex flex-col w-[50%] align-center">
@@ -350,7 +350,7 @@ export default function Statement(props) {
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col bg-neutral-200 mt-1 p-1 rounded">
+                  <div className="flex flex-col bg-fourth mt-1 p-1 rounded">
                     <div className="flex flex-row w-[100%] justify-center px-2 py-1 align-middle">
                       <div className="w-[95%] max-w-[50rem] flex flex-row items-center align-middle justify-center">
                         <div className="font-semibold text-lg">Limit:</div>
@@ -403,8 +403,11 @@ export default function Statement(props) {
             </Spinner>
           ) : (
             <Table striped bordered className=" mt-2 ">
-              <thead>
-                <tr className="bg-secondd text-white">
+              <thead
+                className="bg-secondd text-BgTextColor
+"
+              >
+                <tr className="">
                   <th>Date</th>
                   <th>Type</th>
                   <th>No.</th>
@@ -427,7 +430,7 @@ export default function Statement(props) {
                     <>
                       <tr
                         key={uuid()}
-                        className="hover:bg-blue-200"
+                        className="hover:bg-secondd hover:text-BgTextColor whitespace-nowrap"
                         onDoubleClick={() => {
                           if (
                             state["RefType"].slice(0, 2).toLowerCase() !=

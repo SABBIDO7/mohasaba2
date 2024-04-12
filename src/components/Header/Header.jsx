@@ -25,7 +25,7 @@ export default function Header(props) {
       <Disclosure as="nav" className="bg-slate-700 navBar ease-linear">
         {({ open }) => (
           <div>
-            <div className=" w-screen absolute text-center font-semibold text-2xl h-14 justify-center flex flex-col text-third">
+            <div className=" w-screen absolute text-center font-bold text-2xl h-14 justify-center flex flex-col text-BgTextColor">
               <div>{props.compname.toUpperCase()}</div>
             </div>
 
@@ -33,7 +33,7 @@ export default function Header(props) {
               <div className="relative flex h-14 items-center justify-between">
                 <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                   {/* Mobile menu button*/}
-                  <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                  <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white hover:text-BgTextColor focus:outline-none focus:ring-2 focus:ring-inset focus:ring-BgTextColor">
                     <span className="sr-only">Open main menu</span>
                     {open ? (
                       <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
@@ -53,10 +53,10 @@ export default function Header(props) {
                           aria-hidden="true"
                           className={({ isActive }) => {
                             return (
-                              "px-3 py-2 rounded-md text-sm font-medium no-underline " +
+                              "px-3 py-2 rounded-md text-sm font-bold no-underline " +
                               (isActive
-                                ? "bg-third text-secondd"
-                                : "text-third hover:bg-third hover:text-secondd")
+                                ? "bg-BgTextColor text-third"
+                                : "text-BgTextColor font-bold hover:bg-BgTextColor hover:text-third")
                             );
                           }}
                         >
@@ -67,11 +67,11 @@ export default function Header(props) {
                   </div>
                 </div>
 
-                <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 not-italic text-white ">
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 not-italic text-BgTextColor font-bold">
                   <NavDropdown
                     id="nav-dropdown-dark-example"
                     title={props.name}
-                    menuVariant="dark"
+                    menuVariant="BgTextColor"
                   >
                     <NavDropdown.Item
                       className=" items-center "
@@ -118,10 +118,10 @@ export default function Header(props) {
                 )}*/
                     className={({ isActive }) => {
                       return (
-                        "block px-3 py-2 rounded-md text-base font-medium no-underline " +
+                        "block px-3 py-2 rounded-md text-base font-bold no-underline " +
                         (isActive
-                          ? "bg-gray-900 text-white"
-                          : "text-gray-300 hover:bg-gray-700 hover:text-white")
+                          ? "bg-BgTextColor text-third"
+                          : "text-BgTextColor font-bold hover:bg-BgTextColor hover:text-third")
                       );
                     }}
                   >

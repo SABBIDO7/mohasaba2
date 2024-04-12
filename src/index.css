@@ -24,10 +24,13 @@ code {
 a {
   text-decoration-line: none;
 }
+
 button{
   background-color: theme('colors.secondd')!important;
   border-color: theme('colors.secondd')!important;
-  color: #fff!important;
+  color: theme('colors.BgTextColor')!important;
+  font-weight: 600!important;
+    
 }
 /* Exclude button styles from the Accordion.Body */
 .Accordion.Body > button {
@@ -125,7 +128,10 @@ option:hover {
     font-size: 1rem!important;
   }
   .select-style{
-    font-size: 0.85rem!important;
+    font-size: 0.75rem!important;
+  }
+  .ReCall-select-style{
+    font-size: 0.6rem!important;
   }
 }
 .optionText{
@@ -182,6 +188,7 @@ option:hover {
 .InvoiceEqCur{
   display: block;
   transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Add transition for smooth effect */
+  
 
   /* Add elevation */
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1); /* Customize elevation as needed */
@@ -232,6 +239,7 @@ option:hover {
 .Text{
   font-weight: 600;
   font-size: 1.35rem;
+  color:  theme('colors.BgTextColor');
 }
 .select-style {
   padding: 0.15rem;
@@ -247,5 +255,12 @@ option:hover {
   font-weight: 700; /* equivalent to font-semibold */
   line-height: 1.5rem; /* equivalent to text-lg */
   box-shadow: 0 0 0 2px theme('colors.prime'); /* equivalent to focus:ring-second */
-
+ > overflow-hidden whitespace-nowrap{
+  font-size: 0.9rem!important;
+ }
+}
+.ReCall-select-style {
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 0.8rem ;
 }

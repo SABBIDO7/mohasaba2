@@ -35,7 +35,7 @@ export default function Main(props) {
 
       <div className="flex flex-col items-center justify-center mt-3">
         <button
-          className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-white font-normal text-xl"
+          className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor font-bold text-xl"
           role="button"
           aria-pressed="true"
           onClick={accountingClick}
@@ -43,14 +43,14 @@ export default function Main(props) {
           Accounting
         </button>
         <button
-          className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-white font-normal text-xl"
+          className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor font-bold text-xl"
           aria-pressed="true"
           onClick={stockClick}
         >
           Inventory
         </button>
         <button
-          className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-white font-normal text-xl"
+          className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor font-bold text-xl"
           role="button"
           aria-pressed="true"
           onClick={invoiceClick}
@@ -69,7 +69,7 @@ export default function Main(props) {
       <div>
         <Button
           onClick={logout}
-          className="btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-white font-normal text-xl"
+          className="btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor font-bold text-xl"
         >
           Sign out
         </Button>
