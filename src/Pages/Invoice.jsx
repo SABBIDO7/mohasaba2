@@ -13,6 +13,7 @@ export default function Invoice(props) {
   const [SelectedItems, setSelectedItems] = useState([]);
   const [RemovedItems, setRemovedItems] = useState([]);
   const [sInvoice, setSInvoice] = useState("");
+  const [SwitchFormOption, setSwitchFormOption] = useState(false);
 
   const [selectedFormOptionDisplay, setSelectedFormOptionDisplay] = useState();
   const [invResponse, setInvResponse] = useState({
@@ -79,7 +80,7 @@ export default function Invoice(props) {
             <h2>Items</h2>
             <ul>
                 ${data.items
-                  .map((item) => `<li>${item.name}: ${item.uprice}</li>`)
+                  .map((item) => `<li> ${item.name}: ${item.uprice}</li>`)
                   .join("")}
             </ul>
         </div>
@@ -89,7 +90,6 @@ export default function Invoice(props) {
     // Create a hidden div to render the HTML content
     const container = document.createElement("div");
     console.log("CONTAINER", container);
-    container.style.visibility = "hidden";
     container.innerHTML = htmlContent;
     document.body.appendChild(container);
     console.log("appendd", document.body.appendChild(container));
@@ -102,17 +102,38 @@ export default function Invoice(props) {
     // }
     // Delay capturing to allow for rendering
     setTimeout(() => {
-      html2canvas(container)
+      html2canvas(container, { scale: 4 })
         .then((canvas) => {
-          console.log(canvas); // Log the captured canvas to verify
+          console.log("capturedd canvass", canvas); // Log the captured canvas to verify
 
           try {
             const imgData = canvas.toDataURL("image/png");
-            const doc = new jsPDF("p", "mm", "a4");
-            const componentWidth = doc.internal.pageSize.getWidth();
-            const componentHeight = doc.internal.pageSize.getHeight();
-            doc.addImage(imgData, "PNG", 0, 0, componentWidth, componentHeight);
-            doc.save("invoice.pdf");
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+
+            // Calculate the width and height of the content
+            const contentWidth = canvas.width;
+            const contentHeight = canvas.height;
+
+            // Calculate the ratio of the content
+            const ratio = contentWidth / contentHeight;
+            console.log("rstioo", ratio);
+            // Calculate the width and height that the content should be displayed at
+            let displayWidth = pageWidth;
+            let displayHeight = pageWidth / ratio;
+
+            // If the display height is greater than the page height, adjust the display width and height
+            if (displayHeight > pageHeight) {
+              displayHeight = pageHeight;
+              displayWidth = pageHeight * ratio;
+            }
+            console.log(displayHeight, displayWidth, "kkkkk");
+
+            // Add the image to the PDF with the calculated dimensions
+            doc.addImage(imgData, "PNG", 0, 0, displayWidth, displayHeight);
+
+            doc.save(data.type + "_" + data.accname);
           } catch (error) {
             console.error("Error generating PDF:", error);
           }
@@ -164,6 +185,49 @@ export default function Invoice(props) {
               modalVoucher={modalVoucher}
               setModalVoucher={setModalVoucher}
             />
+            <Modal
+              show={SwitchFormOption.show}
+              onHide={() =>
+                setSwitchFormOption({ ...SwitchFormOption, show: false })
+              }
+              size="lg"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+            >
+              <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                  Download Invoice
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <h4>Do You Want To Download The Invoice As Pdf ?</h4>{" "}
+                {/* Display the message */}
+              </Modal.Body>
+              <Modal.Footer>
+                <div className="flex flex-row w-full justify-around">
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      setSwitchFormOption({ ...SwitchFormOption, show: false });
+                      setafterSubmitModal(true);
+                    }}
+                  >
+                    No
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      downloadPDF(SwitchFormOption.variable);
+                      console.log("je suis laaaa", SwitchFormOption.variable);
+                      setSwitchFormOption({ ...SwitchFormOption, show: false });
+                      setafterSubmitModal(true);
+                    }}
+                  >
+                    Yes
+                  </Button>
+                </div>
+              </Modal.Footer>
+            </Modal>
           </>
         );
       })()}
@@ -286,8 +350,11 @@ export default function Invoice(props) {
         localStorage.setItem("InvoiceHistory", "");
         setSATToBranch();
         setSATFromBranch();
-        downloadPDF(data);
-        setafterSubmitModal(true);
+        setSwitchFormOption({
+          show: true,
+
+          variable: data,
+        });
       } else if (res.data.Info == "Failed") {
         setInvResponse({
           Info: "Failed",

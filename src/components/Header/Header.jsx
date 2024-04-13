@@ -53,10 +53,10 @@ export default function Header(props) {
                           aria-hidden="true"
                           className={({ isActive }) => {
                             return (
-                              "px-3 py-2 rounded-md text-sm font-bold no-underline " +
+                              "px-3 py-2 rounded-md text-sm  no-underline " +
                               (isActive
                                 ? "bg-BgTextColor text-third"
-                                : "text-BgTextColor font-bold hover:bg-BgTextColor hover:text-third")
+                                : "text-BgTextColor hover:bg-BgTextColor hover:text-third")
                             );
                           }}
                         >
@@ -67,7 +67,7 @@ export default function Header(props) {
                   </div>
                 </div>
 
-                <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 not-italic text-BgTextColor font-bold">
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 not-italic text-BgTextColor">
                   <NavDropdown
                     id="nav-dropdown-dark-example"
                     title={props.name}
@@ -118,10 +118,10 @@ export default function Header(props) {
                 )}*/
                     className={({ isActive }) => {
                       return (
-                        "block px-3 py-2 rounded-md text-base font-bold no-underline " +
+                        "block px-3 py-2 rounded-md text-base no-underline " +
                         (isActive
                           ? "bg-BgTextColor text-third"
-                          : "text-BgTextColor font-bold hover:bg-BgTextColor hover:text-third")
+                          : "text-BgTextColor hover:bg-BgTextColor hover:text-third")
                       );
                     }}
                   >

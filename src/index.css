@@ -29,7 +29,7 @@ button{
   background-color: theme('colors.secondd')!important;
   border-color: theme('colors.secondd')!important;
   color: theme('colors.BgTextColor')!important;
-  font-weight: 600!important;
+  /*font-weight: 600!important;*/
     
 }
 /* Exclude button styles from the Accordion.Body */
@@ -208,7 +208,7 @@ option:hover {
   background-color: theme('colors.secondd')!important;
   height: 100%;
   width: 20%;
-  font-weight: bold!important;
+  /*font-weight: bold!important;*/
   font-size: 1.25rem;
   border-color: theme('colors.fourth')!important;
   

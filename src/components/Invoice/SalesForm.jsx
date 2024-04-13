@@ -920,7 +920,7 @@ export default function SalesForm(props) {
             </div>
             <div className="ml-[2%] w-[30%]">
               <button
-                className="bg-secondd text-BgTextColor w-full h-[3rem] font-bold rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd"
+                className="bg-secondd text-BgTextColor w-full h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd"
                 onClick={() => {
                   if (
                     (props.Client["id"] == "" ||
@@ -994,10 +994,10 @@ export default function SalesForm(props) {
                     value={props.Client["id"]}
                     disabled
                   /> */}
-                  <div className="bg-fourth text-BgTextColor font-semibold rounded p-0.5 w-50%">
+                  <div className="bg-fourth text-BgTextColor rounded p-0.5 w-50%">
                     {props.Client["id"] ? props.Client["id"] : "-"}
                   </div>
-                  <div className="flex flex-row ml-[10%] bg-fourth text-BgTextColor font-semibold rounded p-0.5">
+                  <div className="flex flex-row ml-[10%] bg-fourth text-BgTextColor rounded p-0.5">
                     {/* <div>AccCur: </div> */}
                     <div>
                       {props.Client["cur"] != undefined &&
@@ -1008,7 +1008,7 @@ export default function SalesForm(props) {
                     </div>
                   </div>
                 </div>
-                <div className=" flex flex-row justify-between">
+                <div className=" flex flex-row justify-center w-[20%]">
                   {props.SATFromBranch != "undefined" &&
                     props.SATFromBranch != null &&
                     props.SATFromBranch != "" &&
@@ -1016,22 +1016,22 @@ export default function SalesForm(props) {
                     props.SATToBranch != null &&
                     props.SATToBranch != "" && (
                       <>
-                        <div className="flex flex-row ml-[10%] bg-fourth text-BgTextColor font-semibold rounded p-0.5">
-                          <div>BF: </div>
+                        <div className="flex flex-row ml-[10%] bg-fourth text-BgTextColor rounded p-0.5">
+                          <div>From: </div>
                           <div>
                             {props.SATFromBranch !== "undefined"
-                              ? props.SATFromBranch
+                              ? " " + props.SATFromBranch
                               : "-"}
                           </div>
                         </div>
 
-                        <div className="flex flex-row ml-[10%] bg-fourth text-BgTextColor font-semibold rounded p-0.5">
-                          <div>BT: </div>
+                        <div className="flex flex-row ml-[10%] bg-fourth text-BgTextColor rounded p-0.5">
+                          <div>To: </div>
                           <div>
                             {props.SATToBranch !== "undefined" &&
                             props.SATToBranch != null &&
                             props.SATToBranch !== ""
-                              ? props.SATToBranch
+                              ? " " + props.SATToBranch
                               : "-"}
                           </div>
                         </div>
@@ -1040,7 +1040,7 @@ export default function SalesForm(props) {
                 </div>
                 <div className="flex flex-row justify-end">
                   <div className="flex flex-row w-2/3 justify-end">
-                    <div className="flex flex-row bg-fourth text-BgTextColor font-semibold rounded p-0.5">
+                    <div className="flex flex-row bg-fourth text-BgTextColor rounded p-0.5">
                       {/* <div>CompCur: </div> */}
                       <div>
                         {localStorage.getItem(
@@ -1050,7 +1050,7 @@ export default function SalesForm(props) {
                     </div>
                   </div>
 
-                  <div className="bg-fourth text-BgTextColor font-semibold rounded p-0.5 ml-[5%]">
+                  <div className="bg-fourth text-BgTextColor rounded p-0.5 ml-[5%]">
                     {/* CurRate:{" "} */}
                     {props.Client["Rate"] == null ||
                     props.Client["Rate"] == undefined ||
@@ -1492,7 +1492,7 @@ export default function SalesForm(props) {
                 onHide={() => setShowNoteModal(false)}
               >
                 <Modal.Header closeButton>
-                  <Modal.Title>Edit Note</Modal.Title>
+                  <Modal.Title>Edit Note (30 characters)</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   <textarea
@@ -2664,12 +2664,13 @@ export default function SalesForm(props) {
                       if (oldtempa["branch"] !== tempa[EditIdx]["branch"]) {
                         pAreEqual = false;
                       }
+                      if (oldtempa["PType"] != tempa[EditIdx]["PType"]) {
+                        pAreEqual = false;
+                      }
                       if (oldtempa["PPrice"] !== tempa[EditIdx]["PPrice"]) {
                         pAreEqual = false;
                       }
-                      if (oldtempa["PType"] !== tempa[EditIdx]["PType"]) {
-                        pAreEqual = false;
-                      } else if (!pAreEqual) {
+                      if (!pAreEqual) {
                         console.log("rouhhhhhhhhhhhh");
                         console.log("false2349");
                         props.setpropertiesAreEqual(false);
@@ -3315,56 +3316,56 @@ export default function SalesForm(props) {
             <div className="grid grid-cols-3 gap-4">
               {/* Your six boxes here */}
               <button
-                className="bg-secondd text-BgTextColor font-bold py-4 px-8 rounded-md text-center"
+                className="bg-secondd text-BgTextColor py-4 px-8 rounded-md text-center"
                 onClick={() => formOptionProcessing("SA_AP")}
               >
                 Sales
               </button>
               <button
-                className="bg-secondd text-BgTextColor font-bold py-4 px-8  rounded-md text-center"
+                className="bg-secondd text-BgTextColor py-4 px-8  rounded-md text-center"
                 onClick={() => formOptionProcessing("OD_AP")}
               >
                 Order
               </button>
               <button
-                className="bg-secondd text-BgTextColor font-bold py-4 px-8   rounded-md text-center"
+                className="bg-secondd text-BgTextColor py-4 px-8   rounded-md text-center"
                 onClick={() => formOptionProcessing("PR_AP")}
               >
                 Purchase Return
               </button>
               <button
-                className="bg-secondd text-BgTextColor font-bold py-4 px-8  rounded-md text-center"
+                className="bg-secondd text-BgTextColor py-4 px-8  rounded-md text-center"
                 onClick={() => formOptionProcessing("PI_AP")}
               >
                 Purchase
               </button>
               <button
-                className="bg-secondd text-BgTextColor font-bold py-4 px-8   rounded-md text-center"
+                className="bg-secondd text-BgTextColor py-4 px-8   rounded-md text-center"
                 onClick={() => formOptionProcessing("SR_AP")}
               >
                 Sales Return
               </button>
               <button
-                className="bg-secondd text-BgTextColor font-bold py-4 px-8  rounded-md text-center"
+                className="bg-secondd text-BgTextColor py-4 px-8  rounded-md text-center"
                 onClick={() => formOptionProcessing("SAT_AP")}
               >
                 Branch Transfer
               </button>
               <button
-                className="bg-secondd text-BgTextColor font-bold py-4 px-8 rounded-md text-center"
+                className="bg-secondd text-BgTextColor py-4 px-8 rounded-md text-center"
                 onClick={() => formOptionProcessing("CR_AP")}
               >
                 Receipt Voucher
               </button>
               <button
-                className="bg-secondd text-BgTextColor font-bold py-4 px-8 rounded-md text-center"
+                className="bg-secondd text-BgTextColor py-4 px-8 rounded-md text-center"
                 onClick={() => formOptionProcessing("DB_AP")}
               >
                 Payment Voucher
               </button>
             </div>
             <button
-              className="mt-4 bg-gray-300 hover:bg-gray-400 font-bold py-3 px-6  rounded-md"
+              className="mt-4 bg-gray-300 hover:bg-gray-400 py-3 px-6  rounded-md"
               onClick={handleCloseDialog}
             >
               Close
@@ -3380,7 +3381,7 @@ export default function SalesForm(props) {
             <div className="grid grid-cols-2 gap-4">
               {/* Your six boxes here */}
               <label htmlFor="itemFromBranch" className="w-fit">
-                FROM Branch :
+                From :{" "}
               </label>
               <select
                 id="itemFromBranch"
@@ -3399,7 +3400,7 @@ export default function SalesForm(props) {
                 })}
               </select>
               <label htmlFor="itemToBranch" className="w-fit">
-                TO Branch:
+                To :{" "}
               </label>
               <select
                 id="itemToBranch"
