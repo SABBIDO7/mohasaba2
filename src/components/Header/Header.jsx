@@ -55,7 +55,7 @@ export default function Header(props) {
                             return (
                               "px-3 py-2 rounded-md text-sm  no-underline " +
                               (isActive
-                                ? "bg-BgTextColor text-third"
+                                ? "bg-BgTextColor text-third  hover:text-third"
                                 : "text-BgTextColor hover:bg-BgTextColor hover:text-third")
                             );
                           }}
@@ -69,12 +69,12 @@ export default function Header(props) {
 
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 not-italic text-BgTextColor">
                   <NavDropdown
-                    id="nav-dropdown-dark-example"
+                    id="MainNav-dropdown"
                     title={props.name}
                     menuVariant="BgTextColor"
                   >
                     <NavDropdown.Item
-                      className=" items-center "
+                      className=" navbarContent"
                       onClick={() => {
                         window.location.href = "/";
                       }}
@@ -82,7 +82,7 @@ export default function Header(props) {
                       Main Menu
                     </NavDropdown.Item>
                     <NavDropdown.Item
-                      className=" items-center "
+                      className=" navbarContent "
                       onClick={() => {
                         setCookie("token", "", {
                           path: "/",
@@ -118,9 +118,9 @@ export default function Header(props) {
                 )}*/
                     className={({ isActive }) => {
                       return (
-                        "block px-3 py-2 rounded-md text-base no-underline " +
+                        "block px-3 py-2 rounded-md text-base no-underline" +
                         (isActive
-                          ? "bg-BgTextColor text-third"
+                          ? "bg-BgTextColor text-third hover:text-third"
                           : "text-BgTextColor hover:bg-BgTextColor hover:text-third")
                       );
                     }}

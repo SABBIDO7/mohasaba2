@@ -97,6 +97,7 @@ export default function SalesForm(props) {
     ItemNo: "",
     ItemName: "",
   });
+  const [GroupModalShow, setGroupModalShow] = useState(false);
 
   const formatter = new Intl.NumberFormat("en-US");
   const handleHeaderClick = () => {
@@ -819,6 +820,12 @@ export default function SalesForm(props) {
         localStorage.setItem("VISA4", data.CompanyInfo["VISA4"]);
         localStorage.setItem("VISA5", data.CompanyInfo["VISA5"]);
         localStorage.setItem("VISA6", data.CompanyInfo["VISA6"]);
+        localStorage.setItem("GroupType", data.CompanyInfo["GroupType"]);
+        localStorage.setItem("PrintFormat", data.CompanyInfo["PrintFormat"]);
+        localStorage.setItem(
+          "GrpSearchMethod",
+          data.CompanyInfo["GrpSearchMethod"]
+        );
       }
     } catch (error) {
       // Handle errors here if needed
@@ -918,9 +925,9 @@ export default function SalesForm(props) {
                 id="tf"
               />
             </div>
-            <div className="ml-[2%] w-[30%]">
+            <div className="ml-[2%] w-[30%] flex justify-between">
               <button
-                className="bg-secondd text-BgTextColor w-full h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd"
+                className="bg-secondd text-BgTextColor w-[70%] h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
                 onClick={() => {
                   if (
                     (props.Client["id"] == "" ||
@@ -945,13 +952,49 @@ export default function SalesForm(props) {
                       props.setModalVoucher(true);
                     }
                   } else {
-                    getInvoiceOptions();
+                    getInvoiceOptions("");
                     setModalShow(true);
                     localStorage.setItem("InvoiceHistory", "");
                   }
                 }}
               >
                 Select {sOption}
+              </button>
+              <button
+                className="bg-secondd text-BgTextColor w-[25%] h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+                onClick={() => {
+                  if (
+                    (props.Client["id"] == "" ||
+                      props.Client["id"] == undefined) &&
+                    sOption == "Items" &&
+                    props.selectedFormOption != "SAT_AP"
+                  ) {
+                    setItemsWithoutAccount(true);
+                  } else if (sOption == "Amounts") {
+                    if (
+                      props.Client["id"] == undefined ||
+                      props.Client["id"] == "undefined" ||
+                      props.Client["id"] == "" ||
+                      props.Client["id"] == null
+                    ) {
+                      setErrorModal({
+                        show: true,
+                        message: <div>You Should Choose An Account First.</div>,
+                        title: "No Account",
+                      });
+                    } else {
+                      props.setModalVoucher(true);
+                    }
+                  } else {
+                    getGroupOptions();
+                    //setGroupModalShow(true);
+                    // getInvoiceOptions();
+                    // setModalShow(true);
+                    // localStorage.setItem("InvoiceHistory", "");
+                  }
+                }}
+              >
+                Select Group
               </button>
             </div>
             <div className="ml-[2%] w-[30%] h-[3rem]">
@@ -3100,7 +3143,7 @@ export default function SalesForm(props) {
               onClick={() => {
                 //props.callBack()
 
-                getInvoiceOptions();
+                getInvoiceOptions("");
                 setModalShow(true);
                 // setSelectedInvoice("");
                 setSearchAccountModalShow(false);
@@ -3510,9 +3553,54 @@ export default function SalesForm(props) {
           </div>
         </div>
       )}
+
+      <Modal
+        show={GroupModalShow.show}
+        onHide={() => setGroupModalShow({ ...GroupModalShow, show: false })}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {GroupModalShow.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {/* Your six boxes here */}
+          <div className="grid grid-cols-4 gap-4">
+            {GroupModalShow.variable &&
+              GroupModalShow.variable.map((type, idx) => {
+                return (
+                  <button
+                    className="bg-secondd text-BgTextColor py-4 px-8 rounded-md text-center"
+                    onClick={() => {
+                      setGroupModalShow({ ...ErrorModal, show: false });
+                      setsOption("Items");
+                      getInvoiceOptions(type["GroupName"]);
+                      setModalShow(true);
+                    }}
+                  >
+                    {type["GroupName"]}
+                  </button>
+                );
+              })}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="flex flex-row w-full justify-around">
+            <Button
+              variant="primary"
+              onClick={() => setGroupModalShow({ ...ErrorModal, show: false })}
+            >
+              Close
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
-  function getInvoiceOptions() {
+  function getInvoiceOptions(GroupName) {
     console.log(changingAccountInvoiceFromDB);
     let data = {
       token: props.token,
@@ -3523,6 +3611,8 @@ export default function SalesForm(props) {
         props.selectedFormOption != "SAT_AP" ? "N" : props.SATFromBranch,
       SATToBranch:
         props.selectedFormOption != "SAT_AP" ? "N" : props.SATToBranch,
+      groupName: GroupName,
+      groupType: localStorage.getItem("GroupType"),
     };
 
     axios({
@@ -3534,8 +3624,54 @@ export default function SalesForm(props) {
       .then((res) => {
         if (res.data.Info == "authorized") {
           let lgt = res.data.opp;
+          console.log("hhhhhhhhhhhhhhhhhhhhhhhhhh");
           if (lgt.length > 0) {
+            console.log("jjjjjjjjjjjjjjjjjjj");
             setIdOptions(res.data.opp);
+          } else {
+            console.log("po", res.data.opp);
+            setModalShow(false);
+
+            setErrorModal({
+              show: true,
+              message: (
+                <div>
+                  There Is No {sOption} Matches Your Search <br></br> Please Try
+                  a Different {sOption} .
+                </div>
+              ),
+              title: "Empty " + sOption,
+            });
+          }
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  function getGroupOptions() {
+    console.log(changingAccountInvoiceFromDB);
+    let data = {
+      value: localStorage.getItem("GroupType"),
+      username: localStorage.getItem("compname"),
+    };
+
+    axios({
+      method: "POST",
+      url: props.url + "/moh/Invoice_Group_Select",
+      data: data,
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => {
+        if (res.data.Info == "authorized") {
+          let lgt = res.data.groupTypes;
+          if (lgt.length > 0) {
+            setGroupModalShow({
+              show: true,
+              variable: res.data.groupTypes,
+              title: "Group Types",
+            });
+            //setIdOptions(res.data.opp);
           } else {
             console.log("po", res.data.opp);
             setModalShow(false);

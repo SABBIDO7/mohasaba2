@@ -126,6 +126,7 @@ option:hover {
   }
   .optionText{
     font-size: 1rem!important;
+
   }
   .select-style{
     font-size: 0.75rem!important;
@@ -139,7 +140,10 @@ option:hover {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   font-size: 1.25rem;
+  color: theme('colors.BgTextColor');
+   
 }
+
 /* For web */
 
   .itemsTable {
@@ -248,7 +252,7 @@ option:hover {
   border-radius: 0.375rem; /* 0.5rem / 4 */
   border: 1px solid #d1d5db; /* equivalent to border-gray-300 */
   background-color: #ffffff; /* equivalent to bg-white */
-  color: #4b5563; /* equivalent to text-gray-700 */
+  color: theme('colors.BgTextColor')!important; /* equivalent to text-gray-700 */
   outline: none; /* equivalent to focus:outline-none */
   border-color: theme('colors.secondd'); /* equivalent to focus:border-second */
   font-size: 1.05rem; /* equivalent to text-sm */
@@ -257,10 +261,23 @@ option:hover {
   box-shadow: 0 0 0 2px theme('colors.prime'); /* equivalent to focus:ring-second */
  > overflow-hidden whitespace-nowrap{
   font-size: 0.9rem!important;
+
  }
 }
+
 .ReCall-select-style {
   overflow: hidden;
   white-space: nowrap;
   font-size: 0.8rem ;
+}
+.navbarContent{
+  
+  color:  theme('colors.BgTextColor')!important;
+
+}
+.navbarContent:hover{
+  background-color:theme('colors.secondd')!important;
+}
+.pdf{
+  margin-bottom: 15px;
 }

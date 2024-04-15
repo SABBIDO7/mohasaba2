@@ -824,7 +824,7 @@ export default function Stock(props) {
                             <>
                               <tr
                                 key={uuid()}
-                                className=" whitespace-nowrap hover:bg-blue-200"
+                                className=" hover:bg-secondd hover:text-BgTextColor whitespace-nowrap"
                                 style={{ userSelect: "none" }}
                               >
                                 <SimplifiedStatment

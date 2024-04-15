@@ -74,17 +74,61 @@ export default function Invoice(props) {
 
   const downloadPDF = (data) => {
     const htmlContent = `
-        <div>
-            <h1>${data.accname}</h1>
-            <p>Account ID: ${data.accno}</p>
-            <h2>Items</h2>
-            <ul>
-                ${data.items
-                  .map((item) => `<li> ${item.name}: ${item.uprice}</li>`)
-                  .join("")}
-            </ul>
+    <div style="justify-items:space-between;align-items:center">
+    <div style="justify-items:center;align-items:center">
+        <h1 style="color: #8B0000;">${data.accname}</h1>
+        <p style="color: #8B0000;">Account ID: ${data.accno}</p>
         </div>
-    `;
+      
+        <table style="width: 100%;
+        border-collapse: collapse;">
+            <thead style="background-color: #edd98a;
+            color: #8B0000;">
+                <tr style="border: 1px solid #8B0000;background-color: #edd98a; color:#8B0000;"> 
+                    <th style=" padding: 0.75rem;
+                    text-align: left;border: 1px solid #8B0000;">Item Name</th>
+                    <th style=" padding: 0.75rem;
+                    text-align: left;border: 1px solid #8B0000;">Unit Price</th>
+                    <th style=" padding: 0.75rem;
+                    text-align: left;border: 1px solid #8B0000;">Total</th>
+                    <th style=" padding: 0.75rem;
+                    text-align: left;border: 1px solid #8B0000;">Total Quantity</th>
+                    <th style=" padding: 0.75rem;
+                    text-align: left;border: 1px solid #8B0000;">Discount</th>
+                    <th style=" padding: 0.75rem;
+                    text-align: left;border: 1px solid #8B0000;">Tax</th>
+                    <th style=" padding: 0.75rem;
+                    text-align: left;border: 1px solid #8B0000;">Total Tax</th>
+                    <th style=" padding: 0.75rem;
+                    text-align: left;border: 1px solid #8B0000;">Type</th>
+                    <th style=" padding: 0.75rem;
+                    text-align: left;border: 1px solid #8B0000;">Notes</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                ${data.items
+                  .map(
+                    (item) => `
+                        <tr >
+                            <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.name}</td>
+                            <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.uprice}</td>
+                            <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.Total}</td>
+                            <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.TotalPieces}</td>
+                            <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.discount}</td>
+                            <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.tax}</td>
+                            <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.TaxTotal}</td>
+                            <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.PType}</td>
+                            <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.Note}</td>
+                        </tr>
+                    `
+                  )
+                  .join("")}
+            </tbody>
+        </table>
+        <div style="height:45px"></div>
+    </div>
+`;
 
     console.log(htmlContent); // Log the HTML content to verify
     // Create a hidden div to render the HTML content

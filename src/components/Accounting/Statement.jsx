@@ -200,7 +200,7 @@ export default function Statement(props) {
         <tr
           key={uuid()}
           onDoubleClick={() => handleShow(true)}
-          className=" whitespace-nowrap hover:bg-blue-200"
+          className=" hover:bg-secondd hover:text-BgTextColor whitespace-nowrap"
           style={{ userSelect: "none" }}
         >
           {props.children}

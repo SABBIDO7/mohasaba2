@@ -39,7 +39,7 @@ module.exports = {
         //secondd: 'hsl(39, 40%, 85%)',
        // secondd: 'hsl(20, 80%, 85%)',
        //secondd: 'hsl(27.5, 80%, 80%)', //hsl (color,saturation, ligtness)
-       secondd: 'hsl(27.5, 80%, 82%)',
+       secondd: 'hsl(27.5, 80%, 82%)', //#edd98a
         danger: '#4CAF50',
       },
     },

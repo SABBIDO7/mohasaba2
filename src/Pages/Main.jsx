@@ -24,7 +24,7 @@ export default function Main(props) {
   }
   window.scrollTo(0, 0);
   return (
-    <div className=" h-[90vh] flex flex-col items-center justify-start bg-white min-h-screen">
+    <div className=" h-[90vh] flex flex-col items-center justify-start min-h-screen bg-fourth">
       <div className=" w-[95%]  my-3 mb-3 rounded-xl items-center">
         <img
           src={Backoffice}
@@ -35,7 +35,7 @@ export default function Main(props) {
 
       <div className="flex flex-col items-center justify-center mt-3">
         <button
-          className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor font-bold text-xl"
+          className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor text-xl"
           role="button"
           aria-pressed="true"
           onClick={accountingClick}
@@ -43,14 +43,14 @@ export default function Main(props) {
           Accounting
         </button>
         <button
-          className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor font-bold text-xl"
+          className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor text-xl"
           aria-pressed="true"
           onClick={stockClick}
         >
           Inventory
         </button>
         <button
-          className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor font-bold text-xl"
+          className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor text-xl"
           role="button"
           aria-pressed="true"
           onClick={invoiceClick}
