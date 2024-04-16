@@ -212,7 +212,7 @@ const IdSelect = forwardRef((props, ref) => {
                 {props.sOption === "Items" && (
                   <div
                     key={idx}
-                    className="bg-gradient-to-br from-gray-300 to-zinc-200 shadow-sm p-2 rounded my-2"
+                    className="bg-secondd text-BgTextColor shadow-sm p-2 rounded my-2"
                     onClick={(e) => {
                       console.log("kkjjjhhgg");
                       console.log(io);
@@ -244,41 +244,66 @@ const IdSelect = forwardRef((props, ref) => {
                     }}
                   >
                     <div className="card-body">
-                      <div className="d-flex flex-wrap">
-                        <div>
+                      <div className="d-flex flex-column justify-between p-1">
+                        <div className="d-flex flex-row justify-between items-center">
                           {io["ItemNo"] && (
                             <p className="me-3 mb-0 card-title">
-                              <strong>ItemNo:</strong> {io["ItemNo"]}
+                              <strong></strong> {io["ItemNo"]}
                             </p>
                           )}
                           {io["ItemName"] && (
                             <p className="me-3 mb-0">
-                              <strong>ItemName:</strong> {io["ItemName"]}
+                              <strong></strong> {io["ItemName"]}
                             </p>
                           )}
                         </div>
+                        <hr className="my-2" />
                         {io["branchesStock"] && (
-                          <div className="flex flex-wrap">
-                            {Object.entries(io["branchesStock"]).map(
-                              ([key, value], idxbr) => {
-                                if (
-                                  value != "0" &&
-                                  value != null &&
-                                  value !== ""
-                                ) {
-                                  return (
-                                    <div key={idxbr}>
-                                      <p className="me-3 mb-0">
-                                        <strong>{key}:</strong> {value}
-                                      </p>
-                                    </div>
-                                  );
+                          <div className="d-flex flex-row justify-between  items-center ">
+                            <div className="d-flex flex-row   items-center ">
+                              {Object.entries(io["branchesStock"]).map(
+                                ([key, value], idxbr) => {
+                                  if (
+                                    value != "0" &&
+                                    value != null &&
+                                    value !== ""
+                                  ) {
+                                    return (
+                                      <div key={idxbr}>
+                                        <p className="me-3 mb-0">
+                                          <strong>{key}:</strong> {value}
+                                        </p>
+                                      </div>
+                                    );
+                                  }
                                 }
-                              }
-                            )}
-                            <div>
-                              <strong>Stock :</strong>
-                              {io["Stock"]}
+                              )}
+                              <div>
+                                <strong>QAll :</strong>
+                                {io["Stock"]}
+                              </div>
+                            </div>
+                            <div className="d-flex flex-row   items-center ">
+                              <div className="mr-1">
+                                <strong>SP1 : </strong>
+                                {io["SPrice1"] ? io["SPrice1"] : "-"}
+                              </div>
+                              <div className="mr-1">
+                                <strong>SP2 : </strong>
+                                {io["SPrice2"] ? io["SPrice2"] : "-"}
+                              </div>
+                              <div className="mr-1">
+                                <strong>SP3 : </strong>
+                                {io["SPrice3"] ? io["SPrice3"] : "-"}
+                              </div>
+                              {/* <div className="mr-1">
+                                <strong>SP4 : </strong>
+                                {io["SPrice4"] ? io["SPrice4"] : "-"}
+                              </div>
+                              <div className="mr-1">
+                                <strong>SP5 : </strong>
+                                {io["SPrice5"] ? io["SPrice5"] : "-"}
+                              </div> */}
                             </div>
                           </div>
                         )}
@@ -289,7 +314,7 @@ const IdSelect = forwardRef((props, ref) => {
                 {props.sOption === "Accounts" && (
                   <div
                     key={idx}
-                    className="bg-gradient-to-br from-gray-300 to-zinc-200 shadow-sm p-2 rounded my-2"
+                    className="bg-secondd text-BgTextColor shadow-sm p-2 rounded my-2"
                     onClick={(e) => {
                       console.log(io);
                       props.setchangingAccountInvoiceFromDB(props.Client.RefNo);
@@ -873,43 +898,50 @@ const IdSelect = forwardRef((props, ref) => {
                 >
                   <option value="">Choose Payment Type</option>
                   {localStorage.getItem("CASH") &&
-                    localStorage.getItem("CASH") !== "" && (
+                    localStorage.getItem("CASH") !== "" &&
+                    localStorage.getItem("CASH") != "null" && (
                       <option value={localStorage.getItem("CASH")}>
                         {localStorage.getItem("CASH")}
                       </option>
                     )}
                   {localStorage.getItem("VISA1") &&
-                    localStorage.getItem("VISA1") !== "" && (
+                    localStorage.getItem("VISA1") !== "" &&
+                    localStorage.getItem("VISA1") != "null" && (
                       <option value={localStorage.getItem("VISA1")}>
                         {localStorage.getItem("VISA1")}
                       </option>
                     )}
                   {localStorage.getItem("VISA2") &&
-                    localStorage.getItem("VISA2") !== "" && (
+                    localStorage.getItem("VISA2") !== "" &&
+                    localStorage.getItem("VISA2") != "null" && (
                       <option value={localStorage.getItem("VISA2")}>
                         {localStorage.getItem("VISA2")}
                       </option>
                     )}
                   {localStorage.getItem("VISA3") &&
-                    localStorage.getItem("VISA3") !== "" && (
+                    localStorage.getItem("VISA3") !== "" &&
+                    localStorage.getItem("VISA3") !== "null" && (
                       <option value={localStorage.getItem("VISA3")}>
                         {localStorage.getItem("VISA3")}
                       </option>
                     )}
                   {localStorage.getItem("VISA4") &&
-                    localStorage.getItem("VISA4") !== "" && (
+                    localStorage.getItem("VISA4") !== "" &&
+                    localStorage.getItem("VISA4") != "null" && (
                       <option value={localStorage.getItem("VISA4")}>
                         {localStorage.getItem("VISA4")}
                       </option>
                     )}
                   {localStorage.getItem("VISA5") &&
-                    localStorage.getItem("VISA5") !== "" && (
+                    localStorage.getItem("VISA5") !== "" &&
+                    localStorage.getItem("VISA5") != "null" && (
                       <option value={localStorage.getItem("VISA5")}>
                         {localStorage.getItem("VISA5")}
                       </option>
                     )}
                   {localStorage.getItem("VISA6") &&
-                    localStorage.getItem("VISA6") !== "" && (
+                    localStorage.getItem("VISA6") !== "" &&
+                    localStorage.getItem("VISA6") != "null" && (
                       <option value={localStorage.getItem("VISA6")}>
                         {localStorage.getItem("VISA6")}
                       </option>

@@ -74,7 +74,7 @@ export default function Invoice(props) {
 
   const downloadPDF = (data) => {
     const htmlContent = `
-    <div style="justify-items:space-between;align-items:center">
+    <div style="justify-items:space-between;align-items:center;">
     <div style="justify-items:center;align-items:center">
         <h1 style="color: #8B0000;">${data.accname}</h1>
         <p style="color: #8B0000;">Account ID: ${data.accno}</p>
@@ -133,6 +133,8 @@ export default function Invoice(props) {
     console.log(htmlContent); // Log the HTML content to verify
     // Create a hidden div to render the HTML content
     const container = document.createElement("div");
+    //  container.style.display = "none"; // Set display to none
+
     console.log("CONTAINER", container);
     container.innerHTML = htmlContent;
     document.body.appendChild(container);
@@ -178,6 +180,7 @@ export default function Invoice(props) {
             doc.addImage(imgData, "PNG", 0, 0, displayWidth, displayHeight);
 
             doc.save(data.type + "_" + data.accname);
+            document.body.removeChild(container);
           } catch (error) {
             console.error("Error generating PDF:", error);
           }

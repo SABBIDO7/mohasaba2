@@ -98,6 +98,7 @@ export default function SalesForm(props) {
     ItemName: "",
   });
   const [GroupModalShow, setGroupModalShow] = useState(false);
+  const [GroupType, setGroupType] = useState("");
 
   const formatter = new Intl.NumberFormat("en-US");
   const handleHeaderClick = () => {
@@ -961,7 +962,12 @@ export default function SalesForm(props) {
                 Select {sOption}
               </button>
               <button
-                className="bg-secondd text-BgTextColor w-[25%] h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+                className={`bg-secondd text-BgTextColor w-[25%] h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md ${
+                  props.selectedFormOption === "CR_AP" ||
+                  props.selectedFormOption === "DB_AP"
+                    ? "bg-black text-white cursor-not-allowed"
+                    : ""
+                }`}
                 onClick={() => {
                   if (
                     (props.Client["id"] == "" ||
@@ -970,29 +976,38 @@ export default function SalesForm(props) {
                     props.selectedFormOption != "SAT_AP"
                   ) {
                     setItemsWithoutAccount(true);
-                  } else if (sOption == "Amounts") {
-                    if (
-                      props.Client["id"] == undefined ||
-                      props.Client["id"] == "undefined" ||
-                      props.Client["id"] == "" ||
-                      props.Client["id"] == null
-                    ) {
+                  } else {
+                    if (sOption == "Items") {
+                      if (
+                        localStorage.getItem("GroupType") &&
+                        localStorage.getItem("GroupType") != "" &&
+                        localStorage.getItem("GroupType") != null
+                      ) {
+                        getGroupOptions(localStorage.getItem("GroupType"));
+                      } else {
+                        getInitialGroupOptions();
+                      }
+                    } else {
                       setErrorModal({
                         show: true,
-                        message: <div>You Should Choose An Account First.</div>,
-                        title: "No Account",
+                        message: (
+                          <div>
+                            You Should Choose Search Items Selection First.
+                          </div>
+                        ),
+                        title: "Select Items Search",
                       });
-                    } else {
-                      props.setModalVoucher(true);
                     }
-                  } else {
-                    getGroupOptions();
                     //setGroupModalShow(true);
                     // getInvoiceOptions();
                     // setModalShow(true);
                     // localStorage.setItem("InvoiceHistory", "");
                   }
                 }}
+                disabled={
+                  props.selectedFormOption == "CR_AP" ||
+                  props.selectedFormOption === "DB_AP"
+                }
               >
                 Select Group
               </button>
@@ -1245,7 +1260,7 @@ export default function SalesForm(props) {
               {" "}
               {/**if mobile 30% if web 55% */}
               <Table bordered striped responsive>
-                <thead className=" bg-secondd text-BgTextColor">
+                <thead className=" bg-secondd text-BgTextColor font-normal">
                   <tr className=" whitespace-nowrap ">
                     {props.selectedFormOption === "CR_AP" ||
                     props.selectedFormOption === "DB_AP" ? (
@@ -2509,43 +2524,50 @@ export default function SalesForm(props) {
                     >
                       <option value="">Choose Payment Type</option>
                       {localStorage.getItem("CASH") &&
-                        localStorage.getItem("CASH") !== "" && (
+                        localStorage.getItem("CASH") !== "" &&
+                        localStorage.getItem("CASH") != "null" && (
                           <option value={localStorage.getItem("CASH")}>
                             {localStorage.getItem("CASH")}
                           </option>
                         )}
                       {localStorage.getItem("VISA1") &&
-                        localStorage.getItem("VISA1") !== "" && (
+                        localStorage.getItem("VISA1") !== "" &&
+                        localStorage.getItem("VISA1") != "null" && (
                           <option value={localStorage.getItem("VISA1")}>
                             {localStorage.getItem("VISA1")}
                           </option>
                         )}
                       {localStorage.getItem("VISA2") &&
-                        localStorage.getItem("VISA2") !== "" && (
+                        localStorage.getItem("VISA2") !== "" &&
+                        localStorage.getItem("VISA2") != "null" && (
                           <option value={localStorage.getItem("VISA2")}>
                             {localStorage.getItem("VISA2")}
                           </option>
                         )}
                       {localStorage.getItem("VISA3") &&
-                        localStorage.getItem("VISA3") !== "" && (
+                        localStorage.getItem("VISA3") !== "" &&
+                        localStorage.getItem("VISA3") !== "null" && (
                           <option value={localStorage.getItem("VISA3")}>
                             {localStorage.getItem("VISA3")}
                           </option>
                         )}
                       {localStorage.getItem("VISA4") &&
-                        localStorage.getItem("VISA4") !== "" && (
+                        localStorage.getItem("VISA4") !== "" &&
+                        localStorage.getItem("VISA4") != "null" && (
                           <option value={localStorage.getItem("VISA4")}>
                             {localStorage.getItem("VISA4")}
                           </option>
                         )}
                       {localStorage.getItem("VISA5") &&
-                        localStorage.getItem("VISA5") !== "" && (
+                        localStorage.getItem("VISA5") !== "" &&
+                        localStorage.getItem("VISA5") != "null" && (
                           <option value={localStorage.getItem("VISA5")}>
                             {localStorage.getItem("VISA5")}
                           </option>
                         )}
                       {localStorage.getItem("VISA6") &&
-                        localStorage.getItem("VISA6") !== "" && (
+                        localStorage.getItem("VISA6") !== "" &&
+                        localStorage.getItem("VISA6") != "null" && (
                           <option value={localStorage.getItem("VISA6")}>
                             {localStorage.getItem("VISA6")}
                           </option>
@@ -3027,6 +3049,9 @@ export default function SalesForm(props) {
               ? "No Account Choosen"
               : props.propertiesAreEqual == true
               ? "No Changes In Your Invoice"
+              : props.selectedFormOption == "CR_AP" ||
+                props.selectedFormOption == "DB_AP"
+              ? "No Accounts in your invoice"
               : "No Items in your invoice"}
           </h4>
         </Modal.Body>
@@ -3576,9 +3601,14 @@ export default function SalesForm(props) {
                     className="bg-secondd text-BgTextColor py-4 px-8 rounded-md text-center"
                     onClick={() => {
                       setGroupModalShow({ ...ErrorModal, show: false });
-                      setsOption("Items");
-                      getInvoiceOptions(type["GroupName"]);
-                      setModalShow(true);
+                      if (GroupModalShow.flag == "AllGroups") {
+                        getGroupOptions(type["GroupName"]);
+                        setGroupType(type["GroupName"]);
+                      } else {
+                        getInvoiceOptions(type["GroupName"]);
+
+                        setModalShow(true);
+                      }
                     }}
                   >
                     {type["GroupName"]}
@@ -3601,7 +3631,16 @@ export default function SalesForm(props) {
     </div>
   );
   function getInvoiceOptions(GroupName) {
-    console.log(changingAccountInvoiceFromDB);
+    let gType;
+    if (
+      localStorage.getItem("GroupType") &&
+      localStorage.getItem("GroupType") != "" &&
+      localStorage.getItem("GroupType") != null
+    ) {
+      gType = localStorage.getItem("GroupType");
+    } else {
+      gType = GroupType;
+    }
     let data = {
       token: props.token,
       option: sOption,
@@ -3612,7 +3651,7 @@ export default function SalesForm(props) {
       SATToBranch:
         props.selectedFormOption != "SAT_AP" ? "N" : props.SATToBranch,
       groupName: GroupName,
-      groupType: localStorage.getItem("GroupType"),
+      groupType: gType,
     };
 
     axios({
@@ -3622,9 +3661,10 @@ export default function SalesForm(props) {
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => {
+        console.log(res.data.info, "mmmmmmmm");
         if (res.data.Info == "authorized") {
           let lgt = res.data.opp;
-          console.log("hhhhhhhhhhhhhhhhhhhhhhhhhh");
+          console.log("hhhhhhhhhhhhhhhhhhhhhhhhhh", res.data.Info);
           if (lgt.length > 0) {
             console.log("jjjjjjjjjjjjjjjjjjj");
             setIdOptions(res.data.opp);
@@ -3643,16 +3683,29 @@ export default function SalesForm(props) {
               title: "Empty " + sOption,
             });
           }
+        } else if (res.data.Info == "error") {
+          setModalShow(false);
+          setErrorModal({
+            show: true,
+            message: <div>{res.data.msg}</div>,
+            title: "Error Occured",
+          });
         }
       })
       .catch((err) => {
-        console.log(err);
+        setModalShow(false);
+        setErrorModal({
+          show: true,
+          message: <div>{err}</div>,
+          title: "Error Occured",
+        });
       });
   }
-  function getGroupOptions() {
-    console.log(changingAccountInvoiceFromDB);
-    let data = {
-      value: localStorage.getItem("GroupType"),
+  function getGroupOptions(flag) {
+    let data;
+
+    data = {
+      value: flag,
       username: localStorage.getItem("compname"),
     };
 
@@ -3670,6 +3723,7 @@ export default function SalesForm(props) {
               show: true,
               variable: res.data.groupTypes,
               title: "Group Types",
+              flag: "GroupAvailable",
             });
             //setIdOptions(res.data.opp);
           } else {
@@ -3692,6 +3746,26 @@ export default function SalesForm(props) {
       .catch((err) => {
         console.log(err);
       });
+  }
+  function getInitialGroupOptions() {
+    let variable = [
+      { GroupName: "SetG" },
+      { GroupName: "Category" },
+      { GroupName: "Unit" },
+      { GroupName: "Brand" },
+      { GroupName: "Origin" },
+      { GroupName: "Supplier" },
+      { GroupName: "Sizeg" },
+      { GroupName: "Color" },
+      { GroupName: "Family" },
+      { GroupName: "Groupg" },
+    ];
+    setGroupModalShow({
+      show: true,
+      variable: variable,
+      title: "Group Types",
+      flag: "AllGroups",
+    });
   }
   function discardInvoice() {
     console.log("selectedinvoiceexit", selectedInvoice);

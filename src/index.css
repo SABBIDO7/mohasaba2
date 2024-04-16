@@ -281,3 +281,7 @@ option:hover {
 .pdf{
   margin-bottom: 15px;
 }
+th {
+  font-weight: 400!important;
+  
+}
