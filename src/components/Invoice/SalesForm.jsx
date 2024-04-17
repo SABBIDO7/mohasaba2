@@ -338,19 +338,64 @@ export default function SalesForm(props) {
   useEffect(() => {
     if (props.selectedFormOption == "SA_AP") {
       props.setSelectedFormOptionDisplay("Sales");
-      setsOption("Accounts");
+      if (
+        props.Client["id"] &&
+        props.Client["id"] != "" &&
+        props.Client["id"] != null &&
+        props.Client["id"] != undefined
+      ) {
+        setsOption("Items");
+      } else {
+        setsOption("Accounts");
+      }
     } else if (props.selectedFormOption == "SR_AP") {
       props.setSelectedFormOptionDisplay("Sales Return");
-      setsOption("Accounts");
+      if (
+        props.Client["id"] &&
+        props.Client["id"] != "" &&
+        props.Client["id"] != null &&
+        props.Client["id"] != undefined
+      ) {
+        setsOption("Items");
+      } else {
+        setsOption("Accounts");
+      }
     } else if (props.selectedFormOption == "OD_AP") {
       props.setSelectedFormOptionDisplay("Order");
-      setsOption("Accounts");
+      if (
+        props.Client["id"] &&
+        props.Client["id"] != "" &&
+        props.Client["id"] != null &&
+        props.Client["id"] != undefined
+      ) {
+        setsOption("Items");
+      } else {
+        setsOption("Accounts");
+      }
     } else if (props.selectedFormOption == "PI_AP") {
       props.setSelectedFormOptionDisplay("Purchase");
-      setsOption("Accounts");
+      if (
+        props.Client["id"] &&
+        props.Client["id"] != "" &&
+        props.Client["id"] != null &&
+        props.Client["id"] != undefined
+      ) {
+        setsOption("Items");
+      } else {
+        setsOption("Accounts");
+      }
     } else if (props.selectedFormOption == "PR_AP") {
       props.setSelectedFormOptionDisplay("Purchase Return");
-      setsOption("Accounts");
+      if (
+        props.Client["id"] &&
+        props.Client["id"] != "" &&
+        props.Client["id"] != null &&
+        props.Client["id"] != undefined
+      ) {
+        setsOption("Items");
+      } else {
+        setsOption("Accounts");
+      }
     } else if (props.selectedFormOption == "SAT_AP") {
       props.setSelectedFormOptionDisplay("Branch Transfer");
       setsOption("Items");
@@ -614,7 +659,7 @@ export default function SalesForm(props) {
     console.log("ila hona w tantahi", jsonString);
     if (jsonString != []) {
       const retrievedJson = JSON.parse(jsonString);
-
+      console.log("lklklkllk", retrievedJson["accName"]);
       props.setClient(retrievedJson["accName"]);
       props.setSelectedItems(retrievedJson["items"]);
       if (
@@ -873,7 +918,25 @@ export default function SalesForm(props) {
       } else if (localStorage.getItem("selectedFormOption") == "SAT_AP") {
         setsOption("Items");
       } else {
+        // if (
+        //   (localStorage.getItem("selectedFormOption") == "SA_AP" ||
+        //     localStorage.getItem("selectedFormOption") == "SR_AP" ||
+        //     localStorage.getItem("selectedFormOption") == "PR_AP" ||
+        //     localStorage.getItem("selectedFormOption") == "PI_AP" ||
+        //     localStorage.getItem("selectedFormOption") == "OD_AP") &&
+        //   props.Client["id"] &&
+        //   props.Client["id"] != "" &&
+        //   props.Client["id"] != null &&
+        //   props.Client["id"] != undefined
+        // ) {
+        //   console.log("heyyyyyyyy", props.Client["id"]);
+
+        //   setsOption("Items");
+        // } else {
+        //   console.log("msh heyyyyyyyy", props.Client["id"]);
+        //   setsOption("Accounts");
         setsOption("Accounts");
+        // }
       }
       getCompanyInfo();
     } catch (error) {
@@ -965,7 +1028,7 @@ export default function SalesForm(props) {
                 className={`bg-secondd text-BgTextColor w-[25%] h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md ${
                   props.selectedFormOption === "CR_AP" ||
                   props.selectedFormOption === "DB_AP"
-                    ? "bg-black text-white cursor-not-allowed"
+                    ? "bg-white text-white cursor-not-allowed"
                     : ""
                 }`}
                 onClick={() => {
@@ -1598,6 +1661,45 @@ export default function SalesForm(props) {
                       {localStorage.getItem("Cur1")}
                     </h4>
                   )}{" "} */}
+                  <Button
+                    className="h-[100%] hover:bg-black hover:shadow-md"
+                    onClick={() => {
+                      if (
+                        props.propertiesAreEqual == true &&
+                        selectedInvoice != "" &&
+                        selectedInvoice != "" &&
+                        selectedInvoice != null
+                      ) {
+                        let type = props.selectedFormOption;
+                        let Client = props.Client;
+                        let items = props.SelectedItems;
+
+                        let RemovedItems = props.RemovedItems;
+                        let data = {
+                          type: type,
+                          accno: Client.id,
+                          accDate: Client.data,
+                          accTime: Client.time,
+                          accRefNo: Client.RefNo,
+                          accname: Client.name,
+                          items: items,
+                          RemovedItems: RemovedItems,
+                          username: localStorage.getItem("username"),
+                          invoiceTotal: finalTotal,
+                        };
+                        props.downloadPDF(data, selectedInvoice);
+                      } else {
+                        setErrorModal({
+                          show: true,
+                          message:
+                            "Your Not Allowed to Print this Invoice.\n Check if There is Unsaved changes.",
+                          title: "Cannot Print",
+                        });
+                      }
+                    }}
+                  >
+                    Print
+                  </Button>
                 </div>
                 <div className="flex flex-row justify-end items-center bg-fourth shadow-l  rounded p-2 sm:rounded p-1 mb-[0.5%]">
                   <div className="InvoiceGross">
@@ -2200,276 +2302,273 @@ export default function SalesForm(props) {
               </div>
             </Modal.Body>
             <Modal.Footer>
-              <div className="flex flex-row-reverse justify-between w-[100%]">
-                <div className="flex flex-row align-middle justify-between">
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      setShow(false);
-                      setIdOptions([]);
-                      setErrorMessage("");
-                      EmptyVariable();
-                    }}
-                  >
-                    Close
-                  </Button>
-                  <div className="w-3"></div>
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      if (localStorage.getItem("SalesUnderZero") == "N") {
-                        if (
-                          EditItemStockQty &&
-                          EditItemStockQty < EditTotalPieces
-                        ) {
-                          setDeletePermission({
-                            show: true,
-                            message:
-                              "You Don't Have Permission To Sell Less Than Stock Quantity.",
+              <div className="flex flex-row justify-between w-[100%]">
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setShow(false);
+                    setIdOptions([]);
+                    setErrorMessage("");
+                    EmptyVariable();
+                  }}
+                >
+                  Close
+                </Button>
+
+                <Button
+                  variant="danger"
+                  onClick={() => {
+                    setShow(false);
+
+                    let tempa = [...props.SelectedItems]; // Create a copy of SelectedItems array
+                    if (
+                      selectedInvoice != undefined &&
+                      selectedInvoice != null &&
+                      selectedInvoice != ""
+                    ) {
+                      // if(props.SelectedItems.length==1){
+                      //     setDeleteLastItemFromHistory(true);
+                      // }
+
+                      let DeleteItemPermission =
+                        localStorage.getItem("DeleteItem");
+                      if (DeleteItemPermission == "Y") {
+                        if (props.SelectedItems.length == 1) {
+                          setDeleteLastItemFromHistory(true);
+                        } else {
+                          RemoveItem(tempa[EditIdx], "ITEM");
+
+                          tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
+                          tempa.forEach((item, index) => {
+                            item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
                           });
-                          return;
+
+                          props.setSelectedItems(tempa);
+                          let accName = props.Client;
+
+                          let items = tempa;
+
+                          let RemovedItems = props.RemovedItems;
+                          let json = { accName, items, RemovedItems };
+                          // let json = {accName,items}
+                          let jsonString = JSON.stringify(json); // Convert data object to JSON string
+
+                          console.log("y22");
+
+                          localStorage.setItem("sales", jsonString);
+                          console.log("heyyy", localStorage.getItem("sales"));
+                          console.log("false2068");
+                          props.setpropertiesAreEqual(false);
+                          setErrorMessage("");
                         }
-                      }
-
-                      let tempa = props.SelectedItems;
-
-                      let tempQty;
-                      if (EditQty === 0) {
-                        tempQty = 1;
                       } else {
-                        tempQty = EditQty;
+                        setDeletePermission({
+                          show: true,
+                          message:
+                            "You don't have permission to delete Item From invoice.",
+                        });
                       }
-
-                      let PQUnitT = tempa[EditIdx]["PQUnit"];
-                      let PQtyT = tempa[EditIdx]["PQty"];
-                      let PUnitT = tempa[EditIdx]["PUnit"];
-                      let DateTT = tempa[EditIdx]["DateT"];
-                      let TimeTT = tempa[EditIdx]["TimeT"];
-
-                      let NoteT = tempa[EditIdx]["Note"];
-                      let PPriceT = tempa[EditIdx]["PPrice"];
-                      let oldtempa = tempa[EditIdx];
-
-                      let totalConditions =
-                        EditPPrice == "U"
-                          ? parseFloat(
-                              EditPrice *
-                                EditTotalPieces *
-                                (1 - EditDiscount / 100) *
-                                (1 + EditTax / 100)
-                            )
-                          : EditPPrice == "P" &&
-                            parseFloat(
-                              EditPrice *
-                                EditQty *
-                                (1 - EditDiscount / 100) *
-                                (1 + EditTax / 100)
-                            );
-                      tempa[EditIdx] = {
-                        no: EditItem.no,
-                        name: EditItem.name,
-                        qty: tempQty,
-                        uprice: parseFloat(EditPrice),
-                        discount: EditDiscount,
-                        branch: EditBranch,
-                        lno: EditLno,
-                        PQty: PQtyT,
-                        PUnit: PUnitT,
-                        tax: EditTax,
-                        TaxTotal: totalConditions * EditTax,
-                        Total: totalConditions,
-                        Note: NoteT,
-                        DateT: DateTT,
-                        TimeT: TimeTT,
-                        PQUnit: PQUnitT,
-                        PType: EditType,
-                        TotalPieces: EditTotalPieces,
-                        PPrice: PPriceT,
-                        BPUnit: EditDBPUnit,
-                        SPUnit: EditDSPUnit,
-                        InitialPrice: EditInitialPrice,
-                        StockQty: EditItemStockQty,
-                        BranchesStock: EditItemBranchesStock,
-                        TotalStockQty: EditItemTotalStockQty,
-                      };
-                      console.log("edipricee", tempa[EditIdx]["uprice"]);
-                      let pAreEqual = true;
-                      if (oldtempa["qty"] !== tempa[EditIdx]["qty"]) {
-                        console.log("fetttt qty");
-                        pAreEqual = false;
-                      }
-
-                      if (oldtempa["uprice"] != tempa[EditIdx]["uprice"]) {
-                        console.log("fetttt uprice");
-
-                        pAreEqual = false;
-                      }
-                      if (oldtempa["branch"] !== tempa[EditIdx]["branch"]) {
-                        console.log("fetttt branch");
-                        pAreEqual = false;
-                      }
-                      if (oldtempa["discount"] !== tempa[EditIdx]["discount"]) {
-                        console.log("fetttt disc");
-                        pAreEqual = false;
-                      }
-                      console.log("oldtempa", oldtempa["tax"]);
-                      console.log("tempa edsittxt", tempa[EditIdx]["tax"]);
-                      if (oldtempa["tax"] !== tempa[EditIdx]["tax"]) {
-                        console.log("fetttt tax");
-                        console.log(oldtempa["tax"], tempa[EditIdx]["tax"]);
-                        pAreEqual = false;
-                      }
-                      if (oldtempa["PType"] !== tempa[EditIdx]["PType"]) {
-                        console.log("fetttt edittype");
-                        pAreEqual = false;
-                      }
-
-                      // for (const key in oldtempa) {
-                      //     if (key === "Total" || key==="TaxTotal") {
-                      //         console.log("FETTT TOAL");
-                      //         continue; // Skip the Total field
-                      //     }
-                      //     const oldValue = parseFloat(oldtempa[key]); // Convert to number and fix precision
-                      //     const newValue = parseFloat(tempa[EditIdx][key]);
-                      //     if (oldValue !== newValue) {
-                      //         propertiesAreEqual = false;
-                      //         console.log(oldtempa[key]);
-                      //         console.log(tempa[EditIdx][key]);
-                      //         console.log(propertiesAreEqual);
-                      //         break;
-                      //     }
-                      // }
-                      // if (tempa[EditIdx]["uprice"]==0.000){
-                      //     setErrorMessage("Unit Price cannot be 0. Please enter a valid value.");
-                      //     return;
-
-                      // }
-                      if (!pAreEqual) {
-                        console.log("rouhhhhhhhhhhhh");
-                        console.log("false1983");
-                        props.setpropertiesAreEqual(false);
-                        const currentDate = new Date();
-                        const formattedDate = `${currentDate
-                          .getDate()
-                          .toString()
-                          .padStart(2, "0")}/${(currentDate.getMonth() + 1)
-                          .toString()
-                          .padStart(2, "0")}/${currentDate.getFullYear()}`;
-                        const formattedTime = `T${currentDate
-                          .getHours()
-                          .toString()
-                          .padStart(2, "0")}:${currentDate
-                          .getMinutes()
-                          .toString()
-                          .padStart(2, "0")}:${currentDate
-                          .getSeconds()
-                          .toString()
-                          .padStart(2, "0")}`;
-                        tempa[EditIdx]["DateT"] = formattedDate;
-                        tempa[EditIdx]["TimeT"] = formattedTime;
-                      }
-                      setErrorMessage("");
-
-                      setShow(false);
-                      setIdOptions([]);
-
+                    } else {
+                      tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
+                      tempa.forEach((item, index) => {
+                        item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
+                      });
                       props.setSelectedItems(tempa);
                       let accName = props.Client;
-                      let items = props.SelectedItems;
+
+                      let items = tempa;
+
                       let RemovedItems = props.RemovedItems;
+
                       let json = { accName, items, RemovedItems };
+                      //let json = {accName,items}
                       let jsonString = JSON.stringify(json); // Convert data object to JSON string
 
-                      console.log("ghayrik enti", jsonString);
                       localStorage.setItem("sales", jsonString);
-                      console.log(localStorage.getItem("sales"));
-                      EmptyVariable();
-                    }}
-                  >
-                    Apply
-                  </Button>
-                </div>
-                <div className="flex flex-row align-middle justify-between">
-                  <Button
-                    variant="danger"
-                    onClick={() => {
-                      setShow(false);
+                      console.log("false2096");
+                      props.setpropertiesAreEqual(false);
+                      setErrorMessage("");
+                    }
+                    EmptyVariable();
+                  }}
+                >
+                  Remove
+                </Button>
 
-                      let tempa = [...props.SelectedItems]; // Create a copy of SelectedItems array
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    if (localStorage.getItem("SalesUnderZero") == "N") {
                       if (
-                        selectedInvoice != undefined &&
-                        selectedInvoice != null &&
-                        selectedInvoice != ""
+                        EditItemStockQty &&
+                        EditItemStockQty < EditTotalPieces
                       ) {
-                        // if(props.SelectedItems.length==1){
-                        //     setDeleteLastItemFromHistory(true);
-                        // }
-
-                        let DeleteItemPermission =
-                          localStorage.getItem("DeleteItem");
-                        if (DeleteItemPermission == "Y") {
-                          if (props.SelectedItems.length == 1) {
-                            setDeleteLastItemFromHistory(true);
-                          } else {
-                            RemoveItem(tempa[EditIdx], "ITEM");
-
-                            tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
-                            tempa.forEach((item, index) => {
-                              item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
-                            });
-
-                            props.setSelectedItems(tempa);
-                            let accName = props.Client;
-
-                            let items = tempa;
-
-                            let RemovedItems = props.RemovedItems;
-                            let json = { accName, items, RemovedItems };
-                            // let json = {accName,items}
-                            let jsonString = JSON.stringify(json); // Convert data object to JSON string
-
-                            console.log("y22");
-
-                            localStorage.setItem("sales", jsonString);
-                            console.log("heyyy", localStorage.getItem("sales"));
-                            console.log("false2068");
-                            props.setpropertiesAreEqual(false);
-                            setErrorMessage("");
-                          }
-                        } else {
-                          setDeletePermission({
-                            show: true,
-                            message:
-                              "You don't have permission to delete Item From invoice.",
-                          });
-                        }
-                      } else {
-                        tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
-                        tempa.forEach((item, index) => {
-                          item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
+                        setDeletePermission({
+                          show: true,
+                          message:
+                            "You Don't Have Permission To Sell Less Than Stock Quantity.",
                         });
-                        props.setSelectedItems(tempa);
-                        let accName = props.Client;
-
-                        let items = tempa;
-
-                        let RemovedItems = props.RemovedItems;
-
-                        let json = { accName, items, RemovedItems };
-                        //let json = {accName,items}
-                        let jsonString = JSON.stringify(json); // Convert data object to JSON string
-
-                        localStorage.setItem("sales", jsonString);
-                        console.log("false2096");
-                        props.setpropertiesAreEqual(false);
-                        setErrorMessage("");
+                        return;
                       }
-                      EmptyVariable();
-                    }}
-                  >
-                    Remove
-                  </Button>
-                </div>
+                    }
+
+                    let tempa = props.SelectedItems;
+
+                    let tempQty;
+                    if (EditQty === 0) {
+                      tempQty = 1;
+                    } else {
+                      tempQty = EditQty;
+                    }
+
+                    let PQUnitT = tempa[EditIdx]["PQUnit"];
+                    let PQtyT = tempa[EditIdx]["PQty"];
+                    let PUnitT = tempa[EditIdx]["PUnit"];
+                    let DateTT = tempa[EditIdx]["DateT"];
+                    let TimeTT = tempa[EditIdx]["TimeT"];
+
+                    let NoteT = tempa[EditIdx]["Note"];
+                    let PPriceT = tempa[EditIdx]["PPrice"];
+                    let oldtempa = tempa[EditIdx];
+
+                    let totalConditions =
+                      EditPPrice == "U"
+                        ? parseFloat(
+                            EditPrice *
+                              EditTotalPieces *
+                              (1 - EditDiscount / 100) *
+                              (1 + EditTax / 100)
+                          )
+                        : EditPPrice == "P" &&
+                          parseFloat(
+                            EditPrice *
+                              EditQty *
+                              (1 - EditDiscount / 100) *
+                              (1 + EditTax / 100)
+                          );
+                    tempa[EditIdx] = {
+                      no: EditItem.no,
+                      name: EditItem.name,
+                      qty: tempQty,
+                      uprice: parseFloat(EditPrice),
+                      discount: EditDiscount,
+                      branch: EditBranch,
+                      lno: EditLno,
+                      PQty: PQtyT,
+                      PUnit: PUnitT,
+                      tax: EditTax,
+                      TaxTotal: totalConditions * EditTax,
+                      Total: totalConditions,
+                      Note: NoteT,
+                      DateT: DateTT,
+                      TimeT: TimeTT,
+                      PQUnit: PQUnitT,
+                      PType: EditType,
+                      TotalPieces: EditTotalPieces,
+                      PPrice: PPriceT,
+                      BPUnit: EditDBPUnit,
+                      SPUnit: EditDSPUnit,
+                      InitialPrice: EditInitialPrice,
+                      StockQty: EditItemStockQty,
+                      BranchesStock: EditItemBranchesStock,
+                      TotalStockQty: EditItemTotalStockQty,
+                    };
+                    console.log("edipricee", tempa[EditIdx]["uprice"]);
+                    let pAreEqual = true;
+                    if (oldtempa["qty"] !== tempa[EditIdx]["qty"]) {
+                      console.log("fetttt qty");
+                      pAreEqual = false;
+                    }
+
+                    if (oldtempa["uprice"] != tempa[EditIdx]["uprice"]) {
+                      console.log("fetttt uprice");
+
+                      pAreEqual = false;
+                    }
+                    if (oldtempa["branch"] !== tempa[EditIdx]["branch"]) {
+                      console.log("fetttt branch");
+                      pAreEqual = false;
+                    }
+                    if (oldtempa["discount"] !== tempa[EditIdx]["discount"]) {
+                      console.log("fetttt disc");
+                      pAreEqual = false;
+                    }
+                    console.log("oldtempa", oldtempa["tax"]);
+                    console.log("tempa edsittxt", tempa[EditIdx]["tax"]);
+                    if (oldtempa["tax"] !== tempa[EditIdx]["tax"]) {
+                      console.log("fetttt tax");
+                      console.log(oldtempa["tax"], tempa[EditIdx]["tax"]);
+                      pAreEqual = false;
+                    }
+                    if (oldtempa["PType"] !== tempa[EditIdx]["PType"]) {
+                      console.log("fetttt edittype");
+                      pAreEqual = false;
+                    }
+
+                    // for (const key in oldtempa) {
+                    //     if (key === "Total" || key==="TaxTotal") {
+                    //         console.log("FETTT TOAL");
+                    //         continue; // Skip the Total field
+                    //     }
+                    //     const oldValue = parseFloat(oldtempa[key]); // Convert to number and fix precision
+                    //     const newValue = parseFloat(tempa[EditIdx][key]);
+                    //     if (oldValue !== newValue) {
+                    //         propertiesAreEqual = false;
+                    //         console.log(oldtempa[key]);
+                    //         console.log(tempa[EditIdx][key]);
+                    //         console.log(propertiesAreEqual);
+                    //         break;
+                    //     }
+                    // }
+                    // if (tempa[EditIdx]["uprice"]==0.000){
+                    //     setErrorMessage("Unit Price cannot be 0. Please enter a valid value.");
+                    //     return;
+
+                    // }
+                    if (!pAreEqual) {
+                      console.log("rouhhhhhhhhhhhh");
+                      console.log("false1983");
+                      props.setpropertiesAreEqual(false);
+                      const currentDate = new Date();
+                      const formattedDate = `${currentDate
+                        .getDate()
+                        .toString()
+                        .padStart(2, "0")}/${(currentDate.getMonth() + 1)
+                        .toString()
+                        .padStart(2, "0")}/${currentDate.getFullYear()}`;
+                      const formattedTime = `T${currentDate
+                        .getHours()
+                        .toString()
+                        .padStart(2, "0")}:${currentDate
+                        .getMinutes()
+                        .toString()
+                        .padStart(2, "0")}:${currentDate
+                        .getSeconds()
+                        .toString()
+                        .padStart(2, "0")}`;
+                      tempa[EditIdx]["DateT"] = formattedDate;
+                      tempa[EditIdx]["TimeT"] = formattedTime;
+                    }
+                    setErrorMessage("");
+
+                    setShow(false);
+                    setIdOptions([]);
+
+                    props.setSelectedItems(tempa);
+                    let accName = props.Client;
+                    let items = props.SelectedItems;
+                    let RemovedItems = props.RemovedItems;
+                    let json = { accName, items, RemovedItems };
+                    let jsonString = JSON.stringify(json); // Convert data object to JSON string
+
+                    console.log("ghayrik enti", jsonString);
+                    localStorage.setItem("sales", jsonString);
+                    console.log(localStorage.getItem("sales"));
+                    EmptyVariable();
+                  }}
+                >
+                  Apply
+                </Button>
               </div>
             </Modal.Footer>
           </>
@@ -2628,245 +2727,242 @@ export default function SalesForm(props) {
             </Modal.Body>
 
             <Modal.Footer>
-              <div className="flex flex-row-reverse justify-between w-[100%]">
-                <div className="flex flex-row align-middle justify-between">
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      setShow(false);
-                      setIdOptions([]);
-                      setErrorMessage("");
-                      EmptyVariable();
-                    }}
-                  >
-                    Close
-                  </Button>
-                  <div className="w-3"></div>
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      if (EditType == "") {
-                        setErrorMessage("You Have To Choose Payment Type");
-                        return;
-                      } else if (EditPPrice == "") {
-                        setErrorMessage("You Have To Choose Currency Type");
-                        return;
-                      } else if (EditBranch == "") {
-                        setErrorMessage("You Have To Choose A Branch");
-                        return;
-                      }
-                      let tempa = props.SelectedItems;
+              <div className="flex flex-row justify-between w-[100%]">
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setShow(false);
+                    setIdOptions([]);
+                    setErrorMessage("");
+                    EmptyVariable();
+                  }}
+                >
+                  Close
+                </Button>
 
-                      let PQUnitT = tempa[EditIdx]["PQUnit"];
-                      let PQtyT = tempa[EditIdx]["PQty"];
-                      let PUnitT = tempa[EditIdx]["PUnit"];
-                      let DateTT = tempa[EditIdx]["DateT"];
-                      console.log(DateTT, "hon aamenaayit l date l adim edit");
-                      let TimeTT = tempa[EditIdx]["TimeT"];
+                <Button
+                  variant="danger"
+                  onClick={() => {
+                    setShow(false);
 
-                      let NoteT = tempa[EditIdx]["Note"];
-                      let PPriceT = EditPPrice;
-                      let oldtempa = tempa[EditIdx];
+                    let tempa = [...props.SelectedItems]; // Create a copy of SelectedItems array
+                    if (
+                      selectedInvoice != undefined &&
+                      selectedInvoice != null &&
+                      selectedInvoice != ""
+                    ) {
+                      // if(props.SelectedItems.length==1){
+                      //     setDeleteLastItemFromHistory(true);
+                      // }
 
-                      tempa[EditIdx] = {
-                        no: EditItem.no,
-                        name: tempa[EditIdx]["name"],
-                        qty: tempa[EditIdx]["qty"],
-                        uprice: parseFloat(EditPrice),
-                        discount: tempa[EditIdx]["discount"],
-                        branch: EditBranch,
-                        lno: EditLno,
-                        PQty: tempa[EditIdx]["PQty"],
-                        PUnit:
-                          PPriceT ==
-                          localStorage.getItem(
-                            "Cur" + localStorage.getItem("mainCur")
-                          )
-                            ? "1"
-                            : "2",
-                        tax: tempa[EditIdx]["tax"],
-                        TaxTotal: tempa[EditIdx]["TaxTotal"],
-                        Total:
-                          // EditPPrice !=
-                          // localStorage.getItem(
-                          //   "Cur" + localStorage.getItem("mainCur")
-                          // )
-                          //   ? parseFloat(EditPrice) /
-                          //     localStorage.getItem("Rate")
-                          //   : parseFloat(EditPrice),
-                          EditPPrice !=
-                          localStorage.getItem(
-                            "Cur" + localStorage.getItem("mainCur")
-                          )
-                            ? localStorage.getItem(
-                                "Cur" + localStorage.getItem("mainCur")
-                              ) == localStorage.getItem("Cur1")
-                              ? EditPrice / props.Client["Rate"]
-                              : EditPrice * props.Client["Rate"]
-                            : EditPrice,
-                        // EditPPrice != props.Client["cur"]
-                        //   ? EditPrice / props.Client["Rate"]
-                        //   : EditPrice,
-                        Note: NoteT,
-                        DateT: DateTT,
-                        TimeT: TimeTT,
-                        PQUnit: tempa[EditIdx]["PQUnit"],
-                        PType: EditType,
-                        TotalPieces: tempa[EditIdx]["TotalPieces"],
-                        PPrice: PPriceT,
-                        BPUnit: tempa[EditIdx]["BPUnit"],
-                        SPUnit: tempa[EditIdx]["SPUnit"],
-                        InitialPrice: tempa[EditIdx]["InitialPrice"],
-                        StockQty: tempa[EditIdx]["StockQty"],
-                        BranchesStock: tempa[EditIdx]["BranchesStock"],
-                      };
-                      console.log("*//////ana bel edit vouchers///****");
-                      let pAreEqual = true;
-
-                      if (oldtempa["uprice"] !== tempa[EditIdx]["uprice"]) {
-                        pAreEqual = false;
-                      }
-                      if (oldtempa["branch"] !== tempa[EditIdx]["branch"]) {
-                        pAreEqual = false;
-                      }
-                      if (oldtempa["PType"] != tempa[EditIdx]["PType"]) {
-                        pAreEqual = false;
-                      }
-                      if (oldtempa["PPrice"] !== tempa[EditIdx]["PPrice"]) {
-                        pAreEqual = false;
-                      }
-                      if (!pAreEqual) {
-                        console.log("rouhhhhhhhhhhhh");
-                        console.log("false2349");
-                        props.setpropertiesAreEqual(false);
-                        const currentDate = new Date();
-                        const formattedDate = `${currentDate
-                          .getDate()
-                          .toString()
-                          .padStart(2, "0")}/${(currentDate.getMonth() + 1)
-                          .toString()
-                          .padStart(2, "0")}/${currentDate.getFullYear()}`;
-                        const formattedTime = `T${currentDate
-                          .getHours()
-                          .toString()
-                          .padStart(2, "0")}:${currentDate
-                          .getMinutes()
-                          .toString()
-                          .padStart(2, "0")}:${currentDate
-                          .getSeconds()
-                          .toString()
-                          .padStart(2, "0")}`;
-                        tempa[EditIdx]["DateT"] = formattedDate;
-                        console.log(
-                          formattedDate,
-                          "hon aamenaayit l date l jdid edit"
-                        );
-                        tempa[EditIdx]["TimeT"] = formattedTime;
-                      }
-                      setErrorMessage("");
-
-                      setShow(false);
-                      setIdOptions([]);
-
-                      props.setSelectedItems(tempa);
-                      console.log("-------------------------3---3-3-3");
-                      console.log(props.SelectedItems);
-                      let accName = props.Client;
-                      let items = props.SelectedItems;
-                      let RemovedItems = props.RemovedItems;
-                      let json = { accName, items, RemovedItems };
-                      let jsonString = JSON.stringify(json); // Convert data object to JSON string
-
-                      console.log("ghayrik enti", jsonString);
-                      localStorage.setItem("sales", jsonString);
-                      console.log(localStorage.getItem("sales"));
-                      EmptyVariable();
-                    }}
-                  >
-                    Apply
-                  </Button>
-                </div>
-                <div className="flex flex-row align-middle justify-between">
-                  <Button
-                    variant="danger"
-                    onClick={() => {
-                      setShow(false);
-
-                      let tempa = [...props.SelectedItems]; // Create a copy of SelectedItems array
-                      if (
-                        selectedInvoice != undefined &&
-                        selectedInvoice != null &&
-                        selectedInvoice != ""
-                      ) {
-                        // if(props.SelectedItems.length==1){
-                        //     setDeleteLastItemFromHistory(true);
-                        // }
-
-                        let DeleteItemPermission =
-                          localStorage.getItem("DeleteItem");
-                        if (DeleteItemPermission == "Y") {
-                          if (props.SelectedItems.length == 1) {
-                            setDeleteLastItemFromHistory(true);
-                          } else {
-                            RemoveItem(tempa[EditIdx], "ITEM");
-
-                            tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
-                            tempa.forEach((item, index) => {
-                              item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
-                            });
-
-                            props.setSelectedItems(tempa);
-                            let accName = props.Client;
-
-                            let items = tempa;
-
-                            let RemovedItems = props.RemovedItems;
-                            let json = { accName, items, RemovedItems };
-                            // let json = {accName,items}
-                            let jsonString = JSON.stringify(json); // Convert data object to JSON string
-
-                            console.log("y22");
-
-                            localStorage.setItem("sales", jsonString);
-                            console.log("heyyy", localStorage.getItem("sales"));
-                            console.log("false2440");
-                            props.setpropertiesAreEqual(false);
-                            setErrorMessage("");
-                          }
+                      let DeleteItemPermission =
+                        localStorage.getItem("DeleteItem");
+                      if (DeleteItemPermission == "Y") {
+                        if (props.SelectedItems.length == 1) {
+                          setDeleteLastItemFromHistory(true);
                         } else {
-                          setDeletePermission({
-                            show: true,
-                            message:
-                              "You don't have permission to delete Item From invoice.",
+                          RemoveItem(tempa[EditIdx], "ITEM");
+
+                          tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
+                          tempa.forEach((item, index) => {
+                            item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
                           });
+
+                          props.setSelectedItems(tempa);
+                          let accName = props.Client;
+
+                          let items = tempa;
+
+                          let RemovedItems = props.RemovedItems;
+                          let json = { accName, items, RemovedItems };
+                          // let json = {accName,items}
+                          let jsonString = JSON.stringify(json); // Convert data object to JSON string
+
+                          console.log("y22");
+
+                          localStorage.setItem("sales", jsonString);
+                          console.log("heyyy", localStorage.getItem("sales"));
+                          console.log("false2440");
+                          props.setpropertiesAreEqual(false);
+                          setErrorMessage("");
                         }
                       } else {
-                        tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
-                        tempa.forEach((item, index) => {
-                          item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
+                        setDeletePermission({
+                          show: true,
+                          message:
+                            "You don't have permission to delete Item From invoice.",
                         });
-                        props.setSelectedItems(tempa);
-                        let accName = props.Client;
-
-                        let items = tempa;
-
-                        let RemovedItems = props.RemovedItems;
-
-                        let json = { accName, items, RemovedItems };
-                        //let json = {accName,items}
-                        let jsonString = JSON.stringify(json); // Convert data object to JSON string
-
-                        localStorage.setItem("sales", jsonString);
-                        console.log("false2468");
-                        props.setpropertiesAreEqual(false);
-                        setErrorMessage("");
                       }
-                      EmptyVariable();
-                    }}
-                  >
-                    Remove
-                  </Button>
-                </div>
+                    } else {
+                      tempa.splice(EditIdx, 1); // Remove the item at index EditIdx
+                      tempa.forEach((item, index) => {
+                        item.lno = index + 1; // Update lno starting from 1 and incrementing by 1
+                      });
+                      props.setSelectedItems(tempa);
+                      let accName = props.Client;
+
+                      let items = tempa;
+
+                      let RemovedItems = props.RemovedItems;
+
+                      let json = { accName, items, RemovedItems };
+                      //let json = {accName,items}
+                      let jsonString = JSON.stringify(json); // Convert data object to JSON string
+
+                      localStorage.setItem("sales", jsonString);
+                      console.log("false2468");
+                      props.setpropertiesAreEqual(false);
+                      setErrorMessage("");
+                    }
+                    EmptyVariable();
+                  }}
+                >
+                  Remove
+                </Button>
+
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    if (EditType == "") {
+                      setErrorMessage("You Have To Choose Payment Type");
+                      return;
+                    } else if (EditPPrice == "") {
+                      setErrorMessage("You Have To Choose Currency Type");
+                      return;
+                    } else if (EditBranch == "") {
+                      setErrorMessage("You Have To Choose A Branch");
+                      return;
+                    }
+                    let tempa = props.SelectedItems;
+
+                    let PQUnitT = tempa[EditIdx]["PQUnit"];
+                    let PQtyT = tempa[EditIdx]["PQty"];
+                    let PUnitT = tempa[EditIdx]["PUnit"];
+                    let DateTT = tempa[EditIdx]["DateT"];
+                    console.log(DateTT, "hon aamenaayit l date l adim edit");
+                    let TimeTT = tempa[EditIdx]["TimeT"];
+
+                    let NoteT = tempa[EditIdx]["Note"];
+                    let PPriceT = EditPPrice;
+                    let oldtempa = tempa[EditIdx];
+
+                    tempa[EditIdx] = {
+                      no: EditItem.no,
+                      name: tempa[EditIdx]["name"],
+                      qty: tempa[EditIdx]["qty"],
+                      uprice: parseFloat(EditPrice),
+                      discount: tempa[EditIdx]["discount"],
+                      branch: EditBranch,
+                      lno: EditLno,
+                      PQty: tempa[EditIdx]["PQty"],
+                      PUnit:
+                        PPriceT ==
+                        localStorage.getItem(
+                          "Cur" + localStorage.getItem("mainCur")
+                        )
+                          ? "1"
+                          : "2",
+                      tax: tempa[EditIdx]["tax"],
+                      TaxTotal: tempa[EditIdx]["TaxTotal"],
+                      Total:
+                        // EditPPrice !=
+                        // localStorage.getItem(
+                        //   "Cur" + localStorage.getItem("mainCur")
+                        // )
+                        //   ? parseFloat(EditPrice) /
+                        //     localStorage.getItem("Rate")
+                        //   : parseFloat(EditPrice),
+                        EditPPrice !=
+                        localStorage.getItem(
+                          "Cur" + localStorage.getItem("mainCur")
+                        )
+                          ? localStorage.getItem(
+                              "Cur" + localStorage.getItem("mainCur")
+                            ) == localStorage.getItem("Cur1")
+                            ? EditPrice / props.Client["Rate"]
+                            : EditPrice * props.Client["Rate"]
+                          : EditPrice,
+                      // EditPPrice != props.Client["cur"]
+                      //   ? EditPrice / props.Client["Rate"]
+                      //   : EditPrice,
+                      Note: NoteT,
+                      DateT: DateTT,
+                      TimeT: TimeTT,
+                      PQUnit: tempa[EditIdx]["PQUnit"],
+                      PType: EditType,
+                      TotalPieces: tempa[EditIdx]["TotalPieces"],
+                      PPrice: PPriceT,
+                      BPUnit: tempa[EditIdx]["BPUnit"],
+                      SPUnit: tempa[EditIdx]["SPUnit"],
+                      InitialPrice: tempa[EditIdx]["InitialPrice"],
+                      StockQty: tempa[EditIdx]["StockQty"],
+                      BranchesStock: tempa[EditIdx]["BranchesStock"],
+                    };
+                    console.log("*//////ana bel edit vouchers///****");
+                    let pAreEqual = true;
+
+                    if (oldtempa["uprice"] !== tempa[EditIdx]["uprice"]) {
+                      pAreEqual = false;
+                    }
+                    if (oldtempa["branch"] !== tempa[EditIdx]["branch"]) {
+                      pAreEqual = false;
+                    }
+                    if (oldtempa["PType"] != tempa[EditIdx]["PType"]) {
+                      pAreEqual = false;
+                    }
+                    if (oldtempa["PPrice"] !== tempa[EditIdx]["PPrice"]) {
+                      pAreEqual = false;
+                    }
+                    if (!pAreEqual) {
+                      console.log("rouhhhhhhhhhhhh");
+                      console.log("false2349");
+                      props.setpropertiesAreEqual(false);
+                      const currentDate = new Date();
+                      const formattedDate = `${currentDate
+                        .getDate()
+                        .toString()
+                        .padStart(2, "0")}/${(currentDate.getMonth() + 1)
+                        .toString()
+                        .padStart(2, "0")}/${currentDate.getFullYear()}`;
+                      const formattedTime = `T${currentDate
+                        .getHours()
+                        .toString()
+                        .padStart(2, "0")}:${currentDate
+                        .getMinutes()
+                        .toString()
+                        .padStart(2, "0")}:${currentDate
+                        .getSeconds()
+                        .toString()
+                        .padStart(2, "0")}`;
+                      tempa[EditIdx]["DateT"] = formattedDate;
+                      console.log(
+                        formattedDate,
+                        "hon aamenaayit l date l jdid edit"
+                      );
+                      tempa[EditIdx]["TimeT"] = formattedTime;
+                    }
+                    setErrorMessage("");
+
+                    setShow(false);
+                    setIdOptions([]);
+
+                    props.setSelectedItems(tempa);
+                    console.log("-------------------------3---3-3-3");
+                    console.log(props.SelectedItems);
+                    let accName = props.Client;
+                    let items = props.SelectedItems;
+                    let RemovedItems = props.RemovedItems;
+                    let json = { accName, items, RemovedItems };
+                    let jsonString = JSON.stringify(json); // Convert data object to JSON string
+
+                    console.log("ghayrik enti", jsonString);
+                    localStorage.setItem("sales", jsonString);
+                    console.log(localStorage.getItem("sales"));
+                    EmptyVariable();
+                  }}
+                >
+                  Apply
+                </Button>
               </div>
             </Modal.Footer>
           </>
@@ -3048,7 +3144,10 @@ export default function SalesForm(props) {
             {props.Client["id"] == "" && props.selectedFormOption != "SAT_AP"
               ? "No Account Choosen"
               : props.propertiesAreEqual == true
-              ? "No Changes In Your Invoice"
+              ? props.selectedFormOption == "SAT_AP" &&
+                props.SelectedItems.length == 0
+                ? "No Items in your invoice"
+                : "No Changes In Your Invoice"
               : props.selectedFormOption == "CR_AP" ||
                 props.selectedFormOption == "DB_AP"
               ? "No Accounts in your invoice"
@@ -3555,6 +3654,21 @@ export default function SalesForm(props) {
                         address: "",
                         cur: "",
                         Rate: "",
+                      });
+                      handleSave({
+                        accName: {
+                          id: "",
+                          name: "",
+                          RefNo: "",
+                          date: "",
+                          time: "",
+                          balance: "",
+                          address: "",
+                          cur: "",
+                          Rate: "",
+                        },
+                        items: props.SelectedItems,
+                        RemovedItems: props.RemovedItems,
                       });
                       props.setSelectedFormOption("SAT_AP");
                     } else {

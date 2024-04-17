@@ -259,8 +259,10 @@ option:hover {
   font-weight: 700; /* equivalent to font-semibold */
   line-height: 1.5rem; /* equivalent to text-lg */
   box-shadow: 0 0 0 2px theme('colors.prime'); /* equivalent to focus:ring-second */
+  
  > overflow-hidden whitespace-nowrap{
   font-size: 0.9rem!important;
+  
 
  }
 }

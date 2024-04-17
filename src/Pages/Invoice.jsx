@@ -72,7 +72,7 @@ export default function Invoice(props) {
 
   function discardInvoice() {}
 
-  const downloadPDF = (data) => {
+  const downloadPDF = (data, ref_no) => {
     const htmlContent = `
     <div style="justify-items:space-between;align-items:center;">
     <div style="justify-items:center;align-items:center">
@@ -126,6 +126,9 @@ export default function Invoice(props) {
                   .join("")}
             </tbody>
         </table>
+        <div style="color:#8B0000;font-size:1.5rem;font-weight:600">Total: ${
+          data.invoiceTotal
+        }</div>
         <div style="height:45px"></div>
     </div>
 `;
@@ -179,7 +182,7 @@ export default function Invoice(props) {
             // Add the image to the PDF with the calculated dimensions
             doc.addImage(imgData, "PNG", 0, 0, displayWidth, displayHeight);
 
-            doc.save(data.type + "_" + data.accname);
+            doc.save(data.type + "_" + ref_no + "_" + data.accname);
             document.body.removeChild(container);
           } catch (error) {
             console.error("Error generating PDF:", error);
@@ -231,12 +234,14 @@ export default function Invoice(props) {
               modalItems={modalItems}
               modalVoucher={modalVoucher}
               setModalVoucher={setModalVoucher}
+              downloadPDF={downloadPDF}
             />
             <Modal
               show={SwitchFormOption.show}
-              onHide={() =>
-                setSwitchFormOption({ ...SwitchFormOption, show: false })
-              }
+              onHide={() => {
+                setSwitchFormOption({ ...SwitchFormOption, show: false });
+                setafterSubmitModal(true);
+              }}
               size="lg"
               aria-labelledby="contained-modal-title-vcenter"
               centered
@@ -264,7 +269,10 @@ export default function Invoice(props) {
                   <Button
                     variant="danger"
                     onClick={() => {
-                      downloadPDF(SwitchFormOption.variable);
+                      downloadPDF(
+                        SwitchFormOption.variable,
+                        SwitchFormOption.ref_no
+                      );
                       console.log("je suis laaaa", SwitchFormOption.variable);
                       setSwitchFormOption({ ...SwitchFormOption, show: false });
                       setafterSubmitModal(true);
@@ -397,10 +405,14 @@ export default function Invoice(props) {
         localStorage.setItem("InvoiceHistory", "");
         setSATToBranch();
         setSATFromBranch();
+        localStorage.setItem("SATToBranch", "");
+        localStorage.setItem("SATFromBranch", "");
+        localStorage.setItem("selectedFormOption", "SA_AP");
         setSwitchFormOption({
           show: true,
 
           variable: data,
+          ref_no: res.data.ref_no,
         });
       } else if (res.data.Info == "Failed") {
         setInvResponse({
