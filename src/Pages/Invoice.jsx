@@ -193,10 +193,22 @@ export default function Invoice(props) {
             if (localStorage.getItem("PrintFormat") == "1") {
               doc = new jsPDF();
             } else if (localStorage.getItem("PrintFormat") == "2") {
+              const canvas = document.createElement("canvas");
+              const context = canvas.getContext("2d");
+              context.font = "16px Arial";
+              context.fillText(htmlContent, 0, 0);
+
+              // Measure the rendered content
+              const metrics = context.measureText(htmlContent);
+              const contentHeight =
+                metrics.actualBoundingBoxAscent +
+                metrics.actualBoundingBoxDescent;
+
+              // Create the PDF with the calculated height
               doc = new jsPDF({
-                orientation: "portrait", // Set orientation to portrait
-                unit: "cm", // Set measurement unit to centimeters
-                format: [5, canvas.height / 10], // Set width to 5cm and height proportional to the content
+                orientation: "portrait",
+                unit: "cm",
+                format: [5, contentHeight / 10], // Convert pixels to cm
               });
             }
 
@@ -225,7 +237,7 @@ export default function Invoice(props) {
 
             doc.addImage(imgData, "PNG", 0, 0, displayWidth, displayHeight);
 
-            doc.save(data.type + "_" + ref_no + "_" + data.accname);
+            doc.save(data.type + "_" + ref_no + "_" + data.accname + ".pdf");
             document.body.removeChild(container);
           } catch (error) {
             console.error("Error generating PDF:", error);
@@ -234,7 +246,7 @@ export default function Invoice(props) {
         .catch((error) => {
           console.error("Error capturing HTML to canvas:", error);
         });
-    }, 1000); // Adjust the delay time as needed
+    }, 200); // Adjust the delay time as needed
   };
   return (
     <div className="h-[90vh] overscroll-contain">

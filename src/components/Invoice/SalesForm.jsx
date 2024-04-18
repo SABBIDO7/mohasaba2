@@ -1137,17 +1137,17 @@ export default function SalesForm(props) {
                     props.SATToBranch != null &&
                     props.SATToBranch != "" && (
                       <>
-                        <div className="flex flex-row ml-[10%] bg-fourth text-BgTextColor rounded p-0.5">
-                          <div>From: </div>
+                        <div className="flex flex-row ml-[10%]  text-BgTextColor rounded p-0.5">
+                          <div style={{ marginRight: "3px" }}>From :</div>
                           <div>
                             {props.SATFromBranch !== "undefined"
-                              ? " " + props.SATFromBranch
+                              ? "  " + props.SATFromBranch
                               : "-"}
                           </div>
                         </div>
 
-                        <div className="flex flex-row ml-[10%] bg-fourth text-BgTextColor rounded p-0.5">
-                          <div>To: </div>
+                        <div className="flex flex-row ml-[10%]  text-BgTextColor rounded p-0.5">
+                          <div style={{ marginRight: "3px" }}>To :</div>
                           <div>
                             {props.SATToBranch !== "undefined" &&
                             props.SATToBranch != null &&
@@ -1662,7 +1662,7 @@ export default function SalesForm(props) {
                     </h4>
                   )}{" "} */}
                   <Button
-                    className="h-[100%] hover:bg-black hover:shadow-md"
+                    className="h-[100%] w-[50%] hover:bg-black hover:shadow-md"
                     onClick={() => {
                       if (
                         props.propertiesAreEqual == true &&
@@ -1691,9 +1691,8 @@ export default function SalesForm(props) {
                       } else {
                         setErrorModal({
                           show: true,
-                          message:
-                            "Your Not Allowed to Print this Invoice.\n Check if There is Unsaved changes.",
-                          title: "Cannot Print",
+                          message: "You Need To Save Before Printing",
+                          title: "Unsaved changes",
                         });
                       }
                     }}
@@ -3714,7 +3713,7 @@ export default function SalesForm(props) {
                   <button
                     className="bg-secondd text-BgTextColor py-4 px-8 rounded-md text-center"
                     onClick={() => {
-                      setGroupModalShow({ ...ErrorModal, show: false });
+                      setGroupModalShow({ ...GroupModalShow, show: false });
                       if (GroupModalShow.flag == "AllGroups") {
                         getGroupOptions(type["GroupName"]);
                         setGroupType(type["GroupName"]);
@@ -3732,10 +3731,12 @@ export default function SalesForm(props) {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <div className="flex flex-row w-full justify-around">
+          <div className="flex flex-row w-full justify-start">
             <Button
               variant="primary"
-              onClick={() => setGroupModalShow({ ...ErrorModal, show: false })}
+              onClick={() =>
+                setGroupModalShow({ ...GroupModalShow, show: false })
+              }
             >
               Close
             </Button>
@@ -3948,7 +3949,7 @@ export default function SalesForm(props) {
       ReleaseInvoice();
     }
     setSelectedInvoice("");
-    inputRef.current.focus();
+    //  inputRef.current.focus();
     props.setSATFromBranch();
     props.setSATToBranch();
     console.log("y777");

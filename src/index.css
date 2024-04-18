@@ -108,13 +108,13 @@ option:hover {
     
   }
 
-  .InvoiceFooterCalculation{
+  /* .InvoiceFooterCalculation{
     justify-content: end!important;
-  }
-  .InvoiceEqCur{
+  } */
+  /* .InvoiceEqCur{
     display: none!important;
   
-  }
+  } */
   .InvoiceGross{
     display:none!important;
   }
@@ -134,7 +134,10 @@ option:hover {
   .ReCall-select-style{
     font-size: 0.6rem!important;
   }
+
 }
+
+
 .optionText{
 
   padding-top: 0.5rem;
@@ -174,8 +177,23 @@ option:hover {
   align-items: space-between; /* or justify-items: space-between; depending on your needs */
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 678px) {
+  .navDiv{
+
+    flex-direction: column!important;
   
+  }
+  .navCompCombo{
+    justify-content: end!important;
+    justify-items: end!important;
+    align-items: end!important;
+    width: 100%!important;
+  }
+  .compnameStyle{
+    justify-content: end!important;
+    justify-items: end!important;
+    width: 65%!important;
+  }
 }
 
 .InvoiceFooterCalculation{
@@ -196,6 +214,7 @@ option:hover {
 
   /* Add elevation */
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1); /* Customize elevation as needed */
+  width:20%;
 
 }
 .InvoiceGross{
@@ -286,4 +305,14 @@ option:hover {
 th {
   font-weight: 400!important;
   
+}
+.navDiv{
+  display: flex;
+  flex-direction: row;
+
+}
+.navCompCombo{
+  display: flex;
+  flex-direction: row;
+  width: 53%;
 }
