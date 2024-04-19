@@ -253,11 +253,11 @@ const IdSelect = forwardRef((props, ref) => {
                           )}
                           {io["ItemName"] && (
                             <p className="me-3 mb-0">
-                              <strong></strong> {io["ItemName"]}
+                              <strong></strong> {io["ItemName"].slice(0, 40)}
                             </p>
                           )}
                         </div>
-                        <hr className="my-2" />
+                        {/* <hr className="my-1" /> */}
                         {io["branchesStock"] && (
                           <div className="d-flex flex-row justify-between  items-center ">
                             <div className="d-flex flex-row   items-center ">
@@ -279,22 +279,30 @@ const IdSelect = forwardRef((props, ref) => {
                                 }
                               )}
                               <div>
-                                <strong>QAll :</strong>
+                                <strong>Q :</strong>
                                 {io["Stock"]}
                               </div>
                             </div>
                             <div className="d-flex flex-row   items-center ">
                               <div className="mr-1">
-                                <strong>SP1 : </strong>
                                 {io["SPrice1"] ? io["SPrice1"] : "-"}
+                                <strong> | </strong>
                               </div>
                               <div className="mr-1">
-                                <strong>SP2 : </strong>
                                 {io["SPrice2"] ? io["SPrice2"] : "-"}
+                                <strong> | </strong>
                               </div>
                               <div className="mr-1">
-                                <strong>SP3 : </strong>
                                 {io["SPrice3"] ? io["SPrice3"] : "-"}
+                                <strong> | </strong>
+                              </div>
+                              <div className="mr-1">
+                                {io["SPrice4"] ? io["SPrice4"] : "-"}
+                                <strong> | </strong>
+                              </div>
+                              <div className="mr-1">
+                                {io["SPrice5"] ? io["SPrice5"] : "-"}
+                                <strong> | </strong>
                               </div>
                               {/* <div className="mr-1">
                                 <strong>SP4 : </strong>
@@ -323,43 +331,50 @@ const IdSelect = forwardRef((props, ref) => {
                   >
                     <div className="card-body">
                       <div className="flex-wrap">
-                        <div>
-                          <p className="me-3 mb-0 card-title">
-                            <strong>AccNo:</strong>{" "}
-                            {io["AccNo"] != null && io["AccNo"] != ""
-                              ? io["AccNo"]
-                              : "--"}
-                          </p>
+                        <div className="flex flex-row justify-between">
+                          <div>
+                            <p className="me-3 mb-0 card-title">
+                              {/* <strong>AccNo:</strong>{" "} */}
+                              {io["AccNo"] != null && io["AccNo"] != ""
+                                ? io["AccNo"]
+                                : "--"}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="me-3 mb-0">
+                              {/* <strong>AccName:</strong> */}
+                              {io["AccName"] != null && io["AccName"] != ""
+                                ? io["AccName"].slice(0, 40)
+                                : "--"}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex flex-row justify-between">
+                          <div>
+                            <p className="me-3 mb-0">
+                              {/* <strong>Address:</strong> */}
+                              {io["Address"] != null && io["Address"] != ""
+                                ? io["Address"]
+                                : "--"}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="me-3 mb-0">
+                              {/* <strong>Tel:</strong> */}
+                              {io["Tel"] != null && io["Tel"] != ""
+                                ? io["Tel"]
+                                : "--"}
+                            </p>
+                          </div>
                         </div>
                         <div>
                           <p className="me-3 mb-0">
-                            <strong>AccName:</strong>
-                            {io["AccName"] != null && io["AccName"] != ""
-                              ? io["AccName"]
-                              : "--"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="me-3 mb-0">
-                            <strong>Address:</strong>
-                            {io["Address"] != null && io["Address"] != ""
-                              ? io["Address"]
-                              : "--"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="me-3 mb-0">
-                            <strong>Tel:</strong>
-                            {io["Tel"] != null && io["Tel"] != ""
-                              ? io["Tel"]
-                              : "--"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="me-3 mb-0">
-                            <strong>Balance:</strong>
+                            <strong>Bal:</strong>
                             {io["Balance"] != null && io["Balance"] != ""
-                              ? " " + io["Balance"].toLocaleString()
+                              ? " " +
+                                io["Balance"].toLocaleString() +
+                                " " +
+                                io["Cur"]
                               : "--"}
                           </p>
                         </div>

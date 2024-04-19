@@ -39,7 +39,7 @@ export default function Header(props) {
               </div>
               <div className="flex  items-center justify-start sm:items-stretch sm:justify-start">
                 <div className="hidden sm:ml-1 sm:block">
-                  <div className="flex  sm:space-x-1 md:space-x-1 lg:space-x-4 xl:space-x-5">
+                  <div className="flex  ">
                     {navigation.map((item) => (
                       <NavLink
                         key={item.name}
@@ -97,7 +97,7 @@ export default function Header(props) {
             </div>
 
             <Disclosure.Panel className="sm:hidden">
-              <div className="space-y-1 px-2 pt-2 pb-3">
+              <div className="justify-start">
                 {navigation.map((item) => (
                   <NavLink
                     key={item.name}
@@ -118,8 +118,8 @@ export default function Header(props) {
                       return (
                         "block px-3 py-2 rounded-md text-base no-underline" +
                         (isActive
-                          ? "bg-BgTextColor text-third hover:text-third"
-                          : "text-BgTextColor hover:bg-BgTextColor hover:text-third")
+                          ? " text-BgTextColor hover:text-white  no-underline  activeNavbarMobile"
+                          : "text-white hover: hover:text-white  no-underline activeNavbarMobile")
                       );
                     }}
                   >

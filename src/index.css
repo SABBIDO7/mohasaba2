@@ -177,10 +177,11 @@ option:hover {
   align-items: space-between; /* or justify-items: space-between; depending on your needs */
 }
 
-@media screen and (max-width: 678px) {
+@media screen and (max-width: 640px) {
   .navDiv{
 
-    flex-direction: column!important;
+    flex-direction: row!important;
+    justify-content: space-between!important;
   
   }
   .navCompCombo{
@@ -188,10 +189,12 @@ option:hover {
     justify-items: end!important;
     align-items: end!important;
     width: 100%!important;
+    margin-bottom: 2%!important;
+    
   }
   .compnameStyle{
-    justify-content: end!important;
-    justify-items: end!important;
+    justify-content: center!important;
+    justify-items: center!important;
     width: 65%!important;
   }
 }
@@ -315,4 +318,13 @@ th {
   display: flex;
   flex-direction: row;
   width: 53%;
+}
+.activeNavbarMobile{
+  color:theme('colors.BgTextColor')!important;
+  
+}
+.activeNavbarMobile :hover{
+  color:theme('colors.third')!important;
+  background-color:theme('colors.BgTextColor')!important;
+  
 }

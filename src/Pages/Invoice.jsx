@@ -49,7 +49,7 @@ export default function Invoice(props) {
   const [SATToBranch, setSATToBranch] = useState();
   const [modalItems, setModalItems] = useState(false);
   const [modalVoucher, setModalVoucher] = useState(false);
-
+  const [saveNewFlag, setsaveNewFlag] = useState(false);
   function sInvoiceHandler(e) {
     setSInvoice(e);
   }
@@ -290,6 +290,8 @@ export default function Invoice(props) {
               modalVoucher={modalVoucher}
               setModalVoucher={setModalVoucher}
               downloadPDF={downloadPDF}
+              saveNewFlag={saveNewFlag}
+              setsaveNewFlag={setsaveNewFlag}
             />
             <Modal
               show={SwitchFormOption.show}
@@ -463,12 +465,13 @@ export default function Invoice(props) {
         localStorage.setItem("SATToBranch", "");
         localStorage.setItem("SATFromBranch", "");
         localStorage.setItem("selectedFormOption", "SA_AP");
-        setSwitchFormOption({
-          show: true,
+        // setSwitchFormOption({
+        //   show: true,
 
-          variable: data,
-          ref_no: res.data.ref_no,
-        });
+        //   variable: data,
+        //   ref_no: res.data.ref_no,
+        // });
+        setafterSubmitModal(true);
       } else if (res.data.Info == "Failed") {
         setInvResponse({
           Info: "Failed",

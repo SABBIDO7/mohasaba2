@@ -99,6 +99,7 @@ export default function SalesForm(props) {
   });
   const [GroupModalShow, setGroupModalShow] = useState(false);
   const [GroupType, setGroupType] = useState("");
+  const [CloseSave, setCloseSave] = useState(false);
 
   const formatter = new Intl.NumberFormat("en-US");
   const handleHeaderClick = () => {
@@ -878,7 +879,141 @@ export default function SalesForm(props) {
       console.error("Error fetching data:", error);
     }
   };
+  const checkChangesOnEdit = (oldtempa, newValue) => {
+    let pAreEqual = true;
+    if (oldtempa["qty"] !== newValue["qty"]) {
+      console.log("fetttt qty");
+      pAreEqual = false;
+    }
 
+    if (oldtempa["uprice"] != newValue["uprice"]) {
+      console.log("fetttt uprice");
+
+      pAreEqual = false;
+    }
+    if (oldtempa["branch"] !== newValue["branch"]) {
+      console.log("fetttt branch");
+      pAreEqual = false;
+    }
+    if (oldtempa["discount"] !== newValue["discount"]) {
+      console.log("fetttt disc");
+      pAreEqual = false;
+    }
+
+    if (oldtempa["tax"] !== newValue["tax"]) {
+      console.log("fetttt tax");
+      console.log(oldtempa["tax"], newValue["tax"]);
+      pAreEqual = false;
+    }
+    if (oldtempa["PType"] !== newValue["PType"]) {
+      console.log("fetttt edittype");
+      pAreEqual = false;
+    }
+    return pAreEqual;
+  };
+  const getOldNewInputs = () => {
+    let tempa = props.SelectedItems;
+    let newdata;
+    let tempQty;
+    if (EditQty === 0) {
+      tempQty = 1;
+    } else {
+      tempQty = EditQty;
+    }
+
+    let PQUnitT = tempa[EditIdx]["PQUnit"];
+    let PQtyT = tempa[EditIdx]["PQty"];
+    let PUnitT = tempa[EditIdx]["PUnit"];
+    let DateTT = tempa[EditIdx]["DateT"];
+    let TimeTT = tempa[EditIdx]["TimeT"];
+
+    let NoteT = tempa[EditIdx]["Note"];
+    let PPriceT = tempa[EditIdx]["PPrice"];
+    let oldtempa = tempa[EditIdx];
+
+    let totalConditions =
+      EditPPrice == "U"
+        ? parseFloat(
+            EditPrice *
+              EditTotalPieces *
+              (1 - EditDiscount / 100) *
+              (1 + EditTax / 100)
+          )
+        : EditPPrice == "P" &&
+          parseFloat(
+            EditPrice * EditQty * (1 - EditDiscount / 100) * (1 + EditTax / 100)
+          );
+    newdata = {
+      no: EditItem.no,
+      name: EditItem.name,
+      qty: tempQty,
+      uprice: parseFloat(EditPrice),
+      discount: EditDiscount,
+      branch: EditBranch,
+      lno: EditLno,
+      PQty: PQtyT,
+      PUnit: PUnitT,
+      tax: EditTax,
+      TaxTotal: totalConditions * EditTax,
+      Total: totalConditions,
+      Note: NoteT,
+      DateT: DateTT,
+      TimeT: TimeTT,
+      PQUnit: PQUnitT,
+      PType: EditType,
+      TotalPieces: EditTotalPieces,
+      PPrice: PPriceT,
+      BPUnit: EditDBPUnit,
+      SPUnit: EditDSPUnit,
+      InitialPrice: EditInitialPrice,
+      StockQty: EditItemStockQty,
+      BranchesStock: EditItemBranchesStock,
+      TotalStockQty: EditItemTotalStockQty,
+    };
+    return [oldtempa, newdata];
+  };
+  const GoodsInvoiceSaveChanges = (pAreEqual, tempa) => {
+    if (!pAreEqual) {
+      console.log("rouhhhhhhhhhhhh");
+      console.log("false1983");
+      props.setpropertiesAreEqual(false);
+      const currentDate = new Date();
+      const formattedDate = `${currentDate
+        .getDate()
+        .toString()
+        .padStart(2, "0")}/${(currentDate.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}/${currentDate.getFullYear()}`;
+      const formattedTime = `T${currentDate
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${currentDate
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}:${currentDate
+        .getSeconds()
+        .toString()
+        .padStart(2, "0")}`;
+      tempa[EditIdx]["DateT"] = formattedDate;
+      tempa[EditIdx]["TimeT"] = formattedTime;
+    }
+    setErrorMessage("");
+
+    setShow(false);
+    setIdOptions([]);
+
+    props.setSelectedItems(tempa);
+    let accName = props.Client;
+    let items = props.SelectedItems;
+    let RemovedItems = props.RemovedItems;
+    let json = { accName, items, RemovedItems };
+    let jsonString = JSON.stringify(json); // Convert data object to JSON string
+
+    console.log("ghayrik enti", jsonString);
+    localStorage.setItem("sales", jsonString);
+    console.log(localStorage.getItem("sales"));
+    EmptyVariable();
+  };
   useEffect(() => {
     try {
       setErrorMessage("");
@@ -1610,7 +1745,25 @@ export default function SalesForm(props) {
               {/* Note Modal */}
               <Modal
                 show={showNoteModal}
-                onHide={() => setShowNoteModal(false)}
+                onHide={() => {
+                  const updatedItems = [...props.SelectedItems];
+                  if (updatedItems[selectedItemIndex]["Note"] !== noteInput) {
+                    setShowNoteModal(false);
+                    setCloseSave({
+                      show: true,
+                      OldDatavariable: "",
+                      NewDatavariable: "",
+
+                      title: "Save Changes",
+                      flag: "Notes",
+                      message: "Do You Want To Save Your Note Changes",
+                    });
+                  } else if (
+                    updatedItems[selectedItemIndex]["Note"] == noteInput
+                  ) {
+                    setShowNoteModal(false);
+                  }
+                }}
               >
                 <Modal.Header closeButton>
                   <Modal.Title>Edit Note (30 characters)</Modal.Title>
@@ -1618,22 +1771,59 @@ export default function SalesForm(props) {
                 <Modal.Body>
                   <textarea
                     value={noteInput}
-                    onChange={(e) => setNoteInput(e.target.value)}
+                    onChange={(e) => {
+                      if (e.target.value.length <= 30) {
+                        setNoteInput(e.target.value);
+                      }
+                    }}
                     className="form-control"
                     rows={5}
                   />
                 </Modal.Body>
-                <Modal.Footer>
-                  <Button
-                    variant="secondary"
-                    onClick={() => setShowNoteModal(false)}
-                  >
-                    Close
-                  </Button>
-                  <Button variant="primary" onClick={handleNoteSave}>
-                    <FontAwesomeIcon icon={faSave} className="mr-2" />
-                    Save Note
-                  </Button>
+                <Modal.Footer className="flex  justify-between">
+                  <div className="flex flex-row justify-between w-[100%]">
+                    <div>
+                      <Button
+                        variant="secondary"
+                        onClick={() => {
+                          const updatedItems = [...props.SelectedItems];
+                          if (
+                            updatedItems[selectedItemIndex]["Note"] !==
+                            noteInput
+                          ) {
+                            setShowNoteModal(false);
+                            setCloseSave({
+                              show: true,
+                              OldDatavariable: "",
+                              NewDatavariable: "",
+
+                              title: "Save Changes",
+                              flag: "Notes",
+                              message: "Do You Want To Save Your Note Changes",
+                            });
+                          } else if (
+                            updatedItems[selectedItemIndex]["Note"] == noteInput
+                          ) {
+                            setShowNoteModal(false);
+                          }
+                        }}
+                      >
+                        Close
+                      </Button>
+                    </div>
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        setNoteInput("");
+                      }}
+                    >
+                      Clear
+                    </Button>
+                    <Button variant="primary" onClick={handleNoteSave}>
+                      <FontAwesomeIcon icon={faSave} className="mr-2" />
+                      Save
+                    </Button>
+                  </div>
                 </Modal.Footer>
               </Modal>
             </div>
@@ -1851,6 +2041,7 @@ export default function SalesForm(props) {
                     } else {
                       console.log("//****/////");
                       console.log(props.Client);
+                      props.setsaveNewFlag(true);
                       setConfirmModalShow(true);
                     }
                   }}
@@ -1922,9 +2113,26 @@ export default function SalesForm(props) {
         keyboard={false}
         show={show}
         onHide={() => {
+          let [oldtempa, newtempa] = getOldNewInputs();
+          let pAreEqual = checkChangesOnEdit(oldtempa, newtempa);
           setShow(false);
           setIdOptions([]);
           setErrorMessage("");
+          EmptyVariable();
+          if (pAreEqual) {
+          } else if (pAreEqual == false) {
+            let tempa = props.SelectedItems;
+
+            setCloseSave({
+              show: true,
+              OldDatavariable: tempa,
+              NewDatavariable: newtempa,
+
+              title: "Save Changes",
+              flag: "goodsInvoice",
+              message: "Do You Want To Save Your Changes",
+            });
+          }
         }}
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -2305,10 +2513,26 @@ export default function SalesForm(props) {
                 <Button
                   variant="secondary"
                   onClick={() => {
+                    let [oldtempa, newtempa] = getOldNewInputs();
+                    let pAreEqual = checkChangesOnEdit(oldtempa, newtempa);
                     setShow(false);
                     setIdOptions([]);
                     setErrorMessage("");
                     EmptyVariable();
+                    if (pAreEqual) {
+                    } else if (pAreEqual == false) {
+                      let tempa = props.SelectedItems;
+
+                      setCloseSave({
+                        show: true,
+                        OldDatavariable: tempa,
+                        NewDatavariable: newtempa,
+
+                        title: "Save Changes",
+                        flag: "goodsInvoice",
+                        message: "Do You Want To Save Your Changes",
+                      });
+                    }
                   }}
                 >
                   Close
@@ -2411,98 +2635,40 @@ export default function SalesForm(props) {
                       }
                     }
 
+                    let [oldtempa, tempaData] = getOldNewInputs();
                     let tempa = props.SelectedItems;
-
-                    let tempQty;
-                    if (EditQty === 0) {
-                      tempQty = 1;
-                    } else {
-                      tempQty = EditQty;
-                    }
-
-                    let PQUnitT = tempa[EditIdx]["PQUnit"];
-                    let PQtyT = tempa[EditIdx]["PQty"];
-                    let PUnitT = tempa[EditIdx]["PUnit"];
-                    let DateTT = tempa[EditIdx]["DateT"];
-                    let TimeTT = tempa[EditIdx]["TimeT"];
-
-                    let NoteT = tempa[EditIdx]["Note"];
-                    let PPriceT = tempa[EditIdx]["PPrice"];
-                    let oldtempa = tempa[EditIdx];
-
-                    let totalConditions =
-                      EditPPrice == "U"
-                        ? parseFloat(
-                            EditPrice *
-                              EditTotalPieces *
-                              (1 - EditDiscount / 100) *
-                              (1 + EditTax / 100)
-                          )
-                        : EditPPrice == "P" &&
-                          parseFloat(
-                            EditPrice *
-                              EditQty *
-                              (1 - EditDiscount / 100) *
-                              (1 + EditTax / 100)
-                          );
-                    tempa[EditIdx] = {
-                      no: EditItem.no,
-                      name: EditItem.name,
-                      qty: tempQty,
-                      uprice: parseFloat(EditPrice),
-                      discount: EditDiscount,
-                      branch: EditBranch,
-                      lno: EditLno,
-                      PQty: PQtyT,
-                      PUnit: PUnitT,
-                      tax: EditTax,
-                      TaxTotal: totalConditions * EditTax,
-                      Total: totalConditions,
-                      Note: NoteT,
-                      DateT: DateTT,
-                      TimeT: TimeTT,
-                      PQUnit: PQUnitT,
-                      PType: EditType,
-                      TotalPieces: EditTotalPieces,
-                      PPrice: PPriceT,
-                      BPUnit: EditDBPUnit,
-                      SPUnit: EditDSPUnit,
-                      InitialPrice: EditInitialPrice,
-                      StockQty: EditItemStockQty,
-                      BranchesStock: EditItemBranchesStock,
-                      TotalStockQty: EditItemTotalStockQty,
-                    };
-                    console.log("edipricee", tempa[EditIdx]["uprice"]);
+                    tempa[EditIdx] = tempaData;
                     let pAreEqual = true;
-                    if (oldtempa["qty"] !== tempa[EditIdx]["qty"]) {
-                      console.log("fetttt qty");
-                      pAreEqual = false;
-                    }
+                    pAreEqual = checkChangesOnEdit(oldtempa, tempa[EditIdx]);
+                    // if (oldtempa["qty"] !== tempa[EditIdx]["qty"]) {
+                    //   console.log("fetttt qty");
+                    //   pAreEqual = false;
+                    // }
 
-                    if (oldtempa["uprice"] != tempa[EditIdx]["uprice"]) {
-                      console.log("fetttt uprice");
+                    // if (oldtempa["uprice"] != tempa[EditIdx]["uprice"]) {
+                    //   console.log("fetttt uprice");
 
-                      pAreEqual = false;
-                    }
-                    if (oldtempa["branch"] !== tempa[EditIdx]["branch"]) {
-                      console.log("fetttt branch");
-                      pAreEqual = false;
-                    }
-                    if (oldtempa["discount"] !== tempa[EditIdx]["discount"]) {
-                      console.log("fetttt disc");
-                      pAreEqual = false;
-                    }
-                    console.log("oldtempa", oldtempa["tax"]);
-                    console.log("tempa edsittxt", tempa[EditIdx]["tax"]);
-                    if (oldtempa["tax"] !== tempa[EditIdx]["tax"]) {
-                      console.log("fetttt tax");
-                      console.log(oldtempa["tax"], tempa[EditIdx]["tax"]);
-                      pAreEqual = false;
-                    }
-                    if (oldtempa["PType"] !== tempa[EditIdx]["PType"]) {
-                      console.log("fetttt edittype");
-                      pAreEqual = false;
-                    }
+                    //   pAreEqual = false;
+                    // }
+                    // if (oldtempa["branch"] !== tempa[EditIdx]["branch"]) {
+                    //   console.log("fetttt branch");
+                    //   pAreEqual = false;
+                    // }
+                    // if (oldtempa["discount"] !== tempa[EditIdx]["discount"]) {
+                    //   console.log("fetttt disc");
+                    //   pAreEqual = false;
+                    // }
+                    // console.log("oldtempa", oldtempa["tax"]);
+                    // console.log("tempa edsittxt", tempa[EditIdx]["tax"]);
+                    // if (oldtempa["tax"] !== tempa[EditIdx]["tax"]) {
+                    //   console.log("fetttt tax");
+                    //   console.log(oldtempa["tax"], tempa[EditIdx]["tax"]);
+                    //   pAreEqual = false;
+                    // }
+                    // if (oldtempa["PType"] !== tempa[EditIdx]["PType"]) {
+                    //   console.log("fetttt edittype");
+                    //   pAreEqual = false;
+                    // }
 
                     // for (const key in oldtempa) {
                     //     if (key === "Total" || key==="TaxTotal") {
@@ -2524,46 +2690,47 @@ export default function SalesForm(props) {
                     //     return;
 
                     // }
-                    if (!pAreEqual) {
-                      console.log("rouhhhhhhhhhhhh");
-                      console.log("false1983");
-                      props.setpropertiesAreEqual(false);
-                      const currentDate = new Date();
-                      const formattedDate = `${currentDate
-                        .getDate()
-                        .toString()
-                        .padStart(2, "0")}/${(currentDate.getMonth() + 1)
-                        .toString()
-                        .padStart(2, "0")}/${currentDate.getFullYear()}`;
-                      const formattedTime = `T${currentDate
-                        .getHours()
-                        .toString()
-                        .padStart(2, "0")}:${currentDate
-                        .getMinutes()
-                        .toString()
-                        .padStart(2, "0")}:${currentDate
-                        .getSeconds()
-                        .toString()
-                        .padStart(2, "0")}`;
-                      tempa[EditIdx]["DateT"] = formattedDate;
-                      tempa[EditIdx]["TimeT"] = formattedTime;
-                    }
-                    setErrorMessage("");
+                    GoodsInvoiceSaveChanges(pAreEqual, tempa);
+                    // if (!pAreEqual) {
+                    //   console.log("rouhhhhhhhhhhhh");
+                    //   console.log("false1983");
+                    //   props.setpropertiesAreEqual(false);
+                    //   const currentDate = new Date();
+                    //   const formattedDate = `${currentDate
+                    //     .getDate()
+                    //     .toString()
+                    //     .padStart(2, "0")}/${(currentDate.getMonth() + 1)
+                    //     .toString()
+                    //     .padStart(2, "0")}/${currentDate.getFullYear()}`;
+                    //   const formattedTime = `T${currentDate
+                    //     .getHours()
+                    //     .toString()
+                    //     .padStart(2, "0")}:${currentDate
+                    //     .getMinutes()
+                    //     .toString()
+                    //     .padStart(2, "0")}:${currentDate
+                    //     .getSeconds()
+                    //     .toString()
+                    //     .padStart(2, "0")}`;
+                    //   tempa[EditIdx]["DateT"] = formattedDate;
+                    //   tempa[EditIdx]["TimeT"] = formattedTime;
+                    // }
+                    // setErrorMessage("");
 
-                    setShow(false);
-                    setIdOptions([]);
+                    // setShow(false);
+                    // setIdOptions([]);
 
-                    props.setSelectedItems(tempa);
-                    let accName = props.Client;
-                    let items = props.SelectedItems;
-                    let RemovedItems = props.RemovedItems;
-                    let json = { accName, items, RemovedItems };
-                    let jsonString = JSON.stringify(json); // Convert data object to JSON string
+                    // props.setSelectedItems(tempa);
+                    // let accName = props.Client;
+                    // let items = props.SelectedItems;
+                    // let RemovedItems = props.RemovedItems;
+                    // let json = { accName, items, RemovedItems };
+                    // let jsonString = JSON.stringify(json); // Convert data object to JSON string
 
-                    console.log("ghayrik enti", jsonString);
-                    localStorage.setItem("sales", jsonString);
-                    console.log(localStorage.getItem("sales"));
-                    EmptyVariable();
+                    // console.log("ghayrik enti", jsonString);
+                    // localStorage.setItem("sales", jsonString);
+                    // console.log(localStorage.getItem("sales"));
+                    // EmptyVariable();
                   }}
                 >
                   Apply
@@ -2730,6 +2897,13 @@ export default function SalesForm(props) {
                 <Button
                   variant="secondary"
                   onClick={() => {
+                    setCloseSave({
+                      show: true,
+                      variable: "",
+                      title: "Save Changes",
+                      flag: "AllGroups",
+                      message: "Do You Want To Save Your Changes",
+                    });
                     setShow(false);
                     setIdOptions([]);
                     setErrorMessage("");
@@ -2984,6 +3158,8 @@ export default function SalesForm(props) {
         setSATFromBranch={props.setSATFromBranch}
         setSATToBranch={props.setSATToBranch}
         SATToBranch={props.SATToBranch}
+        saveNewFlag={props.saveNewFlag}
+        setsaveNewFlag={props.setsaveNewFlag}
       />
       <DiscardInvoiceModal
         modalShow={discardModalShow}
@@ -3410,6 +3586,50 @@ export default function SalesForm(props) {
       </Modal>
 
       <Modal
+        show={CloseSave.show}
+        onHide={() => setCloseSave({ ...CloseSave, show: false })}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {CloseSave.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h4>{CloseSave.message}</h4> {/* Display the message */}
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="flex flex-row w-full justify-around">
+            <Button
+              variant="danger"
+              onClick={() => {
+                if (CloseSave.flag == "goodsInvoice") {
+                  let tempa = CloseSave.OldDatavariable;
+                  tempa[EditIdx] = CloseSave.NewDatavariable;
+                  GoodsInvoiceSaveChanges(false, tempa);
+                } else if (CloseSave.flag == "Notes") {
+                  handleNoteSave();
+                }
+
+                setCloseSave({ ...CloseSave, show: false });
+              }}
+            >
+              Yes
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                setCloseSave({ ...SwitchFormOption, show: false });
+              }}
+            >
+              No
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+      <Modal
         show={SwitchFormOption.show}
         onHide={() => setSwitchFormOption({ ...SwitchFormOption, show: false })}
         size="lg"
@@ -3448,7 +3668,6 @@ export default function SalesForm(props) {
           </div>
         </Modal.Footer>
       </Modal>
-
       <Modal
         show={NoSavedToDelete}
         onHide={() => setNoSavedToDelete(false)}

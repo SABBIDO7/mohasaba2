@@ -24,16 +24,16 @@ export default function Main(props) {
   }
   window.scrollTo(0, 0);
   return (
-    <div className=" h-[90vh] flex flex-col items-center justify-start min-h-screen bg-fourth">
-      <div className=" w-[95%]  my-3 mb-3 rounded-xl items-center">
+    <div className="  flex flex-col items-center justify-between min-h-screen bg-fourth">
+      <div className="rounded-xl items-center">
         <img
           src={Backoffice}
-          className=" w-full  object-cover max-w-[20rem] m-auto"
+          className=" w-full  object-cover max-w-[20rem] m-auto "
           alt="Paradox Software Solutions"
         />
       </div>
 
-      <div className="flex flex-col items-center justify-center mt-3">
+      <div className="flex flex-col items-center justify-center ">
         <button
           className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor text-xl"
           role="button"
@@ -58,18 +58,22 @@ export default function Main(props) {
           Transcations
         </button>
       </div>
-      <div className="my-5">
-        <div className=" font-semibold text-s">Designed And Developed By</div>
-        <img
-          src={paradox}
-          className=" w-full  object-cover max-w-[20rem] m-auto"
-          alt="Paradox Software Solutions"
-        />
+      <div>
+        <div className="flex flex-col justify-center">
+          <div className=" font-semibold text-s italic flex justify-center">
+            Designed And Developed By
+          </div>
+          <img
+            src={paradox}
+            className=" w-full  object-cover max-w-[20rem] m-auto"
+            alt="Paradox Software Solutions"
+          />
+        </div>
       </div>
       <div>
         <Button
           onClick={logout}
-          className="btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor font-bold text-xl"
+          className="btn-lg active min-w-[10rem]  bg-secondd rounded p-2.5 text-bgTextColor font-bold text-xl"
         >
           Sign out
         </Button>
