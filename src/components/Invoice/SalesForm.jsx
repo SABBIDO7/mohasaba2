@@ -1014,6 +1014,40 @@ export default function SalesForm(props) {
     console.log(localStorage.getItem("sales"));
     EmptyVariable();
   };
+
+  const printing = () => {
+    if (
+      props.propertiesAreEqual == true &&
+      selectedInvoice != "" &&
+      selectedInvoice != "" &&
+      selectedInvoice != null
+    ) {
+      let type = props.selectedFormOption;
+      let Client = props.Client;
+      let items = props.SelectedItems;
+
+      let RemovedItems = props.RemovedItems;
+      let data = {
+        type: type,
+        accno: Client.id,
+        accDate: Client.data,
+        accTime: Client.time,
+        accRefNo: Client.RefNo,
+        accname: Client.name,
+        items: items,
+        RemovedItems: RemovedItems,
+        username: localStorage.getItem("username"),
+        invoiceTotal: finalTotal,
+      };
+      props.downloadPDF(data, selectedInvoice);
+    } else {
+      setErrorModal({
+        show: true,
+        message: "You Need To Save Before Printing",
+        title: "Unsaved changes",
+      });
+    }
+  };
   useEffect(() => {
     try {
       setErrorMessage("");
@@ -1852,43 +1886,25 @@ export default function SalesForm(props) {
                     </h4>
                   )}{" "} */}
                   <Button
-                    className="h-[100%] w-[50%] hover:bg-black hover:shadow-md"
+                    className="h-[100%] w-[45%] hover:bg-black hover:shadow-md"
                     onClick={() => {
-                      if (
-                        props.propertiesAreEqual == true &&
-                        selectedInvoice != "" &&
-                        selectedInvoice != "" &&
-                        selectedInvoice != null
-                      ) {
-                        let type = props.selectedFormOption;
-                        let Client = props.Client;
-                        let items = props.SelectedItems;
-
-                        let RemovedItems = props.RemovedItems;
-                        let data = {
-                          type: type,
-                          accno: Client.id,
-                          accDate: Client.data,
-                          accTime: Client.time,
-                          accRefNo: Client.RefNo,
-                          accname: Client.name,
-                          items: items,
-                          RemovedItems: RemovedItems,
-                          username: localStorage.getItem("username"),
-                          invoiceTotal: finalTotal,
-                        };
-                        props.downloadPDF(data, selectedInvoice);
-                      } else {
-                        setErrorModal({
-                          show: true,
-                          message: "You Need To Save Before Printing",
-                          title: "Unsaved changes",
-                        });
-                      }
+                      printing();
                     }}
                   >
                     Print
                   </Button>
+                  <button
+                    className="h-[100%] w-[45%] hover:bg-black hover:shadow-md btn btn-primary"
+                    onClick={() => {
+                      printing();
+                      let phoneNumber = "+96181627458"; // replace with the actual phone number
+                      window.open(
+                        `https://api.whatsapp.com:/send?phone=${phoneNumber}&text='please attach the invoice'`
+                      );
+                    }}
+                  >
+                    WhatsApp
+                  </button>
                 </div>
                 <div className="flex flex-row justify-end items-center bg-fourth shadow-l  rounded p-2 sm:rounded p-1 mb-[0.5%]">
                   <div className="InvoiceGross">
