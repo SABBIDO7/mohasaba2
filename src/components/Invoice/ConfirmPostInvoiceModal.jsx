@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 
 export default function ConfirmPostInvoiceModal(props) {
   useEffect(() => {
-    if (props.saveNewFlag == true) {
+    if (props.saveNewFlag.show == true) {
       onYesPress();
     }
   }, [props.saveNewFlag]);
@@ -34,7 +34,8 @@ export default function ConfirmPostInvoiceModal(props) {
   //   </>
   // );
   function onYesPress() {
-    props.setsaveNewFlag(false);
+    let flag = props.saveNewFlag.variable;
+    props.setsaveNewFlag({ ...props.saveNewFlag, show: false });
     if (props.accno == "") {
     } else if (props.items.length == 0) {
     } else {
@@ -46,7 +47,8 @@ export default function ConfirmPostInvoiceModal(props) {
         props.Client,
         props.items,
         finalTotal,
-        props.RemovedItems
+        props.RemovedItems,
+        flag
       );
       console.log("/*/*/*/*/*/*/*/**/");
       console.log(props.type, props.Client, props.items);

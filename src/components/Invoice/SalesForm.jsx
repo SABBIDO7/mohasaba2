@@ -56,7 +56,6 @@ export default function SalesForm(props) {
   const [fTax, setFTax] = useState(0);
   const [sSA, setsSA] = useState();
   const [sInvoices, setsInvoices] = useState([]);
-  const [selectedInvoice, setSelectedInvoice] = useState("");
   const [NewInvoiceAlertModalShow, setNewInvoiceAlertModalShow] =
     useState(false);
   const [EmptyAlertModalShow, setEmptyAlertModalShow] = useState(false);
@@ -143,7 +142,7 @@ export default function SalesForm(props) {
     //     props.Client != null) ||
     //   props.SelectedItems.length > 0 ||
     //   props.RemoveItems.length > 0 ||
-    //   (selectedInvoice != undefined && selectedInvoice != undefined) ||
+    //   (props.selectedInvoice != undefined && props.selectedInvoice != undefined) ||
     console.log("107", props.selectedFormOption);
     localStorage.setItem("selectedFormOption", props.selectedFormOption);
 
@@ -446,13 +445,13 @@ export default function SalesForm(props) {
     props.setSATToBranch();
     if (selectedValue == "") {
       if (
-        selectedInvoice != "" &&
-        selectedInvoice != "" &&
-        selectedInvoice != null
+        props.selectedInvoice != "" &&
+        props.selectedInvoice != "" &&
+        props.selectedInvoice != null
       ) {
         ReleaseInvoice();
       }
-      setSelectedInvoice("");
+      props.setSelectedInvoice("");
       props.setSelectedItems([]);
       props.setRemovedItems([]);
       props.setClient({
@@ -473,13 +472,13 @@ export default function SalesForm(props) {
       setsOption("Accounts");
     } else {
       if (
-        selectedInvoice != "" &&
-        selectedInvoice != "" &&
-        selectedInvoice != null
+        props.selectedInvoice != "" &&
+        props.selectedInvoice != "" &&
+        props.selectedInvoice != null
       ) {
         ReleaseInvoice();
       }
-      // setSelectedInvoice(selectedValue);
+      // props.setSelectedInvoice(selectedValue);
       // localStorage.setItem("InvoiceHistory", selectedValue);
       // Send Axios request with the selected value
       axios({
@@ -551,7 +550,7 @@ export default function SalesForm(props) {
               items: response.data.Invoices,
               RemovedItems: [],
             });
-            setSelectedInvoice(selectedValue);
+            props.setSelectedInvoice(selectedValue);
             localStorage.setItem("InvoiceHistory", selectedValue);
           } else {
             setErrorModal({
@@ -567,6 +566,7 @@ export default function SalesForm(props) {
         });
     }
   };
+
   const ReleaseInvoice = () => {
     axios({
       method: "post", // or 'get', 'put', 'delete', etc.
@@ -577,7 +577,7 @@ export default function SalesForm(props) {
         "/" +
         localStorage.getItem("username") +
         "/" +
-        selectedInvoice +
+        props.selectedInvoice +
         "/",
       headers: {
         "Content-Type": "application/json",
@@ -672,7 +672,7 @@ export default function SalesForm(props) {
         props.setRemovedItems(retrievedJson["RemovedItems"]);
       }
 
-      setSelectedInvoice(localStorage.getItem("InvoiceHistory"));
+      props.setSelectedInvoice(localStorage.getItem("InvoiceHistory"));
 
       if (localStorage.getItem("propertiesAreEqual") == "true") {
         props.setpropertiesAreEqual(true);
@@ -740,7 +740,7 @@ export default function SalesForm(props) {
       TimeDeleted: formattedTime,
       username: localStorage.getItem("username"),
       compname: localStorage.getItem("compname"),
-      RefNo: selectedInvoice,
+      RefNo: props.selectedInvoice,
       type: localStorage.getItem("selectedFormOption"),
       DeleteType: DeleteType,
       //  invoiceTotal:invoiceTotal
@@ -798,7 +798,7 @@ export default function SalesForm(props) {
       TimeDeleted: formattedTime,
       username: localStorage.getItem("username"),
       compname: localStorage.getItem("compname"),
-      RefNo: selectedInvoice,
+      RefNo: props.selectedInvoice,
       type: props.selectedFormOption,
       DeleteType: DeleteType,
     };
@@ -1018,9 +1018,9 @@ export default function SalesForm(props) {
   const printing = () => {
     if (
       props.propertiesAreEqual == true &&
-      selectedInvoice != "" &&
-      selectedInvoice != "" &&
-      selectedInvoice != null
+      props.selectedInvoice != "" &&
+      props.selectedInvoice != "" &&
+      props.selectedInvoice != null
     ) {
       let type = props.selectedFormOption;
       let Client = props.Client;
@@ -1039,13 +1039,40 @@ export default function SalesForm(props) {
         username: localStorage.getItem("username"),
         invoiceTotal: finalTotal,
       };
-      props.downloadPDF(data, selectedInvoice);
+      props.downloadPDF(data, props.selectedInvoice);
+    }
+    // else {
+    //   setErrorModal({
+    //     show: true,
+    //     message: "You Need To Save Before Printing",
+    //     title: "Unsaved changes",
+    //   });
+    // }
+  };
+  const saveNew = (flag) => {
+    if (
+      (props.SelectedItems.length == 0 && props.RemovedItems.length == 0) ||
+      (props.Client &&
+        props.Client.id === "" &&
+        props.Client.name === "" &&
+        props.Client.RefNo === "" &&
+        props.Client.date === "" &&
+        props.Client.time === "" &&
+        props.Client.balance === "" &&
+        props.Client.address === "" &&
+        props.Client.cur === "" &&
+        props.Client.Rate === "" &&
+        props.selectedFormOption != "SAT_AP") ||
+      props.propertiesAreEqual == true
+    ) {
+      setEmptyAlertModalShow(true);
+      console.log("//**/////");
+      console.log(props.Client);
     } else {
-      setErrorModal({
-        show: true,
-        message: "You Need To Save Before Printing",
-        title: "Unsaved changes",
-      });
+      console.log("//****/////");
+      console.log(props.Client);
+      props.setsaveNewFlag({ show: true, variable: flag });
+      setConfirmModalShow(true);
     }
   };
   useEffect(() => {
@@ -1064,7 +1091,7 @@ export default function SalesForm(props) {
       props.setafterSubmitModal(false);
       // handleSelectChange("");
       // selectRef.current.value = "Accounts";
-      //setSelectedInvoice("");
+      //props.setSelectedInvoice("");
       if (props.selectedFormOption == "SAT_AP") {
         setsOption("Items");
       } else if (
@@ -1125,12 +1152,12 @@ export default function SalesForm(props) {
             alt="Back"
             className="h-[100%] mr-2 ml-1"
             onClick={() => {
-              //if(selectedInvoice!=""){
-              //     if(props.propertiesAreEqual==false && selectedInvoice!="" && selectedInvoice !=undefined){
+              //if(props.selectedInvoice!=""){
+              //     if(props.propertiesAreEqual==false && props.selectedInvoice!="" && props.selectedInvoice !=undefined){
 
               //     console.log(props.propertiesAreEqual);
               //     console.log("lklklkk")
-              //     console.log(selectedInvoice);
+              //     console.log(props.selectedInvoice);
               //     setDiscardOldInvoiceModalShow(true);
               // }
               // else{
@@ -1374,7 +1401,10 @@ export default function SalesForm(props) {
                   //   });
                   //   return;
                   // }
-                  if (selectedInvoice != "" && selectedInvoice != undefined) {
+                  if (
+                    props.selectedInvoice != "" &&
+                    props.selectedInvoice != undefined
+                  ) {
                     setErrorModal({
                       show: true,
                       message: (
@@ -1443,7 +1473,7 @@ export default function SalesForm(props) {
                         }
                       }
                     }}
-                    value={selectedInvoice}
+                    value={props.selectedInvoice}
                     onClick={getInvoicesHistory}
                   >
                     <option value="" className="optionText">
@@ -1887,7 +1917,9 @@ export default function SalesForm(props) {
                   )}{" "} */}
                   <Button
                     className="h-[100%] w-[45%] hover:bg-black hover:shadow-md"
-                    onClick={() => {
+                    onClick={async () => {
+                      saveNew("savePrint");
+
                       printing();
                     }}
                   >
@@ -1895,11 +1927,12 @@ export default function SalesForm(props) {
                   </Button>
                   <button
                     className="h-[100%] w-[45%] hover:bg-black hover:shadow-md btn btn-primary"
-                    onClick={() => {
-                      printing();
+                    onClick={async () => {
+                      await printing();
                       let phoneNumber = "+96181627458"; // replace with the actual phone number
+                      let invoiceMessage = "Please Attach The Invoice";
                       window.open(
-                        `https://api.whatsapp.com:/send?phone=${phoneNumber}&text='please attach the invoice'`
+                        `https://api.whatsapp.com:/send?phone=${phoneNumber}&text=${invoiceMessage}`
                       );
                     }}
                   >
@@ -1951,13 +1984,13 @@ export default function SalesForm(props) {
                         setsOption("Accounts");
                         setvInput("");
                         if (
-                          selectedInvoice != "" &&
-                          selectedInvoice != "" &&
-                          selectedInvoice != null
+                          props.selectedInvoice != "" &&
+                          props.selectedInvoice != "" &&
+                          props.selectedInvoice != null
                         ) {
                           ReleaseInvoice();
                         }
-                        setSelectedInvoice("");
+                        props.setSelectedInvoice("");
 
                         props.setClient({
                           id: "",
@@ -2019,9 +2052,9 @@ export default function SalesForm(props) {
                       });
                     } else {
                       if (
-                        selectedInvoice != undefined &&
-                        selectedInvoice != "" &&
-                        selectedInvoice != null
+                        props.selectedInvoice != undefined &&
+                        props.selectedInvoice != "" &&
+                        props.selectedInvoice != null
                       ) {
                         setDeleteInvoiceModal(true);
                       } else {
@@ -2035,31 +2068,7 @@ export default function SalesForm(props) {
                 <Button
                   className="ActionButtons"
                   onClick={() => {
-                    if (
-                      (props.SelectedItems.length == 0 &&
-                        props.RemovedItems.length == 0) ||
-                      (props.Client &&
-                        props.Client.id === "" &&
-                        props.Client.name === "" &&
-                        props.Client.RefNo === "" &&
-                        props.Client.date === "" &&
-                        props.Client.time === "" &&
-                        props.Client.balance === "" &&
-                        props.Client.address === "" &&
-                        props.Client.cur === "" &&
-                        props.Client.Rate === "" &&
-                        props.selectedFormOption != "SAT_AP") ||
-                      props.propertiesAreEqual == true
-                    ) {
-                      setEmptyAlertModalShow(true);
-                      console.log("//**/////");
-                      console.log(props.Client);
-                    } else {
-                      console.log("//****/////");
-                      console.log(props.Client);
-                      props.setsaveNewFlag(true);
-                      setConfirmModalShow(true);
-                    }
+                    saveNew("saveNew");
                   }}
                 >
                   Save & New
@@ -2084,7 +2093,7 @@ export default function SalesForm(props) {
         setvInput={setvInput}
         branches={props.branches}
         handleSave={handleSave}
-        setSelectedInvoice={setSelectedInvoice}
+        setSelectedInvoice={props.setSelectedInvoice}
         setsInvoices={setsInvoices}
         changingAccountInvoiceFromDB={changingAccountInvoiceFromDB}
         setchangingAccountInvoiceFromDB={setchangingAccountInvoiceFromDB}
@@ -2561,9 +2570,9 @@ export default function SalesForm(props) {
 
                     let tempa = [...props.SelectedItems]; // Create a copy of SelectedItems array
                     if (
-                      selectedInvoice != undefined &&
-                      selectedInvoice != null &&
-                      selectedInvoice != ""
+                      props.selectedInvoice != undefined &&
+                      props.selectedInvoice != null &&
+                      props.selectedInvoice != ""
                     ) {
                       // if(props.SelectedItems.length==1){
                       //     setDeleteLastItemFromHistory(true);
@@ -2936,9 +2945,9 @@ export default function SalesForm(props) {
 
                     let tempa = [...props.SelectedItems]; // Create a copy of SelectedItems array
                     if (
-                      selectedInvoice != undefined &&
-                      selectedInvoice != null &&
-                      selectedInvoice != ""
+                      props.selectedInvoice != undefined &&
+                      props.selectedInvoice != null &&
+                      props.selectedInvoice != ""
                     ) {
                       // if(props.SelectedItems.length==1){
                       //     setDeleteLastItemFromHistory(true);
@@ -3166,8 +3175,8 @@ export default function SalesForm(props) {
         Client={props.Client}
         items={props.SelectedItems}
         RemovedItems={props.RemovedItems}
-        selectedInvoice={selectedInvoice}
-        setSelectedInvoice={setSelectedInvoice}
+        selectedInvoice={props.selectedInvoice}
+        setSelectedInvoice={props.setSelectedInvoice}
         finalTotal={finalTotal}
         finalTax={finalTax}
         SATFromBranch={props.SATFromBranch}
@@ -3254,7 +3263,7 @@ export default function SalesForm(props) {
                 props.inv("");
                 setsOption("Accounts");
                 setvInput("");
-                setSelectedInvoice("");
+                props.setSelectedInvoice("");
                 setDiscardOldInvoiceModalShow(false);
                 props.setClient({
                   id: "",
@@ -3306,7 +3315,7 @@ export default function SalesForm(props) {
                        
                        getInvoiceOptions();
                         setModalShow(true);
-                       // setSelectedInvoice("");
+                       // props.setSelectedInvoice("");
                         setSearchAccountModalShow(false);
                         childRef.current.selectHandler(props.handlingAccWhenChanging,"fromParent");
                         
@@ -3413,7 +3422,7 @@ export default function SalesForm(props) {
             </Button>
             {/* <Button onClick={()=>setswitchBetweenInvoicesModalShow(false)}>No</Button> */}
             {/* <Button variant="danger" onClick={() => {
-                            setSelectedInvoice(passSelectedInvoiceToModal);
+                            props.setSelectedInvoice(passSelectedInvoiceToModal);
                             console.log(".--.");
                             console.log(passSelectedInvoiceToModal);
                             handleSelectChange(passSelectedInvoiceToModal); // Pass the event as an argument
@@ -3460,7 +3469,7 @@ export default function SalesForm(props) {
 
                 getInvoiceOptions("");
                 setModalShow(true);
-                // setSelectedInvoice("");
+                // props.setSelectedInvoice("");
                 setSearchAccountModalShow(false);
                 childRef.current.selectHandler(
                   props.handlingAccWhenChanging,
@@ -4118,11 +4127,11 @@ export default function SalesForm(props) {
     });
   }
   function discardInvoice() {
-    console.log("selectedinvoiceexit", selectedInvoice);
+    console.log("selectedinvoiceexit", props.selectedInvoice);
     if (
-      selectedInvoice != "" &&
-      selectedInvoice != "" &&
-      selectedInvoice != null
+      props.selectedInvoice != "" &&
+      props.selectedInvoice != "" &&
+      props.selectedInvoice != null
     ) {
       ReleaseInvoice();
     }
@@ -4143,10 +4152,10 @@ export default function SalesForm(props) {
     localStorage.setItem("sales", "");
     props.setpropertiesAreEqual(true);
 
-    setSelectedInvoice("");
+    props.setSelectedInvoice("");
     localStorage.setItem("InvoiceHistory", "");
-    console.log("selectedInvoice");
-    console.log(props.selectedInvoice);
+    console.log("props.selectedInvoice");
+    console.log(props.props.selectedInvoice);
     props.setSATFromBranch();
     props.setSATToBranch();
   }
@@ -4155,7 +4164,7 @@ export default function SalesForm(props) {
 
     props.setpropertiesAreEqual(true); //lola
     setvInput("");
-    setSelectedInvoice("");
+    props.setSelectedInvoice("");
     setNewInvoiceAlertModalShow(false);
     props.setClient({
       id: "",
@@ -4177,13 +4186,13 @@ export default function SalesForm(props) {
     console.log("2853");
     props.setSelectedFormOption("SA_AP");
     if (
-      selectedInvoice != "" &&
-      selectedInvoice != "" &&
-      selectedInvoice != null
+      props.selectedInvoice != "" &&
+      props.selectedInvoice != "" &&
+      props.selectedInvoice != null
     ) {
       ReleaseInvoice();
     }
-    setSelectedInvoice("");
+    props.setSelectedInvoice("");
     //  inputRef.current.focus();
     props.setSATFromBranch();
     props.setSATToBranch();

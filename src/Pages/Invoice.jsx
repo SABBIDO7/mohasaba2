@@ -16,6 +16,7 @@ export default function Invoice(props) {
   const [SwitchFormOption, setSwitchFormOption] = useState(false);
 
   const [selectedFormOptionDisplay, setSelectedFormOptionDisplay] = useState();
+  const [selectedInvoice, setSelectedInvoice] = useState("");
   const [invResponse, setInvResponse] = useState({
     Info: "No Invoice Created",
     msg: "No Invoice Created",
@@ -248,6 +249,7 @@ export default function Invoice(props) {
         });
     }, 200); // Adjust the delay time as needed
   };
+
   return (
     <div className="h-[90vh] overscroll-contain">
       {(() => {
@@ -292,6 +294,8 @@ export default function Invoice(props) {
               downloadPDF={downloadPDF}
               saveNewFlag={saveNewFlag}
               setsaveNewFlag={setsaveNewFlag}
+              setSelectedInvoice={setSelectedInvoice}
+              selectedInvoice={selectedInvoice}
             />
             <Modal
               show={SwitchFormOption.show}
@@ -364,26 +368,74 @@ export default function Invoice(props) {
         window.location.href = props.url;
       });
   }
+  function printing(selectedInvoice) {
+    // if (
+    //   props.propertiesAreEqual == true &&
+    //   selectedInvoice != "" &&
+    //   selectedInvoice != "" &&
+    //   selectedInvoice != null
+    // ) {
+    let type = selectedFormOption;
 
-  function postInvoice(type, acc, items, InvoiceTotal, RemovedItems) {
+    let data = {
+      type: type,
+      accno: Client.id,
+      accDate: Client.data,
+      accTime: Client.time,
+      accRefNo: Client.RefNo,
+      accname: Client.name,
+      items: SelectedItems,
+      RemovedItems: RemovedItems,
+      username: localStorage.getItem("username"),
+      invoiceTotal: "100",
+    };
+    console.log("ppppppp");
+    downloadPDF(data, selectedInvoice);
+    // } else {
+    //   setErrorModal({
+    //     show: true,
+    //     message: "You Need To Save Before Printing",
+    //     title: "Unsaved changes",
+    //   });
+    // }
+  }
+  function clearAfterSave() {
+    // setInvResponse(
+    //     {
+    //         Info:"Successful",
+    //         msg:"Sales Invoice Created Successfully"
+    //     }
+    // );
+
+    //discardInvoice()
+    setClient({
+      id: "",
+      name: "",
+      RefNo: "",
+      date: "",
+      time: "",
+    });
+    setSelectedItems([]);
+    console.log("y2");
+    localStorage.setItem("sales", "");
+    setpropertiesAreEqual(true);
+    localStorage.setItem("InvoiceHistory", "");
+    setSATToBranch();
+    setSATFromBranch();
+    localStorage.setItem("SATToBranch", "");
+    localStorage.setItem("SATFromBranch", "");
+    localStorage.setItem("selectedFormOption", "SA_AP");
+    // setSwitchFormOption({
+    //   show: true,
+
+    //   variable: data,
+    //   ref_no: res.data.ref_no,
+    // });
+    setafterSubmitModal(true);
+  }
+  function postInvoice(type, acc, items, InvoiceTotal, RemovedItems, flag) {
     let tempItem = "";
 
-    items.forEach((item) => {
-      tempItem =
-        tempItem +
-        item.no +
-        ";" +
-        item.qty +
-        ";" +
-        item.uprice +
-        ";" +
-        item.branch +
-        ";" +
-        item.discount +
-        ";" +
-        item.tax +
-        "!";
-    });
     console.log("**//---", acc.RefNo);
     console.log("maambariff shou yali", acc);
     let data = {
@@ -440,38 +492,15 @@ export default function Invoice(props) {
       headers: { content_type: "application/json" },
     }).then((res) => {
       if (res.data.Info == "authorized") {
-        // setInvResponse(
-        //     {
-        //         Info:"Successful",
-        //         msg:"Sales Invoice Created Successfully"
-        //     }
-        // );
-
-        //discardInvoice()
-        setClient({
-          id: "",
-          name: "",
-          RefNo: "",
-          date: "",
-          time: "",
-        });
-        setSelectedItems([]);
-        console.log("y2");
-        localStorage.setItem("sales", "");
-        setpropertiesAreEqual(true);
-        localStorage.setItem("InvoiceHistory", "");
-        setSATToBranch();
-        setSATFromBranch();
-        localStorage.setItem("SATToBranch", "");
-        localStorage.setItem("SATFromBranch", "");
-        localStorage.setItem("selectedFormOption", "SA_AP");
-        // setSwitchFormOption({
-        //   show: true,
-
-        //   variable: data,
-        //   ref_no: res.data.ref_no,
-        // });
-        setafterSubmitModal(true);
+        console.log(flag, "lklkl");
+        if (flag == "saveNew") {
+          clearAfterSave();
+        } else {
+          setpropertiesAreEqual(true);
+          setSelectedInvoice(res.data.ref_no);
+          localStorage.setItem("InvoiceHistory", res.data.ref_no);
+          printing(res.data.ref_no);
+        }
       } else if (res.data.Info == "Failed") {
         setInvResponse({
           Info: "Failed",
@@ -481,6 +510,7 @@ export default function Invoice(props) {
         setafterSubmitModal(true);
         setafterSubmitModal2(true);
       }
+      return res.data.Info;
     });
   }
 
