@@ -24,7 +24,7 @@ export default function Main(props) {
   }
   window.scrollTo(0, 0);
   return (
-    <div className="  flex flex-col items-center justify-between min-h-screen bg-fourth">
+    <div className="  flex flex-col items-center justify-between min-h-screen bg-white">
       <div className="rounded-xl items-center">
         <img
           src={Backoffice}

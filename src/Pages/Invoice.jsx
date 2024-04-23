@@ -12,8 +12,9 @@ export default function Invoice(props) {
   const [Client, setClient] = useState("");
   const [SelectedItems, setSelectedItems] = useState([]);
   const [RemovedItems, setRemovedItems] = useState([]);
-  const [sInvoice, setSInvoice] = useState("");
+  //const [sInvoice, setSInvoice] = useState("");
   const [SwitchFormOption, setSwitchFormOption] = useState(false);
+  const [sInvoices, setsInvoices] = useState([]);
 
   const [selectedFormOptionDisplay, setSelectedFormOptionDisplay] = useState();
   const [selectedInvoice, setSelectedInvoice] = useState("");
@@ -51,9 +52,9 @@ export default function Invoice(props) {
   const [modalItems, setModalItems] = useState(false);
   const [modalVoucher, setModalVoucher] = useState(false);
   const [saveNewFlag, setsaveNewFlag] = useState(false);
-  function sInvoiceHandler(e) {
-    setSInvoice(e);
-  }
+  // function sInvoiceHandler(e) {
+  //   setSInvoice(e);
+  // }
 
   useEffect(() => {
     getBranches();
@@ -249,6 +250,32 @@ export default function Invoice(props) {
         });
     }, 200); // Adjust the delay time as needed
   };
+  const getInvoicesHistory = () => {
+    axios({
+      method: "get",
+      url:
+        props.url +
+        "/moh/getInvoiceHistory/" +
+        localStorage.getItem("compname") +
+        "/" +
+        localStorage.getItem("username") +
+        "/",
+      headers: { content_type: "application/json" },
+    })
+      .then((res) => {
+        if (res.data.Info == "authorized") {
+          setsInvoices(res.data.Invoices);
+          console.log(sInvoices);
+          console.log("anehon");
+        } else if (res.data.Info == "Failed") {
+          setsInvoices([]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error in getInvoicesHistory:", error);
+        // Handle error (e.g., set error state)
+      });
+  };
 
   return (
     <div className="h-[90vh] overscroll-contain">
@@ -259,7 +286,6 @@ export default function Invoice(props) {
           <>
             <SalesForm
               url={props.url}
-              inv={sInvoiceHandler}
               token={props.token}
               hisab={Hisab}
               postInvoice={postInvoice}
@@ -296,6 +322,9 @@ export default function Invoice(props) {
               setsaveNewFlag={setsaveNewFlag}
               setSelectedInvoice={setSelectedInvoice}
               selectedInvoice={selectedInvoice}
+              sInvoices={sInvoices}
+              setsInvoices={setsInvoices}
+              getInvoicesHistory={getInvoicesHistory}
             />
             <Modal
               show={SwitchFormOption.show}
@@ -490,16 +519,25 @@ export default function Invoice(props) {
       url: props.url + "/moh/newInvoice/",
       data: data,
       headers: { content_type: "application/json" },
-    }).then((res) => {
+    }).then(async (res) => {
       if (res.data.Info == "authorized") {
         console.log(flag, "lklkl");
         if (flag == "saveNew") {
           clearAfterSave();
         } else {
           setpropertiesAreEqual(true);
+          await getInvoicesHistory();
           setSelectedInvoice(res.data.ref_no);
           localStorage.setItem("InvoiceHistory", res.data.ref_no);
-          printing(res.data.ref_no);
+          if (flag == "savePrint") {
+            printing(res.data.ref_no);
+          } else if (flag == "saveWhatsApp") {
+            let phoneNumber = "+96181627458"; // replace with the actual phone number
+            let invoiceMessage = selectedInvoice;
+            window.open(
+              `https://api.whatsapp.com:/send?phone=${phoneNumber}&text=${invoiceMessage}`
+            );
+          }
         }
       } else if (res.data.Info == "Failed") {
         setInvResponse({

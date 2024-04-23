@@ -55,7 +55,6 @@ export default function SalesForm(props) {
   const [fTotal, setFtotal] = useState(0);
   const [fTax, setFTax] = useState(0);
   const [sSA, setsSA] = useState();
-  const [sInvoices, setsInvoices] = useState([]);
   const [NewInvoiceAlertModalShow, setNewInvoiceAlertModalShow] =
     useState(false);
   const [EmptyAlertModalShow, setEmptyAlertModalShow] = useState(false);
@@ -686,33 +685,6 @@ export default function SalesForm(props) {
     console.log("watchhttttt2222", localStorage.getItem("SATToBranch"));
   };
 
-  const getInvoicesHistory = () => {
-    axios({
-      method: "get",
-      url:
-        props.url +
-        "/moh/getInvoiceHistory/" +
-        localStorage.getItem("compname") +
-        "/" +
-        localStorage.getItem("username") +
-        "/",
-      headers: { content_type: "application/json" },
-    })
-      .then((res) => {
-        if (res.data.Info == "authorized") {
-          setsInvoices(res.data.Invoices);
-          console.log(sInvoices);
-          console.log("anehon");
-        } else if (res.data.Info == "Failed") {
-          setsInvoices([]);
-        }
-      })
-      .catch((error) => {
-        console.error("Error in getInvoicesHistory:", error);
-        // Handle error (e.g., set error state)
-      });
-  };
-
   const RemoveItem = (item, DeleteType) => {
     let tempsi = [];
     const currentDate = new Date();
@@ -812,7 +784,7 @@ export default function SalesForm(props) {
       .then((res) => {
         if (res.data.Info == "authorized") {
           clearInvoice();
-          getInvoicesHistory();
+          props.getInvoicesHistory();
         } else if (res.data.Info == "Failed") {
           console.log("erowwww");
           setErrorModal({
@@ -1040,14 +1012,13 @@ export default function SalesForm(props) {
         invoiceTotal: finalTotal,
       };
       props.downloadPDF(data, props.selectedInvoice);
+    } else {
+      setErrorModal({
+        show: true,
+        message: "The Invoice Is Empty",
+        title: "Empty Invoice",
+      });
     }
-    // else {
-    //   setErrorModal({
-    //     show: true,
-    //     message: "You Need To Save Before Printing",
-    //     title: "Unsaved changes",
-    //   });
-    // }
   };
   const saveNew = (flag) => {
     if (
@@ -1065,14 +1036,18 @@ export default function SalesForm(props) {
         props.selectedFormOption != "SAT_AP") ||
       props.propertiesAreEqual == true
     ) {
-      setEmptyAlertModalShow(true);
+      if (flag == "saveNew") {
+        setEmptyAlertModalShow(true);
+      }
       console.log("//**/////");
       console.log(props.Client);
+      return false;
     } else {
       console.log("//****/////");
       console.log(props.Client);
       props.setsaveNewFlag({ show: true, variable: flag });
       setConfirmModalShow(true);
+      return true;
     }
   };
   useEffect(() => {
@@ -1087,7 +1062,7 @@ export default function SalesForm(props) {
   }, []);
   useEffect(() => {
     try {
-      getInvoicesHistory();
+      props.getInvoicesHistory();
       props.setafterSubmitModal(false);
       // handleSelectChange("");
       // selectRef.current.value = "Accounts";
@@ -1474,13 +1449,13 @@ export default function SalesForm(props) {
                       }
                     }}
                     value={props.selectedInvoice}
-                    onClick={getInvoicesHistory}
+                    onClick={props.getInvoicesHistory}
                   >
                     <option value="" className="optionText">
                       ReCall
                     </option>
 
-                    {sInvoices.map((inv, idx) => {
+                    {props.sInvoices.map((inv, idx) => {
                       return inv["RefType"] == "SAT_AP" ? (
                         <option
                           value={inv["RefNo"]}
@@ -1918,9 +1893,10 @@ export default function SalesForm(props) {
                   <Button
                     className="h-[100%] w-[45%] hover:bg-black hover:shadow-md"
                     onClick={async () => {
-                      saveNew("savePrint");
-
-                      printing();
+                      let result = saveNew("savePrint");
+                      if (!result) {
+                        printing();
+                      }
                     }}
                   >
                     Print
@@ -1928,12 +1904,29 @@ export default function SalesForm(props) {
                   <button
                     className="h-[100%] w-[45%] hover:bg-black hover:shadow-md btn btn-primary"
                     onClick={async () => {
-                      await printing();
-                      let phoneNumber = "+96181627458"; // replace with the actual phone number
-                      let invoiceMessage = "Please Attach The Invoice";
-                      window.open(
-                        `https://api.whatsapp.com:/send?phone=${phoneNumber}&text=${invoiceMessage}`
-                      );
+                      let result = saveNew("saveWhatsApp");
+                      if (!result) {
+                        let phoneNumber = "+96181627458"; // replace with the actual phone number
+                        // Convert the items object to a JSON string
+                        let items = props.SelectedItems;
+                        let invoiceMessage = "";
+
+                        for (let i = 0; i < items.length; i++) {
+                          invoiceMessage += `Item ${i + 1}:\n`;
+                          invoiceMessage += `------\n`;
+                          invoiceMessage += `Name: ${items[i].name}\n`;
+                          invoiceMessage += `Quantity: ${items[i].TotalPieces}\n`;
+                          invoiceMessage += `Price: ${items[i].uprice}\n`;
+                          invoiceMessage += `Total: ${items[i].Total}\n`;
+                          invoiceMessage += `------\n`;
+                        }
+
+                        // URL encode the message
+                        let encodedMessage = encodeURIComponent(invoiceMessage);
+                        window.open(
+                          `https://api.whatsapp.com:/send?phone=${phoneNumber}&text=${encodedMessage}`
+                        );
+                      }
                     }}
                   >
                     WhatsApp
@@ -2094,7 +2087,7 @@ export default function SalesForm(props) {
         branches={props.branches}
         handleSave={handleSave}
         setSelectedInvoice={props.setSelectedInvoice}
-        setsInvoices={setsInvoices}
+        setsInvoices={props.setsInvoices}
         changingAccountInvoiceFromDB={changingAccountInvoiceFromDB}
         setchangingAccountInvoiceFromDB={setchangingAccountInvoiceFromDB}
         propertiesAreEqual={props.propertiesAreEqual}
@@ -3260,7 +3253,7 @@ export default function SalesForm(props) {
                 window.location.href = "/";
                 props.setpropertiesAreEqual(true);
                 console.log("dirigin", props.propertiesAreEqual);
-                props.inv("");
+
                 setsOption("Accounts");
                 setvInput("");
                 props.setSelectedInvoice("");
