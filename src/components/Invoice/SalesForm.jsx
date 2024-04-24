@@ -1906,25 +1906,11 @@ export default function SalesForm(props) {
                     onClick={async () => {
                       let result = saveNew("saveWhatsApp");
                       if (!result) {
-                        let phoneNumber = "+96181627458"; // replace with the actual phone number
-                        // Convert the items object to a JSON string
-                        let items = props.SelectedItems;
-                        let invoiceMessage = "";
-
-                        for (let i = 0; i < items.length; i++) {
-                          invoiceMessage += `Item ${i + 1}:\n`;
-                          invoiceMessage += `------\n`;
-                          invoiceMessage += `Name: ${items[i].name}\n`;
-                          invoiceMessage += `Quantity: ${items[i].TotalPieces}\n`;
-                          invoiceMessage += `Price: ${items[i].uprice}\n`;
-                          invoiceMessage += `Total: ${items[i].Total}\n`;
-                          invoiceMessage += `------\n`;
-                        }
-
-                        // URL encode the message
-                        let encodedMessage = encodeURIComponent(invoiceMessage);
-                        window.open(
-                          `https://api.whatsapp.com:/send?phone=${phoneNumber}&text=${encodedMessage}`
+                        let phoneNumber = "+96179315487";
+                        props.sendWhastAPP(
+                          phoneNumber,
+                          props.SelectedItems,
+                          finalTotal
                         );
                       }
                     }}

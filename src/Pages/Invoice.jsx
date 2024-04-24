@@ -325,6 +325,7 @@ export default function Invoice(props) {
               sInvoices={sInvoices}
               setsInvoices={setsInvoices}
               getInvoicesHistory={getInvoicesHistory}
+              sendWhastAPP={sendWhastAPP}
             />
             <Modal
               show={SwitchFormOption.show}
@@ -462,6 +463,42 @@ export default function Invoice(props) {
     // });
     setafterSubmitModal(true);
   }
+  async function sendWhastAPP(phoneNumber, items, invoiceTotal) {
+    // Convert the items object to a JSON string
+
+    let invoiceMessage = "";
+
+    for (let i = 0; i < items.length; i++) {
+      invoiceMessage += `Item ${i + 1}:\n`;
+      invoiceMessage += `------\n`;
+      invoiceMessage += `Name: ${items[i].name}\n`;
+      invoiceMessage += `Quantity: ${items[i].TotalPieces}\n`;
+      invoiceMessage += `Price: ${items[i].uprice}\n`;
+      invoiceMessage += `Total: ${items[i].Total}\n`;
+      invoiceMessage += `------------------\n`;
+    }
+    invoiceMessage += `\n`;
+    invoiceMessage += `Invoice Total: ${invoiceTotal}\n`;
+    // Copy the invoice message to the clipboard
+    const copyToClipboard = async (text) => {
+      try {
+        await navigator.clipboard.writeText(text);
+        console.log("Text copied to clipboard:", text);
+        // Optionally, you can show a success message to the user
+      } catch (error) {
+        console.error("Error copying text to clipboard:", error);
+        // Optionally, you can show an error message to the user
+      }
+    };
+    await copyToClipboard(invoiceMessage);
+
+    // URL encode the message
+    let encodedMessage = encodeURIComponent(invoiceMessage);
+
+    window.open(
+      `https://api.whatsapp.com:/send?phone=${phoneNumber}&text=${encodedMessage}`
+    );
+  }
   function postInvoice(type, acc, items, InvoiceTotal, RemovedItems, flag) {
     let tempItem = "";
 
@@ -526,17 +563,15 @@ export default function Invoice(props) {
           clearAfterSave();
         } else {
           setpropertiesAreEqual(true);
-          await getInvoicesHistory();
+          getInvoicesHistory();
           setSelectedInvoice(res.data.ref_no);
           localStorage.setItem("InvoiceHistory", res.data.ref_no);
           if (flag == "savePrint") {
             printing(res.data.ref_no);
           } else if (flag == "saveWhatsApp") {
             let phoneNumber = "+96181627458"; // replace with the actual phone number
-            let invoiceMessage = selectedInvoice;
-            window.open(
-              `https://api.whatsapp.com:/send?phone=${phoneNumber}&text=${invoiceMessage}`
-            );
+            let invoiceMessage = items;
+            sendWhastAPP(phoneNumber, invoiceMessage, data.invoiceTotal);
           }
         }
       } else if (res.data.Info == "Failed") {
