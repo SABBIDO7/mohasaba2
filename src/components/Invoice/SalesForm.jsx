@@ -463,6 +463,7 @@ export default function SalesForm(props) {
         address: "",
         cur: "",
         Rate: "",
+        mobile: "",
       });
 
       localStorage.setItem("InvoiceHistory", selectedValue);
@@ -544,6 +545,7 @@ export default function SalesForm(props) {
                 address: response.data.InvProfile[0]["address"],
                 cur: response.data.InvProfile[0]["cur"],
                 Rate: response.data.InvProfile[0]["Rate"],
+                mobile: response.data.InvProfile[0]["mobile"],
               },
 
               items: response.data.Invoices,
@@ -1020,6 +1022,67 @@ export default function SalesForm(props) {
       });
     }
   };
+  async function sendWhastAPP(phoneNumber, items, invoiceTotal) {
+    // Convert the items object to a JSON string
+    if (
+      props.propertiesAreEqual == true &&
+      props.selectedInvoice != "" &&
+      props.selectedInvoice != "" &&
+      props.selectedInvoice != null
+    ) {
+      if (
+        props.Client["mobile"] &&
+        props.Client["mobile"] != "null" &&
+        props.Client["mobile"] != undefined &&
+        props.Client["mobile"] != ""
+      ) {
+        let invoiceMessage = "";
+
+        for (let i = 0; i < items.length; i++) {
+          invoiceMessage += `Item ${i + 1}:\n`;
+          invoiceMessage += `------\n`;
+          invoiceMessage += `Name: ${items[i].name}\n`;
+          invoiceMessage += `Quantity: ${items[i].TotalPieces}\n`;
+          invoiceMessage += `Price: ${items[i].uprice}\n`;
+          invoiceMessage += `Total: ${items[i].Total}\n`;
+          invoiceMessage += `------------------\n`;
+        }
+        invoiceMessage += `\n`;
+        invoiceMessage += `Invoice Total: ${invoiceTotal}\n`;
+        // Copy the invoice message to the clipboard
+        const copyToClipboard = async (text) => {
+          try {
+            await navigator.clipboard.writeText(text);
+            console.log("Text copied to clipboard:", text);
+            // Optionally, you can show a success message to the user
+          } catch (error) {
+            console.error("Error copying text to clipboard:", error);
+            // Optionally, you can show an error message to the user
+          }
+        };
+        await copyToClipboard(invoiceMessage);
+
+        // URL encode the message
+        let encodedMessage = encodeURIComponent(invoiceMessage);
+
+        window.open(
+          `https://api.whatsapp.com:/send?phone=${phoneNumber}&text=${encodedMessage}`
+        );
+      } else {
+        setErrorModal({
+          show: true,
+          message: "The Current Account Doesn't Have  A mobile Phone Saved.",
+          title: "Mobile Missing",
+        });
+      }
+    } else {
+      setErrorModal({
+        show: true,
+        message: "The Invoice Is Empty",
+        title: "Empty Invoice",
+      });
+    }
+  }
   const saveNew = (flag) => {
     if (
       (props.SelectedItems.length == 0 && props.RemovedItems.length == 0) ||
@@ -1211,11 +1274,15 @@ export default function SalesForm(props) {
                   ) {
                     setItemsWithoutAccount(true);
                   } else {
+                    console.log(
+                      "GROUP TYPE",
+                      localStorage.getItem("GroupType")
+                    );
                     if (sOption == "Items") {
                       if (
                         localStorage.getItem("GroupType") &&
                         localStorage.getItem("GroupType") != "" &&
-                        localStorage.getItem("GroupType") != null
+                        localStorage.getItem("GroupType") != "null"
                       ) {
                         getGroupOptions(localStorage.getItem("GroupType"));
                       } else {
@@ -1906,8 +1973,8 @@ export default function SalesForm(props) {
                     onClick={async () => {
                       let result = saveNew("saveWhatsApp");
                       if (!result) {
-                        let phoneNumber = "+96179315487";
-                        props.sendWhastAPP(
+                        let phoneNumber = props.Client["mobile"];
+                        sendWhastAPP(
                           phoneNumber,
                           props.SelectedItems,
                           finalTotal

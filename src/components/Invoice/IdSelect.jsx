@@ -1100,6 +1100,7 @@ const IdSelect = forwardRef((props, ref) => {
         cur: "",
         Rate: "",
         address: "",
+        mobile: "",
       });
       // props.ssi([])
       // localStorage.setItem("sales", "")
@@ -1139,6 +1140,7 @@ const IdSelect = forwardRef((props, ref) => {
         address: e["Address"],
         cur: e["Cur"],
         Rate: localStorage.getItem("Rate"),
+        mobile: e["Mobile"],
       });
 
       props.setModalShow(false);
@@ -1169,6 +1171,7 @@ const IdSelect = forwardRef((props, ref) => {
           address: e["Address"],
           cur: e["Cur"],
           Rate: localStorage.getItem("Rate"),
+          mobile: e["Mobile"],
         },
 
         items: props.si,

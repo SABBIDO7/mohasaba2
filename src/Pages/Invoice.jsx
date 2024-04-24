@@ -185,7 +185,7 @@ export default function Invoice(props) {
     // }
     // Delay capturing to allow for rendering
     setTimeout(() => {
-      html2canvas(container, { scale: 4 })
+      html2canvas(container, { scale: 0.5 })
         .then((canvas) => {
           console.log("capturedd canvass", canvas); // Log the captured canvas to verify
 

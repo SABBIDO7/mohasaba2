@@ -24,7 +24,7 @@ function App() {
   const [Compname, setCompname] = useState("");
   const [QuickMenu,setQuickMenu ] = useState(false);
   const [FullScreen,setFullScreen ] = useState(false);
-  const [url,setUrl ] = useState("http://localhost:8000");
+  const [url,setUrl ] = useState("http://192.168.16.114:8000");
   const [cookies, setCookie] = useCookies(["token"]);
 
 
