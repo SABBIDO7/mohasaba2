@@ -15,6 +15,9 @@ export default function Main(props) {
   function invoiceClick() {
     document.getElementById("Transactions").click();
   }
+  function CheckInClick() {
+    document.getElementById("CheckIn").click();
+  }
   function logout() {
     setCookie("token", "", {
       path: "/",
@@ -56,6 +59,14 @@ export default function Main(props) {
           onClick={invoiceClick}
         >
           Transcations
+        </button>
+        <button
+          className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor text-xl"
+          role="button"
+          aria-pressed="true"
+          onClick={CheckInClick}
+        >
+          Check In
         </button>
       </div>
       <div>

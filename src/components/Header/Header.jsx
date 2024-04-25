@@ -11,6 +11,7 @@ const navigation = [
   { name: "Accounting", href: "/Accounting" },
   { name: "Inventory", href: "/Inventory" },
   { name: "Transactions", href: "/Invoice" },
+  { name: "Check In", href: "/CheckIn" },
 ];
 
 function classNames(...classes) {
@@ -66,6 +67,7 @@ export default function Header(props) {
               <div className="  text-center font-bold text-2xl flex  justify-start  items-center w-1/2  text-BgTextColor  compnameStyle">
                 <div>{props.compname.toUpperCase()}</div>
               </div>
+
               <div className=" flex flex-end items-center justify-end w-1/2 mr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 not-italic text-BgTextColor ">
                 <NavDropdown
                   id="MainNav-dropdown"

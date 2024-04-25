@@ -8,6 +8,7 @@ import Main from "./Pages/Main";
 import LoginModal from "./components/Login/LoginModal";
 import Stock from "./Pages/Stock";
 import Invoice from "./Pages/Invoice";
+import CheckIn from "./Pages/CheckIn";
 import { useCookies } from "react-cookie";
 import fullScreenToggle from './media/5642608.png'
 import QuickMenuToggle from './media/Arrow2.png'
@@ -24,7 +25,7 @@ function App() {
   const [Compname, setCompname] = useState("");
   const [QuickMenu,setQuickMenu ] = useState(false);
   const [FullScreen,setFullScreen ] = useState(false);
-  const [url,setUrl ] = useState("http://localhost:8000");
+  const [url,setUrl ] = useState("http://192.168.16.143:8000");
   const [cookies, setCookie] = useCookies(["token"]);
 
 
@@ -246,7 +247,12 @@ function App() {
             <Route path="/" element={<Main compname={Compname}/>}/>
             <Route path="/Accounting" element={<Accounting url={url} UserDataHandler={UserDataHandler} token={token} />} />
             <Route path="/Inventory" element={<Stock url={url} UserDataHandler={UserDataHandler} token={token} />} />
-            <Route path="/Invoice" element={<Invoice url={url} UserDataHandler={UserDataHandler} token={token} name ={Username} />} />
+            <Route path="/Invoice" element={<Invoice url={url} UserDataHandler={UserDataHandler} token={token} name ={Username} />
+            
+          } />
+          <Route path="/CheckIn" element={<CheckIn url={url} UserDataHandler={UserDataHandler} token={token} name ={Username} />
+            
+          } />
            </Routes>
         </Header>
       </BrowserRouter>
