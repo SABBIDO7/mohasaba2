@@ -52,6 +52,8 @@ export default function Invoice(props) {
   const [modalItems, setModalItems] = useState(false);
   const [modalVoucher, setModalVoucher] = useState(false);
   const [saveNewFlag, setsaveNewFlag] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [ErrorInvoiceModel, setErrorInvoiceModel] = useState(false);
   // function sInvoiceHandler(e) {
   //   setSInvoice(e);
   // }
@@ -71,7 +73,7 @@ export default function Invoice(props) {
 
   const [afterSubmitModal, setafterSubmitModal] = useState(false);
   const [afterSubmitModal2, setafterSubmitModal2] = useState(false);
-
+  const [saveWhatsAppModel, setsaveWhatsAppModel] = useState(false);
   function discardInvoice() {}
 
   const downloadPDF = (data, ref_no) => {
@@ -276,6 +278,43 @@ export default function Invoice(props) {
         // Handle error (e.g., set error state)
       });
   };
+  function savePhoneNumber(phoneNumber, var1, var2, var3) {
+    axios({
+      method: "post",
+      url:
+        props.url +
+        "/moh/savePhoneNumber/" +
+        localStorage.getItem("compname") +
+        "/" +
+        phoneNumber +
+        "/" +
+        Client["id"],
+      headers: { content_type: "application/json" },
+    })
+      .then((res) => {
+        if (res.data.Info == "authorized") {
+          setClient({ ...Client, mobile: phoneNumber });
+          sendWhastAPP(phoneNumber, var2, var3);
+          setPhoneNumber("");
+        } else if (res.data.Info == "Failed") {
+          setPhoneNumber("");
+          setErrorInvoiceModel({
+            show: true,
+            message: res.data.msg,
+            title: "Error Occured 100",
+          });
+        }
+      })
+      .catch((error) => {
+        setPhoneNumber("");
+        setErrorInvoiceModel({
+          show: true,
+          message: error,
+          title: "Error Occured 101",
+        });
+        // Handle error (e.g., set error state)
+      });
+  }
 
   return (
     <div className="h-[90vh] overscroll-contain">
@@ -326,6 +365,8 @@ export default function Invoice(props) {
               setsInvoices={setsInvoices}
               getInvoicesHistory={getInvoicesHistory}
               sendWhastAPP={sendWhastAPP}
+              setsaveWhatsAppModel={setsaveWhatsAppModel}
+              saveWhatsAppModel={saveWhatsAppModel}
             />
             <Modal
               show={SwitchFormOption.show}
@@ -372,6 +413,84 @@ export default function Invoice(props) {
                     Yes
                   </Button>
                 </div>
+              </Modal.Footer>
+            </Modal>
+            <Modal
+              show={saveWhatsAppModel.show}
+              onHide={() => {
+                setsaveWhatsAppModel({ ...saveWhatsAppModel, show: false });
+              }}
+              size="lg"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+            >
+              <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                  {saveWhatsAppModel.title}
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div>{saveWhatsAppModel.message}</div>
+                <div style={{ fontStyle: "italic" }}>Ex:+961xxxxxx</div>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter phone number"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => {
+                    setsaveWhatsAppModel({ ...saveWhatsAppModel, show: false });
+                  }}
+                >
+                  Close
+                </Button>
+                <Button
+                  onClick={() => {
+                    setsaveWhatsAppModel({ ...saveWhatsAppModel, show: false });
+                    console.log("var1", saveWhatsAppModel.variable1);
+                    console.log("var2", saveWhatsAppModel.variable2);
+                    console.log("var3", saveWhatsAppModel.variable3);
+                    savePhoneNumber(
+                      phoneNumber,
+                      saveWhatsAppModel.variable1,
+                      saveWhatsAppModel.variable2,
+                      saveWhatsAppModel.variable3
+                    );
+                  }}
+                >
+                  Yes
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            <Modal
+              show={ErrorInvoiceModel.show}
+              onHide={() => {
+                setErrorInvoiceModel({ ...ErrorInvoiceModel, show: false });
+              }}
+              size="lg"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+            >
+              <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                  {ErrorInvoiceModel.title}
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div>{ErrorInvoiceModel.message}</div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => {
+                    setErrorInvoiceModel({ ...ErrorInvoiceModel, show: false });
+                  }}
+                >
+                  Close
+                </Button>
               </Modal.Footer>
             </Modal>
           </>
@@ -569,9 +688,27 @@ export default function Invoice(props) {
           if (flag == "savePrint") {
             printing(res.data.ref_no);
           } else if (flag == "saveWhatsApp") {
-            let phoneNumber = "+96181627458"; // replace with the actual phone number
+            let phoneNumber = Client["mobile"]; // replace with the actual phone number
             let invoiceMessage = items;
-            sendWhastAPP(phoneNumber, invoiceMessage, data.invoiceTotal);
+            if (
+              Client["mobile"] &&
+              Client["mobile"] != "null" &&
+              Client["mobile"] != undefined &&
+              Client["mobile"] != ""
+            ) {
+              sendWhastAPP(phoneNumber, invoiceMessage, data.invoiceTotal);
+            } else {
+              console.log("phoneNumber", phoneNumber);
+              setsaveWhatsAppModel({
+                show: true,
+                message: "Do You Want To Save Mobile Number Of The Client?",
+                title: "Number Not Found",
+                variable1: phoneNumber,
+                variable2: invoiceMessage,
+
+                variable3: data.invoiceTotal,
+              });
+            }
           }
         }
       } else if (res.data.Info == "Failed") {

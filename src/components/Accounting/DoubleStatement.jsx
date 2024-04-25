@@ -108,9 +108,11 @@ export default function MyVerticallyCenteredModal(props) {
                           <td>{DB["PQty"]}</td>
                           <td>{DB["PQUnit"]}</td>
                           <td className=" text-center">{DB["Qty"]}</td>
-                          <td className=" text-right">{DB["UPrice"]}</td>
+                          <td className=" text-right">
+                            {parseFloat(DB["UPrice"]).toLocaleString()}
+                          </td>
                           <td className=" text-right">{DB["Disc"]}</td>
-                          <td>{DB["Total"]}</td>
+                          <td>{parseFloat(DB["Total"]).toLocaleString()}</td>
                         </tr>
                       ))}
                     </tbody>

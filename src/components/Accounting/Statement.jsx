@@ -455,8 +455,12 @@ export default function Statement(props) {
                         <td>{state["Date"]}</td>
                         <td>{state["RefType"]}</td>
                         <td>{state["RefNo"]}</td>
-                        <td className=" text-right">{state["DB"]}</td>
-                        <td className=" text-right">{state["CR"]}</td>
+                        <td className=" text-right">
+                          {parseFloat(state["DB"]).toLocaleString()}
+                        </td>
+                        <td className=" text-right">
+                          {parseFloat(state["CR"]).toLocaleString()}
+                        </td>
                         <td className=" text-center">{state["Dep"]}</td>
                         <td className=" whitespace-nowrap">{state["Notes"]}</td>
                         <td>{state["job"]}</td>

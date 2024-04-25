@@ -46,7 +46,7 @@ export default function Balance(props) {
       {values.map((v, idx) => (
         <Button key={idx} className="me-2 my-1" onClick={() => handleShow(v)}>
           {props.oData["Balance"] !== null
-            ? props.oData["Balance"].toFixed(2)
+            ? props.oData["Balance"].toLocaleString() //ken tofixed(2)
             : "0.00" + " " + props.oData["Cur"]}
           {typeof v === "string" && `below ${v.split("-")[0]}`}
         </Button>
@@ -76,10 +76,14 @@ export default function Balance(props) {
                   >
                     <td>{Br["Branch"]}</td>
                     <td className=" text-right">
-                      {Br["DB"] !== null ? Br["DB"].toFixed(2) : ""}
+                      {
+                        Br["DB"] !== null
+                          ? Br["DB"].toLocaleString()
+                          : "" /*ken tofixed(2)*/
+                      }
                     </td>
                     <td className=" text-right">
-                      {Br["CR"] !== null ? Br["CR"].toFixed(2) : ""}
+                      {Br["CR"] !== null ? Br["CR"].toLocaleString() : ""}
                     </td>
                   </tr>
                 );

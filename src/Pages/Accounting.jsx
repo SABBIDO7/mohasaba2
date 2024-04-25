@@ -464,7 +464,11 @@ export default function Accounting(props) {
                                   btype={"tr"}
                                 >
                                   <td className="text-right">
-                                    {parseFloat(cl["Balance"]).toFixed(2)}
+                                    {
+                                      /* {parseFloat(cl["Balance"]).toFixed(2)} */ parseFloat(
+                                        cl["Balance"]
+                                      ).toLocaleString()
+                                    }
                                   </td>
                                   <td>{cl["Cur"]}</td>
                                   <td>{cl["AccName"]}</td>
@@ -565,7 +569,11 @@ export default function Accounting(props) {
                               >
                                 <td>{cl["AccNo"]}</td>
                                 <td>{cl["Branch"]}</td>
-                                <td>{parseFloat(cl["Balance"]).toFixed(2)}</td>
+                                {/* <td>{parseFloat(cl["Balance"]).toFixed(2)}</td> */}
+                                <td>
+                                  {parseFloat(cl["Balance"]).toLocaleString()}
+                                </td>
+
                                 <td>{cl["Cur"]}</td>
                                 <td>{cl["AccName"]}</td>
                                 <td>{cl["tel"]}</td>
@@ -578,8 +586,8 @@ export default function Accounting(props) {
                                 <td>{cl["Price"]}</td>
                                 <td>{cl["TaxNo"]}</td>
                                 <td>{cl["AccName2"]}</td>
-                                <td>{cl["DB"]}</td>
-                                <td>{cl["CR"]}</td>
+                                <td>{parseFloat(cl["DB"]).toLocaleString()}</td>
+                                <td>{parseFloat(cl["CR"]).toLocaleString()}</td>
                               </Statement>
                             );
                           })}

@@ -453,7 +453,9 @@ export default function Statement(props) {
                     <td>{state["RefType"]}</td>
                     <td>{state["RefNo"]}</td>
                     <td className=" text-center">{state["Qty"]}</td>
-                    <td className=" text-right">{state["UPrice"]}</td>
+                    <td className=" text-right">
+                      {parseFloat(state["UPrice"]).toLocaleString()}
+                    </td>
                     <td>{state["AccName"]}</td>
                     <td>{state["Branch"]}</td>
                     <td>{state["PQty"]}</td>
@@ -464,7 +466,7 @@ export default function Statement(props) {
                     <td>{state["Weight"]}</td>
                     <td>{state["Notes"]}</td>
                     <td>{state["Tax"]}</td>
-                    <td>{state["Total"]}</td>
+                    <td>{parseFloat(state["Total"]).toLocaleString()}</td>
                     <td>{state["AccNo"]}</td>
                     <td>{state["Disc100"]}</td>
                     <td>{state["Time"]}</td>

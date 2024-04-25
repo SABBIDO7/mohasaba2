@@ -108,14 +108,18 @@ export default function InitialSummery(props) {
                     <td>{state["InvType"]}</td>
                     <td>{state["BR"]}</td>
                     <td className=" text-center">
-                      {state["DB"] !== null ? state["DB"].toFixed(2) : ""}
+                      {
+                        state["DB"] !== null
+                          ? state["DB"].toLocaleString()
+                          : "" /* toFixed(2)*/
+                      }
                     </td>
                     <td className=" text-center">
-                      {state["CR"] !== null ? state["CR"].toFixed(2) : ""}
+                      {state["CR"] !== null ? state["CR"].toLocaleString() : ""}
                     </td>
                     <td className=" text-right">
                       {state["Balance"] !== null
-                        ? state["Balance"].toFixed(2)
+                        ? state["Balance"].toLocaleString() /*toFixed(2) */
                         : ""}
                     </td>
                   </tr>

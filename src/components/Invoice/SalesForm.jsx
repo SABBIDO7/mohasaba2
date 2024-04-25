@@ -1069,10 +1069,10 @@ export default function SalesForm(props) {
           `https://api.whatsapp.com:/send?phone=${phoneNumber}&text=${encodedMessage}`
         );
       } else {
-        setErrorModal({
+        props.setsaveWhatsAppModel({
           show: true,
-          message: "The Current Account Doesn't Have  A mobile Phone Saved.",
-          title: "Mobile Missing",
+          message: "Do You Want To Save Mobile Number Of The Client",
+          title: "Number Not Found",
         });
       }
     } else {
