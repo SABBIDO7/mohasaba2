@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
-
+import Location from "./Location";
 export default function Scanner() {
   const scannerRef = useRef(null);
   const [scanner, setScanner] = useState(null); // Store the scanner instance
@@ -34,6 +34,9 @@ export default function Scanner() {
           (decodedText, decodedResult) => {
             console.log(`Scan result: ${decodedText}`);
             beep(100, 520, 200); // Beep sound
+            localStorage.setItem("AccountId", decodedText);
+
+            <Location></Location>;
 
             setScanning(false);
             scanner.stop();

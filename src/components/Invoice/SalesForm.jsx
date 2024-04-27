@@ -17,7 +17,11 @@ import "../../index.css"; // Import the CSS file
 import ItemStockDetails from "./ItemStockDetails";
 
 export default function SalesForm(props) {
-  const [vInput, setvInput] = useState("");
+  const [vInput, setvInput] = useState(
+    localStorage.getItem("AccountId") != undefined
+      ? localStorage.getItem("AccountId")
+      : ""
+  );
 
   const [sOption, setsOption] = useState("Accounts");
 

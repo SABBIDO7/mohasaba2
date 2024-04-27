@@ -4,7 +4,6 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import Scanner from "../components/CheckIn/Scanner";
-import Location from "../components/CheckIn/Location";
 
 export default function CheckIn(props) {
   return (
@@ -16,7 +15,6 @@ export default function CheckIn(props) {
         <div className="w-[fit]">
           <Scanner></Scanner>
         </div>
-        <Location></Location>
       </div>
     </div>
   );

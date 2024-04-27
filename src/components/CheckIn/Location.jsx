@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+//import { useHistory } from "react-router-dom";
 export default function Location() {
   const [location, setLocation] = useState({
     latitude: null,
@@ -18,6 +18,12 @@ export default function Location() {
       console.log("Geolocation is not supported by this browser.");
     }
   }, []);
+
+  const saveLongLat = () => {
+    localStorage.setItem("longitude", location.longitude);
+    localStorage.setItem("latitude", location.latitude);
+    //history.push("/invoice");
+  };
 
   return (
     <div>
