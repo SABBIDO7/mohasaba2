@@ -138,7 +138,7 @@ export default function Invoice(props) {
           <div style="height:45px"></div>
       </div>
   `;
-    } else if (localStorage.getItem("PrintFormat") == 2) {
+    } else if (localStorage.getItem("PrintFormat") == "2") {
       htmlContent = `
       
       <div style="justify-items:space-between;align-items:center;">
@@ -667,6 +667,9 @@ export default function Invoice(props) {
           : Client["Rate"],
       SATFromBranch: SATFromBranch,
       SATToBranch: SATToBranch,
+      long: localStorage.getItem("longitude"),
+
+      lat: localStorage.getItem("latitude"),
     };
     console.log("n bl invoice");
     console.log(data);

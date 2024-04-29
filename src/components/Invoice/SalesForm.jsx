@@ -18,8 +18,8 @@ import ItemStockDetails from "./ItemStockDetails";
 
 export default function SalesForm(props) {
   const [vInput, setvInput] = useState(
-    localStorage.getItem("AccountId") != undefined
-      ? localStorage.getItem("AccountId")
+    localStorage.getItem("ScannedAccountId") != undefined
+      ? localStorage.getItem("ScannedAccountId")
       : ""
   );
 

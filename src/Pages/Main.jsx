@@ -16,7 +16,7 @@ export default function Main(props) {
     document.getElementById("Transactions").click();
   }
   function CheckInClick() {
-    document.getElementById("CheckIn").click();
+    document.getElementById("Check In").click();
   }
   function logout() {
     setCookie("token", "", {

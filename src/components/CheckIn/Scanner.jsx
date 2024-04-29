@@ -6,6 +6,7 @@ export default function Scanner() {
   const [scanner, setScanner] = useState(null); // Store the scanner instance
 
   const [scanning, setScanning] = useState(false);
+  const [showLocation, setShowLocation] = useState(false);
 
   const audioContext = new AudioContext();
 
@@ -34,12 +35,13 @@ export default function Scanner() {
           (decodedText, decodedResult) => {
             console.log(`Scan result: ${decodedText}`);
             beep(100, 520, 200); // Beep sound
-            localStorage.setItem("AccountId", decodedText);
-
-            <Location></Location>;
-
+            localStorage.setItem("ScannedAccountId", decodedText);
             setScanning(false);
             scanner.stop();
+            setShowLocation(true); // Show the Location component
+
+            console.log("ddddff");
+
             // Handle the scan result here...
           },
           (errorMessage) => {
@@ -63,6 +65,7 @@ export default function Scanner() {
           Start Scanning
         </button>
       )}
+      {showLocation && <Location />}
 
       {scanning && (
         <>
@@ -79,6 +82,7 @@ export default function Scanner() {
               setScanner(true);
               setScanning(false);
             }}
+            className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
           >
             Stop Scanning
           </button>
