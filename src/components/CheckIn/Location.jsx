@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import { checkInEndPoint } from "../BackendEndPoints/Endpoint1";
+import { info } from "autoprefixer";
 export default function Location(props) {
   const [location, setLocation] = useState({
     latitude: null,
     longitude: null,
   });
+  const [infoModal, setInfoModal] = useState({ show: false });
+  const [infoSearchModal, setInfoSearchModal] = useState({ show: false });
   const navigate = useNavigate();
   useEffect(() => {
     console.log("an abkl useeffect location");
@@ -32,10 +37,34 @@ export default function Location(props) {
     checkInEndPoint(long, lat).then((response) => {
       console.log("fettt baad");
       console.log(response);
-      props.setShowLocation(false);
+
       if (response.status == "authorized") {
-        console.log("fet authorized");
-        navigate("/invoice");
+        if (response.flag == 1) {
+          console.log("fet authorized");
+          setInfoModal({
+            show: true,
+            message: (
+              <div>
+                {"You Have Been Checked In With The Account : " +
+                  response.Account}
+              </div>
+            ),
+            flag: 1,
+            title: response.message,
+          });
+
+          // navigate("/invoice");
+        } else if (response.flag == 0) {
+          console.log("mano mawjoud l idddd");
+          setInfoSearchModal({
+            show: true,
+            message: (
+              <div>{"No Account Found with ID:" + response.Account}</div>
+            ),
+            flag: 0,
+            title: response.message,
+          });
+        }
       } else {
         console.log("fet msh authorized");
         console.log(response.message);
@@ -47,6 +76,72 @@ export default function Location(props) {
 
   return (
     <div>
+      <Modal
+        show={infoModal.show}
+        onHide={() => setInfoModal({ ...infoModal, show: false })}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {infoModal.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{infoModal.message}</Modal.Body>
+        <Modal.Footer>
+          <div className="flex flex-row w-full justify-around">
+            <Button
+              variant="danger"
+              onClick={() => {
+                setInfoModal({ ...infoModal, show: false });
+                props.setShowLocation(false);
+              }}
+            >
+              Ok
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={infoSearchModal.show}
+        onHide={() => setInfoSearchModal({ ...infoSearchModal, show: false })}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {infoSearchModal.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{infoSearchModal.message}</Modal.Body>
+        <Modal.Footer>
+          <div className="flex flex-row w-full justify-around">
+            <Button
+              onClick={() => {
+                setInfoSearchModal({ ...infoSearchModal, show: false });
+                props.setShowLocation(false);
+              }}
+            >
+              Close
+            </Button>
+            <Button
+              variant="danger"
+              onClick={() => {
+                setInfoSearchModal({ ...infoSearchModal, show: false });
+                props.setShowLocation(false);
+              }}
+            >
+              Done
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
       {/* {location.latitude && <p>Latitude: {location.latitude}</p>}
       {location.longitude && <p>Longitude: {location.longitude}</p>} */}
     </div>

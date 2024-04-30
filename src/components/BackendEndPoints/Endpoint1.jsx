@@ -33,7 +33,13 @@ export async function checkInEndPoint(long, lat) {
 
     if (response.data.Info == "authorized") {
       console.log("Success");
-      return { status: "authorized" };
+
+      return {
+        status: "authorized",
+        message: response.data.message,
+        flag: response.data.flag,
+        Account: response.data.Account,
+      };
     } else {
       console.log("not success");
       return { status: "error", message: response.data.message };
