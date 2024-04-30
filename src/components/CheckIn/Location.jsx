@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { checkInEndPoint } from "../BackendEndPoints/Endpoint1";
-export default function Location() {
+export default function Location(props) {
   const [location, setLocation] = useState({
     latitude: null,
     longitude: null,
@@ -18,23 +18,30 @@ export default function Location() {
         });
         console.log(position.coords.latitude);
 
-        saveLongLat();
+        saveLongLat(position.coords.latitude, position.coords.longitude);
       });
     } else {
       console.log("Geolocation is not supported by this browser.");
     }
   }, []);
 
-  const saveLongLat = () => {
-    localStorage.setItem("longitude", location.longitude);
-    localStorage.setItem("latitude", location.latitude);
+  const saveLongLat = (lat, long) => {
+    localStorage.setItem("longitude", long);
+    localStorage.setItem("latitude", lat);
     console.log("Started...");
-    let result = checkInEndPoint();
-    if (result["status"] == "authorized") {
-      navigate("/invoice");
-    } else {
-      console.log(result["message"]);
-    }
+    checkInEndPoint(long, lat).then((response) => {
+      console.log("fettt baad");
+      console.log(response);
+      props.setShowLocation(false);
+      if (response.status == "authorized") {
+        console.log("fet authorized");
+        navigate("/invoice");
+      } else {
+        console.log("fet msh authorized");
+        console.log(response.message);
+      }
+    });
+
     //window.location.href = "/invoice";
   };
 

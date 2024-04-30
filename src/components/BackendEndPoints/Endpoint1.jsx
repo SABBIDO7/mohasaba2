@@ -4,7 +4,7 @@ import "../../index.css"; // Import the CSS file
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 const url = "http://localhost:8000";
-export const checkInEndPoint = () => {
+export async function checkInEndPoint(long, lat) {
   console.log("Calling from endpoint");
   const [date, time] = getTimeEndPoint();
   let data = {
@@ -12,33 +12,37 @@ export const checkInEndPoint = () => {
     compname: localStorage.getItem("compname"),
     username: localStorage.getItem("username"),
     accno: localStorage.getItem("ScannedAccountId"),
-    long: localStorage.getItem("longitude"),
-    lat: localStorage.getItem("latitude"),
+    long: long,
+    lat: lat,
     accDate: date,
     accTime: time,
   };
-  axios({
-    method: "post", // or 'get', 'put', 'delete', etc.
-    url: url + "/moh/CheckIn/",
-    data: data,
-    headers: {
-      "Content-Type": "application/json",
-      // Add any additional headers if needed
-    },
-  })
-    .then((response) => {
-      if (response.data.Info == "authorized") {
-        console.log("Success");
-        return { status: "authorized" };
-      } else {
-        return { status: "error", message: response.data.message };
-      }
-    })
-    .catch((error) => {
-      // Handle error
-      return { status: "error", message: error };
+
+  console.log("dataaaaa", data);
+
+  try {
+    const response = await axios({
+      method: "post",
+      url: url + "/moh/CheckIn/",
+      data: data,
+      headers: {
+        "Content-Type": "application/json",
+        // Add any additional headers if needed
+      },
     });
-};
+
+    if (response.data.Info == "authorized") {
+      console.log("Success");
+      return { status: "authorized" };
+    } else {
+      console.log("not success");
+      return { status: "error", message: response.data.message };
+    }
+  } catch (error) {
+    console.log("catch error", error);
+    return { status: "error", message: error.message };
+  }
+}
 
 const getTimeEndPoint = () => {
   const currentDate = new Date();

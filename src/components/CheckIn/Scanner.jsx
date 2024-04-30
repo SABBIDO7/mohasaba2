@@ -32,7 +32,7 @@ export default function Scanner() {
             fps: 30, // Frames per second
             qrbox: 350, // QR box size
           },
-          (decodedText, decodedResult) => {
+          async (decodedText, decodedResult) => {
             console.log(`Scan result: ${decodedText}`);
             beep(100, 520, 200); // Beep sound
             localStorage.setItem("ScannedAccountId", decodedText);
@@ -65,7 +65,7 @@ export default function Scanner() {
           Start Scanning
         </button>
       )}
-      {showLocation && <Location />}
+      {showLocation && <Location setShowLocation={setShowLocation} />}
 
       {scanning && (
         <>
