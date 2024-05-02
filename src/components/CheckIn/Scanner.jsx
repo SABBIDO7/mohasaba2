@@ -29,7 +29,7 @@ export default function Scanner() {
         .start(
           { facingMode: "environment" }, // Prefer rear camera, adjust as needed
           {
-            fps: 30, // Frames per second
+            fps: 5, // Frames per second
             qrbox: 350, // QR box size
           },
           async (decodedText, decodedResult) => {
