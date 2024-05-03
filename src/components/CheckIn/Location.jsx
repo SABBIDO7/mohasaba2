@@ -137,7 +137,44 @@ export default function Location(props) {
                 props.setShowLocation(false);
               }}
             >
-              Done
+              Search
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={infoSearchModal.show}
+        onHide={() => setInfoSearchModal({ ...infoSearchModal, show: false })}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {infoSearchModal.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{infoSearchModal.message}</Modal.Body>
+        <Modal.Footer>
+          <div className="flex flex-row w-full justify-around">
+            <Button
+              onClick={() => {
+                setInfoSearchModal({ ...infoSearchModal, show: false });
+                props.setShowLocation(false);
+              }}
+            >
+              Close
+            </Button>
+            <Button
+              variant="danger"
+              onClick={() => {
+                setInfoSearchModal({ ...infoSearchModal, show: false });
+                props.setShowLocation(false);
+              }}
+            >
+              Search
             </Button>
           </div>
         </Modal.Footer>

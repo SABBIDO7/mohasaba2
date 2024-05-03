@@ -29,8 +29,8 @@ export default function Scanner() {
         .start(
           { facingMode: "environment" }, // Prefer rear camera, adjust as needed
           {
-            fps: 5, // Frames per second
-            qrbox: 350, // QR box size
+            fps: 15, // Frames per second
+            qrbox: 150, // QR box size
           },
           async (decodedText, decodedResult) => {
             console.log(`Scan result: ${decodedText}`);
@@ -50,6 +50,8 @@ export default function Scanner() {
         )
         .catch((err) => console.warn(`QR code start error: ${err}`));
     } else if (!scanning && scanner) {
+      setScanning(false);
+
       scanner.stop(); // Stop the scanner when scanning is stopped
       setScanner(null); // Reset the scanner instance
     }
@@ -72,7 +74,13 @@ export default function Scanner() {
           <div
             id="reader"
             ref={scannerRef}
-            style={{ width: "300px", height: "300px" }}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              justifyItems: "center",
+              width: "250px",
+              height: "250px",
+            }}
           ></div>
           <button
             onClick={() => {
