@@ -70,3 +70,55 @@ const getTimeEndPoint = () => {
 
   return [formattedDate, formattedTime];
 };
+export async function handleCheckInSearch(data) {
+  try {
+    axios({
+      method: "POST",
+      url: url + "/INVOICE_DATA_SELECT/",
+      data: data,
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => {
+        if (res.data.Info == "authorized") {
+          let lgt = res.data.opp;
+          console.log("hhhhhhhhhhhhhhhhhhhhhhhhhh", res.data.Info);
+          if (lgt.length > 0) {
+            console.log("jjjjjjjjjjjjjjjjjjj");
+            console.log(res.data.op);
+            // setIdOptions(res.data.opp);
+            return { status: "success", message: res.data.op, flag: 1 };
+          } else {
+            console.log("po", res.data.opp);
+            return { status: "empty", message: "Account Not Found", flag: -1 };
+
+            // setInfoModal({
+            //   show: true,
+            //   flag: -1,
+            //   message: (
+            //     <div>
+            //       There Is No Account Matches Your Search <br></br> Please Try a
+            //       Different Account .
+            //     </div>
+            //   ),
+            //   title: "Empty Account",
+            // });
+          }
+        } else if (res.data.Info == "error") {
+          return { status: "error", message: res.data.msg, flag: -2 };
+        }
+      })
+      .catch((err) => {
+        return { status: "error", message: err, flag: -3 };
+      });
+  } catch (e) {
+    // setInfoModal({
+    //   show: true,
+    //   message: <div>{"Error No 100 :  " + e}</div>,
+    //   flag: -1,
+    //   title: "Error Occured",
+    // });
+    return { status: "error", message: e, flag: -4 };
+  }
+  // Call the endpoint with the searchValue
+  // Update state or perform any necessary actions based on the result
+}

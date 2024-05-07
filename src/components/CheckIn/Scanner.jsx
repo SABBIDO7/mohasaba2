@@ -3,13 +3,13 @@ import { Html5Qrcode } from "html5-qrcode";
 import Location from "./Location";
 export default function Scanner() {
   const scannerRef = useRef(null);
-  const [scanner, setScanner] = useState(null); // Store the scanner instance
+  const [scannerVar, setScannerVar] = useState(null); // Store the scanner instance
 
   const [scanning, setScanning] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
 
   const audioContext = new AudioContext();
-
+  let scanner = "";
   const beep = (vol, freq, duration) => {
     var v = audioContext.createOscillator();
     var u = audioContext.createGain();
@@ -23,8 +23,8 @@ export default function Scanner() {
   };
 
   useEffect(() => {
-    if (scanning && !scanner) {
-      const scanner = new Html5Qrcode("reader");
+    if (scanning && !scannerVar) {
+      scanner = new Html5Qrcode("reader");
       scanner
         .start(
           { facingMode: "environment" }, // Prefer rear camera, adjust as needed
@@ -37,9 +37,9 @@ export default function Scanner() {
             beep(100, 520, 200); // Beep sound
             localStorage.setItem("ScannedAccountId", decodedText);
             setScanning(false);
-            scanner.stop();
-            setShowLocation(true); // Show the Location component
 
+            setShowLocation(true); // Show the Location component
+            scanner.stop();
             console.log("ddddff");
 
             // Handle the scan result here...
@@ -49,13 +49,13 @@ export default function Scanner() {
           }
         )
         .catch((err) => console.warn(`QR code start error: ${err}`));
-    } else if (!scanning && scanner) {
+    } else if (!scanning && scannerVar) {
       setScanning(false);
-
-      scanner.stop(); // Stop the scanner when scanning is stopped
-      setScanner(null); // Reset the scanner instance
+      console.log("fet hon1");
+      // Stop the scanner when scanning is stopped
+      setScannerVar(null); // Reset the scanner instance
     }
-  }, [scanning, scanner]); // Add scanning as a dependency
+  }, [scanning, scannerVar]); // Add scanning as a dependency
 
   return (
     <>
@@ -84,10 +84,8 @@ export default function Scanner() {
           ></div>
           <button
             onClick={() => {
-              const scanner = new Html5Qrcode("reader");
-              console.log("kabas closeeeeeee");
               scanner.stop();
-              setScanner(true);
+              setScannerVar(true);
               setScanning(false);
             }}
             className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"

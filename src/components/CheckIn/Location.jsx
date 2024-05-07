@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { checkInEndPoint } from "../BackendEndPoints/Endpoint1";
+
+import {
+  checkInEndPoint,
+  handleCheckInSearch,
+} from "../BackendEndPoints/Endpoint1";
 import { info } from "autoprefixer";
 export default function Location(props) {
   const [location, setLocation] = useState({
@@ -11,6 +15,14 @@ export default function Location(props) {
   });
   const [infoModal, setInfoModal] = useState({ show: false });
   const [infoSearchModal, setInfoSearchModal] = useState({ show: false });
+  const [infoSearchShowModal, setInfoSearchShowModal] = useState({
+    show: false,
+  });
+
+  const [searchValue, setSearchValue] = useState(
+    infoSearchModal.accountId || ""
+  ); // Default value is infoModal.accountId
+
   const navigate = useNavigate();
   useEffect(() => {
     console.log("an abkl useeffect location");
@@ -56,12 +68,15 @@ export default function Location(props) {
           // navigate("/invoice");
         } else if (response.flag == 0) {
           console.log("mano mawjoud l idddd");
+          setSearchValue(response.Account);
+
           setInfoSearchModal({
             show: true,
             message: (
               <div>{"No Account Found with ID:" + response.Account}</div>
             ),
             flag: 0,
+            accounntId: response.Account,
             title: response.message,
           });
         }
@@ -119,9 +134,20 @@ export default function Location(props) {
             {infoSearchModal.title}
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>{infoSearchModal.message}</Modal.Body>
+        <Modal.Body>
+          <div className="flex flex-column justify-between">
+            <div>{infoSearchModal.message}</div>
+            <div>
+              <input
+                type="text"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+            </div>
+          </div>
+        </Modal.Body>
         <Modal.Footer>
-          <div className="flex flex-row w-full justify-around">
+          <div className="flex flex-row w-full justify-between">
             <Button
               onClick={() => {
                 setInfoSearchModal({ ...infoSearchModal, show: false });
@@ -133,8 +159,66 @@ export default function Location(props) {
             <Button
               variant="danger"
               onClick={() => {
+                let data = {
+                  option: "Accounts",
+                  value: searchValue,
+                  username: localStorage.getItem("compname"),
+                  SATFromBranch: "N",
+                  SATToBranch: "N",
+                  groupName: "",
+                  groupType: "",
+                };
+                handleCheckInSearch(data).then((response) => {
+                  console.log("fettt baad");
+                  console.log(response);
+
+                  if (response.status == "authorized") {
+                    if (response.flag == 1) {
+                      console.log("fet authorized");
+                      setInfoModal({
+                        show: true,
+                        message: (
+                          <div>
+                            {"You Have Been Checked In With The Account : " +
+                              response.Account}
+                          </div>
+                        ),
+                        flag: 1,
+                        title: response.message,
+                      });
+
+                      // navigate("/invoice");
+                    } else if (response.flag == -1) {
+                      console.log("mano mawjoud l idddd");
+
+                      setInfoModal({
+                        show: true,
+                        flag: -1,
+                        message: (
+                          <div>
+                            There Is No Account Matches Your Search <br></br>{" "}
+                            Please Try a Different Account .
+                          </div>
+                        ),
+                        title: "Empty Account",
+                      });
+                    }
+                  } else if (response.flag == -2) {
+                    setInfoModal({
+                      show: true,
+                      flag: -1,
+                      message: <div>{response.message}</div>,
+                      title: "Error Occured",
+                    });
+                  } else if (response.flag == -3) {
+                    setInfoModal({
+                      show: true,
+                      message: <div>{response.message}</div>,
+                      title: "Error Occured",
+                    });
+                  }
+                });
                 setInfoSearchModal({ ...infoSearchModal, show: false });
-                props.setShowLocation(false);
               }}
             >
               Search
@@ -142,9 +226,12 @@ export default function Location(props) {
           </div>
         </Modal.Footer>
       </Modal>
+
       <Modal
-        show={infoSearchModal.show}
-        onHide={() => setInfoSearchModal({ ...infoSearchModal, show: false })}
+        show={infoSearchShowModal.show}
+        onHide={() =>
+          setInfoSearchShowModal({ ...infoSearchShowModal, show: false })
+        }
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         backdrop="static"
@@ -153,32 +240,25 @@ export default function Location(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            {infoSearchModal.title}
+            {infoSearchShowModal.title}
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>{infoSearchModal.message}</Modal.Body>
+        <Modal.Body>{infoSearchShowModal.message}</Modal.Body>
         <Modal.Footer>
           <div className="flex flex-row w-full justify-around">
             <Button
+              variant="danger"
               onClick={() => {
-                setInfoSearchModal({ ...infoSearchModal, show: false });
+                setInfoSearchShowModal({ ...infoSearchShowModal, show: false });
                 props.setShowLocation(false);
               }}
             >
               Close
             </Button>
-            <Button
-              variant="danger"
-              onClick={() => {
-                setInfoSearchModal({ ...infoSearchModal, show: false });
-                props.setShowLocation(false);
-              }}
-            >
-              Search
-            </Button>
           </div>
         </Modal.Footer>
       </Modal>
+
       {/* {location.latitude && <p>Latitude: {location.latitude}</p>}
       {location.longitude && <p>Longitude: {location.longitude}</p>} */}
     </div>
