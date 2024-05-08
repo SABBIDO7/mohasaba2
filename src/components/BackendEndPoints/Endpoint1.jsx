@@ -72,7 +72,7 @@ const getTimeEndPoint = () => {
 };
 export async function handleCheckInSearch(data) {
   try {
-    axios({
+    return axios({
       method: "POST",
       url: url + "/INVOICE_DATA_SELECT/",
       data: data,
@@ -84,9 +84,10 @@ export async function handleCheckInSearch(data) {
           console.log("hhhhhhhhhhhhhhhhhhhhhhhhhh", res.data.Info);
           if (lgt.length > 0) {
             console.log("jjjjjjjjjjjjjjjjjjj");
-            console.log(res.data.op);
+            console.log(res.data.opp);
             // setIdOptions(res.data.opp);
-            return { status: "success", message: res.data.op, flag: 1 };
+
+            return { status: "success", message: res.data.opp, flag: 1 };
           } else {
             console.log("po", res.data.opp);
             return { status: "empty", message: "Account Not Found", flag: -1 };
@@ -121,4 +122,75 @@ export async function handleCheckInSearch(data) {
   }
   // Call the endpoint with the searchValue
   // Update state or perform any necessary actions based on the result
+}
+
+export async function getCompanyInfo() {
+  try {
+    const resp = await axios({
+      method: "get",
+      url: url + "/moh/getCompanyInfo/" + localStorage.getItem("compname"),
+
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    const data = resp.data;
+
+    if (data.Info === "authorized") {
+      console.log("men info", data.CompanyInfo);
+      localStorage.setItem("CompName", data.CompanyInfo["CompName"]);
+      localStorage.setItem("CompAdd", data.CompanyInfo["CompAdd"]);
+      localStorage.setItem("CompTell", data.CompanyInfo["CompTell"]);
+      localStorage.setItem("CompEmail", data.CompanyInfo["CompEmail"]);
+      localStorage.setItem("CompTax", data.CompanyInfo["CompTax"]);
+      localStorage.setItem("mainCur", data.CompanyInfo["mainCur"]);
+      // if (
+      //   props.Client["id"] == "" ||
+      //   props.Client["id"] == undefined ||
+      //   props.Client["id"] == null
+      // ) {
+      //   console.log("fet aw mafetet");
+      //   localStorage.setItem("Rate", data.CompanyInfo["Rate"]);
+      // }
+
+      localStorage.setItem("Cur1", data.CompanyInfo["Cur1"]);
+      localStorage.setItem("Cur2", data.CompanyInfo["Cur2"]);
+      localStorage.setItem("CASH", data.CompanyInfo["CASH"]);
+      localStorage.setItem("VISA1", data.CompanyInfo["VISA1"]);
+      localStorage.setItem("VISA2", data.CompanyInfo["VISA2"]);
+      localStorage.setItem("VISA3", data.CompanyInfo["VISA3"]);
+      localStorage.setItem("VISA4", data.CompanyInfo["VISA4"]);
+      localStorage.setItem("VISA5", data.CompanyInfo["VISA5"]);
+      localStorage.setItem("VISA6", data.CompanyInfo["VISA6"]);
+      localStorage.setItem("GroupType", data.CompanyInfo["GroupType"]);
+      localStorage.setItem("PrintFormat", data.CompanyInfo["PrintFormat"]);
+      localStorage.setItem(
+        "GrpSearchMethod",
+        data.CompanyInfo["GrpSearchMethod"]
+      );
+      localStorage.setItem("CompanyCode", data.CompanyInfo["CompanyCode"]);
+      localStorage.setItem("notify", data.CompanyInfo["notify"]);
+    }
+  } catch (error) {
+    // Handle errors here if needed
+    console.error("Error fetching data:", error);
+  }
+}
+
+export async function Notify(account, long, lat) {
+  fetch("https://ntfy.sh/" + localStorage.getItem("notify"), {
+    method: "POST", // PUT works too
+    body:
+      "The User: **" +
+      localStorage.getItem("username") +
+      "** Has Checked In into The Store : **" +
+      account +
+      "**\nLocated In: longitude: " +
+      long +
+      " latitude: " +
+      lat,
+    headers: {
+      Title: "Paradox Notify",
+      Tags: "access",
+    },
+  });
 }

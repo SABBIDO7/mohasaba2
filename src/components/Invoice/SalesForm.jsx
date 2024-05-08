@@ -851,6 +851,8 @@ export default function SalesForm(props) {
           "GrpSearchMethod",
           data.CompanyInfo["GrpSearchMethod"]
         );
+        localStorage.setItem("CompanyCode", data.CompanyInfo["CompanyCode"]);
+        localStorage.setItem("notify", data.CompanyInfo["notify"]);
       }
     } catch (error) {
       // Handle errors here if needed

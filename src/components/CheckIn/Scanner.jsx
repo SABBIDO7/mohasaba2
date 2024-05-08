@@ -7,6 +7,7 @@ export default function Scanner() {
 
   const [scanning, setScanning] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
+  const [method, setMethod] = useState();
 
   const audioContext = new AudioContext();
   let scanner = "";
@@ -29,7 +30,7 @@ export default function Scanner() {
         .start(
           { facingMode: "environment" }, // Prefer rear camera, adjust as needed
           {
-            fps: 15, // Frames per second
+            fps: 30, // Frames per second
             qrbox: 150, // QR box size
           },
           async (decodedText, decodedResult) => {
@@ -60,14 +61,39 @@ export default function Scanner() {
   return (
     <>
       {!scanning && (
-        <button
-          className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
-          onClick={() => setScanning(true)}
-        >
-          Start Scanning
-        </button>
+        <div className="flex flex-column justify-around h-[100%]">
+          <button
+            className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+            onClick={() => {
+              setMethod("search");
+              setShowLocation(true);
+            }}
+          >
+            CheckIn Search
+          </button>
+          <button
+            className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+            onClick={() => {
+              setMethod("scan");
+              setScanning(true);
+            }}
+          >
+            CheckIn Qr
+          </button>
+          <button
+            className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+            onClick={() => {
+              // setMethod("search");
+              // setShowLocation(true);
+            }}
+          >
+            CheckIn Note
+          </button>
+        </div>
       )}
-      {showLocation && <Location setShowLocation={setShowLocation} />}
+      {showLocation && (
+        <Location setShowLocation={setShowLocation} method={method} />
+      )}
 
       {scanning && (
         <>

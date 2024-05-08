@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import Modals from "../Modals/Modals";
 
 import {
   checkInEndPoint,
@@ -22,6 +23,11 @@ export default function Location(props) {
   const [searchValue, setSearchValue] = useState(
     infoSearchModal.accountId || ""
   ); // Default value is infoModal.accountId
+  const [modelsVar, setmodelsVar] = useState("");
+  const [modelsToSetVar, setmodelsToSetVar] = useState("");
+  const [modelsShowPage, setModelsShowPage] = useState(false);
+
+  const modalsChildRef = useRef();
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -34,15 +40,24 @@ export default function Location(props) {
           longitude: position.coords.longitude,
         });
         console.log(position.coords.latitude);
-
-        saveLongLat(position.coords.latitude, position.coords.longitude);
+        if (props.method == "scan") {
+          CheckInSaveLongLat(
+            position.coords.latitude,
+            position.coords.longitude
+          );
+        } else if (props.method == "search") {
+          SearchSaveLongLat(
+            position.coords.latitude,
+            position.coords.longitude
+          );
+        }
       });
     } else {
       console.log("Geolocation is not supported by this browser.");
     }
   }, []);
 
-  const saveLongLat = (lat, long) => {
+  const CheckInSaveLongLat = (lat, long) => {
     localStorage.setItem("longitude", long);
     localStorage.setItem("latitude", lat);
     console.log("Started...");
@@ -81,19 +96,46 @@ export default function Location(props) {
           });
         }
       } else {
-        console.log("fet msh authorized");
-        console.log(response.message);
+        setInfoModal({
+          show: true,
+          message: <div>{response.message}</div>,
+          flag: -1,
+          title: "Error Occured",
+        });
       }
     });
 
     //window.location.href = "/invoice";
+  };
+  const SearchSaveLongLat = (lat, long) => {
+    localStorage.setItem("longitude", long);
+    localStorage.setItem("latitude", lat);
+    setInfoSearchModal({
+      show: true,
+      message: <div>Search By ID, Name, PhoneNumber,Address: </div>,
+      flag: 0,
+      accounntId: "",
+      title: "Search Account",
+    });
+  };
+  const openSearchModel = (message) => {
+    // Update modelsShowPage state directly
+    setModelsShowPage(true);
+    // Pass data directly without setting it in state
+    modalsChildRef.current.setCheckInSeachAccountsShow(true);
+    //  modalsChildRef.current.setShow(true);
+    modalsChildRef.current.setData(message);
+    props.setShowLocation(true);
   };
 
   return (
     <div>
       <Modal
         show={infoModal.show}
-        onHide={() => setInfoModal({ ...infoModal, show: false })}
+        onHide={() => {
+          props.setShowLocation(false);
+          setInfoModal({ ...infoModal, show: false });
+        }}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         backdrop="static"
@@ -171,54 +213,56 @@ export default function Location(props) {
                 handleCheckInSearch(data).then((response) => {
                   console.log("fettt baad");
                   console.log(response);
+                  setInfoSearchModal({ ...infoSearchModal, show: false });
 
-                  if (response.status == "authorized") {
-                    if (response.flag == 1) {
-                      console.log("fet authorized");
-                      setInfoModal({
-                        show: true,
-                        message: (
-                          <div>
-                            {"You Have Been Checked In With The Account : " +
-                              response.Account}
-                          </div>
-                        ),
-                        flag: 1,
-                        title: response.message,
-                      });
+                  if (response.flag == 1) {
+                    //setmodelsVar("checkInSeachAccountsShow");
+                    //setmodelsToSetVar("setCheckInSeachAccountsShow");
+                    console.log("searchhh valueeeeeeeeeee");
+                    console.log(response.message);
+                    // setModelsShowPage({
+                    //   data: response.message,
+                    //   show: true,
+                    //   var: "checkInSeachAccountsShow",
+                    //   varToSet: "setCheckInSeachAccountsShow",
+                    // });
+                    setModelsShowPage(true);
+                    // Pass data directly without setting it in state
+                    modalsChildRef.current.setCheckInSeachAccountsShow(true);
+                    //  modalsChildRef.current.setShow(true);
+                    modalsChildRef.current.setData(response.message);
+                    props.setShowLocation(true);
+                    //openSearchModel(response.message);
+                  } else if (response.flag == -1) {
+                    console.log("mano mawjoud l idddd");
 
-                      // navigate("/invoice");
-                    } else if (response.flag == -1) {
-                      console.log("mano mawjoud l idddd");
-
-                      setInfoModal({
-                        show: true,
-                        flag: -1,
-                        message: (
-                          <div>
-                            There Is No Account Matches Your Search <br></br>{" "}
-                            Please Try a Different Account .
-                          </div>
-                        ),
-                        title: "Empty Account",
-                      });
-                    }
-                  } else if (response.flag == -2) {
                     setInfoModal({
                       show: true,
                       flag: -1,
+                      message: (
+                        <div>
+                          There Is No Account Matches Your Search <br></br>{" "}
+                          Please Try a Different Account .
+                        </div>
+                      ),
+                      title: "Empty Account",
+                    });
+                  } else if (response.flag == -2) {
+                    setInfoModal({
+                      show: true,
+                      flag: -2,
                       message: <div>{response.message}</div>,
                       title: "Error Occured",
                     });
                   } else if (response.flag == -3) {
                     setInfoModal({
                       show: true,
+                      flag: -3,
                       message: <div>{response.message}</div>,
                       title: "Error Occured",
                     });
                   }
                 });
-                setInfoSearchModal({ ...infoSearchModal, show: false });
               }}
             >
               Search
@@ -258,9 +302,16 @@ export default function Location(props) {
           </div>
         </Modal.Footer>
       </Modal>
-
-      {/* {location.latitude && <p>Latitude: {location.latitude}</p>}
-      {location.longitude && <p>Longitude: {location.longitude}</p>} */}
+      {/* <Modals
+        show={modelsShowPage.show}
+        setShow={setModelsShowPage}
+        ref={modalsChildRef}
+        var={modelsShowPage.var}
+        varToSet={modelsShowPage.varToSet}
+        data={modelsShowPage.data}
+        close={props.setShowLocation}
+      /> */}
+      <Modals show={modelsShowPage} setShowLocation={props.setShowLocation} />
     </div>
   );
 }
