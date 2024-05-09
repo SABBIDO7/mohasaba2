@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import Location from "./Location";
+import Modals from "../Modals/Modals";
+
 export default function Scanner() {
   const scannerRef = useRef(null);
   const [scannerVar, setScannerVar] = useState(null); // Store the scanner instance
@@ -8,6 +10,9 @@ export default function Scanner() {
   const [scanning, setScanning] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
   const [method, setMethod] = useState();
+  const [modelsShowPage, setModelsShowPage] = useState(false);
+
+  const modalsChildRef = useRef();
 
   const audioContext = new AudioContext();
   let scanner = "";
@@ -21,6 +26,13 @@ export default function Scanner() {
     u.gain.value = vol * 0.01;
     v.start(audioContext.currentTime);
     v.stop(audioContext.currentTime + duration * 0.001);
+  };
+  const openNoteModel = () => {
+    // Update modelsShowPage state directly
+    setModelsShowPage(true);
+    // Pass data directly without setting it in state
+    modalsChildRef.current.setShowCheckInNoteModal(true);
+    //  modalsChildRef.current.setShow(true);
   };
 
   useEffect(() => {
@@ -83,8 +95,8 @@ export default function Scanner() {
           <button
             className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
             onClick={() => {
-              // setMethod("search");
-              // setShowLocation(true);
+              setMethod("Note");
+              openNoteModel();
             }}
           >
             CheckIn Note
@@ -120,6 +132,12 @@ export default function Scanner() {
           </button>
         </>
       )}
+      <Modals
+        show={modelsShowPage.show}
+        setShow={setModelsShowPage}
+        ref={modalsChildRef}
+        setShowLocation={setShowLocation}
+      />
     </>
   );
 }

@@ -852,7 +852,7 @@ export default function SalesForm(props) {
           data.CompanyInfo["GrpSearchMethod"]
         );
         localStorage.setItem("CompanyCode", data.CompanyInfo["CompanyCode"]);
-        localStorage.setItem("notify", data.CompanyInfo["notify"]);
+        localStorage.setItem("Notify", data.CompanyInfo["Notify"]);
       }
     } catch (error) {
       // Handle errors here if needed

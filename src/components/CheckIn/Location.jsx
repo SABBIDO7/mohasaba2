@@ -7,6 +7,7 @@ import Modals from "../Modals/Modals";
 import {
   checkInEndPoint,
   handleCheckInSearch,
+  Notify,
 } from "../BackendEndPoints/Endpoint1";
 import { info } from "autoprefixer";
 export default function Location(props) {
@@ -40,15 +41,21 @@ export default function Location(props) {
           longitude: position.coords.longitude,
         });
         console.log(position.coords.latitude);
-        if (props.method == "scan") {
+        if (
+          props.method == "scan" ||
+          props.method == "search" ||
+          props.method == "Note"
+        ) {
           CheckInSaveLongLat(
             position.coords.latitude,
-            position.coords.longitude
+            position.coords.longitude,
+            props.method
           );
-        } else if (props.method == "search") {
+        } else if (props.method == "searchAfterScan") {
           SearchSaveLongLat(
             position.coords.latitude,
-            position.coords.longitude
+            position.coords.longitude,
+            props.method
           );
         }
       });
@@ -57,11 +64,11 @@ export default function Location(props) {
     }
   }, []);
 
-  const CheckInSaveLongLat = (lat, long) => {
+  const CheckInSaveLongLat = (lat, long, method) => {
     localStorage.setItem("longitude", long);
     localStorage.setItem("latitude", lat);
     console.log("Started...");
-    checkInEndPoint(long, lat).then((response) => {
+    checkInEndPoint(long, lat, method).then((response) => {
       console.log("fettt baad");
       console.log(response);
 
@@ -79,6 +86,7 @@ export default function Location(props) {
             flag: 1,
             title: response.message,
           });
+          Notify(response.Account, long, lat);
 
           // navigate("/invoice");
         } else if (response.flag == 0) {
@@ -118,6 +126,7 @@ export default function Location(props) {
       title: "Search Account",
     });
   };
+
   const openSearchModel = (message) => {
     // Update modelsShowPage state directly
     setModelsShowPage(true);
@@ -125,7 +134,6 @@ export default function Location(props) {
     modalsChildRef.current.setCheckInSeachAccountsShow(true);
     //  modalsChildRef.current.setShow(true);
     modalsChildRef.current.setData(message);
-    props.setShowLocation(true);
   };
 
   return (
@@ -164,7 +172,10 @@ export default function Location(props) {
       </Modal>
       <Modal
         show={infoSearchModal.show}
-        onHide={() => setInfoSearchModal({ ...infoSearchModal, show: false })}
+        onHide={() => {
+          props.setShowLocation(false);
+          setInfoSearchModal({ ...infoSearchModal, show: false });
+        }}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         backdrop="static"
@@ -177,11 +188,12 @@ export default function Location(props) {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="flex flex-column justify-between">
-            <div>{infoSearchModal.message}</div>
-            <div>
+          <div className="flex flex-column justify-between justify-center">
+            <div className="flex justify-center">{infoSearchModal.message}</div>
+            <div className="flex justify-center">
               <input
                 type="text"
+                className="text-lg font-semibold block rounded-md  h-[3rem] border border-secondd bg-white px-4 py-2 focus:outline-none focus:border-secondd focus:ring-1 focus:ring-secondd text-lg w-[50%]"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
               />
@@ -227,12 +239,8 @@ export default function Location(props) {
                     //   varToSet: "setCheckInSeachAccountsShow",
                     // });
                     setModelsShowPage(true);
-                    // Pass data directly without setting it in state
-                    modalsChildRef.current.setCheckInSeachAccountsShow(true);
-                    //  modalsChildRef.current.setShow(true);
-                    modalsChildRef.current.setData(response.message);
-                    props.setShowLocation(true);
-                    //openSearchModel(response.message);
+
+                    openSearchModel(response.message);
                   } else if (response.flag == -1) {
                     console.log("mano mawjoud l idddd");
 
@@ -302,16 +310,15 @@ export default function Location(props) {
           </div>
         </Modal.Footer>
       </Modal>
-      {/* <Modals
+      <Modals
         show={modelsShowPage.show}
         setShow={setModelsShowPage}
         ref={modalsChildRef}
         var={modelsShowPage.var}
         varToSet={modelsShowPage.varToSet}
         data={modelsShowPage.data}
-        close={props.setShowLocation}
-      /> */}
-      <Modals show={modelsShowPage} setShowLocation={props.setShowLocation} />
+        setShowLocation={props.setShowLocation}
+      />
     </div>
   );
 }

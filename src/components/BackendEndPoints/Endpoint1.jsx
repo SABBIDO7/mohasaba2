@@ -5,20 +5,40 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 const url = "http://localhost:8000";
 //const url = "https://pssapi.net:444";
-export async function checkInEndPoint(long, lat) {
+export async function checkInEndPoint(long, lat, method) {
   console.log("Calling from endpoint");
+  console.log("mehod", method);
   const [date, time] = getTimeEndPoint();
-  let data = {
-    type: "CHK_AP",
-    compname: localStorage.getItem("compname"),
-    username: localStorage.getItem("username"),
-    accno: localStorage.getItem("ScannedAccountId"),
-    long: long,
-    lat: lat,
-    accDate: date,
-    accTime: time,
-  };
+  let data = {};
+  if (method == "Note") {
+    data = {
+      method: method,
+      type: "CHK_AP",
+      compname: localStorage.getItem("compname"),
+      username: localStorage.getItem("username"),
+      accno: "",
 
+      Note: localStorage.getItem("ScannedAccountId"),
+      long: long,
+      lat: lat,
+      accDate: date,
+      accTime: time,
+    };
+  } else {
+    data = {
+      method: method,
+
+      type: "CHK_AP",
+      compname: localStorage.getItem("compname"),
+      username: localStorage.getItem("username"),
+      accno: localStorage.getItem("ScannedAccountId"),
+      Note: "",
+      long: long,
+      lat: lat,
+      accDate: date,
+      accTime: time,
+    };
+  }
   console.log("dataaaaa", data);
 
   try {
@@ -168,7 +188,7 @@ export async function getCompanyInfo() {
         data.CompanyInfo["GrpSearchMethod"]
       );
       localStorage.setItem("CompanyCode", data.CompanyInfo["CompanyCode"]);
-      localStorage.setItem("notify", data.CompanyInfo["notify"]);
+      localStorage.setItem("Notify", data.CompanyInfo["Notify"]);
     }
   } catch (error) {
     // Handle errors here if needed
@@ -177,20 +197,28 @@ export async function getCompanyInfo() {
 }
 
 export async function Notify(account, long, lat) {
-  fetch("https://ntfy.sh/" + localStorage.getItem("notify"), {
+  console.log("Notifyyyyy");
+  //let locationUrl = "https://www.google.com/maps/?q=" + lat + "," + long;
+  let message =
+    "The User: " +
+    localStorage.getItem("username") +
+    " Has Checked In into The Store : " +
+    account +
+    "\nLocated In: lat : " +
+    lat +
+    " long :" +
+    long;
+  // let actions = `view, Open Maps, https://www.google.com/maps/?q=${lat},${long}`;
+  // console.log(actions);
+  console.log(message);
+  console.log(localStorage.getItem("Notify"));
+  fetch("https://ntfy.sh/" + localStorage.getItem("Notify"), {
     method: "POST", // PUT works too
-    body:
-      "The User: **" +
-      localStorage.getItem("username") +
-      "** Has Checked In into The Store : **" +
-      account +
-      "**\nLocated In: longitude: " +
-      long +
-      " latitude: " +
-      lat,
+    body: message,
     headers: {
       Title: "Paradox Notify",
-      Tags: "access",
+      //Tags: "open Google Maps",
+      //  Actions: actions,
     },
   });
 }

@@ -6,16 +6,45 @@ import React, {
 } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import Location from "../CheckIn/Location";
+import { faEdit, faSave, faLock } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import {
+  checkInEndPoint,
+  handleCheckInSearch,
+  Notify,
+} from "../BackendEndPoints/Endpoint1";
 const Modals = forwardRef((props, ref) => {
   const [checkInSeachAccountsShow, setCheckInSeachAccountsShow] =
     useState(false);
   const [data, setData] = useState([]);
+  const [showLocation, setShowLocation] = useState(false);
+  const [showCheckInNoteModal, setShowCheckInNoteModal] = useState(false);
+  const [checkInNoteInput, setCheckInNoteInput] = useState();
+  const [method, setMethod] = useState();
   useImperativeHandle(ref, () => ({
     setCheckInSeachAccountsShow, // Expose the function via ref
     setData,
+    setShowCheckInNoteModal,
   }));
 
   useEffect(() => {});
+  const checkInFromSeach = (accountId) => {
+    setMethod("search");
+
+    localStorage.setItem("ScannedAccountId", accountId);
+    setShowLocation(true);
+  };
+
+  const checkInFromNote = () => {
+    setMethod("Note");
+
+    setShowCheckInNoteModal(false);
+    localStorage.setItem("ScannedAccountId", checkInNoteInput);
+    setCheckInNoteInput();
+    setShowLocation(true);
+  };
 
   return (
     <>
@@ -42,6 +71,8 @@ const Modals = forwardRef((props, ref) => {
                   key={idx}
                   className="bg-secondd text-BgTextColor shadow-sm p-2 rounded my-2"
                   onClick={(e) => {
+                    checkInFromSeach(io["AccNo"]);
+                    setCheckInSeachAccountsShow(false);
                     // console.log(io);
                     // props.setchangingAccountInvoiceFromDB(props.Client.RefNo);
                     // selectHandler(io, idx);
@@ -106,6 +137,59 @@ const Modals = forwardRef((props, ref) => {
         {/* <Modal.Footer>
                     <Button onClick={() => setModalShow(false)}>Close</Button>
                 </Modal.Footer> */}
+      </Modal>
+
+      {showLocation && (
+        <Location setShowLocation={setShowLocation} method={method} />
+      )}
+
+      <Modal
+        show={showCheckInNoteModal}
+        onHide={() => {
+          setShowCheckInNoteModal(false);
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Account Note (30 characters)</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <textarea
+            value={checkInNoteInput}
+            onChange={(e) => {
+              if (e.target.value.length <= 30) {
+                setCheckInNoteInput(e.target.value);
+              }
+            }}
+            className="form-control"
+            rows={5}
+          />
+        </Modal.Body>
+        <Modal.Footer className="flex  justify-between">
+          <div className="flex flex-row justify-between w-[100%]">
+            <div>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowCheckInNoteModal(false);
+                }}
+              >
+                Close
+              </Button>
+            </div>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setCheckInNoteInput("");
+              }}
+            >
+              Clear
+            </Button>
+            <Button variant="primary" onClick={checkInFromNote}>
+              <FontAwesomeIcon icon={faSave} className="mr-2" />
+              Save
+            </Button>
+          </div>
+        </Modal.Footer>
       </Modal>
     </>
   );
