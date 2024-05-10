@@ -17,12 +17,12 @@ import "../../index.css"; // Import the CSS file
 import ItemStockDetails from "./ItemStockDetails";
 
 export default function SalesForm(props) {
-  const [vInput, setvInput] = useState(
-    localStorage.getItem("ScannedAccountId") != undefined
-      ? localStorage.getItem("ScannedAccountId")
-      : ""
-  );
-
+  // const [vInput, setvInput] = useState(
+  //   localStorage.getItem("ScannedAccountId") != undefined
+  //     ? localStorage.getItem("ScannedAccountId")
+  //     : ""
+  // );
+  const [vInput, setvInput] = useState();
   const [sOption, setsOption] = useState("Accounts");
 
   //idselect modal props

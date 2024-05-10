@@ -32,18 +32,21 @@ const Modals = forwardRef((props, ref) => {
   useEffect(() => {});
   const checkInFromSeach = (accountId) => {
     setMethod("search");
+    setCheckInSeachAccountsShow(false);
+    setData([]);
 
     localStorage.setItem("ScannedAccountId", accountId);
+
     setShowLocation(true);
   };
 
   const checkInFromNote = () => {
     setMethod("Note");
-
+    setData([]);
     setShowCheckInNoteModal(false);
     localStorage.setItem("ScannedAccountId", checkInNoteInput);
     setCheckInNoteInput();
-    setShowLocation(true);
+    props.setShowLocation(true);
   };
 
   return (
@@ -51,8 +54,9 @@ const Modals = forwardRef((props, ref) => {
       <Modal
         show={checkInSeachAccountsShow}
         onHide={() => {
+          props.setShowLocation(true);
           setCheckInSeachAccountsShow(false);
-          props.setShowLocation(false);
+          setData([]);
         }}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
@@ -72,7 +76,7 @@ const Modals = forwardRef((props, ref) => {
                   className="bg-secondd text-BgTextColor shadow-sm p-2 rounded my-2"
                   onClick={(e) => {
                     checkInFromSeach(io["AccNo"]);
-                    setCheckInSeachAccountsShow(false);
+
                     // console.log(io);
                     // props.setchangingAccountInvoiceFromDB(props.Client.RefNo);
                     // selectHandler(io, idx);

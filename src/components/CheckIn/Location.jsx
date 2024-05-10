@@ -21,9 +21,10 @@ export default function Location(props) {
     show: false,
   });
 
-  const [searchValue, setSearchValue] = useState(
-    infoSearchModal.accountId || ""
-  ); // Default value is infoModal.accountId
+  // const [searchValue, setSearchValue] = useState(
+  //   infoSearchModal.accountId || ""
+  // ); // Default value is infoModal.accountId
+  const [searchValue, setSearchValue] = useState("");
   const [modelsVar, setmodelsVar] = useState("");
   const [modelsToSetVar, setmodelsToSetVar] = useState("");
   const [modelsShowPage, setModelsShowPage] = useState(false);
@@ -33,34 +34,51 @@ export default function Location(props) {
   const navigate = useNavigate();
   useEffect(() => {
     console.log("an abkl useeffect location");
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log("Started");
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
+    console.log(props.method);
+    try {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          console.log("Started");
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          console.log(position.coords.latitude);
+          if (
+            props.method == "scan" ||
+            props.method == "search" ||
+            props.method == "Note"
+          ) {
+            CheckInSaveLongLat(
+              position.coords.latitude,
+              position.coords.longitude,
+              props.method
+            );
+          } else if (props.method == "showSearchInput") {
+            console.log("erch guid");
+            SearchSaveLongLat(
+              position.coords.latitude,
+              position.coords.longitude,
+              props.method
+            );
+          }
         });
-        console.log(position.coords.latitude);
-        if (
-          props.method == "scan" ||
-          props.method == "search" ||
-          props.method == "Note"
-        ) {
-          CheckInSaveLongLat(
-            position.coords.latitude,
-            position.coords.longitude,
-            props.method
-          );
-        } else if (props.method == "searchAfterScan") {
-          SearchSaveLongLat(
-            position.coords.latitude,
-            position.coords.longitude,
-            props.method
-          );
-        }
+      } else {
+        setInfoModal({
+          show: true,
+          message: <div>{"Geolocation is not supported by this browser."}</div>,
+          flag: 1,
+          title: "Error Occured",
+        });
+        console.log("Geolocation is not supported by this browser.");
+      }
+    } catch (e) {
+      setInfoModal({
+        show: true,
+        message: <div>{"Error No : " + e}</div>,
+        flag: 1,
+        title: "Error Occured",
       });
-    } else {
-      console.log("Geolocation is not supported by this browser.");
     }
   }, []);
 
@@ -91,7 +109,7 @@ export default function Location(props) {
           // navigate("/invoice");
         } else if (response.flag == 0) {
           console.log("mano mawjoud l idddd");
-          setSearchValue(response.Account);
+          // setSearchValue(response.Account);
 
           setInfoSearchModal({
             show: true,
@@ -141,8 +159,8 @@ export default function Location(props) {
       <Modal
         show={infoModal.show}
         onHide={() => {
-          props.setShowLocation(false);
           setInfoModal({ ...infoModal, show: false });
+          props.setShowLocation(false);
         }}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
@@ -173,8 +191,8 @@ export default function Location(props) {
       <Modal
         show={infoSearchModal.show}
         onHide={() => {
-          props.setShowLocation(false);
           setInfoSearchModal({ ...infoSearchModal, show: false });
+          props.setShowLocation(false);
         }}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
@@ -193,6 +211,7 @@ export default function Location(props) {
             <div className="flex justify-center">
               <input
                 type="text"
+                placeholder="Search Value"
                 className="text-lg font-semibold block rounded-md  h-[3rem] border border-secondd bg-white px-4 py-2 focus:outline-none focus:border-secondd focus:ring-1 focus:ring-secondd text-lg w-[50%]"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
@@ -228,18 +247,6 @@ export default function Location(props) {
                   setInfoSearchModal({ ...infoSearchModal, show: false });
 
                   if (response.flag == 1) {
-                    //setmodelsVar("checkInSeachAccountsShow");
-                    //setmodelsToSetVar("setCheckInSeachAccountsShow");
-                    console.log("searchhh valueeeeeeeeeee");
-                    console.log(response.message);
-                    // setModelsShowPage({
-                    //   data: response.message,
-                    //   show: true,
-                    //   var: "checkInSeachAccountsShow",
-                    //   varToSet: "setCheckInSeachAccountsShow",
-                    // });
-                    setModelsShowPage(true);
-
                     openSearchModel(response.message);
                   } else if (response.flag == -1) {
                     console.log("mano mawjoud l idddd");

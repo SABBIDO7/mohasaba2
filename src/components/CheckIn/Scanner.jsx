@@ -50,7 +50,7 @@ export default function Scanner() {
             beep(100, 520, 200); // Beep sound
             localStorage.setItem("ScannedAccountId", decodedText);
             setScanning(false);
-
+            setMethod("scan");
             setShowLocation(true); // Show the Location component
             scanner.stop();
             console.log("ddddff");
@@ -77,7 +77,11 @@ export default function Scanner() {
           <button
             className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
             onClick={() => {
-              setMethod("search");
+              setModelsShowPage(true);
+              setShowLocation(false);
+              setMethod("showSearchInput");
+              console.log("kabas search");
+              console.log(showLocation);
               setShowLocation(true);
             }}
           >

@@ -3,8 +3,8 @@ import axios from "axios";
 import "../../index.css"; // Import the CSS file
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-const url = "http://localhost:8000";
-//const url = "https://pssapi.net:444";
+//const url = "http://localhost:8000";
+const url = "https://pssapi.net:444";
 export async function checkInEndPoint(long, lat, method) {
   console.log("Calling from endpoint");
   console.log("mehod", method);
@@ -200,13 +200,12 @@ export async function Notify(account, long, lat) {
   console.log("Notifyyyyy");
   //let locationUrl = "https://www.google.com/maps/?q=" + lat + "," + long;
   let message =
-    "The User: " +
     localStorage.getItem("username") +
     " Has Checked In into The Store : " +
     account +
-    "\nLocated In: lat : " +
+    "\nLocated In: " +
     lat +
-    " long :" +
+    " , " +
     long;
   // let actions = `view, Open Maps, https://www.google.com/maps/?q=${lat},${long}`;
   // console.log(actions);

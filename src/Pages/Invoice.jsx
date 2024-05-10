@@ -52,7 +52,9 @@ export default function Invoice(props) {
   const [modalItems, setModalItems] = useState(false);
   const [modalVoucher, setModalVoucher] = useState(false);
   const [saveNewFlag, setsaveNewFlag] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(
+    localStorage.getItem("CompanyCode")
+  );
   const [ErrorInvoiceModel, setErrorInvoiceModel] = useState(false);
   // function sInvoiceHandler(e) {
   //   setSInvoice(e);
@@ -431,7 +433,9 @@ export default function Invoice(props) {
               </Modal.Header>
               <Modal.Body>
                 <div>{saveWhatsAppModel.message}</div>
-                <div style={{ fontStyle: "italic" }}>Ex:+961xxxxxx</div>
+                <div style={{ fontStyle: "italic" }}>
+                  Ex:+{localStorage.getItem("CompanyCode")}+xxxxxx
+                </div>
                 <input
                   type="text"
                   className="form-control"
