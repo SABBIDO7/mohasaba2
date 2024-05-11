@@ -22,14 +22,22 @@ const Modals = forwardRef((props, ref) => {
   const [showLocation, setShowLocation] = useState(false);
   const [showCheckInNoteModal, setShowCheckInNoteModal] = useState(false);
   const [checkInNoteInput, setCheckInNoteInput] = useState();
+  const [infoModal, setInfoModal] = useState({ show: false });
+  const [infoSearchModal, setInfoSearchModal] = useState({ show: false });
+  const [searchCheckInValue, setSearchCheckInValue] = useState("");
+
   const [method, setMethod] = useState();
   useImperativeHandle(ref, () => ({
     setCheckInSeachAccountsShow, // Expose the function via ref
     setData,
     setShowCheckInNoteModal,
+    setInfoModal,
+    setInfoSearchModal,
   }));
 
-  useEffect(() => {});
+  useEffect(() => {
+    console.log("ANA BL MODEL");
+  });
   const checkInFromSeach = (accountId) => {
     setMethod("search");
     setCheckInSeachAccountsShow(false);
@@ -37,7 +45,7 @@ const Modals = forwardRef((props, ref) => {
 
     localStorage.setItem("ScannedAccountId", accountId);
 
-    setShowLocation(true);
+    props.setShowLocation(true);
   };
 
   const checkInFromNote = () => {
@@ -47,6 +55,14 @@ const Modals = forwardRef((props, ref) => {
     localStorage.setItem("ScannedAccountId", checkInNoteInput);
     setCheckInNoteInput();
     props.setShowLocation(true);
+  };
+
+  const openCheckInSearchModel = (message) => {
+    // Update modelsShowPage state directly
+    // Pass data directly without setting it in state
+    setCheckInSeachAccountsShow(true);
+    //  modalsChildRef.current.setShow(true);
+    setData(message);
   };
 
   return (
@@ -143,9 +159,9 @@ const Modals = forwardRef((props, ref) => {
                 </Modal.Footer> */}
       </Modal>
 
-      {showLocation && (
+      {/* {showLocation && (
         <Location setShowLocation={setShowLocation} method={method} />
-      )}
+      )} */}
 
       <Modal
         show={showCheckInNoteModal}
@@ -191,6 +207,136 @@ const Modals = forwardRef((props, ref) => {
             <Button variant="primary" onClick={checkInFromNote}>
               <FontAwesomeIcon icon={faSave} className="mr-2" />
               Save
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={infoModal.show}
+        onHide={() => {
+          setInfoModal({ ...infoModal, show: false });
+          props.setShowLocation(false);
+        }}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {infoModal.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{infoModal.message}</Modal.Body>
+        <Modal.Footer>
+          <div className="flex flex-row w-full justify-around">
+            <Button
+              variant="danger"
+              onClick={() => {
+                setInfoModal({ ...infoModal, show: false });
+                props.setModelsShowPage(false);
+                props.setShowLocation(false);
+              }}
+            >
+              Ok
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={infoSearchModal.show}
+        onHide={() => {
+          setInfoSearchModal({ ...infoSearchModal, show: false });
+          props.setShowLocation(false);
+        }}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {infoSearchModal.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="flex flex-column justify-between justify-center">
+            <div className="flex justify-center">{infoSearchModal.message}</div>
+            <div className="flex justify-center">
+              <input
+                type="text"
+                placeholder="Search Value"
+                className="text-lg font-semibold block rounded-md  h-[3rem] border border-secondd bg-white px-4 py-2 focus:outline-none focus:border-secondd focus:ring-1 focus:ring-secondd text-lg w-[50%]"
+                value={searchCheckInValue}
+                onChange={(e) => setSearchCheckInValue(e.target.value)}
+              />
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="flex flex-row w-full justify-between">
+            <Button
+              onClick={() => {
+                setInfoSearchModal({ ...infoSearchModal, show: false });
+                props.setShowLocation(false);
+              }}
+            >
+              Close
+            </Button>
+            <Button
+              variant="danger"
+              onClick={() => {
+                let data = {
+                  option: "Accounts",
+                  value: searchCheckInValue,
+                  username: localStorage.getItem("compname"),
+                  SATFromBranch: "N",
+                  SATToBranch: "N",
+                  groupName: "",
+                  groupType: "",
+                };
+                handleCheckInSearch(data).then((response) => {
+                  console.log("fettt baad");
+                  console.log(response);
+                  setInfoSearchModal({ ...infoSearchModal, show: false });
+
+                  if (response.flag == 1) {
+                    openCheckInSearchModel(response.message);
+                  } else if (response.flag == -1) {
+                    console.log("mano mawjoud l idddd");
+
+                    setInfoModal({
+                      show: true,
+                      flag: -1,
+                      message: (
+                        <div>
+                          There Is No Account Matches Your Search <br></br>{" "}
+                          Please Try a Different Account .
+                        </div>
+                      ),
+                      title: "Empty Account",
+                    });
+                  } else if (response.flag == -2) {
+                    setInfoModal({
+                      show: true,
+                      flag: -2,
+                      message: <div>{response.message}</div>,
+                      title: "Error Occured",
+                    });
+                  } else if (response.flag == -3) {
+                    setInfoModal({
+                      show: true,
+                      flag: -3,
+                      message: <div>{response.message}</div>,
+                      title: "Error Occured",
+                    });
+                  }
+                });
+              }}
+            >
+              Search
             </Button>
           </div>
         </Modal.Footer>

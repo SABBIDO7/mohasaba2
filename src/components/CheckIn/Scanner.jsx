@@ -77,8 +77,6 @@ export default function Scanner() {
           <button
             className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
             onClick={() => {
-              setModelsShowPage(true);
-              setShowLocation(false);
               setMethod("showSearchInput");
               console.log("kabas search");
               console.log(showLocation);

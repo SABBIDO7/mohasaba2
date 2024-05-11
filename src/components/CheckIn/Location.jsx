@@ -15,7 +15,6 @@ export default function Location(props) {
     latitude: null,
     longitude: null,
   });
-  const [infoModal, setInfoModal] = useState({ show: false });
   const [infoSearchModal, setInfoSearchModal] = useState({ show: false });
   const [infoSearchShowModal, setInfoSearchShowModal] = useState({
     show: false,
@@ -24,7 +23,6 @@ export default function Location(props) {
   // const [searchValue, setSearchValue] = useState(
   //   infoSearchModal.accountId || ""
   // ); // Default value is infoModal.accountId
-  const [searchValue, setSearchValue] = useState("");
   const [modelsVar, setmodelsVar] = useState("");
   const [modelsToSetVar, setmodelsToSetVar] = useState("");
   const [modelsShowPage, setModelsShowPage] = useState(false);
@@ -64,7 +62,7 @@ export default function Location(props) {
           }
         });
       } else {
-        setInfoModal({
+        modalsChildRef.current.setInfoModal({
           show: true,
           message: <div>{"Geolocation is not supported by this browser."}</div>,
           flag: 1,
@@ -73,7 +71,7 @@ export default function Location(props) {
         console.log("Geolocation is not supported by this browser.");
       }
     } catch (e) {
-      setInfoModal({
+      modalsChildRef.current.setInfoModal({
         show: true,
         message: <div>{"Error No : " + e}</div>,
         flag: 1,
@@ -93,7 +91,9 @@ export default function Location(props) {
       if (response.status == "authorized") {
         if (response.flag == 1) {
           console.log("fet authorized");
-          setInfoModal({
+          setModelsShowPage(true);
+          // Pass data directly without setting it in state
+          modalsChildRef.current.setInfoModal({
             show: true,
             message: (
               <div>
@@ -122,7 +122,7 @@ export default function Location(props) {
           });
         }
       } else {
-        setInfoModal({
+        modalsChildRef.current.setInfoModal({
           show: true,
           message: <div>{response.message}</div>,
           flag: -1,
@@ -136,7 +136,8 @@ export default function Location(props) {
   const SearchSaveLongLat = (lat, long) => {
     localStorage.setItem("longitude", long);
     localStorage.setItem("latitude", lat);
-    setInfoSearchModal({
+    setModelsShowPage(true);
+    modalsChildRef.current.setInfoSearchModal({
       show: true,
       message: <div>Search By ID, Name, PhoneNumber,Address: </div>,
       flag: 0,
@@ -145,147 +146,8 @@ export default function Location(props) {
     });
   };
 
-  const openSearchModel = (message) => {
-    // Update modelsShowPage state directly
-    setModelsShowPage(true);
-    // Pass data directly without setting it in state
-    modalsChildRef.current.setCheckInSeachAccountsShow(true);
-    //  modalsChildRef.current.setShow(true);
-    modalsChildRef.current.setData(message);
-  };
-
   return (
     <div>
-      <Modal
-        show={infoModal.show}
-        onHide={() => {
-          setInfoModal({ ...infoModal, show: false });
-          props.setShowLocation(false);
-        }}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        backdrop="static"
-        keyboard={false}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            {infoModal.title}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{infoModal.message}</Modal.Body>
-        <Modal.Footer>
-          <div className="flex flex-row w-full justify-around">
-            <Button
-              variant="danger"
-              onClick={() => {
-                setInfoModal({ ...infoModal, show: false });
-                props.setShowLocation(false);
-              }}
-            >
-              Ok
-            </Button>
-          </div>
-        </Modal.Footer>
-      </Modal>
-      <Modal
-        show={infoSearchModal.show}
-        onHide={() => {
-          setInfoSearchModal({ ...infoSearchModal, show: false });
-          props.setShowLocation(false);
-        }}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        backdrop="static"
-        keyboard={false}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            {infoSearchModal.title}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="flex flex-column justify-between justify-center">
-            <div className="flex justify-center">{infoSearchModal.message}</div>
-            <div className="flex justify-center">
-              <input
-                type="text"
-                placeholder="Search Value"
-                className="text-lg font-semibold block rounded-md  h-[3rem] border border-secondd bg-white px-4 py-2 focus:outline-none focus:border-secondd focus:ring-1 focus:ring-secondd text-lg w-[50%]"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <div className="flex flex-row w-full justify-between">
-            <Button
-              onClick={() => {
-                setInfoSearchModal({ ...infoSearchModal, show: false });
-                props.setShowLocation(false);
-              }}
-            >
-              Close
-            </Button>
-            <Button
-              variant="danger"
-              onClick={() => {
-                let data = {
-                  option: "Accounts",
-                  value: searchValue,
-                  username: localStorage.getItem("compname"),
-                  SATFromBranch: "N",
-                  SATToBranch: "N",
-                  groupName: "",
-                  groupType: "",
-                };
-                handleCheckInSearch(data).then((response) => {
-                  console.log("fettt baad");
-                  console.log(response);
-                  setInfoSearchModal({ ...infoSearchModal, show: false });
-
-                  if (response.flag == 1) {
-                    openSearchModel(response.message);
-                  } else if (response.flag == -1) {
-                    console.log("mano mawjoud l idddd");
-
-                    setInfoModal({
-                      show: true,
-                      flag: -1,
-                      message: (
-                        <div>
-                          There Is No Account Matches Your Search <br></br>{" "}
-                          Please Try a Different Account .
-                        </div>
-                      ),
-                      title: "Empty Account",
-                    });
-                  } else if (response.flag == -2) {
-                    setInfoModal({
-                      show: true,
-                      flag: -2,
-                      message: <div>{response.message}</div>,
-                      title: "Error Occured",
-                    });
-                  } else if (response.flag == -3) {
-                    setInfoModal({
-                      show: true,
-                      flag: -3,
-                      message: <div>{response.message}</div>,
-                      title: "Error Occured",
-                    });
-                  }
-                });
-              }}
-            >
-              Search
-            </Button>
-          </div>
-        </Modal.Footer>
-      </Modal>
-
       <Modal
         show={infoSearchShowModal.show}
         onHide={() =>
