@@ -16,9 +16,6 @@ export default function Location(props) {
     longitude: null,
   });
   const [infoSearchModal, setInfoSearchModal] = useState({ show: false });
-  const [infoSearchShowModal, setInfoSearchShowModal] = useState({
-    show: false,
-  });
 
   // const [searchValue, setSearchValue] = useState(
   //   infoSearchModal.accountId || ""
@@ -78,7 +75,7 @@ export default function Location(props) {
         title: "Error Occured",
       });
     }
-  }, []);
+  }, [props.method]);
 
   const CheckInSaveLongLat = (lat, long, method) => {
     localStorage.setItem("longitude", long);
@@ -105,13 +102,13 @@ export default function Location(props) {
             title: response.message,
           });
           Notify(response.Account, long, lat);
-
           // navigate("/invoice");
         } else if (response.flag == 0) {
           console.log("mano mawjoud l idddd");
-          // setSearchValue(response.Account);
+          setModelsShowPage(true);
 
-          setInfoSearchModal({
+          // setSearchValue(response.Account);
+          modalsChildRef.current.setInfoSearchModal({
             show: true,
             message: (
               <div>{"No Account Found with ID:" + response.Account}</div>
@@ -122,6 +119,8 @@ export default function Location(props) {
           });
         }
       } else {
+        setModelsShowPage(true);
+
         modalsChildRef.current.setInfoModal({
           show: true,
           message: <div>{response.message}</div>,
@@ -148,45 +147,16 @@ export default function Location(props) {
 
   return (
     <div>
-      <Modal
-        show={infoSearchShowModal.show}
-        onHide={() =>
-          setInfoSearchShowModal({ ...infoSearchShowModal, show: false })
-        }
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        backdrop="static"
-        keyboard={false}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            {infoSearchShowModal.title}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{infoSearchShowModal.message}</Modal.Body>
-        <Modal.Footer>
-          <div className="flex flex-row w-full justify-around">
-            <Button
-              variant="danger"
-              onClick={() => {
-                setInfoSearchShowModal({ ...infoSearchShowModal, show: false });
-                props.setShowLocation(false);
-              }}
-            >
-              Close
-            </Button>
-          </div>
-        </Modal.Footer>
-      </Modal>
       <Modals
-        show={modelsShowPage.show}
-        setShow={setModelsShowPage}
+        modelsShowPage={modelsShowPage.show}
+        setModelsShowPage={setModelsShowPage}
         ref={modalsChildRef}
         var={modelsShowPage.var}
         varToSet={modelsShowPage.varToSet}
         data={modelsShowPage.data}
         setShowLocation={props.setShowLocation}
+        setMethod={props.setMethod}
+        method={props.method}
       />
     </div>
   );

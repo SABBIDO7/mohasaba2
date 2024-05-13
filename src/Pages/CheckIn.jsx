@@ -4,8 +4,13 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import Scanner from "../components/CheckIn/Scanner";
+import CheckInReport from "../components/CheckIn/CheckInReport";
+import { useNavigate } from "react-router-dom";
+
 import { getCompanyInfo } from "../components/BackendEndPoints/Endpoint1";
 export default function CheckIn(props) {
+  const navigate = useNavigate();
+
   useState(() => {
     getCompanyInfo();
   }, []);
@@ -15,8 +20,20 @@ export default function CheckIn(props) {
         <h1>QR Code Scanner</h1>
       </div>
       <div className="flex justify-around flex-grow">
-        <div className="">
-          <Scanner></Scanner>
+        <div className="h-[100%]">
+          <div className="h-1/4 flex items-center justify-center">
+            <button
+              className="bg-secondd text-BgTextColor h-[fit] w-[140px]  p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+              onClick={() => {
+                navigate("/CheckIn/CheckInReport");
+              }}
+            >
+              CheckIn Report
+            </button>
+          </div>
+          <div className="h-3/4">
+            <Scanner></Scanner>
+          </div>
         </div>
       </div>
     </div>

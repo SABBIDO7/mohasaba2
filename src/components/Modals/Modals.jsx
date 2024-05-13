@@ -25,21 +25,27 @@ const Modals = forwardRef((props, ref) => {
   const [infoModal, setInfoModal] = useState({ show: false });
   const [infoSearchModal, setInfoSearchModal] = useState({ show: false });
   const [searchCheckInValue, setSearchCheckInValue] = useState("");
+  const [infoSearchShowModal, setInfoSearchShowModal] = useState({
+    show: false,
+  });
 
-  const [method, setMethod] = useState();
+  //const [method, setMethod] = useState();
   useImperativeHandle(ref, () => ({
     setCheckInSeachAccountsShow, // Expose the function via ref
     setData,
     setShowCheckInNoteModal,
     setInfoModal,
     setInfoSearchModal,
+    setInfoSearchShowModal,
   }));
 
   useEffect(() => {
+    // props.setShowLocation(false);
     console.log("ANA BL MODEL");
   });
   const checkInFromSeach = (accountId) => {
-    setMethod("search");
+    console.log("na2 ACCOUNT");
+    props.setMethod("search");
     setCheckInSeachAccountsShow(false);
     setData([]);
 
@@ -49,7 +55,7 @@ const Modals = forwardRef((props, ref) => {
   };
 
   const checkInFromNote = () => {
-    setMethod("Note");
+    props.setMethod("Note");
     setData([]);
     setShowCheckInNoteModal(false);
     localStorage.setItem("ScannedAccountId", checkInNoteInput);
@@ -70,7 +76,7 @@ const Modals = forwardRef((props, ref) => {
       <Modal
         show={checkInSeachAccountsShow}
         onHide={() => {
-          props.setShowLocation(true);
+          props.setShowLocation(false);
           setCheckInSeachAccountsShow(false);
           setData([]);
         }}
@@ -160,7 +166,7 @@ const Modals = forwardRef((props, ref) => {
       </Modal>
 
       {/* {showLocation && (
-        <Location setShowLocation={setShowLocation} method={method} />
+        <Location setShowLocation={props.setShowLocation} method={method} />
       )} */}
 
       <Modal
@@ -337,6 +343,37 @@ const Modals = forwardRef((props, ref) => {
               }}
             >
               Search
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={infoSearchShowModal.show}
+        onHide={() =>
+          setInfoSearchShowModal({ ...infoSearchShowModal, show: false })
+        }
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {infoSearchShowModal.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{infoSearchShowModal.message}</Modal.Body>
+        <Modal.Footer>
+          <div className="flex flex-row w-full justify-around">
+            <Button
+              variant="danger"
+              onClick={() => {
+                setInfoSearchShowModal({ ...infoSearchShowModal, show: false });
+                props.setShowLocation(false);
+              }}
+            >
+              Close
             </Button>
           </div>
         </Modal.Footer>

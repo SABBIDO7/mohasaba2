@@ -73,40 +73,50 @@ export default function Scanner() {
   return (
     <>
       {!scanning && (
-        <div className="flex flex-column justify-around h-[100%]">
-          <button
-            className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
-            onClick={() => {
-              setMethod("showSearchInput");
-              console.log("kabas search");
-              console.log(showLocation);
-              setShowLocation(true);
-            }}
-          >
-            CheckIn Search
-          </button>
-          <button
-            className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
-            onClick={() => {
-              setMethod("scan");
-              setScanning(true);
-            }}
-          >
-            CheckIn Qr
-          </button>
-          <button
-            className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
-            onClick={() => {
-              setMethod("Note");
-              openNoteModel();
-            }}
-          >
-            CheckIn Note
-          </button>
+        <div className="flex flex-column  justify-center items-center h-[100%]">
+          <div className="h-1/3 flex justify-center items-center">
+            <button
+              className="bg-secondd text-BgTextColor h-[fit] w-[140px]   p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+              onClick={() => {
+                setMethod("showSearchInput");
+                console.log("kabas search");
+                console.log(showLocation);
+                setShowLocation(true);
+              }}
+            >
+              CheckIn Search
+            </button>
+          </div>
+          <div className="h-1/3 flex justify-center items-center">
+            <button
+              className="bg-secondd text-BgTextColor h-[fit] w-[140px] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+              onClick={() => {
+                setMethod("scan");
+                setScanning(true);
+              }}
+            >
+              CheckIn Qr
+            </button>
+          </div>
+          <div className="h-1/3 flex justify-center items-center">
+            <button
+              className="bg-secondd text-BgTextColor h-[fit] w-[140px]  p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+              onClick={() => {
+                setMethod("Note");
+                openNoteModel();
+              }}
+            >
+              CheckIn Note
+            </button>
+          </div>
         </div>
       )}
       {showLocation && (
-        <Location setShowLocation={setShowLocation} method={method} />
+        <Location
+          setShowLocation={setShowLocation}
+          method={method}
+          setMethod={setMethod}
+        />
       )}
 
       {scanning && (
@@ -135,10 +145,12 @@ export default function Scanner() {
         </>
       )}
       <Modals
-        show={modelsShowPage.show}
-        setShow={setModelsShowPage}
+        modelsShowPage={modelsShowPage.show}
+        setModelsShowPage={setModelsShowPage}
         ref={modalsChildRef}
         setShowLocation={setShowLocation}
+        setMethod={setMethod}
+        method={method}
       />
     </>
   );

@@ -329,3 +329,6 @@ th {
   background-color:theme('colors.BgTextColor')!important;
   
 }
+.transparent-button {
+  background-color: transparent !important;
+}

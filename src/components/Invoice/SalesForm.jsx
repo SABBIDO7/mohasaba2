@@ -22,7 +22,7 @@ export default function SalesForm(props) {
   //     ? localStorage.getItem("ScannedAccountId")
   //     : ""
   // );
-  const [vInput, setvInput] = useState();
+  const [vInput, setvInput] = useState("");
   const [sOption, setsOption] = useState("Accounts");
 
   //idselect modal props

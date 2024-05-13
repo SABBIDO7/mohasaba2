@@ -1,0 +1,124 @@
+@app.post("/moh/login/")
+async def login(compname:str = Form() ,username:str = Form(), password:str = Form()):
+           
+    try:
+            conn = mariadb.connect(user="ots", password="Hkms0ft", host=dbHost,port=9988,database = "python")
+    except mariadb.Error as e:       
+            print(f"Error connecting to MariaDB Platform: {e}")  
+            return {"Info":"unauthorized",
+                        "msg":"Internal Error"
+                        }     
+    cur = conn.cursor()
+
+    cur.execute("""select * from users""")
+    userlist = list(cur)
+
+#('paradox', 'hkm', '123', 'owner', 1)
+    for users in userlist:
+            if users[0].upper() == compname.upper() and users[1].upper() == username.upper() and users[2] == password:
+                if str(users[4]) == "N" or str(users[4]) == "n": 
+                    
+                    return{"Info":"unauthorized",
+                            "msg":"Please Check Your Subscription"
+                            }         
+                else:  
+                    uid = uuid.uuid1()
+                    if users[8] == "" or users[8] == None:
+                        Sbranch = "1"
+                    else:
+                        Sbranch = users[8].upper()
+                    if users[9] == "" or users[9] == None:
+                        Abranch = "1"
+                    else:
+                        Abranch = users[9].upper()
+                    if users[10] == ""  or users[10] == None:
+                        SalePrice = 1
+                    else:
+                        SalePrice = users[10]
+                    if users[11] == "" or users[11]==None:
+                        DeleteInvoice="Y"
+                    else:
+                        DeleteInvoice=users[11].upper()
+                    if users[12] == "" or users[12]==None:
+                        DeleteItem="Y"
+                    else:
+                        DeleteItem=users[12].upper()
+                    if users[13] == "" or users[13]==None:
+                        Discount="Y"
+                    else:
+                        Discount=users[13].upper()
+                    if users[14] == "" or users[14]==None:
+                        Price="Y"
+                    else:
+                        Price=users[14].upper()
+                    if users[15] == "" or users[15]==None:
+                        CallInvoice="Y"
+                    else:
+                        CallInvoice=users[15].upper()
+                    if users[16] == "" or users[16]==None:
+                        SalesForm="Y"
+                    else:
+                        SalesForm=users[16].upper()
+                    if users[17] == "" or users[17]==None:
+                        SalesReturnForm="Y"
+                    else:
+                        SalesReturnForm=users[17].upper()
+                    if users[18] == "" or users[18]==None:
+                        OrderForm="Y"
+                    else:
+                        OrderForm=users[18].upper()
+                    if users[19] == "" or users[19]==None:
+                        PurchaseForm="Y"
+                    else:
+                        PurchaseForm=users[19].upper()
+                    if users[20] == "" or users[20]==None:
+                        PurchaseReturnForm="Y"
+                    else:
+                        PurchaseReturnForm=users[20].upper()
+                    if users[21] == "" or users[21]==None:
+                        BranchTransferForm="Y"
+                    else:
+                        BranchTransferForm=users[21].upper()
+                    if users[22] == "" or users[22]==None:
+                        SalesUnderZero="Y"
+                    else:
+                        SalesUnderZero=users[22].upper()
+                    if users[23] == "" or users[23]==None:
+                        ChangeBranch="Y"
+                    else:
+                        ChangeBranch=users[23].upper()
+                    if users[24] == "" or users[24]==None:
+                        CheckInReport="Y"
+                    else:
+                        CheckInReport=users[24].upper()
+                    return{
+                        "Info":"authorized",
+                        "compname":users[0].upper(),
+                        "name":users[1].upper(),
+                        "token":uid,
+                        "password":users[2],
+                        "Sbranch": Sbranch,
+                        "Abranch": Abranch,
+                        "SalePrice": SalePrice,
+                        "Permissions":{
+                            "DeleteInvoice":DeleteInvoice,
+                            "DeleteItem":DeleteItem,
+                            "Discount":Discount,
+                            "Price":Price,
+                            "CallInvoice":CallInvoice,
+                            "SalesForm":SalesForm,
+                            "SalesReturnForm":SalesReturnForm,
+                            "OrderForm":OrderForm,
+                            "PurchaseForm":PurchaseForm,
+                            "PurchaseReturnForm":PurchaseReturnForm,
+                            "BranchTransferForm":BranchTransferForm,
+                            "SalesUnderZero":SalesUnderZero,
+                            "ChangeBranch":ChangeBranch,
+                            "CheckInReport":CheckInReport
+
+                        }
+                    }
+
+    return{"Info":"unauthorized",
+            "msg":"Invalid Username or Password",
+         }

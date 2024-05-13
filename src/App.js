@@ -9,6 +9,7 @@ import LoginModal from "./components/Login/LoginModal";
 import Stock from "./Pages/Stock";
 import Invoice from "./Pages/Invoice";
 import CheckIn from "./Pages/CheckIn";
+import CheckInReport from './components/CheckIn/CheckInReport'
 import { useCookies } from "react-cookie";
 import fullScreenToggle from './media/5642608.png'
 import QuickMenuToggle from './media/Arrow2.png'
@@ -253,6 +254,9 @@ function App() {
             
           } />
           <Route path="/CheckIn" element={<CheckIn url={url} UserDataHandler={UserDataHandler} token={token} name ={Username} />
+            
+          } />
+          <Route path="/CheckIn/CheckInReport" element={<CheckInReport  />
             
           } />
            </Routes>
