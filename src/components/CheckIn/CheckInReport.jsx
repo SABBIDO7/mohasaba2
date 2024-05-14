@@ -1,7 +1,6 @@
 import Modals from "../Modals/Modals";
 import { useNavigate } from "react-router-dom";
 import backbutton from "../../media/backbutton.png";
-
 import {
   checkInEndPoint,
   handleCheckInSearch,
@@ -18,141 +17,315 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { TextField } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
+import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import {
+  getTimeEndPoint,
+  CheckInDashboardFiltering,
+} from "../BackendEndPoints/Endpoint1";
 
 const columns = [
-  { id: "name", label: "Name", minWidth: 170 },
-  { id: "code", label: "ISO\u00a0Code", minWidth: 100 },
-  {
-    id: "population",
-    label: "Population",
-    minWidth: 170,
-    align: "right",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "size",
-    label: "Size\u00a0(km\u00b2)",
-    minWidth: 170,
-    align: "right",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "density",
-    label: "Density",
-    minWidth: 170,
-    align: "right",
-    format: (value) => value.toFixed(2),
-  },
-  {
-    id: "density",
-    label: "Density",
-    minWidth: 170,
-    align: "right",
-    format: (value) => value.toFixed(2),
-  },
-  {
-    id: "InvoiceNo",
-    label: "InvoiceNo",
-    minWidth: 170,
-    align: "right",
-    format: (value) => value.toFixed(2),
-  },
   {
     id: "User",
     label: "User",
     minWidth: 170,
-    align: "right",
-    format: (value) => value.toFixed(2),
+    align: "left",
   },
   {
-    id: "InvoiceNo",
-    label: "InvoiceNo",
+    id: "Location",
+    label: "Location",
     minWidth: 170,
-    align: "right",
+    align: "center",
     format: (value) => value.toFixed(2),
   },
   {
-    id: "User",
-    label: "User",
+    id: "CheckInId",
+    label: "CheckIn No",
     minWidth: 170,
-    align: "right",
+    align: "center",
     format: (value) => value.toFixed(2),
   },
+
   {
-    id: "AccountId",
-    label: "AccountId",
-    minWidth: 170,
-    align: "right",
-    format: (value) => value.toFixed(2),
-  },
-  {
-    id: "Account Name",
+    id: "AccountName",
     label: "Account Name",
     minWidth: 170,
-    align: "right",
+    align: "left",
     format: (value) => value.toFixed(2),
   },
   {
-    id: "Invoice Date",
-    label: "Invoice Date",
+    id: "CheckInDate",
+    label: "CheckIn Date",
     minWidth: 170,
-    align: "right",
+    align: "center",
     format: (value) => value.toFixed(2),
   },
   {
-    id: "Invoice Time",
-    label: "Invoice Time",
+    id: "CheckInTime",
+    label: "CheckIn Time",
     minWidth: 170,
-    align: "right",
+    align: "center",
     format: (value) => value.toFixed(2),
   },
   {
     id: "Notes",
     label: "Notes",
     minWidth: 170,
-    align: "right",
-    format: (value) => value.toFixed(2),
-  },
-  {
-    id: "Location",
-    label: "Location",
-    minWidth: 170,
-    align: "right",
+    align: "center",
     format: (value) => value.toFixed(2),
   },
 ];
 
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
+function createData(
+  User,
+  AccountName,
+  CheckInId,
+
+  AddInfo,
+  CheckInDate,
+  CheckInTime,
+  Notes,
+  Location
+) {
+  return {
+    User,
+    AccountName,
+    CheckInId,
+
+    AddInfo,
+    CheckInDate,
+    CheckInTime,
+    Notes,
+    Location,
+  };
 }
 
 const rows = [
-  createData("India", "IN", 1324171354, 3287263),
-  createData("China", "CN", 1403500365, 9596961),
-  createData("Italy", "IT", 60483973, 301340),
-  createData("United States", "US", 327167434, 9833520),
-  createData("Canada", "CA", 37602103, 9984670),
-  createData("Australia", "AU", 25475400, 7692024),
-  createData("Germany", "DE", 83019200, 357578),
-  createData("Ireland", "IE", 4857000, 70273),
-  createData("Mexico", "MX", 126577691, 1972550),
-  createData("Japan", "JP", 126317000, 377973),
-  createData("France", "FR", 67022000, 640679),
-  createData("United Kingdom", "GB", 67545757, 242495),
-  createData("Russia", "RU", 146793744, 17098246),
-  createData("Nigeria", "NG", 200962417, 923768),
-  createData("Brazil", "BR", 210147125, 8515767),
+  createData(
+    "India",
+    "IN",
+    1324171354,
+
+    "w",
+    "15/05/2024",
+
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ), //hh:mm:ss
+  createData(
+    "China",
+    "CN",
+    1403500365,
+
+    "w",
+    "15/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
+  createData(
+    "Italy",
+    "IT",
+    60483973,
+
+    "w",
+    "15/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
+  createData(
+    "United States",
+    "US",
+    327167434,
+
+    "w",
+    "15/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
+  createData(
+    "Canada",
+    "CA",
+    37602103,
+
+    "w",
+    "15/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
+  createData(
+    "Australia",
+    "AU",
+    25475400,
+
+    "w",
+    "15/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
+  createData(
+    "Germany",
+    "DE",
+    83019200,
+
+    "w",
+    "15/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
+  createData(
+    "Ireland",
+    "IE",
+    4857000,
+
+    "w",
+    "15/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
+  createData(
+    "Mexico",
+    "MX",
+    126577691,
+
+    "w",
+    "15/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
+  createData(
+    "Japan",
+    "JP",
+    126317000,
+
+    "w",
+    "15/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
+  createData(
+    "France",
+    "FR",
+    67022000,
+
+    "w",
+    "15/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
+  createData(
+    "United Kingdom",
+    "GB",
+    67545757,
+
+    "w",
+    "01/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
+  createData(
+    "Russia",
+    "RU",
+    146793744,
+
+    "w",
+    "05/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
+  createData(
+    "Nigeria",
+    "NG",
+    200962417,
+
+    "w",
+    "15/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
+  createData(
+    "Brazil",
+    "BR",
+    210147125,
+
+    "w",
+    "15/05/2024",
+    "10:21:33",
+    "Notes",
+    "LocationUrl"
+  ),
 ];
+
 export default function CheckInReport(props) {
   const navigate = useNavigate();
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(20);
   const [vInput, setvInput] = React.useState("");
-  const [FromDate, setFromDate] = React.useState("");
-  const [ToDate, setToDate] = React.useState("");
+  const [fromDate, setFromDate] = React.useState("");
+  const [toDate, setToDate] = React.useState("");
+  const [userValue, setUserValue] = React.useState(null);
+  const [inputUserValue, setInputUserValue] = React.useState("");
+  const options = ["Option 1", "Option 2", "Option 3", "Russia"]; // Replace with your options
+  const [currentTime, setCurrentTime] = React.useState("");
 
+  const [filteredRows, setFilteredRows] = React.useState(rows);
+  const handleClearFilters = () => {
+    resetFilters();
+  };
+
+  const resetFilters = () => {
+    setvInput("");
+    setFromDate("");
+    setToDate("");
+    setUserValue("");
+    setInputUserValue("");
+    setCurrentTime("");
+    getData();
+  };
+  const applyFilters = () => {
+    getData();
+    let filteredData = rows.filter((row) => {
+      // Filter by search input
+      if (
+        !vInput ||
+        row.User.toLowerCase().includes(vInput.toLowerCase()) ||
+        row.AccountName.toLowerCase().includes(vInput.toLowerCase()) ||
+        row.Notes.toLowerCase().includes(vInput.toLowerCase()) ||
+        row.CheckInId.toString().includes(vInput.toString())
+      ) {
+        // Filter by date range
+        if (
+          (!fromDate || new Date(row.CheckInDate) >= fromDate) &&
+          (!toDate || new Date(row.CheckInDate) <= toDate)
+        ) {
+          // Filter by selected user
+          if (!userValue || row.User === userValue) {
+            return true;
+          }
+        }
+      }
+      return false;
+    });
+    setFilteredRows(filteredData);
+  };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -161,44 +334,122 @@ export default function CheckInReport(props) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const getData = () => {
+    let data = {
+      search: vInput,
+      fromDate: fromDate,
+      toDate: toDate,
+      time: currentTime,
+      user: inputUserValue,
+      compname: localStorage.getItem("compname"),
+      username: localStorage.getItem("username"),
+    };
+    CheckInDashboardFiltering(data);
+  };
+
+  React.useEffect(() => {
+    getData();
+    // let [date, time] = getTimeEndPoint();
+    // console.log(time);
+    // time = time.substring(1); // Remove the 'T' prefix
+
+    // const currentDate = new Date();
+    // currentDate.setHours(time.split(":")[0]);
+    // currentDate.setMinutes(time.split(":")[1]);
+    // setCurrentTime(currentDate);
+    // console.log(currentDate);
+  }, []);
+
+  React.useEffect(() => {
+    applyFilters();
+  }, [vInput, fromDate, toDate, userValue, currentTime]);
 
   return (
-    <div className="h-[100%]">
-      <div className="flex flex-row justify-start w-[98%] mr-[1%] ml-[1%] mt-[1%] mb-[1%] h-[20%] ">
-        <div className="h-[fit] w-[fit] flex items-center justify-center mr-[1%]">
+    <div className="h-full">
+      <div className="flex flex-col md:flex-row justify-between  w-full px-4 py-2 space-y-2 md:space-y-0 md:space-x-4">
+        <div className="flex  flex-row justify-between">
           <button
             className="transparent-button"
-            onClick={() => {
-              navigate("/CheckIn");
-            }}
+            onClick={() => navigate("/CheckIn")}
           >
             <ArrowBackIcon />
           </button>
+          <input
+            type="text"
+            className="text-lg font-semibold block rounded-md w-full md:w-auto border border-secondd bg-white px-4 py-2 focus:outline-none focus:border-secondd focus:ring-1 focus:ring-secondd"
+            placeholder="Search Value"
+            value={vInput}
+            onChange={(e) => setvInput(e.target.value)}
+            id="tf"
+          />
         </div>
-        <input
-          type="text"
-          className="text-lg font-semibold block rounded-md w-[40%]  h-[fit] border border-secondd bg-white px-4 py-2 focus:outline-none focus:border-secondd focus:ring-1 focus:ring-secondd text-lg"
-          placeholder="Search Value"
-          value={vInput}
-          onChange={(e) => {
-            setvInput(e.target.value);
-          }}
-          id="tf"
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <div className="flex space-x-2">
+            <DatePicker
+              label="From Date"
+              value={fromDate}
+              onChange={(newValue) => setFromDate(newValue)}
+              format="dd/MM/yyyy"
+              renderInput={(params) => <TextField {...params} />}
+            />
+            <DatePicker
+              label="To Date"
+              value={toDate}
+              onChange={(newValue) => setToDate(newValue)}
+              format="dd/MM/yyyy"
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </div>
+        </LocalizationProvider>
+        <div>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DemoContainer
+              sx={{ height: "fit", padding: 0, margin: 0 }}
+              components={["MobileTimePicker"]}
+            >
+              <DemoItem>
+                <MobileTimePicker
+                  // value={currentTime}
+                  ampm={false} // Set ampm prop to false
+                  onChange={(newTime) => setCurrentTime(newTime)}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </DemoItem>
+            </DemoContainer>
+          </LocalizationProvider>
+        </div>
+        <Autocomplete
+          value={userValue}
+          onChange={(event, newValue) => setUserValue(newValue)}
+          inputValue={inputUserValue}
+          onInputChange={(event, newInputValue) =>
+            setInputUserValue(newInputValue)
+          }
+          id="controllable-states-demo"
+          options={options}
+          className=" w-full md:w-[300px]"
+          renderInput={(params) => (
+            <TextField {...params} label="Select User" />
+          )}
         />
-        <DatePicker
-          label="Controlled picker"
-          value={FromDate}
-          onChange={(newValue) => setFromDate(newValue)}
-        />
-        <DatePicker
-          label="Controlled picker"
-          value={ToDate}
-          onChange={(newValue) => setToDate(newValue)}
-        />
+        <button
+          onClick={handleClearFilters}
+          className="w-[fit] px-4 py-2 bg-red-500 text-white rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-400"
+        >
+          Clear Filters
+        </button>
       </div>
-
       <Paper
-        sx={{ width: "98%", height: "78%", overflow: "hidden", margin: "auto" }}
+        sx={{
+          width: "calc(100% - 32px)",
+          height: "78%",
+          overflow: "hidden",
+          margin: "auto",
+          "@media (max-width: 768px)": {
+            width: "calc(100% - 24px)",
+            height: "auto",
+          },
+        }}
       >
         <TableContainer sx={{ maxHeight: 500 }}>
           <Table stickyHeader aria-label="sticky table">
@@ -210,7 +461,7 @@ export default function CheckInReport(props) {
                     align={column.align}
                     style={{
                       minWidth: column.minWidth,
-                      fontWeight: "bold", // Add this line to make the text bold
+                      fontWeight: "bold",
                     }}
                   >
                     {column.label}
@@ -219,7 +470,7 @@ export default function CheckInReport(props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows
+              {filteredRows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (

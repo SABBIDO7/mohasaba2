@@ -3,8 +3,8 @@ import axios from "axios";
 import "../../index.css"; // Import the CSS file
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-//const url = "http://localhost:8000";
-const url = "https://pssapi.net:444";
+const url = "http://localhost:8000";
+//const url = "https://pssapi.net:444";
 export async function checkInEndPoint(long, lat, method) {
   console.log("Calling from endpoint");
   console.log("mehod", method);
@@ -71,7 +71,7 @@ export async function checkInEndPoint(long, lat, method) {
   }
 }
 
-const getTimeEndPoint = () => {
+export function getTimeEndPoint() {
   const currentDate = new Date();
   const formattedDate = `${currentDate
     .getDate()
@@ -89,7 +89,7 @@ const getTimeEndPoint = () => {
     .padStart(2, "0")}:${currentDate.getSeconds().toString().padStart(2, "0")}`;
 
   return [formattedDate, formattedTime];
-};
+}
 export async function handleCheckInSearch(data) {
   try {
     return axios({
@@ -220,4 +220,23 @@ export async function Notify(account, long, lat) {
       //  Actions: actions,
     },
   });
+}
+
+export async function CheckInDashboardFiltering(data) {
+  try {
+    const resp = await axios({
+      method: "post",
+      url: url + "/moh/CheckInDashboard/",
+      data: data,
+      headers: { "Content-Type": "application/json" },
+    });
+
+    // const data = resp.data;
+
+    // if (data.Info === "authorized") {
+    // }
+  } catch (error) {
+    // Handle errors here if needed
+    console.error("Error fetching data:", error);
+  }
 }
