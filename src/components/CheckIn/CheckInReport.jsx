@@ -23,9 +23,14 @@ import { TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import {
   getTimeEndPoint,
   CheckInDashboardFiltering,
+  getUsers,
 } from "../BackendEndPoints/Endpoint1";
 
 const columns = [
@@ -36,241 +41,55 @@ const columns = [
     align: "left",
   },
   {
-    id: "Location",
+    id: "LocationUrl",
     label: "Location",
     minWidth: 170,
     align: "center",
-    format: (value) => value.toFixed(2),
+    //format: (value) => value.toFixed(2),
   },
   {
-    id: "CheckInId",
+    id: "RefNo",
     label: "CheckIn No",
     minWidth: 170,
     align: "center",
-    format: (value) => value.toFixed(2),
+    // format: (value) => value.toFixed(2),
   },
 
   {
-    id: "AccountName",
+    id: "AccName",
     label: "Account Name",
     minWidth: 170,
     align: "left",
-    format: (value) => value.toFixed(2),
+    // format: (value) => value.toFixed(2),
   },
   {
-    id: "CheckInDate",
+    id: "DateI",
     label: "CheckIn Date",
     minWidth: 170,
     align: "center",
-    format: (value) => value.toFixed(2),
+    //format: (value) => value.toFixed(2),
   },
   {
-    id: "CheckInTime",
+    id: "TimeI",
     label: "CheckIn Time",
     minWidth: 170,
     align: "center",
-    format: (value) => value.toFixed(2),
+    //format: (value) => value.toFixed(2),
   },
   {
     id: "Notes",
     label: "Notes",
     minWidth: 170,
     align: "center",
-    format: (value) => value.toFixed(2),
+    //format: (value) => value.toFixed(2),
   },
-];
-
-function createData(
-  User,
-  AccountName,
-  CheckInId,
-
-  AddInfo,
-  CheckInDate,
-  CheckInTime,
-  Notes,
-  Location
-) {
-  return {
-    User,
-    AccountName,
-    CheckInId,
-
-    AddInfo,
-    CheckInDate,
-    CheckInTime,
-    Notes,
-    Location,
-  };
-}
-
-const rows = [
-  createData(
-    "India",
-    "IN",
-    1324171354,
-
-    "w",
-    "15/05/2024",
-
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ), //hh:mm:ss
-  createData(
-    "China",
-    "CN",
-    1403500365,
-
-    "w",
-    "15/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
-  createData(
-    "Italy",
-    "IT",
-    60483973,
-
-    "w",
-    "15/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
-  createData(
-    "United States",
-    "US",
-    327167434,
-
-    "w",
-    "15/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
-  createData(
-    "Canada",
-    "CA",
-    37602103,
-
-    "w",
-    "15/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
-  createData(
-    "Australia",
-    "AU",
-    25475400,
-
-    "w",
-    "15/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
-  createData(
-    "Germany",
-    "DE",
-    83019200,
-
-    "w",
-    "15/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
-  createData(
-    "Ireland",
-    "IE",
-    4857000,
-
-    "w",
-    "15/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
-  createData(
-    "Mexico",
-    "MX",
-    126577691,
-
-    "w",
-    "15/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
-  createData(
-    "Japan",
-    "JP",
-    126317000,
-
-    "w",
-    "15/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
-  createData(
-    "France",
-    "FR",
-    67022000,
-
-    "w",
-    "15/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
-  createData(
-    "United Kingdom",
-    "GB",
-    67545757,
-
-    "w",
-    "01/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
-  createData(
-    "Russia",
-    "RU",
-    146793744,
-
-    "w",
-    "05/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
-  createData(
-    "Nigeria",
-    "NG",
-    200962417,
-
-    "w",
-    "15/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
-  createData(
-    "Brazil",
-    "BR",
-    210147125,
-
-    "w",
-    "15/05/2024",
-    "10:21:33",
-    "Notes",
-    "LocationUrl"
-  ),
+  {
+    id: "AccNo",
+    label: "AccountId",
+    minWidth: 170,
+    align: "center",
+    //format: (value) => value.toFixed(2),
+  },
 ];
 
 export default function CheckInReport(props) {
@@ -279,53 +98,34 @@ export default function CheckInReport(props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(20);
   const [vInput, setvInput] = React.useState("");
-  const [fromDate, setFromDate] = React.useState("");
-  const [toDate, setToDate] = React.useState("");
+  const [fromDate, setFromDate] = React.useState(null);
+  const [toDate, setToDate] = React.useState(null);
   const [userValue, setUserValue] = React.useState(null);
   const [inputUserValue, setInputUserValue] = React.useState("");
-  const options = ["Option 1", "Option 2", "Option 3", "Russia"]; // Replace with your options
-  const [currentTime, setCurrentTime] = React.useState("");
+  const [fromTime, setFromTime] = React.useState(null);
+  const [toTime, setToTime] = React.useState(null);
+  const [filteredRows, setFilteredRows] = React.useState([]);
+  const [users, setUsers] = React.useState([]);
+  const [limit, setLimit] = React.useState("20");
 
-  const [filteredRows, setFilteredRows] = React.useState(rows);
+  const handleChange = (event) => {
+    setLimit(event.target.value);
+  };
   const handleClearFilters = () => {
     resetFilters();
   };
 
   const resetFilters = () => {
     setvInput("");
-    setFromDate("");
-    setToDate("");
+    setFromDate(null);
+    setToDate(null);
     setUserValue("");
     setInputUserValue("");
-    setCurrentTime("");
+    setFromTime(null);
+    setToTime(null);
     getData();
   };
-  const applyFilters = () => {
-    getData();
-    let filteredData = rows.filter((row) => {
-      // Filter by search input
-      if (
-        !vInput ||
-        row.User.toLowerCase().includes(vInput.toLowerCase()) ||
-        row.AccountName.toLowerCase().includes(vInput.toLowerCase()) ||
-        row.Notes.toLowerCase().includes(vInput.toLowerCase()) ||
-        row.CheckInId.toString().includes(vInput.toString())
-      ) {
-        // Filter by date range
-        if (
-          (!fromDate || new Date(row.CheckInDate) >= fromDate) &&
-          (!toDate || new Date(row.CheckInDate) <= toDate)
-        ) {
-          // Filter by selected user
-          if (!userValue || row.User === userValue) {
-            return true;
-          }
-        }
-      }
-      return false;
-    });
-    setFilteredRows(filteredData);
-  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -335,73 +135,127 @@ export default function CheckInReport(props) {
     setPage(0);
   };
   const getData = () => {
+    let toDateFormatted = null;
+    let fromDateFormatted = null;
+    let toTimeFormatted = null;
+    let fromTimeFormatted = null;
+    if (fromDate != null) {
+      fromDateFormatted = fromDate.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
+    }
+    if (toDate != null) {
+      toDateFormatted = toDate.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
+    }
+    if (fromTime != null) {
+      const hours = ("0" + fromTime.getHours()).slice(-2);
+      const minutes = ("0" + fromTime.getMinutes()).slice(-2);
+
+      // Construct time in Thh:mm:00 format
+      fromTimeFormatted = `T${hours}:${minutes}:00`;
+      console.log(fromTimeFormatted);
+    }
+    if (toTime != null) {
+      const hours = ("0" + toTime.getHours()).slice(-2);
+      const minutes = ("0" + toTime.getMinutes()).slice(-2);
+
+      // Construct time in Thh:mm:00 format
+      toTimeFormatted = `T${hours}:${minutes}:00`;
+      console.log(toTimeFormatted);
+    }
+    console.log("timee", fromTime);
     let data = {
       search: vInput,
-      fromDate: fromDate,
-      toDate: toDate,
-      time: currentTime,
+      fromDate: fromDate != null ? fromDateFormatted : fromDate,
+      toDate: toDate != null ? toDateFormatted : toDate,
+      fromTime: fromTime != null ? fromTimeFormatted : fromTime,
+      toTime: toTime != null ? toTimeFormatted : toTime,
+
       user: inputUserValue,
+      limit: limit,
       compname: localStorage.getItem("compname"),
       username: localStorage.getItem("username"),
     };
-    CheckInDashboardFiltering(data);
+    console.log(data);
+    CheckInDashboardFiltering(data).then((response) => {
+      if (response && response.status == "success") {
+        setFilteredRows(response.result);
+        console.log(response.result);
+      }
+    });
+  };
+  const getUsersData = () => {
+    getUsers().then((response) => {
+      if (response && response.status == "success") {
+        setUsers(response.result);
+        console.log(response.result);
+      }
+    });
   };
 
   React.useEffect(() => {
     getData();
-    // let [date, time] = getTimeEndPoint();
-    // console.log(time);
-    // time = time.substring(1); // Remove the 'T' prefix
-
-    // const currentDate = new Date();
-    // currentDate.setHours(time.split(":")[0]);
-    // currentDate.setMinutes(time.split(":")[1]);
-    // setCurrentTime(currentDate);
-    // console.log(currentDate);
+    getUsersData();
   }, []);
 
   React.useEffect(() => {
-    applyFilters();
-  }, [vInput, fromDate, toDate, userValue, currentTime]);
+    getData();
+  }, [vInput, fromDate, toDate, userValue, fromTime, toTime, limit]);
 
   return (
     <div className="h-full">
-      <div className="flex flex-col md:flex-row justify-between  w-full px-4 py-2 space-y-2 md:space-y-0 md:space-x-4">
-        <div className="flex  flex-row justify-between">
+      <div className="flex flex-col md:flex-row h-[25%] justify-between md:items-center  px-4 py-2 space-y-2 md:space-y-0 md:space-x-4">
+        <div className="md:w-[20%] space-y-1">
+          <div className="flex  flex-row justify-between">
+            <button
+              className="transparent-button"
+              onClick={() => navigate("/CheckIn")}
+            >
+              <ArrowBackIcon />
+            </button>
+            <input
+              type="text"
+              className="h-[45%]    md:w-[100%] md:h-[fit]  text-lg font-semibold block rounded-md w-full md:w-auto border border-secondd bg-white px-4 py-2 focus:outline-none focus:border-secondd focus:ring-1 focus:ring-secondd"
+              placeholder="Search"
+              value={vInput}
+              onChange={(e) => setvInput(e.target.value)}
+              id="tf"
+            />
+          </div>
           <button
-            className="transparent-button"
-            onClick={() => navigate("/CheckIn")}
+            onClick={handleClearFilters}
+            className="w-full h-[45%]    md:w-[fit] md:h-[fit]   px-4 py-2 bg-red-500 text-white rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-400"
           >
-            <ArrowBackIcon />
+            Clear
           </button>
-          <input
-            type="text"
-            className="text-lg font-semibold block rounded-md w-full md:w-auto border border-secondd bg-white px-4 py-2 focus:outline-none focus:border-secondd focus:ring-1 focus:ring-secondd"
-            placeholder="Search Value"
-            value={vInput}
-            onChange={(e) => setvInput(e.target.value)}
-            id="tf"
-          />
         </div>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <div className="flex space-x-2">
+          <div className="flex space-y-2 flex-column md:flex-row">
             <DatePicker
               label="From Date"
               value={fromDate}
               onChange={(newValue) => setFromDate(newValue)}
               format="dd/MM/yyyy"
-              renderInput={(params) => <TextField {...params} />}
+              sx={{ "& input": { padding: "14px", fontSize: "14px" } }} // Custom styles for input
+              slotProps={{ textField: { fullWidth: true } }} // Use textField slotProps
             />
             <DatePicker
               label="To Date"
               value={toDate}
               onChange={(newValue) => setToDate(newValue)}
               format="dd/MM/yyyy"
-              renderInput={(params) => <TextField {...params} />}
+              sx={{ "& input": { padding: "14px", fontSize: "14px" } }} // Custom styles for input
+              slotProps={{ textField: { fullWidth: true } }} // Use textField slotProps
             />
           </div>
         </LocalizationProvider>
-        <div>
+        <div className="flex space-y-2 flex-column">
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DemoContainer
               sx={{ height: "fit", padding: 0, margin: 0 }}
@@ -409,40 +263,94 @@ export default function CheckInReport(props) {
             >
               <DemoItem>
                 <MobileTimePicker
-                  // value={currentTime}
+                  label="From Time"
+                  value={fromTime}
                   ampm={false} // Set ampm prop to false
-                  onChange={(newTime) => setCurrentTime(newTime)}
-                  renderInput={(params) => <TextField {...params} />}
+                  onChange={(newTime) => setFromTime(newTime)}
+                  sx={{ "& input": { padding: "14px", fontSize: "14px" } }} // Custom styles for input
+                  slotProps={{ textField: { fullWidth: true } }} // Use textField slotProps
+                />
+              </DemoItem>
+            </DemoContainer>
+          </LocalizationProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DemoContainer
+              sx={{ height: "fit", padding: 0, margin: 0 }}
+              components={["MobileTimePicker"]}
+            >
+              <DemoItem>
+                <MobileTimePicker
+                  label="To Time"
+                  value={toTime}
+                  ampm={false} // Set ampm prop to false
+                  onChange={(newTime) => setToTime(newTime)}
+                  sx={{ "& input": { padding: "14px", fontSize: "14px" } }} // Custom styles for input
+                  slotProps={{ textField: { fullWidth: true } }} // Use textField slotProps
                 />
               </DemoItem>
             </DemoContainer>
           </LocalizationProvider>
         </div>
-        <Autocomplete
-          value={userValue}
-          onChange={(event, newValue) => setUserValue(newValue)}
-          inputValue={inputUserValue}
-          onInputChange={(event, newInputValue) =>
-            setInputUserValue(newInputValue)
-          }
-          id="controllable-states-demo"
-          options={options}
-          className=" w-full md:w-[300px]"
-          renderInput={(params) => (
-            <TextField {...params} label="Select User" />
-          )}
-        />
-        <button
-          onClick={handleClearFilters}
-          className="w-[fit] px-4 py-2 bg-red-500 text-white rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-400"
-        >
-          Clear Filters
-        </button>
+        <div className="flex space-y-2 flex-column">
+          <Autocomplete
+            value={userValue}
+            onChange={(event, newValue) => setUserValue(newValue)}
+            inputValue={inputUserValue}
+            onInputChange={(event, newInputValue) =>
+              setInputUserValue(newInputValue)
+            }
+            id="controllable-states-demo"
+            options={users}
+            className=" w-full md:w-[200px]"
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Select User"
+                sx={{ "& input": { padding: "14px", fontSize: "14px" } }} // Custom styles for input
+              />
+            )}
+          />
+          <FormControl sx={{ minWidth: 80 }}>
+            <InputLabel id="demo-simple-select-autowidth-label">
+              Limit
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-autowidth-label"
+              id="demo-simple-select-autowidth"
+              value={limit}
+              sx={{ "& input": { padding: "14px", fontSize: "14px" } }} // Custom styles for input
+              onChange={handleChange}
+              autoWidth
+              label="Limit"
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+
+              <MenuItem value={"20"}>20</MenuItem>
+              <MenuItem value={"50"}>50</MenuItem>
+              <MenuItem value={"100"}>100</MenuItem>
+              <MenuItem value={"200"}>200</MenuItem>
+              <MenuItem value={"5000"}>500</MenuItem>
+              <MenuItem value={"1000"}>1K</MenuItem>
+              <MenuItem value={"2000"}>2K</MenuItem>
+              <MenuItem value={"All"}>All</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+        {/* <div className="flex space-x-2 jutify-center items-center">
+          <button
+            onClick={handleClearFilters}
+            className="w-full h-[50%]    md:w-[fit] md:h-[fit]   px-4 py-2 bg-red-500 text-white rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-400"
+          >
+            Clear Filters
+          </button>
+        </div> */}
       </div>
       <Paper
         sx={{
           width: "calc(100% - 32px)",
-          height: "78%",
+          height: "75%",
           overflow: "hidden",
           margin: "auto",
           "@media (max-width: 768px)": {
@@ -451,7 +359,7 @@ export default function CheckInReport(props) {
           },
         }}
       >
-        <TableContainer sx={{ maxHeight: 500 }}>
+        <TableContainer sx={{ maxHeight: 450 }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
@@ -470,36 +378,49 @@ export default function CheckInReport(props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.code}
-                    >
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === "number"
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
+              {filteredRows &&
+                filteredRows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => {
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.RefNo}
+                      >
+                        {columns.map((column) => {
+                          const id = column.id;
+                          const value = row[0][id];
+
+                          return (
+                            <TableCell key={column.id} align={column.align}>
+                              {/* {column.format && typeof value === "number"
+                                ? column.format(value)
+                                : value} */}
+                              {column.id == "LocationUrl" ? (
+                                <a
+                                  href={`https://www.google.com/maps/@${value},20z`}
+                                  target="_blank"
+                                >
+                                  Location
+                                </a>
+                              ) : (
+                                value
+                              )}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[10, 20, 35, 50, 100]}
           component="div"
-          count={rows.length}
+          count={filteredRows && filteredRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

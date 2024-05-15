@@ -224,11 +224,19 @@ export async function Notify(account, long, lat) {
 
 export async function CheckInDashboardFiltering(data) {
   try {
-    const resp = await axios({
+    console.log("aayat lla funct");
+    return await axios({
       method: "post",
       url: url + "/moh/CheckInDashboard/",
       data: data,
       headers: { "Content-Type": "application/json" },
+    }).then((res) => {
+      if (res.data.Info == "success") {
+        console.log("sucess");
+        return { status: "success", result: res.data.result };
+      } else {
+        return { status: "error", result: [], message: res.data.message };
+      }
     });
 
     // const data = resp.data;
@@ -237,6 +245,30 @@ export async function CheckInDashboardFiltering(data) {
     // }
   } catch (error) {
     // Handle errors here if needed
-    console.error("Error fetching data:", error);
+    return { status: "error", result: [], message: error };
+  }
+}
+export async function getUsers() {
+  try {
+    console.log("aayat lla funct");
+    return await axios({
+      method: "get",
+      url: url + "/moh/getUsers/" + localStorage.getItem("compname") + "/",
+    }).then((res) => {
+      if (res.data.status == "success") {
+        console.log("sucess getusers");
+        return { status: "success", result: res.data.result };
+      } else {
+        return { status: "error", result: [], message: res.data.message };
+      }
+    });
+
+    // const data = resp.data;
+
+    // if (data.Info === "authorized") {
+    // }
+  } catch (error) {
+    // Handle errors here if needed
+    return { status: "error", result: [], message: error };
   }
 }
