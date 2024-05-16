@@ -134,6 +134,25 @@ option:hover {
   .ReCall-select-style{
     font-size: 0.6rem!important;
   }
+  .fromTo{
+    flex-direction: row!important;
+  }
+  .filtercontairDashboard{
+    flex-direction: column!important;
+
+    justify-items: center;
+    justify-content: center;
+    margin-top: 0;
+    margin-left: 8px;
+    gap:4px
+  }
+  .searchCheckInDashboard{
+  width: 65%;
+  }
+  .clearCheckInDashboard{
+  width: 35%;
+  }
+  
 
 }
 
@@ -331,4 +350,27 @@ th {
 }
 .transparent-button {
   background-color: transparent !important;
+}
+.tableMuiHeader{
+  background-color: theme('colors.secondd')!important;
+  color: theme('colors.BgTextColor')!important;
+border-right: 0.15px  solid  theme('colors.BgTextColor') ;
+
+}
+.fromTo{
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Equivalent to space-y-2 in Tailwind */
+  
+  justify-content: center;
+}
+.filtercontairDashboard{
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 8px 16px; /* Adjust padding as needed */
+  /* height: 20vh;
+  min-height: 250px; */
+}
+.tableContainerDashboard{
+  height: 64.5vh;
 }

@@ -21,16 +21,18 @@ export default function CheckIn(props) {
       </div>
       <div className="flex justify-around flex-grow">
         <div className="h-[100%]">
-          <div className="h-1/4 flex items-center justify-center">
-            <button
-              className="bg-secondd text-BgTextColor h-[fit] w-[140px]  p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
-              onClick={() => {
-                navigate("/CheckIn/CheckInReport");
-              }}
-            >
-              CheckIn Report
-            </button>
-          </div>
+          {localStorage.getItem("CheckInReport") == "Y" && (
+            <div className="h-1/4 flex items-center justify-center">
+              <button
+                className="bg-secondd text-BgTextColor h-[fit] w-[140px]  p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+                onClick={() => {
+                  navigate("/CheckIn/CheckInReport");
+                }}
+              >
+                CheckIn Report
+              </button>
+            </div>
+          )}
           <div className="h-3/4">
             <Scanner></Scanner>
           </div>

@@ -178,6 +178,10 @@ function App() {
               "ChangeBranch",
              data.Permissions["ChangeBranch"]
             );
+            localStorage.setItem(
+              "CheckInReport",
+              data.Permissions["CheckInReport"]
+            );
 
             
            } else {
@@ -256,9 +260,11 @@ function App() {
           <Route path="/CheckIn" element={<CheckIn url={url} UserDataHandler={UserDataHandler} token={token} name ={Username} />
             
           } />
+            {localStorage.getItem("CheckInReport") == "Y" && (
           <Route path="/CheckIn/CheckInReport" element={<CheckInReport  />
             
           } />
+        )}
            </Routes>
         </Header>
       </BrowserRouter>

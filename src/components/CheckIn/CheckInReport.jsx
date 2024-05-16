@@ -37,42 +37,42 @@ const columns = [
   {
     id: "User",
     label: "User",
-    minWidth: 170,
+    minWidth: 150,
     align: "left",
   },
   {
     id: "LocationUrl",
     label: "Location",
-    minWidth: 170,
+    minWidth: 100,
     align: "center",
     //format: (value) => value.toFixed(2),
   },
   {
     id: "RefNo",
-    label: "CheckIn No",
-    minWidth: 170,
+    label: "CHK No",
+    minWidth: 100,
     align: "center",
     // format: (value) => value.toFixed(2),
   },
 
   {
     id: "AccName",
-    label: "Account Name",
+    label: "AccName",
     minWidth: 170,
     align: "left",
     // format: (value) => value.toFixed(2),
   },
   {
     id: "DateI",
-    label: "CheckIn Date",
-    minWidth: 170,
+    label: "CHK Date",
+    minWidth: 100,
     align: "center",
     //format: (value) => value.toFixed(2),
   },
   {
     id: "TimeI",
-    label: "CheckIn Time",
-    minWidth: 170,
+    label: "CHK Time",
+    minWidth: 100,
     align: "center",
     //format: (value) => value.toFixed(2),
   },
@@ -80,13 +80,13 @@ const columns = [
     id: "Notes",
     label: "Notes",
     minWidth: 170,
-    align: "center",
+    align: "left",
     //format: (value) => value.toFixed(2),
   },
   {
     id: "AccNo",
-    label: "AccountId",
-    minWidth: 170,
+    label: "Acc Id",
+    minWidth: 100,
     align: "center",
     //format: (value) => value.toFixed(2),
   },
@@ -209,10 +209,13 @@ export default function CheckInReport(props) {
   }, [vInput, fromDate, toDate, userValue, fromTime, toTime, limit]);
 
   return (
-    <div className="h-full">
-      <div className="flex flex-col md:flex-row h-[25%] justify-between md:items-center  px-4 py-2 space-y-2 md:space-y-0 md:space-x-4">
-        <div className="md:w-[20%] space-y-1">
-          <div className="flex  flex-row justify-between">
+    <div className="h-[100%]">
+      <div className="flex  h-[25%]  filtercontairDashboard">
+        <div className="fromTo">
+          <div
+            className="flex  flex-row justify-between md-custom:w-[60%] searchCheckInDashboard"
+            style={{ width: "65%" }}
+          >
             <button
               className="transparent-button"
               onClick={() => navigate("/CheckIn")}
@@ -221,7 +224,7 @@ export default function CheckInReport(props) {
             </button>
             <input
               type="text"
-              className="h-[45%]    md:w-[100%] md:h-[fit]  text-lg font-semibold block rounded-md w-full md:w-auto border border-secondd bg-white px-4 py-2 focus:outline-none focus:border-secondd focus:ring-1 focus:ring-secondd"
+              className="h-[100%]    md-custom:w-[fit] md-custom:h-[fit]  text-lg font-semibold block rounded-md w-full md-custom:w-auto border border-secondd bg-white px-4 py-2 focus:outline-none focus:border-secondd focus:ring-1 focus:ring-secondd"
               placeholder="Search"
               value={vInput}
               onChange={(e) => setvInput(e.target.value)}
@@ -230,13 +233,13 @@ export default function CheckInReport(props) {
           </div>
           <button
             onClick={handleClearFilters}
-            className="w-full h-[45%]    md:w-[fit] md:h-[fit]   px-4 py-2 bg-red-500 text-white rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-400"
+            className="w-full h-[45%]    md:w-[fit] md:h-[fit]   px-4 py-2 bg-red-500 text-BgTextColor rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-400 clearCheckInDashboard"
           >
             Clear
           </button>
         </div>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <div className="flex space-y-2 flex-column md:flex-row">
+          <div className="fromTo">
             <DatePicker
               label="From Date"
               value={fromDate}
@@ -250,15 +253,24 @@ export default function CheckInReport(props) {
               value={toDate}
               onChange={(newValue) => setToDate(newValue)}
               format="dd/MM/yyyy"
-              sx={{ "& input": { padding: "14px", fontSize: "14px" } }} // Custom styles for input
+              sx={{
+                "& input": { padding: "14px", fontSize: "14px" },
+              }} // Custom styles for input
               slotProps={{ textField: { fullWidth: true } }} // Use textField slotProps
             />
           </div>
         </LocalizationProvider>
-        <div className="flex space-y-2 flex-column">
+        <div className="fromTo">
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DemoContainer
-              sx={{ height: "fit", padding: 0, margin: 0 }}
+              sx={{
+                height: "fit",
+                padding: 0,
+                margin: 0,
+                "@media (max-width: 1000px)": {
+                  width: "50%",
+                },
+              }}
               components={["MobileTimePicker"]}
             >
               <DemoItem>
@@ -267,7 +279,12 @@ export default function CheckInReport(props) {
                   value={fromTime}
                   ampm={false} // Set ampm prop to false
                   onChange={(newTime) => setFromTime(newTime)}
-                  sx={{ "& input": { padding: "14px", fontSize: "14px" } }} // Custom styles for input
+                  sx={{
+                    "& input": {
+                      padding: "14px",
+                      fontSize: "14px",
+                    },
+                  }} // Custom styles for input
                   slotProps={{ textField: { fullWidth: true } }} // Use textField slotProps
                 />
               </DemoItem>
@@ -275,7 +292,14 @@ export default function CheckInReport(props) {
           </LocalizationProvider>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DemoContainer
-              sx={{ height: "fit", padding: 0, margin: 0 }}
+              sx={{
+                height: "fit",
+                padding: 0,
+                margin: 0,
+                "@media (max-width: 1000px)": {
+                  width: "50%",
+                },
+              }}
               components={["MobileTimePicker"]}
             >
               <DemoItem>
@@ -291,7 +315,7 @@ export default function CheckInReport(props) {
             </DemoContainer>
           </LocalizationProvider>
         </div>
-        <div className="flex space-y-2 flex-column">
+        <div className="fromTo">
           <Autocomplete
             value={userValue}
             onChange={(event, newValue) => setUserValue(newValue)}
@@ -301,12 +325,14 @@ export default function CheckInReport(props) {
             }
             id="controllable-states-demo"
             options={users}
-            className=" w-full md:w-[200px]"
+            className=" w-full md-custom:w-[200px]"
             renderInput={(params) => (
               <TextField
                 {...params}
                 label="Select User"
-                sx={{ "& input": { padding: "14px", fontSize: "14px" } }} // Custom styles for input
+                sx={{
+                  "& input": { padding: "14px", fontSize: "14px" },
+                }} // Custom styles for input
               />
             )}
           />
@@ -328,8 +354,11 @@ export default function CheckInReport(props) {
               </MenuItem>
 
               <MenuItem value={"20"}>20</MenuItem>
+
               <MenuItem value={"50"}>50</MenuItem>
+              <MenuItem value={"75"}>75</MenuItem>
               <MenuItem value={"100"}>100</MenuItem>
+
               <MenuItem value={"200"}>200</MenuItem>
               <MenuItem value={"5000"}>500</MenuItem>
               <MenuItem value={"1000"}>1K</MenuItem>
@@ -338,30 +367,33 @@ export default function CheckInReport(props) {
             </Select>
           </FormControl>
         </div>
-        {/* <div className="flex space-x-2 jutify-center items-center">
-          <button
-            onClick={handleClearFilters}
-            className="w-full h-[50%]    md:w-[fit] md:h-[fit]   px-4 py-2 bg-red-500 text-white rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-400"
-          >
-            Clear Filters
-          </button>
-        </div> */}
       </div>
+      {/* <button
+        id="toggleButton"
+        class="md:hidden bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-400"
+      >
+        Toggle Filters
+      </button> */}
       <Paper
         sx={{
           width: "calc(100% - 32px)",
-          height: "75%",
+          height: "auto",
           overflow: "hidden",
           margin: "auto",
-          "@media (max-width: 768px)": {
+          "@media (max-width: 1000px)": {
             width: "calc(100% - 24px)",
-            height: "auto",
           },
         }}
       >
-        <TableContainer sx={{ maxHeight: 450 }}>
+        <TableContainer
+          sx={{
+            "@media (max-width: 1000px)": { maxHeight: "50vh" }, // Adjust height for screens smaller than 1000px
+            maxHeight: "75%", // Default height
+          }}
+          className="tableContainerDashboard"
+        >
           <Table stickyHeader aria-label="sticky table">
-            <TableHead>
+            <TableHead sx={{}}>
               <TableRow>
                 {columns.map((column) => (
                   <TableCell
@@ -369,8 +401,8 @@ export default function CheckInReport(props) {
                     align={column.align}
                     style={{
                       minWidth: column.minWidth,
-                      fontWeight: "bold",
                     }}
+                    className="tableMuiHeader"
                   >
                     {column.label}
                   </TableCell>
@@ -394,13 +426,17 @@ export default function CheckInReport(props) {
                           const value = row[0][id];
 
                           return (
-                            <TableCell key={column.id} align={column.align}>
+                            <TableCell
+                              key={column.id}
+                              align={column.align}
+                              // sx={{ borderRight: "0.15px solid" }}
+                            >
                               {/* {column.format && typeof value === "number"
                                 ? column.format(value)
                                 : value} */}
                               {column.id == "LocationUrl" ? (
                                 <a
-                                  href={`https://www.google.com/maps/@${value},20z`}
+                                  href={`https://www.google.com/maps/?q=${value}`}
                                   target="_blank"
                                 >
                                   Location
@@ -418,7 +454,7 @@ export default function CheckInReport(props) {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[10, 20, 35, 50, 100]}
+          rowsPerPageOptions={[10, 20, 30, 40, 50, 100, 150, 200]}
           component="div"
           count={filteredRows && filteredRows.length}
           rowsPerPage={rowsPerPage}

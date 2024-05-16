@@ -91,7 +91,10 @@ function LoginModal(props) {
               "ChangeBranch",
               response.data.Permissions["ChangeBranch"]
             );
-
+            localStorage.setItem(
+              "CheckInReport",
+              response.data.Permissions["CheckInReport"]
+            );
             props.UserDataHandler(
               response.data.compname,
               response.data.name,

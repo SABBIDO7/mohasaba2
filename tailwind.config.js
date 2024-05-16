@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        'md-custom': '1000px',
+      },
       colors: {
         // Customize existing colors
         blue: {
@@ -44,5 +47,17 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  // Define custom utilities
+  corePlugins: {
+    important: false, // Disable important utility by default
+  },
+  plugins: [function ({ addUtilities }) {
+    const newUtilities = {
+      '.important': {
+        important: true,
+      },
+    };
+
+    addUtilities(newUtilities, ['responsive', 'hover']);
+  },],
 }
