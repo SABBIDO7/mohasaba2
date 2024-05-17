@@ -8,6 +8,7 @@ import CheckInReport from "../components/CheckIn/CheckInReport";
 import { useNavigate } from "react-router-dom";
 
 import { getCompanyInfo } from "../components/BackendEndPoints/Endpoint1";
+import CreateQr from "../components/CheckIn/CreateQr";
 export default function CheckIn(props) {
   const navigate = useNavigate();
 
@@ -22,7 +23,7 @@ export default function CheckIn(props) {
       <div className="flex justify-around flex-grow">
         <div className="h-[100%]">
           {localStorage.getItem("CheckInReport") == "Y" && (
-            <div className="h-1/4 flex items-center justify-center">
+            <div className="h-1/5 flex items-center justify-center">
               <button
                 className="bg-secondd text-BgTextColor h-[fit] w-[140px]  p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
                 onClick={() => {
@@ -33,8 +34,11 @@ export default function CheckIn(props) {
               </button>
             </div>
           )}
-          <div className="h-3/4">
+          <div className="h-3/5">
             <Scanner></Scanner>
+          </div>
+          <div className="h-1/5 flex items-center justify-center">
+            <CreateQr flag={"1"} accNo={"42503"}></CreateQr>
           </div>
         </div>
       </div>

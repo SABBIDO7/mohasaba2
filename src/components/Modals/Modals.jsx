@@ -3,18 +3,22 @@ import React, {
   useEffect,
   forwardRef,
   useImperativeHandle,
+  setCreateQrInputValue,
 } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Location from "../CheckIn/Location";
 import { faEdit, faSave, faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { QRCodeCanvas } from "qrcode.react";
 
 import {
   checkInEndPoint,
   handleCheckInSearch,
   Notify,
 } from "../BackendEndPoints/Endpoint1";
+
+import { downloadQrCode } from "../BackendEndPoints/Internal";
 const Modals = forwardRef((props, ref) => {
   const [checkInSeachAccountsShow, setCheckInSeachAccountsShow] =
     useState(false);
@@ -28,6 +32,9 @@ const Modals = forwardRef((props, ref) => {
   const [infoSearchShowModal, setInfoSearchShowModal] = useState({
     show: false,
   });
+  const [qrShowModal, setQrShowModal] = useState({ show: false });
+
+  const [createQrInputValue, setCreateQrInputValue] = useState({ show: false });
 
   //const [method, setMethod] = useState();
   useImperativeHandle(ref, () => ({
@@ -37,6 +44,7 @@ const Modals = forwardRef((props, ref) => {
     setInfoModal,
     setInfoSearchModal,
     setInfoSearchShowModal,
+    setQrShowModal,
   }));
 
   useEffect(() => {
@@ -377,6 +385,73 @@ const Modals = forwardRef((props, ref) => {
             </Button>
           </div>
         </Modal.Footer>
+      </Modal>
+      <Modal
+        show={createQrInputValue.show}
+        onHide={() => {
+          setCreateQrInputValue({ ...createQrInputValue, show: false });
+        }}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {createQrInputValue.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{createQrInputValue.message}</Modal.Body>
+        <Modal.Footer>
+          <div className="flex flex-row w-full justify-around">
+            <Button
+              variant="danger"
+              onClick={() => {
+                setCreateQrInputValue({ ...createQrInputValue, show: false });
+                props.setModelsShowPage(false);
+              }}
+            >
+              close
+            </Button>
+            <Button
+              variant="danger"
+              onClick={() => {
+                setCreateQrInputValue({ ...createQrInputValue, show: false });
+                props.setModelsShowPage(false);
+              }}
+            >
+              Create
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={qrShowModal.show}
+        onHide={() => setQrShowModal({ ...qrShowModal, show: false })}
+        contentLabel="QR Code Modal"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <div className="modal-content">
+          <div id="qrCodeElement">
+            <QRCodeCanvas value={qrShowModal.qrData} />
+          </div>
+          <button
+            className="bg-secondd text-BgTextColor mt-4 p-2 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+            onClick={downloadQrCode}
+          >
+            Download QR as PNG
+          </button>
+          <button
+            className="bg-red-500 text-white mt-4 p-2 rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600 group hover:shadow-md"
+            onClick={() => {
+              setQrShowModal({ ...qrShowModal, show: false });
+            }}
+          >
+            Close
+          </button>
+        </div>
       </Modal>
     </>
   );
