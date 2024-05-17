@@ -10,14 +10,26 @@ export default function CreateQr(props) {
   const modalsChildRef = useRef();
 
   const handleClick = () => {
-    setQrData(props.accNo); // Set the QR code data
-    openQrShowModel();
+    if (props.accNo) {
+      setQrData(props.accNo); // Set the QR code data
+      openQrShowModel();
+    } else {
+      console.log("fett bl nullll");
+      modalsChildRef.current.setCreateQrInputValueModal({
+        show: true,
+        title: "Enter Qr Value",
+      });
+    }
   };
   const openQrShowModel = () => {
     // Update modelsShowPage state directly
     //setModelsShowPage(true);
     // Pass data directly without setting it in state
-    modalsChildRef.current.setQrShowModel({ show: true, qrData: qrData });
+    modalsChildRef.current.setQrShowModal({
+      show: true,
+      qrData: qrData,
+      title: "Scan Or Dowload Qr Code",
+    });
     //  modalsChildRef.current.setShow(true);
   };
   return (
@@ -28,11 +40,6 @@ export default function CreateQr(props) {
       >
         Create Qr
       </button>
-      {showQr && (
-        <div className="qr-code-container">
-          <QRCodeCanvas value={props.accNo} />
-        </div>
-      )}
 
       <Modals
         modelsShowPage={modelsShowPage.show}
