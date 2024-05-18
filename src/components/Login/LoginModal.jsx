@@ -3,6 +3,8 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import LoginForm from "./LoginForm";
 import axios from "axios";
+import { getCompanyInfo } from "../BackendEndPoints/Endpoint1";
+
 import { useNavigate } from "react-router-dom";
 
 function LoginModal(props) {
@@ -95,6 +97,22 @@ function LoginModal(props) {
               "CheckInReport",
               response.data.Permissions["CheckInReport"]
             );
+            localStorage.setItem(
+              "AccountingPage",
+              response.data.Permissions["AccountingPage"]
+            );
+            localStorage.setItem(
+              "InventoryPage",
+              response.data.Permissions["InventoryPage"]
+            );
+            localStorage.setItem(
+              "TransactionsPage",
+              response.data.Permissions["TransactionsPage"]
+            );
+            localStorage.setItem(
+              "CheckInPage",
+              response.data.Permissions["CheckInPage"]
+            );
             props.UserDataHandler(
               response.data.compname,
               response.data.name,
@@ -102,6 +120,7 @@ function LoginModal(props) {
             );
 
             handleClose();
+            getCompanyInfo();
           } else {
             setVresult(response.data.msg + " Please Try Again");
             setWarning(true);

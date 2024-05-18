@@ -3,8 +3,8 @@ import axios from "axios";
 import "../../index.css"; // Import the CSS file
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-//const url = "http://localhost:8000";
-const url = "https://pssapi.net:444";
+const url = "http://localhost:8000";
+//const url = "https://pssapi.net:444";
 export async function checkInEndPoint(long, lat, method) {
   console.log("Calling from endpoint");
   console.log("mehod", method);
@@ -23,6 +23,7 @@ export async function checkInEndPoint(long, lat, method) {
       lat: lat,
       accDate: date,
       accTime: time,
+      BackOffice: localStorage.setItem("BackOffice"),
     };
   } else {
     data = {
@@ -37,6 +38,7 @@ export async function checkInEndPoint(long, lat, method) {
       lat: lat,
       accDate: date,
       accTime: time,
+      BackOffice: localStorage.getItem("BackOffice"),
     };
   }
   console.log("dataaaaa", data);
@@ -189,6 +191,7 @@ export async function getCompanyInfo() {
       );
       localStorage.setItem("CompanyCode", data.CompanyInfo["CompanyCode"]);
       localStorage.setItem("Notify", data.CompanyInfo["Notify"]);
+      localStorage.setItem("BackOffice", data.CompanyInfo["BackOffice"]);
     }
   } catch (error) {
     // Handle errors here if needed

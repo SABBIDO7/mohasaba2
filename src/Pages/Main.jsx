@@ -2,21 +2,78 @@ import Button from "react-bootstrap/Button";
 import Backoffice from "../media/backoffice1.png";
 import paradox from "../media/paradox.png";
 import { useCookies } from "react-cookie";
-
+import React, { useRef } from "react";
+import Modals2 from "../components/Modals/Modals2";
 export default function Main(props) {
   const [cookies, setCookie] = useCookies(["token"]);
-
+  const modalsChildRef = useRef();
   function accountingClick() {
-    document.getElementById("Accounting").click();
+    if (localStorage.getItem("AccountingPage") == "Y") {
+      if (localStorage.getItem("BackOffice") == "Y") {
+        document.getElementById("Accounting").click();
+      } else {
+        modalsChildRef.current.setRestrictionModal({
+          show: true,
+          message: "Your Company Is Not Register To The BackOffice",
+          title: "Authorization Failed",
+        });
+      }
+    } else {
+      modalsChildRef.current.setRestrictionModal({
+        show: true,
+        message: "Not Authorized To Access Accounting Page",
+        title: "Authorization Failed",
+      });
+    }
   }
   function stockClick() {
-    document.getElementById("Inventory").click();
+    if (localStorage.getItem("InventoryPage") == "Y") {
+      if (localStorage.getItem("BackOffice") == "Y") {
+        document.getElementById("Inventory").click();
+      } else {
+        modalsChildRef.current.setRestrictionModal({
+          show: true,
+          message: "Your Company Is Not Register To The BackOffice",
+          title: "Authorization Failed",
+        });
+      }
+    } else {
+      modalsChildRef.current.setRestrictionModal({
+        show: true,
+        message: "Not Authorized To Access Inventory Page",
+        title: "Authorization Failed",
+      });
+    }
   }
   function invoiceClick() {
-    document.getElementById("Transactions").click();
+    if (localStorage.getItem("TransactionsPage") == "Y") {
+      if (localStorage.getItem("BackOffice") == "Y") {
+        document.getElementById("Transactions").click();
+      } else {
+        modalsChildRef.current.setRestrictionModal({
+          show: true,
+          message: "Your Company Is Not Register To The BackOffice",
+          title: "Authorization Failed",
+        });
+      }
+    } else {
+      modalsChildRef.current.setRestrictionModal({
+        show: true,
+        message: "Not Authorized To Access Transactions Page",
+        title: "Authorization Failed",
+      });
+    }
   }
   function CheckInClick() {
-    document.getElementById("Check In").click();
+    if (localStorage.getItem("CheckInPage") == "Y") {
+      document.getElementById("Check In").click();
+    } else {
+      modalsChildRef.current.setRestrictionModal({
+        show: true,
+        message: "Not Authorized To Access CheckIn Page",
+        title: "Authorization Failed",
+      });
+    }
   }
   function logout() {
     setCookie("token", "", {
@@ -89,6 +146,7 @@ export default function Main(props) {
           Sign out
         </Button>
       </div>
+      <Modals2 ref={modalsChildRef} />
     </div>
   );
 }

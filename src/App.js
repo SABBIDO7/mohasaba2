@@ -11,6 +11,7 @@ import Invoice from "./Pages/Invoice";
 import CheckIn from "./Pages/CheckIn";
 import CheckInReport from './components/CheckIn/CheckInReport'
 import { useCookies } from "react-cookie";
+import { getCompanyInfo } from "./components/BackendEndPoints/Endpoint1";
 import fullScreenToggle from './media/5642608.png'
 import QuickMenuToggle from './media/Arrow2.png'
 import Button from "react-bootstrap/Button";
@@ -26,8 +27,8 @@ function App() {
   const [Compname, setCompname] = useState("");
   const [QuickMenu,setQuickMenu ] = useState(false);
   const [FullScreen,setFullScreen ] = useState(false);
-  //const [url,setUrl ] = useState("http://localhost:8000");
-  const [url,setUrl ] = useState("https://pssapi.net:444");
+  const [url,setUrl ] = useState("http://localhost:8000");
+  //const [url,setUrl ] = useState("https://pssapi.net:444");
 
   const [cookies, setCookie] = useCookies(["token"]);
 
@@ -182,6 +183,22 @@ function App() {
               "CheckInReport",
               data.Permissions["CheckInReport"]
             );
+            localStorage.setItem(
+              "AccountingPage",
+              data.Permissions["AccountingPage"]
+            );
+            localStorage.setItem(
+              "InventoryPage",
+              data.Permissions["InventoryPage"]
+            );
+            localStorage.setItem(
+              "TransactionsPage",
+              data.Permissions["TransactionsPage"]
+            );
+            localStorage.setItem(
+              "CheckInPage",
+              data.Permissions["CheckInPage"]
+            );
 
             
            } else {
@@ -200,6 +217,7 @@ function App() {
     };
 
     fetchData(); // Call the function when the component mounts
+    getCompanyInfo();
  
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -252,14 +270,25 @@ function App() {
          <Quickmenu /> 
           <Routes>
             <Route path="/" element={<Main compname={Compname}/>}/>
+            {localStorage.getItem("AccountingPage") == "Y" &&   localStorage.getItem("BackOffice") == "Y" 
+&& (
             <Route path="/Accounting" element={<Accounting url={url} UserDataHandler={UserDataHandler} token={token} />} />
+            )}
+            {localStorage.getItem("InventoryPage") == "Y" &&   localStorage.getItem("BackOffice") == "Y" 
+&& (
             <Route path="/Inventory" element={<Stock url={url} UserDataHandler={UserDataHandler} token={token} />} />
+            )}
+            {localStorage.getItem("TransactionsPage") == "Y" &&     localStorage.getItem("BackOffice") == "Y" 
+&& (
             <Route path="/Invoice" element={<Invoice url={url} UserDataHandler={UserDataHandler} token={token} name ={Username} />
-            
+           
           } />
+        )}
+        {localStorage.getItem("CheckInPage") == "Y" && (
           <Route path="/CheckIn" element={<CheckIn url={url} UserDataHandler={UserDataHandler} token={token} name ={Username} />
             
           } />
+        )}
             {localStorage.getItem("CheckInReport") == "Y" && (
           <Route path="/CheckIn/CheckInReport" element={<CheckInReport  />
             

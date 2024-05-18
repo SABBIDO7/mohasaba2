@@ -853,6 +853,7 @@ export default function SalesForm(props) {
         );
         localStorage.setItem("CompanyCode", data.CompanyInfo["CompanyCode"]);
         localStorage.setItem("Notify", data.CompanyInfo["Notify"]);
+        localStorage.setItem("BackOffice", data.CompanyInfo["BackOffice"]);
       }
     } catch (error) {
       // Handle errors here if needed

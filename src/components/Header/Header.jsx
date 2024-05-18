@@ -1,17 +1,18 @@
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { NavLink, useLocation } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { useCookies } from "react-cookie";
 import { Location } from "react-router-dom";
+import Modals2 from "../Modals/Modals2";
 
 const navigation = [
-  { name: "Accounting", href: "/Accounting" },
-  { name: "Inventory", href: "/Inventory" },
-  { name: "Transactions", href: "/Invoice" },
-  { name: "Check In", href: "/CheckIn" },
+  { name: "Accounting", href: "/Accounting", label: "AccountingPage" },
+  { name: "Inventory", href: "/Inventory", label: "InventoryPage" },
+  { name: "Transactions", href: "/Invoice", label: "TransactionsPage" },
+  { name: "Check In", href: "/CheckIn", label: "CheckInPage" },
 ];
 
 function classNames(...classes) {
@@ -21,6 +22,8 @@ function classNames(...classes) {
 export default function Header(props) {
   const [cookies, setCookie] = useCookies(["token"]);
   const location = useLocation();
+  const modalsChildRef = useRef();
+
   return (
     <>
       <Disclosure as="nav" className="bg-slate-700 navBar ease-linear">
@@ -47,6 +50,18 @@ export default function Header(props) {
                         to={item.href}
                         id={item.name}
                         aria-hidden="true"
+                        // onClick={(e) => {
+                        //   console.log("LABELLL", item.label);
+                        //   e.preventDefault(); // Prevent default link behavior
+
+                        //   localStorage.getItem(item.label) != "Y" &&
+                        //     localStorage.getItem(item.label) != "None" &&
+                        //     modalsChildRef.current.setRestrictionModal({
+                        //       show: true,
+                        //       message: `Not Authorized To Access ${item.name} Page`,
+                        //       title: "Authorization Failed",
+                        //     });
+                        // }}
                         className={({ isActive }) => {
                           return (
                             "px-3 py-2 rounded-md text-sm  no-underline " +
@@ -106,9 +121,15 @@ export default function Header(props) {
                     to={item.href}
                     aria-hidden="true"
                     onClick={() => {
-                      document
-                        .getElementById("headlessui-disclosure-button-:r0:")
-                        .click();
+                      localStorage.getItem(item.label) == "Y"
+                        ? document
+                            .getElementById("headlessui-disclosure-button-:r0:")
+                            .click()
+                        : modalsChildRef.current.setRestrictionModal({
+                            show: true,
+                            message: `Not Authorized To Access ${item.name} Page`,
+                            title: "Authorization Failed",
+                          });
                     }}
                     /*className={classNames(
                   item.current
@@ -134,6 +155,7 @@ export default function Header(props) {
         )}
       </Disclosure>
       <div>{props.children}</div>
+      <Modals2 ref={modalsChildRef} />
     </>
   );
 }
