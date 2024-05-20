@@ -107,7 +107,7 @@ const Modals = forwardRef((props, ref) => {
                   key={idx}
                   className="bg-secondd text-BgTextColor shadow-sm p-2 rounded my-2"
                   onClick={(e) => {
-                    checkInFromSeach(io["AccNo"]);
+                    checkInFromSeach(io["AccNo"] + "__" + io["AccName"]);
 
                     // console.log(io);
                     // props.setchangingAccountInvoiceFromDB(props.Client.RefNo);
@@ -451,7 +451,7 @@ const Modals = forwardRef((props, ref) => {
       <Modal
         show={qrShowModal.show}
         onHide={() => setQrShowModal({ ...qrShowModal, show: false })}
-        contentLabel="QR Code Modal"
+        aria-labelledby="qr-code-modal-title"
         centered
       >
         <Modal.Header closeButton>

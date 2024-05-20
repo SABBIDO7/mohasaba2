@@ -38,7 +38,7 @@ export default function CheckIn(props) {
             <Scanner></Scanner>
           </div>
           <div className="h-1/5 flex items-center justify-center">
-            <CreateQr flag={"1"} accNo={null}></CreateQr>
+            <CreateQr flag={"1"} accNo={null} padding={3}></CreateQr>
           </div>
         </div>
       </div>

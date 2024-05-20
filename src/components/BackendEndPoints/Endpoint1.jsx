@@ -23,7 +23,7 @@ export async function checkInEndPoint(long, lat, method) {
       lat: lat,
       accDate: date,
       accTime: time,
-      BackOffice: localStorage.setItem("BackOffice"),
+      BackOffice: localStorage.getItem("BackOffice"),
     };
   } else {
     data = {

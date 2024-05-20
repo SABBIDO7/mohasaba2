@@ -43,7 +43,7 @@ export default function InitialSummery(props) {
       {values.map((v, idx) => (
         <Button
           key={idx}
-          className="me-2 my-1 w-[107px]"
+          className="me-2 my-1 p-2 w-[107px]"
           onClick={() => handleShow(v)}
         >
           {typeof v === "string" && `below ${v.split("-")[0]}`}

@@ -3,6 +3,7 @@ import "../../index.css"; // Import the CSS file
 import * as htmlToImage from "html-to-image";
 
 export async function downloadQrCode(qrValue) {
+  console.log(qrValue, "-----=------");
   const qrCodeElement = document.getElementById("qrCodeElement");
   htmlToImage
     .toPng(qrCodeElement)

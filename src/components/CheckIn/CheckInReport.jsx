@@ -124,9 +124,11 @@ export default function CheckInReport(props) {
     setFromTime(null);
     setToTime(null);
     getData();
+    handleChangePage(null, 0);
   };
 
   const handleChangePage = (event, newPage) => {
+    console.log("llklklklkl", newPage);
     setPage(newPage);
   };
 
@@ -206,6 +208,7 @@ export default function CheckInReport(props) {
 
   React.useEffect(() => {
     getData();
+    handleChangePage(null, 0);
   }, [vInput, fromDate, toDate, userValue, fromTime, toTime, limit]);
 
   return (

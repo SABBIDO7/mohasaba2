@@ -19,6 +19,7 @@ import axios from "axios";
 import ItemsOfAccount from "../components/Accounting/ItemsOfAccount";
 
 import InitialSummery from "../components/Accounting/InitialSummery";
+import CreateQr from "../components/CheckIn/CreateQr";
 
 export default function Accounting(props) {
   const [vInput, setInput] = useState("");
@@ -365,6 +366,11 @@ export default function Accounting(props) {
                                 branch={jsonFilter.selectedBranch}
                                 branchSearch={jsonFilter.branch}
                               />
+                              <CreateQr
+                                flag={"1"}
+                                accNo={cl["AccNo"] + "__" + cl["AccName"]}
+                                padding={2}
+                              ></CreateQr>
                             </div>
 
                             {/* </Card.Text> */}
