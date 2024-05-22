@@ -46,22 +46,37 @@ export default function Scanner() {
             qrbox: 150, // QR box size
           },
           async (decodedText, decodedResult) => {
-            console.log(`Scan result: ${decodedText}`);
-            beep(100, 520, 200); // Beep sound
-            localStorage.setItem("ScannedAccountId", decodedText);
-            setScanning(false);
-            setMethod("scan");
-            setShowLocation(true); // Show the Location component
-            scanner.stop();
-            console.log("ddddff");
+            const regex = /^[^_]+__[^_]+$/; // Regular expression to match the format xxxxxxx__xxxxx
+            if (!regex.test(decodedText)) {
+              scanner.stop();
+              setScanning(false);
+              modalsChildRef.current.setInfoModal({
+                show: true,
+                message: (
+                  <div>{"Invalid QR code format. Please try again."}</div>
+                ),
+                flag: 1,
+                title: "Invalid Qr",
+              });
+              // alert("Invalid QR code format. Please try again."); // Show error dialog
+            } else {
+              console.log(`Scan result: ${decodedText}`);
+              beep(100, 520, 200); // Beep sound
+              localStorage.setItem("ScannedAccountId", decodedText);
+              setScanning(false);
+              setMethod("scan");
+              setShowLocation(true); // Show the Location component
+              scanner.stop();
+              console.log("ddddff");
+            }
 
             // Handle the scan result here...
-          },
-          (errorMessage) => {
-            console.warn(`QR code scan error: ${errorMessage}`);
           }
+          // (errorMessage) => {
+          //   alert(`QR code scan error: ${errorMessage}`);
+          // }
         )
-        .catch((err) => console.warn(`QR code start error: ${err}`));
+        .catch((err) => alert(`QR code start error: ${err}`));
     } else if (!scanning && scannerVar) {
       setScanning(false);
       console.log("fet hon1");
