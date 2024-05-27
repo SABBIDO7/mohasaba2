@@ -81,9 +81,72 @@ export default function Invoice(props) {
   const downloadPDF = (data, ref_no) => {
     let htmlContent = "";
     if (localStorage.getItem("PrintFormat") == "1") {
-      htmlContent = `
+      if (data.type == "CR_AP" || data.type == "DB_AP") {
+        htmlContent = `
+        <div style="justify-items:space-between;align-items:center;">
+        <div style="justify-items:center;align-items:center">
+        <h1 style="color: #8B0000;">${data.type}</h1>
+
+            <h1 style="color: #8B0000;">${data.accname}</h1>
+            <p style="color: #8B0000;">Account ID: ${data.accno}</p>
+            </div>
+          
+            <table style="width: 100%;
+            border-collapse: collapse;">
+                <thead style="background-color: #edd98a;
+                color: #8B0000;">
+                    <tr style="border: 1px solid #8B0000;background-color: #edd98a; color:#8B0000;"> 
+                        <th style=" padding: 0.75rem;
+                        text-align: left;border: 1px solid #8B0000;">Type</th>
+                        <th style=" padding: 0.75rem;
+                        text-align: left;border: 1px solid #8B0000;">Amount</th>
+                        <th style=" padding: 0.75rem;
+                        text-align: left;border: 1px solid #8B0000;">Cur</th>
+                        <th style=" padding: 0.75rem;
+                        text-align: left;border: 1px solid #8B0000;">Branch</th>
+                        <th style=" padding: 0.75rem;
+                        text-align: left;border: 1px solid #8B0000;">Notes</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.items
+                      .map(
+                        (item) => `
+                            <tr >
+                                <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${
+                                  item.PType
+                                }</td>
+                                
+                                <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.uprice.toLocaleString()}</td>
+                                <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${
+                                  item.PPrice
+                                }</td>
+                                <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${
+                                  item.branch
+                                }</td>
+                           
+                                <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${
+                                  item.Note
+                                }</td>
+                            </tr>
+                        `
+                      )
+                      .join("")}
+                </tbody>
+            </table>
+            <div style="color:#8B0000;font-size:1.5rem;font-weight:600">Total: ${data.invoiceTotal.toLocaleString()}${" "}${localStorage.getItem(
+          "Cur" + localStorage.getItem("mainCur")
+        )}</div>
+            <div style="height:45px"></div>
+        </div>
+    `;
+      } else {
+        htmlContent = `
       <div style="justify-items:space-between;align-items:center;">
       <div style="justify-items:center;align-items:center">
+      <h1 style="color: #8B0000;">${data.type}</h1>
+
           <h1 style="color: #8B0000;">${data.accname}</h1>
           <p style="color: #8B0000;">Account ID: ${data.accno}</p>
           </div>
@@ -119,31 +182,49 @@ export default function Invoice(props) {
                     .map(
                       (item) => `
                           <tr >
-                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.name}</td>
-                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.uprice}</td>
-                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.Total}</td>
-                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.TotalPieces}</td>
-                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.discount}</td>
-                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.tax}</td>
-                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.TaxTotal}</td>
-                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.PType}</td>
-                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.Note}</td>
+                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${
+                                item.name
+                              }</td>
+                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.uprice.toLocaleString()}</td>
+                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${item.Total.toLocaleString()}</td>
+                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${
+                                item.TotalPieces
+                              }</td>
+                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${
+                                item.discount
+                              }</td>
+                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${
+                                item.tax
+                              }</td>
+                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${
+                                item.TaxTotal
+                              }</td>
+                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${
+                                item.PType
+                              }</td>
+                              <td style="border: 1px solid #8B0000;text-align: center;padding: 0.75rem;">${
+                                item.Note
+                              }</td>
                           </tr>
                       `
                     )
                     .join("")}
               </tbody>
           </table>
-          <div style="color:#8B0000;font-size:1.5rem;font-weight:600">Total: ${
-            data.invoiceTotal
-          }</div>
+          <div style="color:#8B0000;font-size:1.5rem;font-weight:600">Total: ${data.invoiceTotal.toLocaleString()} ${" "}${localStorage.getItem(
+          "Cur" + localStorage.getItem("mainCur")
+        )}</div>
           <div style="height:45px"></div>
       </div>
   `;
+      }
     } else if (localStorage.getItem("PrintFormat") == "2") {
-      htmlContent = `
+      if (data.type != "CR_AP" && data.type != "DB_AP") {
+        htmlContent = `
       
       <div style="justify-items:space-between;align-items:center;">
+      <h1 style="color: #8B0000;font-size:5.5rem">${data.type}</h1>
+
           <h1 style="color: #8B0000;font-size:5.5rem">${data.accname}</h1>
           <p style="color: #8B0000;font-size:4.75rem">Account ID: ${
             data.accno
@@ -153,9 +234,11 @@ export default function Invoice(props) {
               (item) => `
                   <div  style="padding: 0.75rem; display:flex;justify-items:space-between;flex-direction: column;"">
                       <h1 style="font-size: 4.75rem;"> Name: ${item.name}</h1>
-                      <h1 style="font-size: 4.75rem;">Price: ${item.uprice}</h1>
-                      <h1 style="font-size: 4.75rem;">TotalP: ${item.Total}</h1>
-                      <h1 style="font-size: 4.75rem;">Qty:${item.TotalPieces}</h1>
+                      <h1 style="font-size: 4.75rem;">Price: ${item.uprice.toLocaleString()}</h1>
+                      <h1 style="font-size: 4.75rem;">TotalP: ${item.Total.toLocaleString()}</h1>
+                      <h1 style="font-size: 4.75rem;">Qty:${
+                        item.TotalPieces
+                      }</h1>
                      
                   </div>
                   <hr style="margin: 0 auto; width: 90%;border-width: 6px;"> 
@@ -163,12 +246,46 @@ export default function Invoice(props) {
               `
             )
             .join("")}
-            <div style="color:#8B0000;font-size:5.5rem;font-weight:600">Total: ${
-              data.invoiceTotal
-            }</div>
+            <div style="color:#8B0000;font-size:5.5rem;font-weight:600">Total: ${data.invoiceTotal.toLocaleString()} ${" "}${localStorage.getItem(
+          "Cur" + localStorage.getItem("mainCur")
+        )}</div>
             <div style="height:25px"></div>
             </div>
          `;
+      } else {
+        htmlContent = `
+      
+      <div style="justify-items:space-between;align-items:center;">
+      <h1 style="color: #8B0000;font-size:5.5rem">${data.type}</h1>
+
+      <h1 style="color: #8B0000;font-size:5.5rem">${data.accname}</h1>
+          <p style="color: #8B0000;font-size:4.75rem">Account ID: ${
+            data.accno
+          }</p>
+          ${data.items
+            .map(
+              (item) => `
+                  <div  style="padding: 0.75rem; display:flex;justify-items:space-between;flex-direction: column;"">
+                      <h1 style="font-size: 4.75rem;"> Type: ${item.PType}</h1>
+                      <h1 style="font-size: 4.75rem;">Amount: ${item.uprice.toLocaleString()} ${" "} ${
+                item.PPrice
+              }</h1>
+                      
+                      <h1 style="font-size: 4.75rem;">Branch:${item.branch}</h1>
+                     
+                  </div>
+                  <hr style="margin: 0 auto; width: 90%;border-width: 6px;"> 
+
+              `
+            )
+            .join("")}
+            <div style="color:#8B0000;font-size:5.5rem;font-weight:600">Total: ${data.invoiceTotal.toLocaleString()} ${" "}${localStorage.getItem(
+          "Cur" + localStorage.getItem("mainCur")
+        )}</div>
+            <div style="height:25px"></div>
+            </div>
+         `;
+      }
     }
 
     console.log(htmlContent); // Log the HTML content to verify
@@ -189,7 +306,7 @@ export default function Invoice(props) {
     // }
     // Delay capturing to allow for rendering
     setTimeout(() => {
-      html2canvas(container, { scale: 0.5 })
+      html2canvas(container, { scale: 0.75 })
         .then((canvas) => {
           console.log("capturedd canvass", canvas); // Log the captured canvas to verify
 
@@ -521,7 +638,7 @@ export default function Invoice(props) {
         window.location.href = props.url;
       });
   }
-  function printing(selectedInvoice) {
+  function printing(selectedInvoice, invoiceTotal) {
     // if (
     //   props.propertiesAreEqual == true &&
     //   selectedInvoice != "" &&
@@ -540,7 +657,7 @@ export default function Invoice(props) {
       items: SelectedItems,
       RemovedItems: RemovedItems,
       username: localStorage.getItem("username"),
-      invoiceTotal: "100",
+      invoiceTotal: invoiceTotal,
     };
     console.log("ppppppp");
     downloadPDF(data, selectedInvoice);
@@ -586,7 +703,7 @@ export default function Invoice(props) {
     // });
     setafterSubmitModal(true);
   }
-  async function sendWhastAPP(phoneNumber, items, invoiceTotal) {
+  async function sendWhastAPP(phoneNumber, items, invoiceTotal, type) {
     // Convert the items object to a JSON string
 
     let invoiceMessage = "";
@@ -693,7 +810,7 @@ export default function Invoice(props) {
           setSelectedInvoice(res.data.ref_no);
           localStorage.setItem("InvoiceHistory", res.data.ref_no);
           if (flag == "savePrint") {
-            printing(res.data.ref_no);
+            printing(res.data.ref_no, data.invoiceTotal);
           } else if (flag == "saveWhatsApp") {
             let phoneNumber = Client["mobile"]; // replace with the actual phone number
             let invoiceMessage = items;
@@ -703,7 +820,12 @@ export default function Invoice(props) {
               Client["mobile"] != undefined &&
               Client["mobile"] != ""
             ) {
-              sendWhastAPP(phoneNumber, invoiceMessage, data.invoiceTotal);
+              sendWhastAPP(
+                phoneNumber,
+                invoiceMessage,
+                data.invoiceTotal,
+                type
+              );
             } else {
               console.log("phoneNumber", phoneNumber);
               setsaveWhatsAppModel({

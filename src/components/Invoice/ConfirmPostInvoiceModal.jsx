@@ -42,6 +42,13 @@ export default function ConfirmPostInvoiceModal(props) {
       props.setModalShow(false);
       props.setSelectedInvoice("");
       let finalTotal = props.finalTotal + props.finalTax;
+      console.log(
+        "consolha",
+        props.finalTotal,
+        "   ",
+        props.finalTax,
+        finalTotal
+      );
       props.postInvoice(
         props.type,
         props.Client,
