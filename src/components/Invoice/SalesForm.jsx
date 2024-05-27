@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faSave, faLock } from "@fortawesome/free-solid-svg-icons";
 import "../../index.css"; // Import the CSS file
 import ItemStockDetails from "./ItemStockDetails";
+import BarcodeReader from "./BarcodeReader";
 
 export default function SalesForm(props) {
   // const [vInput, setvInput] = useState(
@@ -104,6 +105,10 @@ export default function SalesForm(props) {
   const [CloseSave, setCloseSave] = useState(false);
 
   const formatter = new Intl.NumberFormat("en-US");
+  // Function to set the detected barcode
+  const handleBarcodeDetected = (detectedBarcode) => {
+    setvInput(detectedBarcode);
+  };
   const handleHeaderClick = () => {
     setDialogOpen(true);
   };
@@ -255,6 +260,7 @@ export default function SalesForm(props) {
   const selectRef = useRef(null);
   const selectInvRef = useRef(null);
   const childRef = useRef();
+  const barcodeReaderRef = useRef();
   //let propertiesAreEqual = true;
   let finalTotal = 0;
   let finalTax = 0;
@@ -1231,8 +1237,26 @@ export default function SalesForm(props) {
               />
             </div>
             <div className="ml-[2%] w-[30%] flex justify-between">
+              <div className="w-[20%]">
+                <button
+                  onClick={() => {
+                    if (
+                      sOption == "Accounts" ||
+                      props.selectedFormOption == "CR_AP" ||
+                      props.selectedFormOption == "DB_AP"
+                    ) {
+                      setItemsWithoutAccount(true);
+                    } else {
+                      barcodeReaderRef.current.setStartScanning(true);
+                    }
+                  }}
+                  className="bg-secondd text-BgTextColor w-full h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+                >
+                  Scan
+                </button>
+              </div>
               <button
-                className="bg-secondd text-BgTextColor w-[70%] h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+                className="bg-secondd text-BgTextColor w-[50%] h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
                 onClick={() => {
                   if (
                     (props.Client["id"] == "" ||
@@ -4040,6 +4064,10 @@ export default function SalesForm(props) {
           </div>
         </Modal.Footer>
       </Modal>
+      <BarcodeReader
+        ref={barcodeReaderRef}
+        onBarcodeDetected={handleBarcodeDetected}
+      ></BarcodeReader>
     </div>
   );
   function getInvoiceOptions(GroupName) {

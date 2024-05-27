@@ -27,6 +27,27 @@ export default function Scanner() {
     v.start(audioContext.currentTime);
     v.stop(audioContext.currentTime + duration * 0.001);
   };
+  const stopScanning = () => {
+    if (scanning) {
+      try {
+        // Stop Quagga
+        scanner.stop();
+
+        //Stop media tracks
+        // const video = document.querySelector("video");
+        // alert(video);
+        // if (video && video.srcObject) {
+        //   video.srcObject.getTracks().forEach((track) => {
+        //     track.stop();
+        //   });
+        // }
+      } catch (err) {
+        console.error("Error stopping scanner:", err);
+      }
+      setScanning(false);
+      setScannerVar(null); // Reset the scanner instance
+    }
+  };
   const openNoteModel = () => {
     // Update modelsShowPage state directly
     setModelsShowPage(true);
@@ -34,7 +55,11 @@ export default function Scanner() {
     modalsChildRef.current.setShowCheckInNoteModal(true);
     //  modalsChildRef.current.setShow(true);
   };
-
+  useEffect(() => {
+    return () => {
+      stopScanning();
+    };
+  }, [scanning]);
   useEffect(() => {
     if (scanning && !scannerVar) {
       scanner = new Html5Qrcode("reader");
@@ -149,9 +174,7 @@ export default function Scanner() {
           ></div>
           <button
             onClick={() => {
-              scanner.stop();
-              setScannerVar(true);
-              setScanning(false);
+              stopScanning();
             }}
             className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
           >

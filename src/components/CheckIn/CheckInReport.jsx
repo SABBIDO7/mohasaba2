@@ -96,7 +96,7 @@ export default function CheckInReport(props) {
   const navigate = useNavigate();
 
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(20);
+  const [rowsPerPage, setRowsPerPage] = React.useState(30);
   const [vInput, setvInput] = React.useState("");
   const [fromDate, setFromDate] = React.useState(null);
   const [toDate, setToDate] = React.useState(null);
@@ -106,7 +106,7 @@ export default function CheckInReport(props) {
   const [toTime, setToTime] = React.useState(null);
   const [filteredRows, setFilteredRows] = React.useState([]);
   const [users, setUsers] = React.useState([]);
-  const [limit, setLimit] = React.useState("20");
+  const [limit, setLimit] = React.useState("30");
 
   const handleChange = (event) => {
     setLimit(event.target.value);
@@ -357,7 +357,7 @@ export default function CheckInReport(props) {
               </MenuItem>
 
               <MenuItem value={"20"}>20</MenuItem>
-
+              <MenuItem value={"30"}>30</MenuItem>
               <MenuItem value={"50"}>50</MenuItem>
               <MenuItem value={"75"}>75</MenuItem>
               <MenuItem value={"100"}>100</MenuItem>
