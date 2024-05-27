@@ -1,6 +1,6 @@
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import React, { useState, useRef } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -21,7 +21,7 @@ function classNames(...classes) {
 
 export default function Header(props) {
   const [cookies, setCookie] = useCookies(["token"]);
-  const location = useLocation();
+  const navigate = useNavigate();
   const modalsChildRef = useRef();
 
   return (
@@ -97,6 +97,15 @@ export default function Header(props) {
                   >
                     Main Menu
                   </NavDropdown.Item>
+                  <NavDropdown.Item
+                    className=" navbarContent"
+                    onClick={() => {
+                      navigate("/CompanyPortal");
+                    }}
+                  >
+                    Company Portal
+                  </NavDropdown.Item>
+
                   <NavDropdown.Item
                     className=" navbarContent "
                     onClick={() => {

@@ -17,6 +17,7 @@ import QuickMenuToggle from './media/Arrow2.png'
 import Button from "react-bootstrap/Button";
 import {animate, motion} from 'framer-motion'
 import axios from "axios";
+import CompanyPortal from "./Pages/CompanyPortal";
 
 
 
@@ -294,6 +295,9 @@ function App() {
             
           } />
         )}
+        <Route path="/CompanyPortal" element={<CompanyPortal url={url}  />
+            
+          } />
            </Routes>
         </Header>
       </BrowserRouter>
