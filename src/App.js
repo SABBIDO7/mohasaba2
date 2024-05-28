@@ -28,8 +28,8 @@ function App() {
   const [Compname, setCompname] = useState("");
   const [QuickMenu,setQuickMenu ] = useState(false);
   const [FullScreen,setFullScreen ] = useState(false);
-  //const [url,setUrl ] = useState("http://localhost:8000");
-  const [url,setUrl ] = useState("https://pssapi.net:444");
+  const [url,setUrl ] = useState("http://localhost:8000");
+  //const [url,setUrl ] = useState("https://pssapi.net:444");
 
   const [cookies, setCookie] = useCookies(["token"]);
 
@@ -131,18 +131,18 @@ function App() {
              setCompname(data.compname);
              setUsername(data.name);
              setToken(cookies.token);
-             let Sbranch = localStorage.getItem("Sbranch");
-             let Abranch = localStorage.getItem("Abranch");
-             let SalePrice = localStorage.getItem("SalePrice");
+            //  let Sbranch = localStorage.getItem("Sbranch");
+            //  let Abranch = localStorage.getItem("Abranch");
+            //  let SalePrice = localStorage.getItem("SalePrice");
              
-            if (Sbranch == "" || Sbranch == null || Abranch == "" || Abranch == null){
+            
              
               localStorage.setItem("Sbranch",data.Sbranch);
               localStorage.setItem("Abranch",data.Abranch);
-            }
-            if(SalePrice=="" || SalePrice == null){
+            
+            
               localStorage.setItem("SalePrice",data.SalePrice);
-            }
+            
             localStorage.setItem("DeleteInvoice",data.Permissions["DeleteInvoice"]);
             localStorage.setItem("DeleteItem",data.Permissions["DeleteItem"]);
             localStorage.setItem("Discount",data.Permissions["Discount"]);

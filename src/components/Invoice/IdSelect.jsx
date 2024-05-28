@@ -1133,9 +1133,12 @@ const IdSelect = forwardRef((props, ref) => {
       // }
       let prefix = localStorage.getItem("SalePrice"); //SalePrice number
       uprice = e[`SPrice${prefix}`];
+      console.log("SalePriceeeee", prefix);
+      console.log("priceeee", uprice);
       if (uprice == "" || uprice == null || uprice == undefined) {
         uprice = 0;
       }
+
       setsItemInitial(uprice);
 
       setsItemPrice(uprice);

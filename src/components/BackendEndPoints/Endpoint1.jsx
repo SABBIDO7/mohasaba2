@@ -3,8 +3,8 @@ import axios from "axios";
 import "../../index.css"; // Import the CSS file
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-//const url = "http://localhost:8000";
-const url = "https://pssapi.net:444";
+const url = "http://localhost:8000";
+//const url = "https://pssapi.net:444";
 export async function checkInEndPoint(long, lat, method) {
   console.log("Calling from endpoint");
   console.log("mehod", method);
@@ -273,5 +273,32 @@ export async function getUsers() {
   } catch (error) {
     // Handle errors here if needed
     return { status: "error", result: [], message: error };
+  }
+}
+
+export async function getUsersAccessManagement() {
+  try {
+    return await axios({
+      method: "get",
+      url:
+        url + "/moh/AcccesManagement/" + localStorage.getItem("compname") + "/",
+    }).then((res) => {
+      console.log(res);
+      if (res.data.status == "success") {
+        console.log(res.data.status);
+        return {
+          status: res.data.status,
+          users: res.data.users,
+          permissionsName: res.data.permissionsName,
+          branches: res.data.branches,
+          salePrices: res.data.salePrices,
+        };
+      } else {
+        return { status: res.data.status, message: res.data.message };
+      }
+    });
+  } catch (error) {
+    console.log("tabasgit", error);
+    return { Info: "Error", message: error };
   }
 }

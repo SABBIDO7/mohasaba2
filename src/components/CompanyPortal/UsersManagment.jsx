@@ -13,6 +13,8 @@ import {
   FormGroup,
   Paper,
 } from "@mui/material";
+
+import { getUsersAccessManagement } from "../BackendEndPoints/Endpoint1";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -20,169 +22,21 @@ import Select from "@mui/material/Select";
 
 const UsersManagement = () => {
   const [users, setUsers] = useState([]);
-  const [permissions, setPermissions] = useState([]);
+  const [permissionsName, setPermissionsName] = useState([]);
   const [changedUsernames, setChangedUsernames] = useState([]);
-
+  const [branches, setBranches] = useState([]);
+  const [salePrices, setSalePrices] = useState([]);
   useEffect(() => {
-    setPermissions([
-      "Sales",
-      "SalesReturn",
-      "Order",
-      "Purchase",
-      "PurchaseReturn",
-      "BranchTransfer",
-
-      "SalesUnderZero",
-      "ChangeBranch",
-      "AccountingPage",
-      "InventoryPage",
-      "TranscationsPage",
-      "CheckInPage",
-      "DeleteInvoice",
-      "Discount",
-      "Price",
-      "CallInvoice",
-    ]);
-
-    setUsers([
-      {
-        name: "Alice Smith",
-        permissions: [
-          { name: "Sales", access: "Y" },
-          { name: "SalesReturn", access: "N" },
-          { name: "Order", access: "N" },
-          { name: "Purchase", access: "Y" },
-
-          { name: "PurchaseReturn", access: "Y" },
-          { name: "BranchTransfer", access: "N" },
-          { name: "SalesUnderZero", access: "N" },
-          { name: "ChangeBranch", access: "Y" },
-
-          { name: "AccountingPage", access: "Y" },
-          { name: "InventoryPage", access: "N" },
-          { name: "TranscationsPage", access: "N" },
-          { name: "CheckInPage", access: "Y" },
-
-          { name: "DeleteInvoice", access: "Y" },
-          { name: "Discount", access: "N" },
-          { name: "Price", access: "N" },
-          { name: "CallInvoice", access: "Y" },
-        ],
-      },
-      {
-        name: "Bob Johnson",
-        permissions: [
-          { name: "Sales", access: "Y" },
-          { name: "SalesReturn", access: "N" },
-          { name: "Order", access: "N" },
-          { name: "Purchase", access: "Y" },
-
-          { name: "PurchaseReturn", access: "Y" },
-          { name: "BranchTransfer", access: "N" },
-          { name: "SalesUnderZero", access: "N" },
-          { name: "ChangeBranch", access: "Y" },
-
-          { name: "AccountingPage", access: "Y" },
-          { name: "InventoryPage", access: "N" },
-          { name: "TranscationsPage", access: "N" },
-          { name: "CheckInPage", access: "Y" },
-
-          { name: "DeleteInvoice", access: "N" },
-          { name: "Discount", access: "N" },
-          { name: "Price", access: "Y" },
-          { name: "CallInvoice", access: "N" },
-        ],
-      },
-      {
-        name: "Carol White",
-        permissions: [
-          { name: "Sales", access: "Y" },
-          { name: "SalesReturn", access: "N" },
-          { name: "Order", access: "N" },
-          { name: "Purchase", access: "Y" },
-
-          { name: "PurchaseReturn", access: "Y" },
-          { name: "BranchTransfer", access: "N" },
-          { name: "SalesUnderZero", access: "N" },
-          { name: "ChangeBranch", access: "Y" },
-
-          { name: "AccountingPage", access: "Y" },
-          { name: "InventoryPage", access: "N" },
-          { name: "TranscationsPage", access: "N" },
-          { name: "CheckInPage", access: "Y" },
-
-          { name: "DeleteInvoice", access: "Y" },
-          { name: "Discount", access: "N" },
-          { name: "Price", access: "N" },
-          { name: "CallInvoice", access: "Y" },
-        ],
-      },
-      {
-        name: "James Burley",
-        permissions: [
-          { name: "Sales", access: "Y" },
-          { name: "SalesReturn", access: "N" },
-          { name: "Order", access: "N" },
-          { name: "Purchase", access: "Y" },
-
-          { name: "PurchaseReturn", access: "Y" },
-          { name: "BranchTransfer", access: "N" },
-          { name: "SalesUnderZero", access: "N" },
-          { name: "ChangeBranch", access: "Y" },
-
-          { name: "AccountingPage", access: "Y" },
-          { name: "InventoryPage", access: "N" },
-          { name: "TranscationsPage", access: "N" },
-          { name: "CheckInPage", access: "Y" },
-
-          { name: "DeleteInvoice", access: "N" },
-          { name: "Discount", access: "N" },
-          { name: "Price", access: "Y" },
-          { name: "CallInvoice", access: "N" },
-        ],
-      },
-      {
-        name: "Caroline Black",
-        permissions: [
-          { name: "Sales", access: "Y" },
-          { name: "SalesReturn", access: "N" },
-          { name: "Order", access: "N" },
-          { name: "Purchase", access: "Y" },
-
-          { name: "PurchaseReturn", access: "Y" },
-          { name: "BranchTransfer", access: "N" },
-          { name: "SalesUnderZero", access: "N" },
-          { name: "ChangeBranch", access: "Y" },
-
-          { name: "AccountingPage", access: "Y" },
-          { name: "InventoryPage", access: "N" },
-          { name: "TranscationsPage", access: "N" },
-          { name: "CheckInPage", access: "Y" },
-
-          { name: "DeleteInvoice", access: "Y" },
-          { name: "Discount", access: "N" },
-          { name: "Price", access: "N" },
-          { name: "CallInvoice", access: "Y" },
-        ],
-      },
-    ]);
-
-    // Fetch users data from the API
-    // const fetchData = async () => {
-    //   try {
-    //     const response = await fetch("/api/users"); // Adjust the API endpoint as needed
-    //     const data = await response.json();
-    //     // Assuming the API response structure is [{ id, name, permission, access: { yes: boolean, no: boolean } }]
-    //     const usersData = data.map((user) => ({
-    //       ...user,
-    //       permission: user.permission,
-    //     }));
-    //     setUsers(usersData);
-    //   } catch (error) {
-    //     console.error("Error fetching users:", error);
-    //   }
-    // };
-    //fetchData();
+    getUsersAccessManagement().then((response) => {
+      if (response && response.status == "success") {
+        setPermissionsName(response.permissionsName);
+        setBranches(response.branches);
+        setSalePrices(response.salePrices);
+        setUsers(response.users);
+        console.log(response.users);
+      } else {
+      }
+    });
   }, []);
 
   const handleChange = (username, permissionName, access) => {
@@ -234,7 +88,7 @@ const UsersManagement = () => {
                 >
                   User Name
                 </TableCell>
-                {permissions.map((permission) => (
+                {permissionsName.map((permission) => (
                   <TableCell
                     key={permission}
                     sx={{
@@ -248,81 +102,107 @@ const UsersManagement = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.name} sx={{ textAlign: "center" }}>
-                  <TableCell
-                    key={user.name}
-                    sx={{
-                      textAlign: "center",
-                      border: "2px solid rgba(224, 224, 224, 1)", // Add border style
-                    }}
-                  >
-                    {user.name}
-                  </TableCell>
-                  {permissions.map((permission) => {
-                    const userPermission = user.permissions.find(
-                      (perm) => perm.name === permission
-                    );
-                    return (
-                      <TableCell
-                        key={permission}
-                        sx={{
-                          textAlign: "center",
-                          border: "2px solid rgba(224, 224, 224, 1)", // Add border style
-                        }}
-                      >
-                        <FormControl sx={{ minWidth: 80 }}>
-                          <InputLabel id="demo-simple-select-autowidth-label">
-                            Access
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-autowidth-label"
-                            id="demo-simple-select-autowidth"
-                            value={userPermission?.access}
-                            sx={{
-                              "& input": { padding: "8px", fontSize: "14px" },
-                            }} // Custom styles for input
-                            onChange={(e) => {
-                              handleChange(
-                                user.name,
-                                permission,
-                                e.target.value
-                              );
-                            }}
-                            autoWidth
-                            label="Access"
-                          >
-                            <MenuItem value={"Y"}>Yes</MenuItem>
-                            <MenuItem value={"N"}>No</MenuItem>
-                          </Select>
-                        </FormControl>
-                        {/* <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={userPermission?.access === "Y"}
-                              onChange={() =>
-                                handleCheckboxChange(user.name, permission, "Y")
-                              }
-                            />
-                          }
-                          label="Y"
-                        />
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={userPermission?.access === "N"}
-                              onChange={() =>
-                                handleCheckboxChange(user.name, permission, "N")
-                              }
-                            />
-                          }
-                          label="N"
-                        /> */}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
+              {users.map((user) => {
+                console.log("user", user);
+                return (
+                  <TableRow key={user.name} sx={{ textAlign: "center" }}>
+                    <TableCell
+                      key={user.name}
+                      sx={{
+                        textAlign: "center",
+                        border: "2px solid rgba(224, 224, 224, 1)", // Add border style
+                      }}
+                    >
+                      {user.name}
+                    </TableCell>
+                    {user.permissions.map((permission) => {
+                      const userPermission = user.permissions.find((perm) => {
+                        console.log(
+                          "perm.name",
+                          perm.name,
+                          "permission",
+                          permission.name
+                        );
+                        return perm.name === permission.name;
+                      });
+
+                      return (
+                        <TableCell
+                          key={permission}
+                          sx={{
+                            textAlign: "center",
+                            border: "2px solid rgba(224, 224, 224, 1)", // Add border style
+                          }}
+                        >
+                          {permission.name !== "Sbranch" &&
+                          permission.name !== "Abranch" ? (
+                            <FormControl sx={{ minWidth: 80 }}>
+                              <InputLabel id="demo-simple-select-autowidth-label">
+                                Access
+                              </InputLabel>
+                              <Select
+                                labelId="demo-simple-select-autowidth-label"
+                                id="demo-simple-select-autowidth"
+                                value={userPermission?.access || ""}
+                                sx={{
+                                  "& input": {
+                                    padding: "4px",
+                                    fontSize: "6px",
+                                  },
+                                }} // Custom styles for input
+                                onChange={(e) => {
+                                  handleChange(
+                                    user.name,
+                                    permission,
+                                    e.target.value
+                                  );
+                                }}
+                                autoWidth
+                                label="Access"
+                              >
+                                <MenuItem value={"Y"}>Yes</MenuItem>
+                                <MenuItem value={"N"}>No</MenuItem>
+                              </Select>
+                            </FormControl>
+                          ) : (
+                            <FormControl sx={{ minWidth: 80 }}>
+                              <InputLabel id="demo-simple-select-autowidth-label">
+                                Access
+                              </InputLabel>
+                              <Select
+                                labelId="demo-simple-select-autowidth-label"
+                                id="demo-simple-select-autowidth"
+                                value={userPermission?.access || ""}
+                                sx={{
+                                  "& input": {
+                                    padding: "4px",
+                                    fontSize: "6px",
+                                  },
+                                }} // Custom styles for input
+                                onChange={(e) => {
+                                  handleChange(
+                                    user.name,
+                                    permission,
+                                    e.target.value
+                                  );
+                                }}
+                                autoWidth
+                                label="Access"
+                              >
+                                {branches.map((branch, index) => (
+                                  <MenuItem key={index} value={branch}>
+                                    {branch}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
