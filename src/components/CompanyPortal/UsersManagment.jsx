@@ -1,5 +1,5 @@
 // UserPermissions.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Container,
   Table,
@@ -14,11 +14,15 @@ import {
   Paper,
 } from "@mui/material";
 
-import { getUsersAccessManagement } from "../BackendEndPoints/Endpoint1";
+import {
+  getUsersAccessManagement,
+  UpdateUsersPermissions,
+} from "../BackendEndPoints/Endpoint1";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import Modals from "../Modals/Modals";
 
 const UsersManagement = () => {
   const [users, setUsers] = useState([]);
@@ -26,6 +30,8 @@ const UsersManagement = () => {
   const [changedUsernames, setChangedUsernames] = useState([]);
   const [branches, setBranches] = useState([]);
   const [salePrices, setSalePrices] = useState([]);
+  const modalsChildRef = useRef();
+
   useEffect(() => {
     getUsersAccessManagement().then((response) => {
       if (response && response.status == "success") {
@@ -81,6 +87,7 @@ const UsersManagement = () => {
             <TableHead>
               <TableRow>
                 <TableCell
+                  key={"UserName"}
                   sx={{
                     textAlign: "center",
                     border: "2px solid rgba(224, 224, 224, 1)", // Add border style
@@ -103,7 +110,6 @@ const UsersManagement = () => {
             </TableHead>
             <TableBody>
               {users.map((user) => {
-                console.log("user", user);
                 return (
                   <TableRow key={user.name} sx={{ textAlign: "center" }}>
                     <TableCell
@@ -115,7 +121,7 @@ const UsersManagement = () => {
                     >
                       {user.name}
                     </TableCell>
-                    {user.permissions.map((permission) => {
+                    {user.permissions.map((permission, index) => {
                       const userPermission = user.permissions.find((perm) => {
                         console.log(
                           "perm.name",
@@ -128,16 +134,20 @@ const UsersManagement = () => {
 
                       return (
                         <TableCell
-                          key={permission}
+                          key={index}
                           sx={{
                             textAlign: "center",
                             border: "2px solid rgba(224, 224, 224, 1)", // Add border style
                           }}
                         >
                           {permission.name !== "Sbranch" &&
-                          permission.name !== "Abranch" ? (
+                          permission.name !== "Abranch" &&
+                          permission.name !== "SalePrice" ? (
                             <FormControl sx={{ minWidth: 80 }}>
-                              <InputLabel id="demo-simple-select-autowidth-label">
+                              <InputLabel
+                                key={permission.name}
+                                id="demo-simple-select-autowidth-label"
+                              >
                                 Access
                               </InputLabel>
                               <Select
@@ -153,15 +163,19 @@ const UsersManagement = () => {
                                 onChange={(e) => {
                                   handleChange(
                                     user.name,
-                                    permission,
+                                    permission.name,
                                     e.target.value
                                   );
                                 }}
                                 autoWidth
                                 label="Access"
                               >
-                                <MenuItem value={"Y"}>Yes</MenuItem>
-                                <MenuItem value={"N"}>No</MenuItem>
+                                <MenuItem key={`${index}-Y`} value={"Y"}>
+                                  Yes
+                                </MenuItem>
+                                <MenuItem key={`${index}-N`} value={"N"}>
+                                  No
+                                </MenuItem>
                               </Select>
                             </FormControl>
                           ) : (
@@ -182,18 +196,25 @@ const UsersManagement = () => {
                                 onChange={(e) => {
                                   handleChange(
                                     user.name,
-                                    permission,
+                                    permission.name,
                                     e.target.value
                                   );
                                 }}
                                 autoWidth
                                 label="Access"
                               >
-                                {branches.map((branch, index) => (
-                                  <MenuItem key={index} value={branch}>
-                                    {branch}
-                                  </MenuItem>
-                                ))}
+                                {permission.name == "Abranch" ||
+                                permission.name == "Sbranch"
+                                  ? branches.map((branch, index) => (
+                                      <MenuItem key={index} value={branch}>
+                                        {branch}
+                                      </MenuItem>
+                                    ))
+                                  : salePrices.map((salePrice, index) => (
+                                      <MenuItem key={index} value={salePrice}>
+                                        {salePrice}
+                                      </MenuItem>
+                                    ))}
                               </Select>
                             </FormControl>
                           )}
@@ -211,12 +232,22 @@ const UsersManagement = () => {
         <button
           className="bg-secondd text-BgTextColor w-full h-[70%] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
           onClick={() => {
-            console.log(users);
+            UpdateUsersPermissions(users, changedUsernames).then((response) => {
+              if (response && response.status == "Error") {
+                modalsChildRef.current.setInfoModal({
+                  show: true,
+                  message: <div>{JSON.stringify(response.message)}</div>,
+                  flag: 1,
+                  title: "Error",
+                });
+              }
+            });
           }}
         >
           Save
         </button>
       </div>
+      <Modals ref={modalsChildRef} />
     </>
   );
 };

@@ -21,7 +21,7 @@ export default function CheckIn(props) {
         <h1>QR Code Scanner</h1>
       </div>
       <div className="flex justify-around flex-grow">
-        <div className="h-[100%]">
+        <div className="flex-row h-[100%] w-[100%]">
           {localStorage.getItem("CheckInReport") == "Y" && (
             <div className="h-1/5 flex items-center justify-center">
               <button

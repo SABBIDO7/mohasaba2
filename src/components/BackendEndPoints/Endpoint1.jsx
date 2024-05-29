@@ -302,3 +302,30 @@ export async function getUsersAccessManagement() {
     return { Info: "Error", message: error };
   }
 }
+
+export async function UpdateUsersPermissions(users, changedUsers) {
+  try {
+    let data = {
+      users: users,
+      changedUsers: changedUsers,
+      compname: localStorage.getItem("compname"),
+    };
+    return await axios({
+      method: "post",
+      url: url + "/moh/UpdateUsersPermissions/",
+      data: data,
+    }).then((res) => {
+      console.log(res);
+      if (res.data.status == "success") {
+        console.log(res.data.status);
+        return {
+          status: res.data.status,
+        };
+      } else {
+        return { status: res.data.status, message: res.data.message };
+      }
+    });
+  } catch (error) {
+    return { status: "Error", message: error };
+  }
+}
