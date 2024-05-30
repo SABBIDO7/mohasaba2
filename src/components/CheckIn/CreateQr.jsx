@@ -2,6 +2,8 @@ import Modals from "../Modals/Modals";
 import { QRCodeCanvas } from "qrcode.react";
 
 import React, { useState, useEffect, ReactDOM, useRef } from "react";
+import { faQrcode } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function CreateQr(props) {
   const [showQr, setShowQr] = useState(false);
@@ -36,10 +38,10 @@ export default function CreateQr(props) {
   return (
     <div>
       <button
-        className={`bg-secondd text-BgTextColor h-[fit] w-[140px]  p-${props.padding} rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md`}
+        className={`bg-secondd text-BgTextColor h-[fit] w-[fit]  p-${props.padding} rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md`}
         onClick={handleClick}
       >
-        Create Qr
+        ChkIn <FontAwesomeIcon icon={faQrcode}></FontAwesomeIcon>
       </button>
 
       <Modals

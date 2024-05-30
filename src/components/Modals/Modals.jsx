@@ -2,12 +2,18 @@ import React, {
   useState,
   useEffect,
   forwardRef,
+  useRef,
   useImperativeHandle,
 } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Location from "../CheckIn/Location";
-import { faEdit, faSave, faLock } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faSave,
+  faLock,
+  faBarcode,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { QRCodeCanvas } from "qrcode.react";
 
@@ -19,6 +25,9 @@ import {
 
 import { downloadQrCode } from "../BackendEndPoints/Internal";
 const Modals = forwardRef((props, ref) => {
+  const textareaRef = useRef(null);
+  const notetextareaRef = useRef(null);
+
   const [checkInSeachAccountsShow, setCheckInSeachAccountsShow] =
     useState(false);
   const [data, setData] = useState([]);
@@ -37,6 +46,8 @@ const Modals = forwardRef((props, ref) => {
   const [createQrInputValueModal, setCreateQrInputValueModal] = useState({
     show: false,
   });
+  const [scannerFromDeviceModal, setScannerFromDeviceModal] = useState(false);
+  const [scannerDeviceInput, setScannerDeviceInput] = useState();
   //const [method, setMethod] = useState();
   useImperativeHandle(ref, () => ({
     setCheckInSeachAccountsShow, // Expose the function via ref
@@ -47,12 +58,19 @@ const Modals = forwardRef((props, ref) => {
     setInfoSearchShowModal,
     setQrShowModal,
     setCreateQrInputValueModal,
+    setScannerFromDeviceModal,
   }));
 
   useEffect(() => {
     // props.setShowLocation(false);
+    if (showCheckInNoteModal) {
+      notetextareaRef.current.focus();
+    } else if (scannerFromDeviceModal) {
+      textareaRef.current.focus();
+    }
     console.log("ANA BL MODEL");
-  });
+  }, [showCheckInNoteModal, scannerFromDeviceModal]);
+
   const checkInFromSeach = (accountId) => {
     console.log("na2 ACCOUNT");
     props.setMethod("search");
@@ -73,12 +91,48 @@ const Modals = forwardRef((props, ref) => {
     props.setShowLocation(true);
   };
 
+  const ScanningFromDeviceScanner = () => {
+    let scannedValue = scannerDeviceInput;
+    const regex = /^[^_]+__[^_]+$/; // Regular expression to match the format xxxxxxx__xxxxx
+    if (!regex.test(scannedValue)) {
+      setInfoModal({
+        show: true,
+        message: <div>{"Invalid QR code format. Please try again."}</div>,
+        flag: 1,
+        title: "Invalid Qr",
+      });
+      // alert("Invalid QR code format. Please try again."); // Show error dialog
+    } else {
+      console.log(`Scan result: ${scannedValue}`);
+      localStorage.setItem("ScannedAccountId", scannedValue);
+      props.setMethod("scan");
+      setScannerFromDeviceModal(false);
+      props.setShowLocation(true); // Show the Location component
+      console.log("ddddff");
+    }
+    setScannerDeviceInput("");
+  };
+
   const openCheckInSearchModel = (message) => {
     // Update modelsShowPage state directly
     // Pass data directly without setting it in state
     setCheckInSeachAccountsShow(true);
     //  modalsChildRef.current.setShow(true);
     setData(message);
+  };
+
+  const NotehandleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      checkInFromNote();
+    }
+  };
+
+  const ScannerhandleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      ScanningFromDeviceScanner();
+    }
   };
 
   return (
@@ -190,12 +244,14 @@ const Modals = forwardRef((props, ref) => {
         </Modal.Header>
         <Modal.Body>
           <textarea
+            ref={notetextareaRef}
             value={checkInNoteInput}
             onChange={(e) => {
               if (e.target.value.length <= 30) {
                 setCheckInNoteInput(e.target.value);
               }
             }}
+            onKeyDown={NotehandleKeyDown}
             className="form-control"
             rows={5}
           />
@@ -223,6 +279,52 @@ const Modals = forwardRef((props, ref) => {
             <Button variant="primary" onClick={checkInFromNote}>
               <FontAwesomeIcon icon={faSave} className="mr-2" />
               Save
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={scannerFromDeviceModal}
+        onHide={() => {
+          setScannerDeviceInput("");
+
+          setScannerFromDeviceModal(false);
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Scan Account</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <textarea
+            ref={textareaRef}
+            value={scannerDeviceInput}
+            onChange={(e) => {
+              setScannerDeviceInput(e.target.value);
+            }}
+            onKeyDown={ScannerhandleKeyDown}
+            className="form-control"
+            rows={5}
+          />
+        </Modal.Body>
+        <Modal.Footer className="flex  justify-between">
+          <div className="flex flex-row justify-between w-[100%]">
+            <div>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setScannerDeviceInput("");
+
+                  setScannerFromDeviceModal(false);
+                }}
+              >
+                Close
+              </Button>
+            </div>
+
+            <Button variant="primary" onClick={ScanningFromDeviceScanner}>
+              <FontAwesomeIcon icon={faBarcode} className="mr-2" />
+              Scan
             </Button>
           </div>
         </Modal.Footer>

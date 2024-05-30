@@ -2,6 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import Location from "./Location";
 import Modals from "../Modals/Modals";
+import {
+  faSearch,
+  faCamera,
+  faBarcode,
+  faStickyNote,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Scanner() {
   const scannerRef = useRef(null);
@@ -27,6 +34,7 @@ export default function Scanner() {
     v.start(audioContext.currentTime);
     v.stop(audioContext.currentTime + duration * 0.001);
   };
+
   const stopScanning = () => {
     if (scanning) {
       try {
@@ -47,6 +55,9 @@ export default function Scanner() {
       setScanning(false);
       setScannerVar(null); // Reset the scanner instance
     }
+  };
+  const openScannerInputModel = () => {
+    modalsChildRef.current.setScannerFromDeviceModal(true);
   };
   const openNoteModel = () => {
     // Update modelsShowPage state directly
@@ -113,42 +124,42 @@ export default function Scanner() {
   return (
     <>
       {!scanning && (
-        <div className="flex flex-column  justify-center items-center h-[100%]">
-          <div className="h-1/3 flex justify-center items-center">
-            <button
-              className="bg-secondd text-BgTextColor h-[fit] w-[140px]   p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
-              onClick={() => {
-                setMethod("showSearchInput");
-                console.log("kabas search");
-                console.log(showLocation);
-                setShowLocation(true);
-              }}
-            >
-              CheckIn Search
-            </button>
-          </div>
-          <div className="h-1/3 flex justify-center items-center">
-            <button
-              className="bg-secondd text-BgTextColor h-[fit] w-[140px] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
-              onClick={() => {
-                setMethod("scan");
-                setScanning(true);
-              }}
-            >
-              CheckIn Qr
-            </button>
-          </div>
-          <div className="h-1/3 flex justify-center items-center">
-            <button
-              className="bg-secondd text-BgTextColor h-[fit] w-[140px]  p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
-              onClick={() => {
-                setMethod("Note");
-                openNoteModel();
-              }}
-            >
-              CheckIn Note
-            </button>
-          </div>
+        <div className="grid grid-cols-2 gap-4">
+          <button
+            className="bg-secondd text-BgTextColor h-[fit] w-[fit] p-2.5 m-2 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+            onClick={() => {
+              setMethod("scan");
+              setScanning(true);
+            }}
+          >
+            ChkIn <FontAwesomeIcon icon={faCamera}></FontAwesomeIcon>
+          </button>
+          <button
+            className="bg-secondd text-BgTextColor h-[fit] w-[fit] p-2.5 m-2 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+            onClick={() => {
+              openScannerInputModel();
+            }}
+          >
+            ChkIn <FontAwesomeIcon icon={faBarcode}></FontAwesomeIcon>
+          </button>
+          <button
+            className="bg-secondd text-BgTextColor h-[fit] w-[fit] p-2.5 m-2 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+            onClick={() => {
+              setMethod("Note");
+              openNoteModel();
+            }}
+          >
+            ChkIn <FontAwesomeIcon icon={faStickyNote}></FontAwesomeIcon>
+          </button>
+          <button
+            className="bg-secondd text-BgTextColor h-[fit] w-[fit] p-2.5 m-2 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+            onClick={() => {
+              setMethod("showSearchInput");
+              setShowLocation(true);
+            }}
+          >
+            ChkIn <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>
+          </button>
         </div>
       )}
       {showLocation && (
@@ -158,7 +169,6 @@ export default function Scanner() {
           setMethod={setMethod}
         />
       )}
-
       {scanning && (
         <>
           <div
@@ -167,15 +177,12 @@ export default function Scanner() {
             style={{
               display: "flex",
               justifyContent: "center",
-              justifyItems: "center",
               width: "250px",
               height: "250px",
             }}
           ></div>
           <button
-            onClick={() => {
-              stopScanning();
-            }}
+            onClick={stopScanning}
             className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
           >
             Stop Scanning

@@ -6,6 +6,8 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 import Scanner from "../components/CheckIn/Scanner";
 import CheckInReport from "../components/CheckIn/CheckInReport";
 import { useNavigate } from "react-router-dom";
+import { faFileAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { getCompanyInfo } from "../components/BackendEndPoints/Endpoint1";
 import CreateQr from "../components/CheckIn/CreateQr";
@@ -16,30 +18,26 @@ export default function CheckIn(props) {
     getCompanyInfo();
   }, []);
   return (
-    <div className="h-[90vh] overscroll-contain bg-fourth flex  flex-column justify-between items-center">
-      <div className="flex justify-start">
+    <div className="h-[90vh] w-[100%] overscroll-contain bg-fourth flex flex-col justify-between ">
+      <div className="flex justify-center">
         <h1>QR Code Scanner</h1>
       </div>
-      <div className="flex justify-around flex-grow">
-        <div className="flex-row h-[100%] w-[100%]">
-          {localStorage.getItem("CheckInReport") == "Y" && (
-            <div className="h-1/5 flex items-center justify-center">
-              <button
-                className="bg-secondd text-BgTextColor h-[fit] w-[140px]  p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
-                onClick={() => {
-                  navigate("/CheckIn/CheckInReport");
-                }}
-              >
-                CheckIn Report
-              </button>
-            </div>
+      <div className="flex flex-wrap justify-around items-center flex-grow">
+        <div className="w-full flex flex-row justify-around mb-4">
+          <Scanner />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          {localStorage.getItem("CheckInReport") === "Y" && (
+            <button
+              className="bg-secondd text-BgTextColor h-[fit] w-[fit] p-2.5 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+              onClick={() => {
+                navigate("/CheckIn/CheckInReport");
+              }}
+            >
+              ChkIn <FontAwesomeIcon icon={faFileAlt}></FontAwesomeIcon>
+            </button>
           )}
-          <div className="h-3/5">
-            <Scanner></Scanner>
-          </div>
-          <div className="h-1/5 flex items-center justify-center">
-            <CreateQr flag={"1"} accNo={null} padding={3}></CreateQr>
-          </div>
+          <CreateQr flag={"1"} accNo={null} padding={2.5} />
         </div>
       </div>
     </div>
