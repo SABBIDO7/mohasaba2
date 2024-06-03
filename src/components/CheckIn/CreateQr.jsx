@@ -38,7 +38,7 @@ export default function CreateQr(props) {
   return (
     <div>
       <button
-        className={`bg-secondd text-BgTextColor h-[fit] w-[fit]  p-${props.padding} rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md`}
+        className={`bg-secondd text-BgTextColor h-[fit] w-full  p-${props.padding} rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md`}
         onClick={handleClick}
       >
         ChkIn <FontAwesomeIcon icon={faQrcode}></FontAwesomeIcon>

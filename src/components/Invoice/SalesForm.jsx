@@ -1190,6 +1190,34 @@ export default function SalesForm(props) {
       console.log("ERROR");
     }
   }, [props.afterSubmitModal]);
+  const selectSearchAction = () => {
+    if (
+      (props.Client["id"] == "" || props.Client["id"] == undefined) &&
+      sOption == "Items" &&
+      props.selectedFormOption != "SAT_AP"
+    ) {
+      setItemsWithoutAccount(true);
+    } else if (sOption == "Amounts") {
+      if (
+        props.Client["id"] == undefined ||
+        props.Client["id"] == "undefined" ||
+        props.Client["id"] == "" ||
+        props.Client["id"] == null
+      ) {
+        setErrorModal({
+          show: true,
+          message: <div>You Should Choose An Account First.</div>,
+          title: "No Account",
+        });
+      } else {
+        props.setModalVoucher(true);
+      }
+    } else {
+      getInvoiceOptions("");
+      setModalShow(true);
+      localStorage.setItem("InvoiceHistory", "");
+    }
+  };
 
   const allowPriceChanges = localStorage.getItem("Price") !== "N";
   const allowDiscountChanges = localStorage.getItem("Discount") !== "N";
@@ -1233,6 +1261,12 @@ export default function SalesForm(props) {
                 onChange={(e) => {
                   setvInput(e.target.value);
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    selectSearchAction();
+                  }
+                }}
                 id="tf"
               />
             </div>
@@ -1257,35 +1291,7 @@ export default function SalesForm(props) {
               </div>
               <button
                 className="bg-secondd text-BgTextColor w-[50%] h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
-                onClick={() => {
-                  if (
-                    (props.Client["id"] == "" ||
-                      props.Client["id"] == undefined) &&
-                    sOption == "Items" &&
-                    props.selectedFormOption != "SAT_AP"
-                  ) {
-                    setItemsWithoutAccount(true);
-                  } else if (sOption == "Amounts") {
-                    if (
-                      props.Client["id"] == undefined ||
-                      props.Client["id"] == "undefined" ||
-                      props.Client["id"] == "" ||
-                      props.Client["id"] == null
-                    ) {
-                      setErrorModal({
-                        show: true,
-                        message: <div>You Should Choose An Account First.</div>,
-                        title: "No Account",
-                      });
-                    } else {
-                      props.setModalVoucher(true);
-                    }
-                  } else {
-                    getInvoiceOptions("");
-                    setModalShow(true);
-                    localStorage.setItem("InvoiceHistory", "");
-                  }
-                }}
+                onClick={selectSearchAction}
               >
                 Select {sOption}
               </button>

@@ -124,7 +124,7 @@ export default function Scanner() {
   return (
     <>
       {!scanning && (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 w-[90%] sm:w-[50%]">
           <button
             className="bg-secondd text-BgTextColor h-[fit] w-[fit] p-2.5 m-2 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
             onClick={() => {
