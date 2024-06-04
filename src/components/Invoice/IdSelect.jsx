@@ -764,6 +764,15 @@ const IdSelect = forwardRef((props, ref) => {
                   }
                 }
                 addItem();
+                // Set focus to the input field in the parent component after a small delay
+                setTimeout(() => {
+                  if (props.inputRef && props.inputRef.current) {
+                    console.log("Ref exists, focusing input");
+                    props.inputRef.current.focus();
+                  } else {
+                    console.log("Ref does not exist");
+                  }
+                }, 200); // Adjust the timeout duration if necessary
               }}
             >
               Add Item

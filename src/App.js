@@ -201,6 +201,18 @@ function App() {
               "CheckInPage",
               data.Permissions["CheckInPage"]
             );
+            localStorage.setItem(
+              "CompanySettings",
+              data.Permissions["CompanySettings"]
+            );
+            localStorage.setItem(
+              "UserManagement",
+              data.Permissions["UserManagement"]
+            );
+            localStorage.setItem(
+              "CompanyDashboard",
+              data.Permissions["CompanyDashboard"]
+            );
 
             
            } else {
@@ -296,9 +308,10 @@ function App() {
             
           } />
         )}
+           {(localStorage.getItem("CompanySettings") == "Y" || localStorage.getItem("UserManagement") == "Y" || localStorage.getItem("CompanyDashboard") == "Y") &&(
         <Route path="/CompanyPortal" element={<CompanyPortal url={url}  />
             
-          } />
+          } />)}
            </Routes>
         </Header>
       </BrowserRouter>

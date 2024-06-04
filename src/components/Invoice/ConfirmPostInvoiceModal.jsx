@@ -1,39 +1,47 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-
+import Modals from "../Modals/Modals";
 export default function ConfirmPostInvoiceModal(props) {
+  const modalsChildRef = useRef();
   useEffect(() => {
     if (props.saveNewFlag.show == true) {
-      onYesPress();
+      try {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            console.log("Started");
+
+            localStorage.setItem("latitude", position.coords.latitude);
+            localStorage.setItem("longitude", position.coords.longitude);
+            onYesPress(position.coords.latitude, position.coords.longitude);
+          });
+        } else {
+          modalsChildRef.current.setInfoModal({
+            show: true,
+            message: (
+              <div>{"Geolocation is not supported by this browser."}</div>
+            ),
+            flag: 1,
+            title: "Error Occured",
+          });
+          console.log("Geolocation is not supported by this browser.");
+        }
+      } catch (e) {
+        modalsChildRef.current.setInfoModal({
+          show: true,
+          message: <div>{"Error No : " + e}</div>,
+          flag: 1,
+          title: "Error Occured",
+        });
+      }
     }
   }, [props.saveNewFlag]);
-  // return (
-  //   <>
-  //     <Modal
-  //       show={props.modalShow}
-  //       onHide={() => props.setModalShow(false)}
-  //       size="lg"
-  //       aria-labelledby="contained-modal-title-vcenter"
-  //       centered
-  //     >
-  //       <Modal.Header>
-  //         <Modal.Title id="contained-modal-title-vcenter">
-  //           Save Invoice?
-  //         </Modal.Title>
-  //       </Modal.Header>
-  //       <Modal.Body>
-  //         <div className="flex flex-row justify-around w[100%]">
-  //           <Button variant="danger" onClick={() => props.setModalShow(false)}>
-  //             No
-  //           </Button>
-  //           <Button onClick={() => onYesPress()}>Yes</Button>
-  //         </div>
-  //       </Modal.Body>
-  //     </Modal>
-  //   </>
-  // );
-  function onYesPress() {
+  return (
+    <>
+      <Modals ref={modalsChildRef} />
+    </>
+  );
+  function onYesPress(latitude, longitude) {
     let flag = props.saveNewFlag.variable;
     props.setsaveNewFlag({ ...props.saveNewFlag, show: false });
     if (props.accno == "") {
@@ -55,7 +63,9 @@ export default function ConfirmPostInvoiceModal(props) {
         props.items,
         finalTotal,
         props.RemovedItems,
-        flag
+        flag,
+        latitude,
+        longitude
       );
       console.log("/*/*/*/*/*/*/*/**/");
       console.log(props.type, props.Client, props.items);

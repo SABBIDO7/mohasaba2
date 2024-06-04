@@ -2198,6 +2198,7 @@ export default function SalesForm(props) {
         selectedFormOptionDisplay={props.selectedFormOptionDisplay}
         modalVoucher={props.modalVoucher}
         setModalVoucher={props.setModalVoucher}
+        inputRef={inputRef}
       />
       {ItemStockDetails &&
       props.selectedFormOption != "CR_AP" &&

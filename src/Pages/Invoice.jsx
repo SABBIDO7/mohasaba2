@@ -739,7 +739,16 @@ export default function Invoice(props) {
       `https://api.whatsapp.com:/send?phone=${phoneNumber}&text=${encodedMessage}`
     );
   }
-  function postInvoice(type, acc, items, InvoiceTotal, RemovedItems, flag) {
+  function postInvoice(
+    type,
+    acc,
+    items,
+    InvoiceTotal,
+    RemovedItems,
+    flag,
+    lat,
+    long
+  ) {
     let tempItem = "";
 
     console.log("**//---", acc.RefNo);
@@ -788,9 +797,9 @@ export default function Invoice(props) {
           : Client["Rate"],
       SATFromBranch: SATFromBranch,
       SATToBranch: SATToBranch,
-      long: localStorage.getItem("longitude"),
+      long: long,
 
-      lat: localStorage.getItem("latitude"),
+      lat: lat,
     };
     console.log("n bl invoice");
     console.log(data);

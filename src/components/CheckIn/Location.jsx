@@ -56,6 +56,9 @@ export default function Location(props) {
               position.coords.longitude,
               props.method
             );
+          } else if (props.method == "Transactions") {
+            localStorage.setItem("latitude", position.coords.latitude);
+            localStorage.setItem("longitude", position.coords.longitude);
           }
         });
       } else {

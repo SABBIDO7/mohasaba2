@@ -97,15 +97,18 @@ export default function Header(props) {
                   >
                     Main Menu
                   </NavDropdown.Item>
-                  <NavDropdown.Item
-                    className=" navbarContent"
-                    onClick={() => {
-                      navigate("/CompanyPortal");
-                    }}
-                  >
-                    Company Portal
-                  </NavDropdown.Item>
-
+                  {(localStorage.getItem("CompanySettings") == "Y" ||
+                    localStorage.getItem("UserManagement") == "Y" ||
+                    localStorage.getItem("CompanyDashboard") == "Y") && (
+                    <NavDropdown.Item
+                      className=" navbarContent"
+                      onClick={() => {
+                        navigate("/CompanyPortal");
+                      }}
+                    >
+                      Company Portal
+                    </NavDropdown.Item>
+                  )}
                   <NavDropdown.Item
                     className=" navbarContent "
                     onClick={() => {

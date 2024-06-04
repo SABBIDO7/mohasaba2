@@ -58,13 +58,17 @@ const CompanyPortal = () => {
             </Tabs>
           </AppBar>
           <TabPanel value={selectedTab} index={0}>
-            <CompanySettings />
+            {localStorage.getItem("CompanySettings") == "Y" && (
+              <CompanySettings />
+            )}
           </TabPanel>
           <TabPanel value={selectedTab} index={1}>
-            <UserManagement />
+            {localStorage.getItem("UserManagement") == "Y" && (
+              <UserManagement />
+            )}
           </TabPanel>
           <TabPanel value={selectedTab} index={2}>
-            <Dashboard />
+            {localStorage.getItem("CompanyDashboard") == "Y" && <Dashboard />}
           </TabPanel>
         </Paper>
       </Container>

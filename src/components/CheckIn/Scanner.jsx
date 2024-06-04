@@ -181,12 +181,14 @@ export default function Scanner() {
               height: "250px",
             }}
           ></div>
-          <button
-            onClick={stopScanning}
-            className="bg-secondd text-BgTextColor h-[fit] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
-          >
-            Stop Scanning
-          </button>
+          <div className="flex justify-center items-center">
+            <button
+              onClick={stopScanning}
+              className="bg-secondd text-BgTextColor h-[50%] p-3 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
+            >
+              Stop Scanning
+            </button>
+          </div>
         </>
       )}
       <Modals

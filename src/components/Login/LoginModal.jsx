@@ -113,6 +113,18 @@ function LoginModal(props) {
               "CheckInPage",
               response.data.Permissions["CheckInPage"]
             );
+            localStorage.setItem(
+              "CompanySettings",
+              response.data.Permissions["CompanySettings"]
+            );
+            localStorage.setItem(
+              "UserManagement",
+              response.data.Permissions["UserManagement"]
+            );
+            localStorage.setItem(
+              "CompanyDashboard",
+              response.data.Permissions["CompanyDashboard"]
+            );
             props.UserDataHandler(
               response.data.compname,
               response.data.name,
