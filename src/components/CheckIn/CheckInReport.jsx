@@ -107,9 +107,13 @@ export default function CheckInReport(props) {
   const [filteredRows, setFilteredRows] = React.useState([]);
   const [users, setUsers] = React.useState([]);
   const [limit, setLimit] = React.useState("30");
+  const [type, setType] = React.useState("CHK_AP");
 
   const handleChange = (event) => {
     setLimit(event.target.value);
+  };
+  const typeHandleChange = (event) => {
+    setType(event.target.value);
   };
   const handleClearFilters = () => {
     resetFilters();
@@ -183,6 +187,7 @@ export default function CheckInReport(props) {
       limit: limit,
       compname: localStorage.getItem("compname"),
       username: localStorage.getItem("username"),
+      type: type,
     };
     console.log(data);
     CheckInDashboardFiltering(data).then((response) => {
@@ -209,7 +214,7 @@ export default function CheckInReport(props) {
   React.useEffect(() => {
     getData();
     handleChangePage(null, 0);
-  }, [vInput, fromDate, toDate, userValue, fromTime, toTime, limit]);
+  }, [vInput, fromDate, toDate, userValue, fromTime, toTime, limit, type]);
 
   return (
     <div className="h-[100%]">
@@ -339,36 +344,67 @@ export default function CheckInReport(props) {
               />
             )}
           />
-          <FormControl sx={{ minWidth: 80 }}>
-            <InputLabel id="demo-simple-select-autowidth-label">
-              Limit
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-autowidth-label"
-              id="demo-simple-select-autowidth"
-              value={limit}
-              sx={{ "& input": { padding: "14px", fontSize: "14px" } }} // Custom styles for input
-              onChange={handleChange}
-              autoWidth
-              label="Limit"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
+          <div className="flex flex-row w-full">
+            <FormControl sx={{ minWidth: 80 }}>
+              <InputLabel id="demo-simple-select-autowidth-label">
+                Type
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                value={type}
+                sx={{ "& input": { padding: "14px", fontSize: "14px" } }} // Custom styles for input
+                onChange={typeHandleChange}
+                autoWidth
+                label="Type"
+              >
+                {/* <MenuItem value="">
+                  <em>None</em>
+                </MenuItem> */}
 
-              <MenuItem value={"20"}>20</MenuItem>
-              <MenuItem value={"30"}>30</MenuItem>
-              <MenuItem value={"50"}>50</MenuItem>
-              <MenuItem value={"75"}>75</MenuItem>
-              <MenuItem value={"100"}>100</MenuItem>
+                <MenuItem value={"CHK_AP"}>CHK_AP</MenuItem>
+                <MenuItem value={"SA_AP"}>SA_AP</MenuItem>
+                <MenuItem value={"SR_AP"}>SR_AP</MenuItem>
+                <MenuItem value={"PR_AP"}>PR_AP</MenuItem>
+                <MenuItem value={"PI_AP"}>PI_AP</MenuItem>
+                <MenuItem value={"SAT_AP"}>SAT_AP</MenuItem>
+                <MenuItem value={"DB_AP"}>DB_AP</MenuItem>
+                <MenuItem value={"DB_AP"}>CR_AP</MenuItem>
 
-              <MenuItem value={"200"}>200</MenuItem>
-              <MenuItem value={"5000"}>500</MenuItem>
-              <MenuItem value={"1000"}>1K</MenuItem>
-              <MenuItem value={"2000"}>2K</MenuItem>
-              <MenuItem value={"All"}>All</MenuItem>
-            </Select>
-          </FormControl>
+                <MenuItem value={"All"}>All</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl sx={{ minWidth: 80 }}>
+              <InputLabel id="demo-simple-select-autowidth-label">
+                Limit
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                value={limit}
+                sx={{ "& input": { padding: "14px", fontSize: "14px" } }} // Custom styles for input
+                onChange={handleChange}
+                autoWidth
+                label="Limit"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+
+                <MenuItem value={"20"}>20</MenuItem>
+                <MenuItem value={"30"}>30</MenuItem>
+                <MenuItem value={"50"}>50</MenuItem>
+                <MenuItem value={"75"}>75</MenuItem>
+                <MenuItem value={"100"}>100</MenuItem>
+
+                <MenuItem value={"200"}>200</MenuItem>
+                <MenuItem value={"5000"}>500</MenuItem>
+                <MenuItem value={"1000"}>1K</MenuItem>
+                <MenuItem value={"2000"}>2K</MenuItem>
+                <MenuItem value={"All"}>All</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
         </div>
       </div>
       {/* <button

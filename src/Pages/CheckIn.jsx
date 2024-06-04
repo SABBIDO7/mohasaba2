@@ -34,7 +34,10 @@ export default function CheckIn(props) {
                 navigate("/CheckIn/CheckInReport");
               }}
             >
-              ChkIn <FontAwesomeIcon icon={faFileAlt}></FontAwesomeIcon>
+              <FontAwesomeIcon
+                icon={faFileAlt}
+                className="text-2xl"
+              ></FontAwesomeIcon>
             </button>
           )}
           <CreateQr flag={"1"} accNo={null} padding={2.5} />

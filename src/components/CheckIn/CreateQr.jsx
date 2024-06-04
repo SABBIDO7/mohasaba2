@@ -19,7 +19,7 @@ export default function CreateQr(props) {
       console.log("fett bl nullll");
       modalsChildRef.current.setCreateQrInputValueModal({
         show: true,
-        title: "Enter Qr Value",
+        title: "Create Qr Value",
       });
     }
   };
@@ -41,7 +41,7 @@ export default function CreateQr(props) {
         className={`bg-secondd text-BgTextColor h-[fit] w-full  p-${props.padding} rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md`}
         onClick={handleClick}
       >
-        ChkIn <FontAwesomeIcon icon={faQrcode}></FontAwesomeIcon>
+        <FontAwesomeIcon icon={faQrcode} className="text-2xl"></FontAwesomeIcon>
       </button>
 
       <Modals

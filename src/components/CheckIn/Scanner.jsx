@@ -132,7 +132,10 @@ export default function Scanner() {
               setScanning(true);
             }}
           >
-            ChkIn <FontAwesomeIcon icon={faCamera}></FontAwesomeIcon>
+            <FontAwesomeIcon
+              icon={faCamera}
+              className="text-2xl"
+            ></FontAwesomeIcon>
           </button>
           <button
             className="bg-secondd text-BgTextColor h-[fit] w-[fit] p-2.5 m-2 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
@@ -140,7 +143,10 @@ export default function Scanner() {
               openScannerInputModel();
             }}
           >
-            ChkIn <FontAwesomeIcon icon={faBarcode}></FontAwesomeIcon>
+            <FontAwesomeIcon
+              icon={faBarcode}
+              className="text-2xl"
+            ></FontAwesomeIcon>
           </button>
           <button
             className="bg-secondd text-BgTextColor h-[fit] w-[fit] p-2.5 m-2 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
@@ -149,7 +155,10 @@ export default function Scanner() {
               openNoteModel();
             }}
           >
-            ChkIn <FontAwesomeIcon icon={faStickyNote}></FontAwesomeIcon>
+            <FontAwesomeIcon
+              icon={faStickyNote}
+              className="text-2xl"
+            ></FontAwesomeIcon>
           </button>
           <button
             className="bg-secondd text-BgTextColor h-[fit] w-[fit] p-2.5 m-2 rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
@@ -158,7 +167,10 @@ export default function Scanner() {
               setShowLocation(true);
             }}
           >
-            ChkIn <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>
+            <FontAwesomeIcon
+              icon={faSearch}
+              className="text-2xl"
+            ></FontAwesomeIcon>
           </button>
         </div>
       )}

@@ -513,7 +513,7 @@ const Modals = forwardRef((props, ref) => {
           <div className="flex justify-center">
             <input
               type="text"
-              placeholder="Qr Value"
+              placeholder="Enter Qr Value"
               className="text-lg font-semibold block rounded-md  h-[3rem] border border-secondd bg-white px-4 py-2 focus:outline-none focus:border-secondd focus:ring-1 focus:ring-secondd text-lg w-[50%]"
               value={createQrInputValue}
               onChange={(e) => setCreateQrInputValue(e.target.value)}
@@ -525,7 +525,10 @@ const Modals = forwardRef((props, ref) => {
             <Button
               variant="danger"
               onClick={() => {
-                setCreateQrInputValue({ ...createQrInputValue, show: false });
+                setCreateQrInputValueModal({
+                  ...createQrInputValueModal,
+                  show: false,
+                });
               }}
             >
               close
