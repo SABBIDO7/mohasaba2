@@ -42,7 +42,11 @@ const IdSelect = forwardRef((props, ref) => {
   const [sItemBranchesStock, setsItemBranchesStock] = useState({});
   const [sItemTotalStockQty, setsItemTotalStockQty] = useState(0);
   const [pageOpenTrigger, setpageOpenTrigger] = useState(false);
-
+  // Utility function to check if the device name is "k50"
+  const isK50Device = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    return userAgent.includes("k50");
+  };
   useImperativeHandle(ref, () => ({
     // Define functions here
     selectHandler: (e, idx) => {
@@ -367,16 +371,27 @@ const IdSelect = forwardRef((props, ref) => {
                             </p>
                           </div>
                         </div>
-                        <div>
-                          <p className="me-3 mb-0">
-                            <strong>Bal:</strong>
-                            {io["Balance"] != null && io["Balance"] != ""
-                              ? " " +
-                                io["Balance"].toLocaleString() +
-                                " " +
-                                io["Cur"]
-                              : "--"}
-                          </p>
+                        <div className="flex flex-row justify-between">
+                          <div>
+                            <p className="me-3 mb-0">
+                              <strong>Bal:</strong>
+                              {io["Balance"] != null && io["Balance"] != ""
+                                ? " " +
+                                  io["Balance"].toLocaleString() +
+                                  " " +
+                                  io["Cur"]
+                                : "--"}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="me-3 mb-0">
+                              <strong>D:</strong>
+                              {io["DeliveryDays"] != null &&
+                              io["DeliveryDays"] != ""
+                                ? " " + io["DeliveryDays"]
+                                : "--"}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -768,11 +783,20 @@ const IdSelect = forwardRef((props, ref) => {
                 setTimeout(() => {
                   if (props.inputRef && props.inputRef.current) {
                     console.log("Ref exists, focusing input");
+                    if (isK50Device()) {
+                      props.inputRef.current.setAttribute("readonly", true);
+                    }
+
                     props.inputRef.current.focus();
+                    if (isK50Device()) {
+                      setTimeout(() => {
+                        props.inputRef.current.removeAttribute("readonly");
+                      }, 500);
+                    } // Adjust the timeout duration if necessary
                   } else {
                     console.log("Ref does not exist");
                   }
-                }, 200); // Adjust the timeout duration if necessary
+                }, 500); // Adjust the timeout duration if necessary
               }}
             >
               Add Item
@@ -1044,6 +1068,7 @@ const IdSelect = forwardRef((props, ref) => {
         Rate: "",
         address: "",
         mobile: "",
+        deliveryDays: "",
       });
       // props.ssi([])
       // localStorage.setItem("sales", "")
@@ -1084,6 +1109,7 @@ const IdSelect = forwardRef((props, ref) => {
         cur: e["Cur"],
         Rate: localStorage.getItem("Rate"),
         mobile: e["Mobile"],
+        deliveryDays: e["DeliveryDays"],
       });
 
       props.setModalShow(false);
@@ -1115,6 +1141,7 @@ const IdSelect = forwardRef((props, ref) => {
           cur: e["Cur"],
           Rate: localStorage.getItem("Rate"),
           mobile: e["Mobile"],
+          deliveryDays: e["DeliveryDays"],
         },
 
         items: props.si,

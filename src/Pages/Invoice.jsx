@@ -800,6 +800,7 @@ export default function Invoice(props) {
       long: long,
 
       lat: lat,
+      deliveryDays: Client["deliveryDays"],
     };
     console.log("n bl invoice");
     console.log(data);

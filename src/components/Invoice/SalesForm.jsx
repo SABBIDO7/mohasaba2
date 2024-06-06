@@ -474,6 +474,7 @@ export default function SalesForm(props) {
         cur: "",
         Rate: "",
         mobile: "",
+        deliveryDays: "",
       });
 
       localStorage.setItem("InvoiceHistory", selectedValue);
@@ -556,6 +557,7 @@ export default function SalesForm(props) {
                 cur: response.data.InvProfile[0]["cur"],
                 Rate: response.data.InvProfile[0]["Rate"],
                 mobile: response.data.InvProfile[0]["mobile"],
+                deliveryDays: response.data.InvProfile[0]["DateValue"],
               },
 
               items: response.data.Invoices,
@@ -1400,6 +1402,16 @@ export default function SalesForm(props) {
                       props.Client["cur"] != null &&
                       props.Client["cur"] != ""
                         ? props.Client["cur"]
+                        : "-"}
+                    </div>
+                  </div>
+                  <div className="flex flex-row ml-[10%] bg-fourth text-BgTextColor rounded p-0.5">
+                    {/* <div>AccCur: </div> */}
+                    <div>
+                      {props.Client["deliveryDays"] != undefined &&
+                      props.Client["deliveryDays"] != null &&
+                      props.Client["deliveryDays"] != ""
+                        ? props.Client["deliveryDays"]
                         : "-"}
                     </div>
                   </div>
