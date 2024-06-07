@@ -16,6 +16,7 @@ import { faEdit, faSave, faLock } from "@fortawesome/free-solid-svg-icons";
 import "../../index.css"; // Import the CSS file
 import ItemStockDetails from "./ItemStockDetails";
 import BarcodeReader from "./BarcodeReader";
+import DeliveryDateModal from "../Modals/DeliveryDateModal";
 
 export default function SalesForm(props) {
   // const [vInput, setvInput] = useState(
@@ -103,6 +104,7 @@ export default function SalesForm(props) {
   const [GroupModalShow, setGroupModalShow] = useState(false);
   const [GroupType, setGroupType] = useState("");
   const [CloseSave, setCloseSave] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const formatter = new Intl.NumberFormat("en-US");
   // Function to set the detected barcode
@@ -544,7 +546,6 @@ export default function SalesForm(props) {
             }
 
             //
-
             handleSave({
               accName: {
                 id: response.data.InvProfile[0]["id"],
@@ -557,7 +558,7 @@ export default function SalesForm(props) {
                 cur: response.data.InvProfile[0]["cur"],
                 Rate: response.data.InvProfile[0]["Rate"],
                 mobile: response.data.InvProfile[0]["mobile"],
-                deliveryDays: response.data.InvProfile[0]["DateValue"],
+                deliveryDays: response.data.InvProfile[0]["deliveryDays"],
               },
 
               items: response.data.Invoices,
@@ -1405,14 +1406,13 @@ export default function SalesForm(props) {
                         : "-"}
                     </div>
                   </div>
-                  <div className="flex flex-row ml-[10%] bg-fourth text-BgTextColor rounded p-0.5">
+                  <div className="flex flex-row ml-[10%] bg-fourth ">
                     {/* <div>AccCur: </div> */}
                     <div>
-                      {props.Client["deliveryDays"] != undefined &&
-                      props.Client["deliveryDays"] != null &&
-                      props.Client["deliveryDays"] != ""
-                        ? props.Client["deliveryDays"]
-                        : "-"}
+                      <DeliveryDateModal
+                        Client={props.Client}
+                        setClient={props.setClient}
+                      />
                     </div>
                   </div>
                 </div>
@@ -2097,6 +2097,8 @@ export default function SalesForm(props) {
                           address: "",
 
                           Rate: "",
+                          mobile: "",
+                          deliveryDays: "",
                         });
                         console.log("y10");
                         localStorage.setItem("sales", "");
@@ -3371,6 +3373,8 @@ export default function SalesForm(props) {
                   address: "",
                   cur: "",
                   Rate: "",
+                  mobile: "",
+                  deliveryDays: "",
                 });
                 props.setSelectedItems([]);
                 props.setRemovedItems([]);
@@ -3993,6 +3997,8 @@ export default function SalesForm(props) {
                         address: "",
                         cur: "",
                         Rate: "",
+                        mobile: "",
+                        deliveryDays: "",
                       });
                       handleSave({
                         accName: {
@@ -4005,6 +4011,8 @@ export default function SalesForm(props) {
                           address: "",
                           cur: "",
                           Rate: "",
+                          mobile: "",
+                          deliveryDays: "",
                         },
                         items: props.SelectedItems,
                         RemovedItems: props.RemovedItems,
@@ -4245,6 +4253,8 @@ export default function SalesForm(props) {
       address: "",
       cur: "",
       Rate: "",
+      mobile: "",
+      deliveryDays: "",
     });
     props.setSelectedItems([]);
     props.setRemovedItems([]);
@@ -4276,6 +4286,8 @@ export default function SalesForm(props) {
       address: "",
       cur: "",
       Rate: "",
+      mobile: "",
+      deliveryDays: "",
     });
     props.setSelectedItems([]);
     props.setRemovedItems([]);

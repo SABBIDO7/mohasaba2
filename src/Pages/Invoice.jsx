@@ -386,8 +386,6 @@ export default function Invoice(props) {
       .then((res) => {
         if (res.data.Info == "authorized") {
           setsInvoices(res.data.Invoices);
-          console.log(sInvoices);
-          console.log("anehon");
         } else if (res.data.Info == "Failed") {
           setsInvoices([]);
         }

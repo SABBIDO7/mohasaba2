@@ -3,7 +3,7 @@ import axios from "axios";
 import "../../index.css"; // Import the CSS file
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-const url = "http://192.168.16.127:8000";
+const url = "http://localhost:8000";
 //const url = "https://pssapi.net:444";
 export async function checkInEndPoint(long, lat, method) {
   console.log("Calling from endpoint");
