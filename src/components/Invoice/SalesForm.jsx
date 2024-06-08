@@ -1412,6 +1412,13 @@ export default function SalesForm(props) {
                       <DeliveryDateModal
                         Client={props.Client}
                         setClient={props.setClient}
+                        oldInvoice={
+                          props.selectedInvoice != "" &&
+                          props.selectedInvoice != "" &&
+                          props.selectedInvoice != null
+                            ? true
+                            : false
+                        }
                       />
                     </div>
                   </div>

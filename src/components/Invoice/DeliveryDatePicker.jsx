@@ -3,72 +3,131 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
+import { format, parse, isSameDay } from "date-fns"; // Import date-fns format function
 
 const DeliveryDatePicker = (props) => {
   const [deliveryDate, setDeliveryDate] = useState(null);
-  // Define holidays as an array of Date objects
+  const listOffs = [];
+  const [flagStartCalc, setFlagStartCal] = useState(true);
+  // Define holidays as an array of Date strings
   const holidays = [
     {
       name: "Adha",
-      date: new Date("2024-06-11"),
+      date: "11/06/2024",
     },
     {
       name: "Adha",
-      date: new Date("2024-06-12"),
+      date: "12/06/2024",
     },
     {
-      // Example: Wednesday of the Iid Adha holiday
       name: "Adha",
-      date: new Date("2024-06-13"),
-    }, // Example: Thursday of the Iid Adha holiday
-
-    // Example: Tuesday of the Iid Adha holiday
+      date: "13/06/2024",
+    },
     // Add more holidays as needed
   ];
+  // Define holidays as an array of Date objects
+  const CalculateDeliveryWorkingDays = (
+    calculatedDeliveryDate,
+    deliveryDays,
+    oldInvoice
+  ) => {
+    let daysAdded = 0;
+
+    while (daysAdded < deliveryDays) {
+      calculatedDeliveryDate.setDate(calculatedDeliveryDate.getDate() + 1);
+
+      // Skip Sundays
+      if (calculatedDeliveryDate.getDay() === 0) {
+        listOffs.push({
+          name: "Sunday",
+          date: format(calculatedDeliveryDate, "dd/MM/yyyy"),
+        });
+        continue;
+      }
+
+      // Skip holidays
+      const isHoliday = holidays.some((holiday) =>
+        isSameDay(
+          parse(holiday.date, "dd/MM/yyyy", new Date()),
+          calculatedDeliveryDate
+        )
+      );
+      if (isHoliday) {
+        const holidayName = holidays.find((holiday) =>
+          isSameDay(
+            parse(holiday.date, "dd/MM/yyyy", new Date()),
+            calculatedDeliveryDate
+          )
+        ).name;
+        listOffs.push({
+          name: holidayName,
+          date: format(calculatedDeliveryDate, "dd/MM/yyyy"),
+        });
+      } else if (!isHoliday) {
+        daysAdded++;
+      }
+    }
+    props.setListOffs(listOffs);
+    setDeliveryDate(calculatedDeliveryDate);
+    setFlagStartCal(false);
+    props.setClient({
+      ...props.Client,
+      deliveryDays: format(calculatedDeliveryDate, "dd/MM/yyyy"),
+    });
+  };
 
   useEffect(() => {
-    if (props.Client["deliveryDays"]) {
-      const deliveryDays = parseInt(props.Client["deliveryDays"], 10);
-      if (!isNaN(deliveryDays)) {
-        const currentDate = new Date();
-        let calculatedDeliveryDate = new Date(currentDate);
-        let daysAdded = 0;
+    if (flagStartCalc) {
+      if (props.Client["deliveryDays"]) {
+        let deliveryDays;
+        let calculatedDeliveryDate;
+        if (!props.oldInvoice) {
+          if (!isNaN(Date.parse(props.Client["deliveryDays"]))) {
+            deliveryDays = parseInt(props.Client["deliveryDays"], 10);
 
-        while (daysAdded < deliveryDays) {
-          calculatedDeliveryDate.setDate(calculatedDeliveryDate.getDate() + 1);
-
-          // Skip Sundays
-          if (calculatedDeliveryDate.getDay() === 0) {
-            continue;
+            alert(deliveryDays);
+            if (!isNaN(deliveryDays)) {
+              const currentDate = new Date();
+              calculatedDeliveryDate = new Date(currentDate);
+              CalculateDeliveryWorkingDays(
+                calculatedDeliveryDate,
+                deliveryDays,
+                props.oldInvoice
+              );
+            }
+          } else {
+            const storedDeliveryDate = parse(
+              props.Client["deliveryDays"],
+              "dd/MM/yyyy",
+              new Date()
+            );
+            setDeliveryDate(storedDeliveryDate);
           }
-
-          // Skip holidays
-          const isHoliday = holidays.some(
-            (holiday) =>
-              holiday["date"].getDate() === calculatedDeliveryDate.getDate() &&
-              holiday["date"].getMonth() ===
-                calculatedDeliveryDate.getMonth() &&
-              holiday["date"].getFullYear() ===
-                calculatedDeliveryDate.getFullYear()
+        } else if (props.oldInvoice) {
+          const storedDeliveryDate = parse(
+            props.Client["deliveryDays"],
+            "dd/MM/yyyy",
+            new Date()
           );
-
-          if (!isHoliday) {
-            daysAdded++;
-          }
+          setDeliveryDate(storedDeliveryDate);
         }
-
-        setDeliveryDate(calculatedDeliveryDate);
       }
     }
   }, [props.Client["deliveryDays"]]);
 
   return (
-    <div className="flex flex-row ml-[10%] rounded p-0.5">
+    <div className="flex flex-row  rounded p-0.5">
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
           value={deliveryDate}
-          onChange={(date) => setDeliveryDate(date)}
-          dateFormat="yyyy/MM/dd"
+          onChange={(date) => {
+            setDeliveryDate(date);
+            props.setClient({
+              ...props.Client,
+              deliveryDays: format(date, "dd/MM/yyyy"),
+            });
+          }}
+          format="dd/MM/yyyy"
           className="text-md font-semibold block rounded-md w-[fit] h-[fit]"
         />
       </LocalizationProvider>

@@ -3,10 +3,11 @@ import { Modal, Button } from "react-bootstrap";
 import DeliveryDatePicker from "../Invoice/DeliveryDatePicker"; // Adjust the import path as necessary
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTruck } from "@fortawesome/free-solid-svg-icons";
 
 const DeliveryDateModal = (props) => {
   const [show, setShow] = useState(false);
+  const [listOffs, setListOffs] = useState([]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -14,7 +15,7 @@ const DeliveryDateModal = (props) => {
   return (
     <>
       <Button variant="primary" className="" onClick={handleShow}>
-        <FontAwesomeIcon icon={faCalendarAlt} />
+        <FontAwesomeIcon icon={faTruck} />
       </Button>
 
       <Modal
@@ -32,10 +33,26 @@ const DeliveryDateModal = (props) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <DeliveryDatePicker
-            Client={props.Client}
-            setClient={props.setClient}
-          />
+          <div className="flex flex-col justify-around items-center">
+            <DeliveryDatePicker
+              Client={props.Client}
+              setClient={props.setClient}
+              setListOffs={setListOffs}
+              oldInvoice={props.oldInvoice}
+            />
+            {listOffs.length != 0 && (
+              <div className="">
+                <h3>Skipped Days:</h3>
+                <ul className="text-BgTextColor">
+                  {listOffs.map((off, index) => (
+                    <li key={index}>
+                      {off.name}: {off.date}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
