@@ -14,7 +14,15 @@ const DeliveryDateModal = (props) => {
 
   return (
     <>
-      <Button variant="primary" className="" onClick={handleShow}>
+      <Button
+        variant="primary"
+        className=""
+        onClick={() => {
+          if (props.Client["id"] != "" && props.Client["id"] != undefined) {
+            handleShow();
+          }
+        }}
+      >
         <FontAwesomeIcon icon={faTruck} />
       </Button>
 

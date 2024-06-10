@@ -25,6 +25,8 @@ const DeliveryDatePicker = (props) => {
     },
     // Add more holidays as needed
   ];
+
+  const calculateDeliveryEdit = (oldDate, newChoosenDate) => {}; //behsob l old date betwen l new date choosen mnsuf l offs bayneton
   // Define holidays as an array of Date objects
   const CalculateDeliveryWorkingDays = (
     calculatedDeliveryDate,
@@ -85,7 +87,6 @@ const DeliveryDatePicker = (props) => {
           if (!isNaN(Date.parse(props.Client["deliveryDays"]))) {
             deliveryDays = parseInt(props.Client["deliveryDays"], 10);
 
-            alert(deliveryDays);
             if (!isNaN(deliveryDays)) {
               const currentDate = new Date();
               calculatedDeliveryDate = new Date(currentDate);
