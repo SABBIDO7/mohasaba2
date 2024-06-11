@@ -47,6 +47,7 @@ const DeliveryDateModal = (props) => {
               setClient={props.setClient}
               setListOffs={setListOffs}
               oldInvoice={props.oldInvoice}
+              setpropertiesAreEqual={props.setpropertiesAreEqual}
             />
             {listOffs.length != 0 && (
               <div className="">

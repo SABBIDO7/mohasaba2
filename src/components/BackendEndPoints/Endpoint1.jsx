@@ -329,3 +329,33 @@ export async function UpdateUsersPermissions(users, changedUsers) {
     return { status: "Error", message: error };
   }
 }
+
+export async function getCompanySettingsData() {
+  try {
+    return await axios({
+      method: "get",
+      url:
+        url +
+        "/moh/getCompanySettings/" +
+        localStorage.getItem("compname") +
+        "/",
+    }).then((res) => {
+      console.log(res);
+      if (res.data.status == "success") {
+        console.log(res.data.result);
+        return {
+          status: res.data.status,
+          GroupType: res.data.result.GroupType,
+          PrintFormat: res.data.result.PrintFormat,
+          CompanyCode: res.data.result.CompanyCode,
+          Holidays: res.data.result.Holidays,
+        };
+      } else {
+        return { status: res.data.status, message: res.data.message };
+      }
+    });
+  } catch (error) {
+    console.log("tabasgit", error);
+    return { Info: "Error", message: error };
+  }
+}

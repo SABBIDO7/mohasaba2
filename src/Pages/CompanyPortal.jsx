@@ -9,6 +9,8 @@ import {
   Paper,
 } from "@mui/material";
 import UsersManagement from "../components/CompanyPortal/UsersManagment";
+import CompanySettings from "../components/CompanyPortal/CompanySettings";
+
 import { Padding } from "@mui/icons-material";
 
 const CompanyPortal = () => {
@@ -58,9 +60,7 @@ const CompanyPortal = () => {
             </Tabs>
           </AppBar>
           <TabPanel value={selectedTab} index={0}>
-            {localStorage.getItem("CompanySettings") == "Y" && (
-              <CompanySettings />
-            )}
+            {localStorage.getItem("CompanySettings") == "Y" && <CompSettings />}
           </TabPanel>
           <TabPanel value={selectedTab} index={1}>
             {localStorage.getItem("UserManagement") == "Y" && (
@@ -94,9 +94,9 @@ const TabPanel = (props) => {
   );
 };
 
-const CompanySettings = () => (
+const CompSettings = () => (
   <Box>
-    <Typography variant="h5">Company Settings</Typography>
+    <CompanySettings></CompanySettings>
     {/* Company settings content goes here */}
   </Box>
 );

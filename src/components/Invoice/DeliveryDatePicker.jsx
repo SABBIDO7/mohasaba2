@@ -3,7 +3,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
-import { format, parse, isSameDay } from "date-fns"; // Import date-fns format function
+import { format, parse, isSameDay, eachDayOfInterval } from "date-fns"; // Import date-fns format function
 
 const DeliveryDatePicker = (props) => {
   const [deliveryDate, setDeliveryDate] = useState(null);
@@ -13,20 +13,61 @@ const DeliveryDatePicker = (props) => {
   const holidays = [
     {
       name: "Adha",
-      date: "11/06/2024",
-    },
-    {
-      name: "Adha",
-      date: "12/06/2024",
-    },
-    {
-      name: "Adha",
       date: "13/06/2024",
+    },
+    {
+      name: "Adha",
+      date: "14/06/2024",
+    },
+    {
+      name: "Adha",
+      date: "15/06/2024",
     },
     // Add more holidays as needed
   ];
+  // // Function to convert string to Date object
+  // const convertToDate = (dateString) => {
+  //   return new Date(dateString);
+  // };
 
-  const calculateDeliveryEdit = (oldDate, newChoosenDate) => {}; //behsob l old date betwen l new date choosen mnsuf l offs bayneton
+  // const calculateDeliveryEdit = (oldDate, newChoosenDate) => {
+  //   console.log("old date", oldDate);
+  //   console.log(newChoosenDate);
+  //   const offs = [];
+  //   const startDate = convertToDate(oldDate);
+  //   const endDate = new Date(newChoosenDate);
+  //   // Get all dates between the start and end date
+  //   const interval = eachDayOfInterval({
+  //     start: startDate,
+  //     end: endDate,
+  //   });
+
+  //   interval.forEach((date) => {
+  //     // Check for weekends (Sunday)
+  //     if (date.getDay() === 0) {
+  //       offs.push({
+  //         name: "Sunday",
+  //         date: format(date, "dd/MM/yyyy"),
+  //       });
+  //     }
+
+  //     // Check for holidays
+  //     const isHoliday = holidays.some((holiday) =>
+  //       isSameDay(parse(holiday.date, "dd/MM/yyyy", new Date()), date)
+  //     );
+  //     if (isHoliday) {
+  //       const holidayName = holidays.find((holiday) =>
+  //         isSameDay(parse(holiday.date, "dd/MM/yyyy", new Date()), date)
+  //       ).name;
+  //       offs.push({
+  //         name: holidayName,
+  //         date: format(date, "dd/MM/yyyy"),
+  //       });
+  //     }
+  //   });
+
+  //   props.setListOffs(offs);
+  // }; //behsob l old date betwen l new date choosen mnsuf l offs bayneton
   // Define holidays as an array of Date objects
   const CalculateDeliveryWorkingDays = (
     calculatedDeliveryDate,
@@ -122,11 +163,16 @@ const DeliveryDatePicker = (props) => {
         <DatePicker
           value={deliveryDate}
           onChange={(date) => {
+            // if (isNaN(Date.parse(props.Client["deliveryDays"]))) {
+            //   calculateDeliveryEdit(props.Client["deliveryDays"], date);
+            // }
             setDeliveryDate(date);
             props.setClient({
               ...props.Client,
               deliveryDays: format(date, "dd/MM/yyyy"),
             });
+            props.setpropertiesAreEqual(false);
+            props.setListOffs([]);
           }}
           format="dd/MM/yyyy"
           className="text-md font-semibold block rounded-md w-[fit] h-[fit]"

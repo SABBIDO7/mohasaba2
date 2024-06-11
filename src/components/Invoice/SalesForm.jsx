@@ -1382,7 +1382,7 @@ export default function SalesForm(props) {
             {" "}
             {/* Model content*/}
             <div className="invoiceRateOption">
-              <div className="flex flex-row items-center justify-between ">
+              <div className="flex flex-row items-center justify-between h-[40%]">
                 <div className=" flex flex-row justify-between">
                   {/* <div className="text-xl font-semibold w-fit">Client:</div> */}
 
@@ -1419,6 +1419,8 @@ export default function SalesForm(props) {
                             ? true
                             : false
                         }
+                        propertiesAreEqual={props.propertiesAreEqual}
+                        setpropertiesAreEqual={props.setpropertiesAreEqual}
                       />
                     </div>
                   </div>
@@ -1481,7 +1483,7 @@ export default function SalesForm(props) {
               </div>
 
               <h2
-                className="text-center text-xl2 text-BgTextColor font-bold"
+                className="text-center text-xl2 text-BgTextColor font-bold h-[60%]"
                 onClick={() => {
                   // if (props.propertiesAreEqual == false) {
                   //   setSwitchFormOption({
