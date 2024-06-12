@@ -23,7 +23,10 @@ import {
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import countries from "./countries";
-import { getCompanySettingsData } from "../BackendEndPoints/Endpoint1";
+import {
+  getCompanySettingsData,
+  UpdateCompanySettings,
+} from "../BackendEndPoints/Endpoint1";
 const CompanySettings = () => {
   const isSmallScreen = useMediaQuery("(max-width:768px)");
 
@@ -43,7 +46,10 @@ const CompanySettings = () => {
   useEffect(() => {
     getCompanySettingsData().then((response) => {
       if (response.status == "success") {
-        alert(response.CompanyCode);
+        setSelectedCountry(response.CompanyCode);
+        setHolidays(JSON.parse(response.Holidays)); // Parse the Holidays data
+        setSelectedPrintType(response.PrintFormat);
+        setSelectedGroupType(response.GroupType);
       }
     });
   }, []);
@@ -67,14 +73,19 @@ const CompanySettings = () => {
 
   const handleSaveSettings = () => {
     const settings = {
+      compname: localStorage.getItem("compname"),
       groupType: selectedGroupType,
-      companyCode: selectedCompanyCode,
+      companyCode: selectedCountry,
+      printFormat: selectedPrintType,
+
       holidays: JSON.stringify(holidays),
     };
 
-    // axios.post("/api/updateSettings", settings).then((response) => {
-    //   alert("Settings saved successfully!");
-    // });
+    UpdateCompanySettings(settings).then((response) => {
+      if (response.status == "success") {
+        setSnackbarOpen(true);
+      }
+    });
   };
   const handleCountryChange = (event, newValue) => {
     let code = newValue.phone;
@@ -110,6 +121,9 @@ const CompanySettings = () => {
                   label="Group Type"
                   onChange={(e) => setSelectedGroupType(e.target.value)}
                 >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
                   {groupTypes.map((type) => (
                     <MenuItem key={type.id} value={type.id}>
                       {type.name}

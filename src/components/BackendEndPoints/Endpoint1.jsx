@@ -359,3 +359,25 @@ export async function getCompanySettingsData() {
     return { Info: "Error", message: error };
   }
 }
+
+export async function UpdateCompanySettings(data) {
+  try {
+    console.log(data);
+    return await axios({
+      method: "post",
+      url: url + "/moh/UpdateCompanySettings/",
+      data: data,
+    }).then((res) => {
+      console.log(res);
+      if (res.data.status == "success") {
+        return {
+          status: res.data.status,
+        };
+      } else {
+        return { status: res.data.status, message: res.data.message };
+      }
+    });
+  } catch (error) {
+    return { status: "Error", message: error };
+  }
+}
