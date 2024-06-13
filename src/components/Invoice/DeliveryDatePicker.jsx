@@ -4,27 +4,37 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import { format, parse, isSameDay, eachDayOfInterval } from "date-fns"; // Import date-fns format function
-
+import { getCompanySettingsData } from "../BackendEndPoints/Endpoint1";
 const DeliveryDatePicker = (props) => {
   const [deliveryDate, setDeliveryDate] = useState(null);
   const listOffs = [];
   const [flagStartCalc, setFlagStartCal] = useState(true);
+  const [holidays, setHolidays] = useState([]);
+
+  useEffect(() => {
+    getCompanySettingsData().then((response) => {
+      if (response.status == "success") {
+        setHolidays(JSON.parse(response.Holidays)); // Parse the Holidays data
+      }
+    });
+  }, []);
   // Define holidays as an array of Date strings
-  const holidays = [
-    {
-      name: "Adha",
-      date: "13/06/2024",
-    },
-    {
-      name: "Adha",
-      date: "14/06/2024",
-    },
-    {
-      name: "Adha",
-      date: "15/06/2024",
-    },
-    // Add more holidays as needed
-  ];
+  // const holidays = [
+  //   {
+  //     name: "Adha",
+  //     date: "13/06/2024",
+  //   },
+  //   {
+  //     name: "Adha",
+  //     date: "14/06/2024",
+  //   },
+  //   {
+  //     name: "Adha",
+  //     date: "15/06/2024",
+  //   },
+  //   // Add more holidays as needed
+  // ];
+
   // // Function to convert string to Date object
   // const convertToDate = (dateString) => {
   //   return new Date(dateString);

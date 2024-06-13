@@ -27,12 +27,22 @@ import {
   getCompanySettingsData,
   UpdateCompanySettings,
 } from "../BackendEndPoints/Endpoint1";
+import CustomSnackbar from "../Snackbar/CustomSnackbar"; // Import the new Snackbar component
+
 const CompanySettings = () => {
   const isSmallScreen = useMediaQuery("(max-width:768px)");
 
   const [groupTypes, setGroupTypes] = useState([
-    { id: 1, name: "Type 1" },
-    { id: 2, name: "Type 2" },
+    { id: "SetG", name: "SetG" },
+    { id: "Category", name: "Category" },
+    { id: "Unit", name: "Unit" },
+    { id: "Brand", name: "Brand" },
+    { id: "Origin", name: "Origin" },
+    { id: "Supplier", name: "Supplier" },
+    { id: "Sizeg", name: "Sizeg" },
+    { id: "Color", name: "Color" },
+    { id: "Family", name: "Family" },
+    { id: "Groupg", name: "Groupg" },
   ]);
   const [companyCodes, setCompanyCodes] = useState(countries);
   const [selectedGroupType, setSelectedGroupType] = useState("");
@@ -42,6 +52,8 @@ const CompanySettings = () => {
   const [holidays, setHolidays] = useState([]);
   const [newHoliday, setNewHoliday] = useState({ date: null, name: "" });
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("warning");
   const [selectedCountry, setSelectedCountry] = useState(null);
   useEffect(() => {
     getCompanySettingsData().then((response) => {
@@ -59,6 +71,9 @@ const CompanySettings = () => {
       // Check if the date already exists
       if (holidays.find((holiday) => holiday.date === formattedDate)) {
         // Show a snackbar if the date already exists
+        // Show a snackbar if the date already exists
+        setSnackbarMessage("This Holiday already exists!");
+        setSnackbarSeverity("warning");
         setSnackbarOpen(true);
       } else {
         setHolidays([...holidays, { ...newHoliday, date: formattedDate }]);
@@ -83,6 +98,9 @@ const CompanySettings = () => {
 
     UpdateCompanySettings(settings).then((response) => {
       if (response.status == "success") {
+        // Show a snackbar if the date already exists
+        setSnackbarMessage("Settings Update Successfully");
+        setSnackbarSeverity("warning");
         setSnackbarOpen(true);
       }
     });
@@ -288,25 +306,12 @@ const CompanySettings = () => {
           Save Settings
         </Button>
       </div>
-      <Snackbar
+      <CustomSnackbar
         open={snackbarOpen}
-        autoHideDuration={3500}
         onClose={handleSnackbarClose}
-      >
-        <MuiAlert
-          onClose={handleSnackbarClose}
-          severity="warning"
-          sx={{
-            width: "100%",
-            fontSize: "1rem",
-            padding: "1rem",
-            margin: "1rem",
-            fontWeight: "bold",
-          }}
-        >
-          This Holiday already exists!
-        </MuiAlert>
-      </Snackbar>
+        severity={snackbarSeverity}
+        message={snackbarMessage}
+      />
     </div>
   );
 };
