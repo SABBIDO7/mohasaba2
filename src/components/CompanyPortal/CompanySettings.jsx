@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -76,14 +76,29 @@ const CompanySettings = () => {
         setSnackbarSeverity("warning");
         setSnackbarOpen(true);
       } else {
-        setHolidays([...holidays, { ...newHoliday, date: formattedDate }]);
+        const updatedHolidays = [
+          ...holidays,
+          { ...newHoliday, date: formattedDate },
+        ];
+        const sortedHolidays = updatedHolidays.sort(
+          (a, b) =>
+            parse(a.date, "dd/MM/yyyy", new Date()) -
+            parse(b.date, "dd/MM/yyyy", new Date())
+        );
+        setHolidays(sortedHolidays);
+
         setNewHoliday({ date: null, name: "" });
       }
     }
   };
   const handleDeleteHoliday = (index) => {
     const updatedHolidays = holidays.filter((_, i) => i !== index);
-    setHolidays(updatedHolidays);
+    const sortedHolidays = updatedHolidays.sort(
+      (a, b) =>
+        parse(a.date, "dd/MM/yyyy", new Date()) -
+        parse(b.date, "dd/MM/yyyy", new Date())
+    );
+    setHolidays(sortedHolidays);
   };
 
   const handleSaveSettings = () => {

@@ -15,6 +15,7 @@ const CustomSnackbar = ({ open, onClose, severity, message }) => {
           margin: "1rem",
           fontWeight: "bold",
         }}
+        style={{ backgroundColor: "red", color: "white" }} // Inline style
       >
         {message}
       </MuiAlert>

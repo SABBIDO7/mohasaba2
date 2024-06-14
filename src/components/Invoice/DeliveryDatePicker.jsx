@@ -11,13 +11,6 @@ const DeliveryDatePicker = (props) => {
   const [flagStartCalc, setFlagStartCal] = useState(true);
   const [holidays, setHolidays] = useState([]);
 
-  useEffect(() => {
-    getCompanySettingsData().then((response) => {
-      if (response.status == "success") {
-        setHolidays(JSON.parse(response.Holidays)); // Parse the Holidays data
-      }
-    });
-  }, []);
   // Define holidays as an array of Date strings
   // const holidays = [
   //   {
@@ -80,6 +73,7 @@ const DeliveryDatePicker = (props) => {
   // }; //behsob l old date betwen l new date choosen mnsuf l offs bayneton
   // Define holidays as an array of Date objects
   const CalculateDeliveryWorkingDays = (
+    holidays,
     calculatedDeliveryDate,
     deliveryDays,
     oldInvoice
@@ -97,7 +91,6 @@ const DeliveryDatePicker = (props) => {
         });
         continue;
       }
-
       // Skip holidays
       const isHoliday = holidays.some((holiday) =>
         isSameDay(
@@ -137,15 +130,20 @@ const DeliveryDatePicker = (props) => {
         if (!props.oldInvoice) {
           if (!isNaN(Date.parse(props.Client["deliveryDays"]))) {
             deliveryDays = parseInt(props.Client["deliveryDays"], 10);
-
             if (!isNaN(deliveryDays)) {
               const currentDate = new Date();
               calculatedDeliveryDate = new Date(currentDate);
-              CalculateDeliveryWorkingDays(
-                calculatedDeliveryDate,
-                deliveryDays,
-                props.oldInvoice
-              );
+              getCompanySettingsData().then((response) => {
+                if (response.status == "success") {
+                  setHolidays(JSON.parse(response.Holidays));
+                  CalculateDeliveryWorkingDays(
+                    JSON.parse(response.Holidays),
+                    calculatedDeliveryDate,
+                    deliveryDays,
+                    props.oldInvoice
+                  );
+                }
+              });
             }
           } else {
             const storedDeliveryDate = parse(

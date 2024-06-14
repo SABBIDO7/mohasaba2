@@ -7,6 +7,9 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import { useCookies } from "react-cookie";
 import { Location } from "react-router-dom";
 import Modals2 from "../Modals/Modals2";
+import { Navbar, Nav } from "react-bootstrap";
+
+import LanguageDropdown from "./LanguageDropDown"; // Adjust the path accordingly
 
 const navigation = [
   { name: "Accounting", href: "/Accounting", label: "AccountingPage" },
@@ -109,6 +112,18 @@ export default function Header(props) {
                       Company Portal
                     </NavDropdown.Item>
                   )}
+                  <Navbar bg="light" expand="lg">
+                    <Navbar.Brand href="#">Brand</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                      <Nav className="me-auto">
+                        <Nav.Link onClick={() => navigate("/CompanyPortal")}>
+                          Company Portal
+                        </Nav.Link>
+                        <LanguageDropdown />
+                      </Nav>
+                    </Navbar.Collapse>
+                  </Navbar>
                   <NavDropdown.Item
                     className=" navbarContent "
                     onClick={() => {
