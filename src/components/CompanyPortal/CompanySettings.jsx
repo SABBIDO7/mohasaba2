@@ -53,7 +53,7 @@ const CompanySettings = () => {
   const [newHoliday, setNewHoliday] = useState({ date: null, name: "" });
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("warning");
+  const [snackbarSeverity, setSnackbarSeverity] = useState();
   const [selectedCountry, setSelectedCountry] = useState(null);
   useEffect(() => {
     getCompanySettingsData().then((response) => {
@@ -114,8 +114,8 @@ const CompanySettings = () => {
     UpdateCompanySettings(settings).then((response) => {
       if (response.status == "success") {
         // Show a snackbar if the date already exists
-        setSnackbarMessage("Settings Update Successfully");
-        setSnackbarSeverity("warning");
+        setSnackbarMessage("Settings Updated Successfully");
+        setSnackbarSeverity("success");
         setSnackbarOpen(true);
       }
     });

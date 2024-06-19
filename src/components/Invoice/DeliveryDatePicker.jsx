@@ -5,12 +5,16 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import { format, parse, isSameDay, eachDayOfInterval } from "date-fns"; // Import date-fns format function
 import { getCompanySettingsData } from "../BackendEndPoints/Endpoint1";
+import CustomSnackbar from "../Snackbar/CustomSnackbar"; // Import the new Snackbar component
+
 const DeliveryDatePicker = (props) => {
   const [deliveryDate, setDeliveryDate] = useState(null);
   const listOffs = [];
   const [flagStartCalc, setFlagStartCal] = useState(true);
   const [holidays, setHolidays] = useState([]);
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState();
   // Define holidays as an array of Date strings
   // const holidays = [
   //   {
@@ -71,7 +75,27 @@ const DeliveryDatePicker = (props) => {
 
   //   props.setListOffs(offs);
   // }; //behsob l old date betwen l new date choosen mnsuf l offs bayneton
-  // Define holidays as an array of Date objects
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+  const checkIfOffDayChoosen = (day) => {
+    // Skip holidays
+    alert(holidays[0]);
+    const isHoliday = holidays.some((holiday) =>
+      isSameDay(parse(holiday.date, "dd/MM/yyyy", new Date()), day)
+    );
+    if (isHoliday) {
+      const holidayName = holidays.find((holiday) =>
+        isSameDay(parse(holiday.date, "dd/MM/yyyy", new Date()), day)
+      ).name;
+      setSnackbarMessage(`The Choosen Date is ${holidayName}'s Holiday!`);
+      setSnackbarSeverity("warning");
+      setSnackbarOpen(true);
+    }
+  };
   const CalculateDeliveryWorkingDays = (
     holidays,
     calculatedDeliveryDate,
@@ -135,6 +159,7 @@ const DeliveryDatePicker = (props) => {
               calculatedDeliveryDate = new Date(currentDate);
               getCompanySettingsData().then((response) => {
                 if (response.status == "success") {
+                  alert("call success");
                   setHolidays(JSON.parse(response.Holidays));
                   CalculateDeliveryWorkingDays(
                     JSON.parse(response.Holidays),
@@ -166,27 +191,37 @@ const DeliveryDatePicker = (props) => {
   }, [props.Client["deliveryDays"]]);
 
   return (
-    <div className="flex flex-row  rounded p-0.5">
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DatePicker
-          value={deliveryDate}
-          onChange={(date) => {
-            // if (isNaN(Date.parse(props.Client["deliveryDays"]))) {
-            //   calculateDeliveryEdit(props.Client["deliveryDays"], date);
-            // }
-            setDeliveryDate(date);
-            props.setClient({
-              ...props.Client,
-              deliveryDays: format(date, "dd/MM/yyyy"),
-            });
-            props.setpropertiesAreEqual(false);
-            props.setListOffs([]);
-          }}
-          format="dd/MM/yyyy"
-          className="text-md font-semibold block rounded-md w-[fit] h-[fit]"
-        />
-      </LocalizationProvider>
-    </div>
+    <>
+      <div className="flex flex-row  rounded p-0.5">
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            value={deliveryDate}
+            onChange={(date) => {
+              // if (isNaN(Date.parse(props.Client["deliveryDays"]))) {
+              //   calculateDeliveryEdit(props.Client["deliveryDays"], date);
+              // }
+
+              checkIfOffDayChoosen(date);
+              setDeliveryDate(date);
+              props.setClient({
+                ...props.Client,
+                deliveryDays: format(date, "dd/MM/yyyy"),
+              });
+              props.setpropertiesAreEqual(false);
+              props.setListOffs([]);
+            }}
+            format="dd/MM/yyyy"
+            className="text-md font-semibold block rounded-md w-[fit] h-[fit]"
+          />
+        </LocalizationProvider>
+      </div>
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        severity={snackbarSeverity}
+        message={snackbarMessage}
+      />
+    </>
   );
 };
 
