@@ -1,0 +1,14 @@
+{
+    "Accounting": "Accounting",
+    "Inventory": "Inventory",
+    "Transactions": "Transactions",
+    "Check In": "CheckIn",
+    "DesignedDeveloped":"Designed And Developed By",
+    "Sign out":"Sign out",
+
+    "language": {
+        "en": "English",
+        "fr": "French",
+        "ar": "Arabic"
+    }
+}

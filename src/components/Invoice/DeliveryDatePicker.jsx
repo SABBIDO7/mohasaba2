@@ -83,7 +83,6 @@ const DeliveryDatePicker = (props) => {
   };
   const checkIfOffDayChoosen = (day) => {
     // Skip holidays
-    alert(holidays[0]);
     const isHoliday = holidays.some((holiday) =>
       isSameDay(parse(holiday.date, "dd/MM/yyyy", new Date()), day)
     );
@@ -96,6 +95,7 @@ const DeliveryDatePicker = (props) => {
       setSnackbarOpen(true);
     }
   };
+
   const CalculateDeliveryWorkingDays = (
     holidays,
     calculatedDeliveryDate,
@@ -145,7 +145,13 @@ const DeliveryDatePicker = (props) => {
       deliveryDays: format(calculatedDeliveryDate, "dd/MM/yyyy"),
     });
   };
-
+  useEffect(() => {
+    getCompanySettingsData().then((response) => {
+      if (response.status == "success") {
+        setHolidays(JSON.parse(response.Holidays));
+      }
+    });
+  }, []);
   useEffect(() => {
     if (flagStartCalc) {
       if (props.Client["deliveryDays"]) {
@@ -159,7 +165,6 @@ const DeliveryDatePicker = (props) => {
               calculatedDeliveryDate = new Date(currentDate);
               getCompanySettingsData().then((response) => {
                 if (response.status == "success") {
-                  alert("call success");
                   setHolidays(JSON.parse(response.Holidays));
                   CalculateDeliveryWorkingDays(
                     JSON.parse(response.Holidays),

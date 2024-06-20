@@ -5,6 +5,8 @@ import { useCookies } from "react-cookie";
 import React, { useRef } from "react";
 import Modals2 from "../components/Modals/Modals2";
 export default function Main(props) {
+  const { t } = props; // Get t from props
+
   const [cookies, setCookie] = useCookies(["token"]);
   const modalsChildRef = useRef();
   function accountingClick() {
@@ -100,14 +102,14 @@ export default function Main(props) {
           aria-pressed="true"
           onClick={accountingClick}
         >
-          Accounting
+          {t("Accounting")}
         </button>
         <button
           className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor text-xl"
           aria-pressed="true"
           onClick={stockClick}
         >
-          Inventory
+          {t("Inventory")}
         </button>
         <button
           className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor text-xl"
@@ -115,7 +117,7 @@ export default function Main(props) {
           aria-pressed="true"
           onClick={invoiceClick}
         >
-          Transcations
+          {t("Transactions")}
         </button>
         <button
           className=" btn-lg active min-w-[10rem] m-3 bg-secondd rounded p-2.5 text-bgTextColor text-xl"
@@ -123,13 +125,13 @@ export default function Main(props) {
           aria-pressed="true"
           onClick={CheckInClick}
         >
-          Check In
+          {t("Check In")}
         </button>
       </div>
       <div>
         <div className="flex flex-col justify-center">
           <div className=" font-semibold text-s italic flex justify-center">
-            Designed And Developed By
+            {t("DesignedDeveloped")}
           </div>
           <img
             src={paradox}
@@ -143,7 +145,7 @@ export default function Main(props) {
           onClick={logout}
           className="btn-lg active min-w-[10rem]  bg-secondd rounded p-2.5 text-bgTextColor font-bold text-xl"
         >
-          Sign out
+          {t("Sign out")}
         </Button>
       </div>
       <Modals2 ref={modalsChildRef} />

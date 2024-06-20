@@ -11,13 +11,6 @@ import { Navbar, Nav } from "react-bootstrap";
 
 import LanguageDropdown from "./LanguageDropDown"; // Adjust the path accordingly
 
-const navigation = [
-  { name: "Accounting", href: "/Accounting", label: "AccountingPage" },
-  { name: "Inventory", href: "/Inventory", label: "InventoryPage" },
-  { name: "Transactions", href: "/Invoice", label: "TransactionsPage" },
-  { name: "Check In", href: "/CheckIn", label: "CheckInPage" },
-];
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -26,7 +19,14 @@ export default function Header(props) {
   const [cookies, setCookie] = useCookies(["token"]);
   const navigate = useNavigate();
   const modalsChildRef = useRef();
+  const { t } = props; // Get t from props
 
+  const navigation = [
+    { name: t("Accounting"), href: "/Accounting", label: "AccountingPage" },
+    { name: t("Inventory"), href: "/Inventory", label: "InventoryPage" },
+    { name: t("Transactions"), href: "/Invoice", label: "TransactionsPage" },
+    { name: t("Check In"), href: "/CheckIn", label: "CheckInPage" },
+  ];
   return (
     <>
       <Disclosure as="nav" className="bg-slate-700 navBar ease-linear">
@@ -113,13 +113,9 @@ export default function Header(props) {
                     </NavDropdown.Item>
                   )}
                   <Navbar bg="light" expand="lg">
-                    <Navbar.Brand href="#">Brand</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                       <Nav className="me-auto">
-                        <Nav.Link onClick={() => navigate("/CompanyPortal")}>
-                          Company Portal
-                        </Nav.Link>
                         <LanguageDropdown />
                       </Nav>
                     </Navbar.Collapse>

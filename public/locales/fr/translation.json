@@ -1,0 +1,15 @@
+{
+    "Accounting": "Comptabilité",
+    "Inventory":"Inventaire",
+    "Transactions":"Transactions",
+    "Check In":"Enregistrement",
+    "DesignedDeveloped":"Conçu et développé par",
+    "Sign out":"Déconnexion",
+
+    "language": {
+      "en": "Anglais",
+      "fr": "Français",
+      "ar": "Arabe"
+    }
+  }
+  

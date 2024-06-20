@@ -18,6 +18,9 @@ import Button from "react-bootstrap/Button";
 import {animate, motion} from 'framer-motion'
 import axios from "axios";
 import CompanyPortal from "./Pages/CompanyPortal";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
+
 
 
 
@@ -34,7 +37,11 @@ function App() {
 
   const [cookies, setCookie] = useCookies(["token"]);
 
-
+    const { t } = useTranslation();
+  
+    const changeLanguage = (lang) => {
+      i18n.changeLanguage(lang);
+    };
 
   function UserDataHandler (compname,vName, vToken = ""){
     setUsername(vName)
@@ -280,36 +287,36 @@ function App() {
     <div className="App min-h-[100vh] max-h-[100vh] bg-prime">
       <BrowserRouter>
       {isVerified ? null : (<LoginModal url={url} UserDataHandler={UserDataHandler} />)}
-        <Header name ={Username} compname={Compname} url={url}>
+        <Header name ={Username} compname={Compname} url={url} t={t}>
          <Quickmenu /> 
           <Routes>
-            <Route path="/" element={<Main compname={Compname}/>}/>
+            <Route path="/" element={<Main compname={Compname} t={t}/>}/>
             {localStorage.getItem("AccountingPage") == "Y" &&   localStorage.getItem("BackOffice") == "Y" 
 && (
-            <Route path="/Accounting" element={<Accounting url={url} UserDataHandler={UserDataHandler} token={token} />} />
+            <Route path="/Accounting" element={<Accounting url={url} UserDataHandler={UserDataHandler} token={token} t={t}/>} />
             )}
             {localStorage.getItem("InventoryPage") == "Y" &&   localStorage.getItem("BackOffice") == "Y" 
 && (
-            <Route path="/Inventory" element={<Stock url={url} UserDataHandler={UserDataHandler} token={token} />} />
+            <Route path="/Inventory" element={<Stock url={url} UserDataHandler={UserDataHandler} token={token} t={t}/>} />
             )}
             {localStorage.getItem("TransactionsPage") == "Y" &&     localStorage.getItem("BackOffice") == "Y" 
 && (
-            <Route path="/Invoice" element={<Invoice url={url} UserDataHandler={UserDataHandler} token={token} name ={Username} />
+            <Route path="/Invoice" element={<Invoice url={url} UserDataHandler={UserDataHandler} token={token} name ={Username} t={t}/>
            
           } />
         )}
         {localStorage.getItem("CheckInPage") == "Y" && (
-          <Route path="/CheckIn" element={<CheckIn url={url} UserDataHandler={UserDataHandler} token={token} name ={Username} />
+          <Route path="/CheckIn" element={<CheckIn url={url} UserDataHandler={UserDataHandler} token={token} name ={Username} t={t}/>
             
           } />
         )}
             {localStorage.getItem("CheckInReport") == "Y" && (
-          <Route path="/CheckIn/CheckInReport" element={<CheckInReport  />
+          <Route path="/CheckIn/CheckInReport" element={<CheckInReport  t={t}/>
             
           } />
         )}
            {(localStorage.getItem("CompanySettings") == "Y" || localStorage.getItem("UserManagement") == "Y" || localStorage.getItem("CompanyDashboard") == "Y") &&(
-        <Route path="/CompanyPortal" element={<CompanyPortal url={url}  />
+        <Route path="/CompanyPortal" element={<CompanyPortal url={url}  t={t}/>
             
           } />)}
            </Routes>

@@ -1,0 +1,13 @@
+{
+    "Accounting": "محاسبة",
+    "Inventory":"جرد",
+    "Transactions":"معاملات",
+    "Check In":"تسجيل الوصول",
+    "DesignedDeveloped":"مصمم ومطور من قبل",
+    "Sign out":"تسجيل الخروج",
+    "language": {
+      "en": "إنجليزي",
+      "fr": "فرنسي",
+      "ar": "عربي"
+    }
+}

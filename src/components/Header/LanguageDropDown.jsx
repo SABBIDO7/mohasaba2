@@ -18,7 +18,7 @@ const LanguageDropdown = () => {
           alt="English"
           className="me-2"
         />
-        English
+        {t("language.en")}
       </NavDropdown.Item>
       <NavDropdown.Item onClick={() => changeLanguage("fr")}>
         <img
@@ -26,7 +26,7 @@ const LanguageDropdown = () => {
           alt="French"
           className="me-2"
         />
-        French
+        {t("language.fr")}
       </NavDropdown.Item>
       <NavDropdown.Item onClick={() => changeLanguage("ar")}>
         <img
@@ -34,7 +34,7 @@ const LanguageDropdown = () => {
           alt="Arabic"
           className="me-2"
         />
-        Arabic
+        {t("language.ar")}
       </NavDropdown.Item>
     </NavDropdown>
   );
