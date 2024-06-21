@@ -1,10 +1,22 @@
 {
     "Accounting": "محاسبة",
-    "Inventory":"جرد",
+    "Inventory":"جردة",
     "Transactions":"معاملات",
     "Check In":"تسجيل الوصول",
     "DesignedDeveloped":"مصمم ومطور من قبل",
     "Sign out":"تسجيل الخروج",
+    "List":"قائمة",
+    "Items":"عناصر",
+    "Summery":"ملخص",
+    "Print":"طباعة",
+    "Exit":"خروج",
+    "Delete":"حذف",
+    "Clear":"مسح",
+    "Save&New":"حفظ و جديد",
+    "Account":"حساب",
+    "Accounts": "الحسابات",
+    "Amounts":"المبالغ",
+
     "language": {
       "en": "إنجليزي",
       "fr": "فرنسي",

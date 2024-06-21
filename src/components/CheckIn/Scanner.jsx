@@ -7,6 +7,7 @@ import {
   faCamera,
   faBarcode,
   faStickyNote,
+  faUsers, // Add this line to import the faUsers icon
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 

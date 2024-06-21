@@ -9,6 +9,7 @@ export default function InitialSummery(props) {
   const values = [true];
   const [show, setShow] = useState(false);
   const [summery, setSummery] = useState([]);
+  const { t } = props; // Get t from props
 
   function handleShow(breakpoint) {
     setShow(true);
@@ -47,7 +48,7 @@ export default function InitialSummery(props) {
           onClick={() => handleShow(v)}
         >
           {typeof v === "string" && `below ${v.split("-")[0]}`}
-          Summery
+          {t("Summery")}
         </Button>
       ))}
       <Modal

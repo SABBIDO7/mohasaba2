@@ -12,7 +12,15 @@ import axios from "axios";
 import ConfirmPostInvoiceModal from "./ConfirmPostInvoiceModal";
 import DiscardInvoiceModal from "./DiscardInvoicemodal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faSave, faLock } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faSave,
+  faLock,
+  faBarcode,
+  faUsers,
+  faMousePointer,
+  faFolder,
+} from "@fortawesome/free-solid-svg-icons";
 import "../../index.css"; // Import the CSS file
 import ItemStockDetails from "./ItemStockDetails";
 import BarcodeReader from "./BarcodeReader";
@@ -107,6 +115,8 @@ export default function SalesForm(props) {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const formatter = new Intl.NumberFormat("en-US");
+  const { t } = props; // Get t from props
+
   // Function to set the detected barcode
   const handleBarcodeDetected = (detectedBarcode) => {
     setvInput(detectedBarcode);
@@ -1289,14 +1299,19 @@ export default function SalesForm(props) {
                   }}
                   className="bg-secondd text-BgTextColor w-full h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
                 >
-                  Scan
+                  <FontAwesomeIcon
+                    icon={faBarcode}
+                    className="text-2xl"
+                  ></FontAwesomeIcon>
                 </button>
               </div>
               <button
                 className="bg-secondd text-BgTextColor w-[50%] h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md"
                 onClick={selectSearchAction}
               >
-                Select {sOption}
+                <FontAwesomeIcon icon={faMousePointer} />{" "}
+                {/* Using faCheck icon */}
+                {t(sOption)}
               </button>
               <button
                 className={`bg-secondd text-BgTextColor w-[25%] h-[3rem] rounded-md hover:bg-secondd focus:outline-none focus:bg-secondd group hover:bg-black hover:shadow-md ${
@@ -1350,7 +1365,9 @@ export default function SalesForm(props) {
                   props.selectedFormOption === "DB_AP"
                 }
               >
-                Select Group
+                <FontAwesomeIcon icon={faMousePointer} />{" "}
+                <FontAwesomeIcon icon={faUsers} />{" "}
+                {/* Using the faUsers icon */}
               </button>
             </div>
             <div className="ml-[2%] w-[30%] h-[3rem]">
@@ -1365,13 +1382,19 @@ export default function SalesForm(props) {
                 }}
               >
                 {props.selectedFormOption != "SAT_AP" && (
-                  <option className="py-2 text-lg">Accounts</option>
+                  <option className="py-2 text-lg" value="Accounts">
+                    {t("Accounts")}
+                  </option>
                 )}
                 {props.selectedFormOption != "DB_AP" &&
                 props.selectedFormOption != "CR_AP" ? (
-                  <option className="py-2 text-lg">Items</option>
+                  <option className="py-2 text-lg" value="Items">
+                    {t("Items")}
+                  </option>
                 ) : (
-                  <option className="py-2 text-lg">Amounts</option>
+                  <option className="py-2 text-lg" value="Amounts">
+                    {t("Amounts")}
+                  </option>
                 )}
               </select>
             </div>
@@ -2024,7 +2047,7 @@ export default function SalesForm(props) {
                       }
                     }}
                   >
-                    Print
+                    {t("Print")}
                   </Button>
                   <button
                     className="h-[100%] w-[45%] hover:bg-black hover:shadow-md btn btn-primary"
@@ -2117,7 +2140,7 @@ export default function SalesForm(props) {
                     }
                   }}
                 >
-                  Exit
+                  {t("Exit")}
                 </Button>
                 <Button
                   className="ActionButtons"
@@ -2144,7 +2167,7 @@ export default function SalesForm(props) {
                     //selectRef.current.value="Accounts";
                   }}
                 >
-                  Clear
+                  {t("Clear")}
                 </Button>
                 <Button
                   className="ActionButtons"
@@ -2169,7 +2192,7 @@ export default function SalesForm(props) {
                     }
                   }}
                 >
-                  Delete
+                  {t("Delete")}
                 </Button>
                 <Button
                   className="ActionButtons"
@@ -2177,7 +2200,7 @@ export default function SalesForm(props) {
                     saveNew("saveNew");
                   }}
                 >
-                  Save & New
+                  {t("Save&New")}
                 </Button>
               </div>
             </div>

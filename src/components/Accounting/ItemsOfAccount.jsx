@@ -41,6 +41,7 @@ export default function ItemsOfAccount(props) {
   const [sDisItem, setsDisItem] = useState("");
   const [fLimit, setfLimit] = useState({ value: 100, label: 100 });
   const [vLimit, setvLimit] = useState(100);
+  const { t } = props; // Get t from props
 
   function clearFilters() {
     setdFrom("");
@@ -217,7 +218,7 @@ export default function ItemsOfAccount(props) {
 
       {values.map((v, idx) => (
         <Button key={idx} className="me-2 my-1" onClick={() => handleShow(v)}>
-          {"Items"}
+          {t("Items")}
         </Button>
       ))}
       {/* <Modal show={show} className="w-[90vw]" dialogClassName="modal-90w" onHide={() => setShow(false)}> */}

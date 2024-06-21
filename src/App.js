@@ -220,13 +220,8 @@ function App() {
               "CompanyDashboard",
               data.Permissions["CompanyDashboard"]
             );
-
-            
            } else {
-          
-               
                setisVerified(false);
-             
              
            }
          } catch (error) {

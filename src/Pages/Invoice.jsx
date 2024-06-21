@@ -56,6 +56,8 @@ export default function Invoice(props) {
     localStorage.getItem("CompanyCode")
   );
   const [ErrorInvoiceModel, setErrorInvoiceModel] = useState(false);
+  const { t } = props; // Get t from props
+
   // function sInvoiceHandler(e) {
   //   setSInvoice(e);
   // }
@@ -484,6 +486,7 @@ export default function Invoice(props) {
               sendWhastAPP={sendWhastAPP}
               setsaveWhatsAppModel={setsaveWhatsAppModel}
               saveWhatsAppModel={saveWhatsAppModel}
+              t={t}
             />
             <Modal
               show={SwitchFormOption.show}

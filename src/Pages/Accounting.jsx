@@ -22,6 +22,8 @@ import InitialSummery from "../components/Accounting/InitialSummery";
 import CreateQr from "../components/CheckIn/CreateQr";
 
 export default function Accounting(props) {
+  const { t } = props; // Get t from props
+
   const [vInput, setInput] = useState("");
   const [vSelect, setSelect] = useState({ id: 1, name: "Any" });
   const [vHisab, setHisab] = useState([]);
@@ -149,7 +151,7 @@ export default function Accounting(props) {
                   setSimplified(true);
                 }}
               >
-                List
+                {t("List")}
               </Button>
             ) : (
               <Button
@@ -213,6 +215,7 @@ export default function Accounting(props) {
                             id={"ALLDATA"}
                             token={props.token}
                             url={props.url}
+                            t={t}
                           />
                           <Balance //hon
                             oData={{
@@ -282,6 +285,7 @@ export default function Accounting(props) {
                             url={props.url}
                             branch={jsonFilter.selectedBranch}
                             branchSearch={jsonFilter.branch}
+                            t={t}
                           />
                         </div>
 
@@ -318,6 +322,7 @@ export default function Accounting(props) {
                                 id={cl["AccNo"]}
                                 token={props.token}
                                 url={props.url}
+                                t={t}
                               />
                               <div>
                                 {branchSearch && (
@@ -365,6 +370,7 @@ export default function Accounting(props) {
                                 url={props.url}
                                 branch={jsonFilter.selectedBranch}
                                 branchSearch={jsonFilter.branch}
+                                t={t}
                               />
                               <CreateQr
                                 flag={"1"}
