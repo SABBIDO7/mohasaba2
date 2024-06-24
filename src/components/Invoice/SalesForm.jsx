@@ -21,6 +21,8 @@ import {
   faMousePointer,
   faFolder,
 } from "@fortawesome/free-solid-svg-icons";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+
 import "../../index.css"; // Import the CSS file
 import ItemStockDetails from "./ItemStockDetails";
 import BarcodeReader from "./BarcodeReader";
@@ -2063,7 +2065,7 @@ export default function SalesForm(props) {
                       }
                     }}
                   >
-                    WhatsApp
+                    <FontAwesomeIcon icon={faWhatsapp} />
                   </button>
                 </div>
                 <div className="flex flex-row justify-end items-center bg-fourth shadow-l  rounded p-2 sm:rounded p-1 mb-[0.5%]">
