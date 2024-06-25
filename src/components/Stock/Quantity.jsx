@@ -10,7 +10,7 @@ export default function Quantity(props) {
   const [fullscreen, setFullscreen] = useState(true);
   const [show, setShow] = useState(false);
   const [statement, setStatement] = useState([]);
-
+  const { t } = props;
   function handleShow(breakpoint) {
     setFullscreen(breakpoint);
     setShow(true);
@@ -43,7 +43,7 @@ export default function Quantity(props) {
           className="me-2 my-1"
           onClick={() => handleShow(true)}
         >
-          Qty: {props.children}
+          {t("Qty")}: {props.children}
         </Button>
       );
     } else {

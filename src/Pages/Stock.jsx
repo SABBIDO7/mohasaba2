@@ -75,6 +75,7 @@ export default function Stock(props) {
     sFamily: "=",
     sGroup: "=",
   });
+  const { t } = props; // Get t from props
 
   function dataHandler(Stck) {
     if (Stck != vStock) {
@@ -182,7 +183,7 @@ export default function Stock(props) {
                   setSimplified(true);
                 }}
               >
-                List
+                {t("List")}
               </Button>
             ) : (
               <Button
@@ -298,6 +299,7 @@ export default function Stock(props) {
                         }}
                         token={props.token}
                         format={"btn"}
+                        t={t}
                       >
                         {""}
                       </Quantity>
@@ -365,6 +367,7 @@ export default function Stock(props) {
                           branch: [("ALLDATA", "", "", 0.0)],
                         }}
                         url={props.url}
+                        t={t}
                       />
                       <Summery
                         sinfo={{
@@ -405,6 +408,7 @@ export default function Stock(props) {
                         url={props.url}
                         branch={jsonFilter.selectedBranch}
                         branchSearch={jsonFilter.branch}
+                        t={t}
                       />
                     </div>
 
@@ -414,7 +418,7 @@ export default function Stock(props) {
                     <div className="flex justify-between">
                       <Dropdown className="d-inline mx-2">
                         <Dropdown.Toggle id="dropdown-autoclose-true">
-                          Cost Price
+                          {t("Cost")} {t("Price")}
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
@@ -501,6 +505,7 @@ export default function Stock(props) {
                               oData={cl}
                               token={props.token}
                               format={"btn"}
+                              t={t}
                             >
                               {cl["Qty"]}
                             </Quantity>
@@ -542,13 +547,14 @@ export default function Stock(props) {
                           </div>
                         </div>
                         <div className="mt-2 flex justify-between items-center w-[100%] m-auto">
-                          <Info sinfo={cl} url={props.url} />
+                          <Info sinfo={cl} url={props.url} t={t} />
                           <Summery
                             sinfo={cl}
                             token={props.token}
                             url={props.url}
                             branch={jsonFilter.selectedBranch}
                             branchSearch={jsonFilter.branch}
+                            t={t}
                           />
                         </div>
 
@@ -558,7 +564,7 @@ export default function Stock(props) {
                         <div className="flex justify-between">
                           <Dropdown className="d-inline mx-2">
                             <Dropdown.Toggle id="dropdown-autoclose-true">
-                              Cost Price
+                              {t("Cost")} {t("Price")}
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
@@ -750,6 +756,7 @@ export default function Stock(props) {
                             token={props.token}
                             url={props.url}
                             format={"td"}
+                            t={t}
                           >
                             {"0"}
                           </Quantity>
@@ -841,6 +848,7 @@ export default function Stock(props) {
                                   token={props.token}
                                   url={props.url}
                                   format={"td"}
+                                  t={t}
                                 >
                                   {cl["Qty"]}
                                 </Quantity>
@@ -1005,6 +1013,7 @@ export default function Stock(props) {
                             token={props.token}
                             url={props.url}
                             format={"td"}
+                            t={t}
                           >
                             {""}
                           </Quantity>
@@ -1047,6 +1056,7 @@ export default function Stock(props) {
                             token={props.token}
                             url={props.url}
                             format={"td"}
+                            t={t}
                           >
                             {""}
                           </Quantity>
@@ -1135,6 +1145,7 @@ export default function Stock(props) {
                                   url={props.url}
                                   token={props.token}
                                   format={"td"}
+                                  t={t}
                                 >
                                   {cl["BR"]}
                                 </Quantity>
@@ -1143,6 +1154,7 @@ export default function Stock(props) {
                                   url={props.url}
                                   token={props.token}
                                   format={"td"}
+                                  t={t}
                                 >
                                   {cl["Qty"]}
                                 </Quantity>

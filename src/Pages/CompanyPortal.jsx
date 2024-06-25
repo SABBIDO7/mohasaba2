@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import UsersManagement from "../components/CompanyPortal/UsersManagment";
 import CompanySettings from "../components/CompanyPortal/CompanySettings";
+import Dashboard from "../components/CompanyPortal/Dashboard";
 
 import { Padding } from "@mui/icons-material";
 
@@ -68,7 +69,7 @@ const CompanyPortal = () => {
             )}
           </TabPanel>
           <TabPanel value={selectedTab} index={2}>
-            {localStorage.getItem("CompanyDashboard") == "Y" && <Dashboard />}
+            {localStorage.getItem("CompanyDashboard") == "Y" && <Dboard />}
           </TabPanel>
         </Paper>
       </Container>
@@ -120,9 +121,9 @@ const UserManagement = () => (
   </Box>
 );
 
-const Dashboard = () => (
+const Dboard = () => (
   <Box>
-    <Typography variant="h5">Dashboard</Typography>
+    <Dashboard></Dashboard>
 
     {/* Dashboard content goes here */}
   </Box>

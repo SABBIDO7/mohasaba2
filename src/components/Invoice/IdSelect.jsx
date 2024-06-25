@@ -42,6 +42,7 @@ const IdSelect = forwardRef((props, ref) => {
   const [sItemBranchesStock, setsItemBranchesStock] = useState({});
   const [sItemTotalStockQty, setsItemTotalStockQty] = useState(0);
   const [pageOpenTrigger, setpageOpenTrigger] = useState(false);
+  const { t } = props; // Get t from props
   // Utility function to check if the device name is "k50"
   const isK50Device = () => {
     const userAgent = navigator.userAgent.toLowerCase();
@@ -425,7 +426,7 @@ const IdSelect = forwardRef((props, ref) => {
             <br />
             {sItemNo}
             <br />
-            Stock: {sItemTotalStockQty}
+            {t("Stock")}: {sItemTotalStockQty}
             <br />
             <div className="grid grid-cols-6 gap-1">
               {Object.entries(sItemBranchesStock).map(([key, value], idxbr) => (
@@ -458,7 +459,7 @@ const IdSelect = forwardRef((props, ref) => {
 
             <div className="flex items-center">
               <label htmlFor="itemBranch" className="w-1/4">
-                Branch:{" "}
+                {t("Branch")}:{" "}
                 {!allowBranchChanges && (
                   <FontAwesomeIcon icon={faLock} className="text-gray-400" />
                 )}
@@ -494,7 +495,7 @@ const IdSelect = forwardRef((props, ref) => {
             </div>
             <div className="flex items-center">
               <label htmlFor="itemQty" className="w-1/4">
-                Qty:
+                {t("Qty")}:
               </label>
               <div className="flex items-center space-x-2">
                 <img
@@ -580,7 +581,7 @@ const IdSelect = forwardRef((props, ref) => {
             </div>
             <div className="flex items-center">
               <label htmlFor="itemPieceTotal" className="w-1/4">
-                Total Qty:
+                {t("Total")} {t("Qty")}:
               </label>
               <input
                 id="pieceTotal"
@@ -593,7 +594,7 @@ const IdSelect = forwardRef((props, ref) => {
             </div>
             <div className="flex items-center">
               <label htmlFor="itemPrice" className="w-1/4">
-                Uprice:{" "}
+                {t("Uprice")}:{" "}
                 {!allowPriceChanges && (
                   <FontAwesomeIcon icon={faLock} className="text-gray-400" />
                 )}
@@ -643,7 +644,7 @@ const IdSelect = forwardRef((props, ref) => {
             </div>
             <div className="flex items-center">
               <label htmlFor="itemDiscount" className="w-1/4">
-                Discount %:{" "}
+                {t("Discount")} %:{" "}
                 {!allowDiscountChanges && (
                   <FontAwesomeIcon icon={faLock} className="text-gray-400" />
                 )}
@@ -690,7 +691,7 @@ const IdSelect = forwardRef((props, ref) => {
             </div>
             <div className="flex items-center">
               <label htmlFor="itemTax" className="w-1/4">
-                Tax %:
+                {t("Tax")} %:
               </label>
               <input
                 id="itemTax"
@@ -723,7 +724,7 @@ const IdSelect = forwardRef((props, ref) => {
 
             <div className="flex items-center">
               <label htmlFor="itemTotal" className="w-1/4">
-                Total:
+                {t("Total")}:
               </label>
               <input
                 id="itemTotal"
@@ -799,7 +800,7 @@ const IdSelect = forwardRef((props, ref) => {
                 }, 500); // Adjust the timeout duration if necessary
               }}
             >
-              Add Item
+              {t("Add")} {t("Item")}
             </Button>
             <Button
               onClick={() => {
@@ -809,7 +810,7 @@ const IdSelect = forwardRef((props, ref) => {
               }}
               variant="danger"
             >
-              Close
+              {t("Close")}
             </Button>
           </div>
         </Modal.Footer>

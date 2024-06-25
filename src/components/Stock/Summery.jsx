@@ -8,6 +8,7 @@ export default function Summery(props) {
   const values = [true];
   const [show, setShow] = useState(false);
   const [summery, setSummery] = useState([]);
+  const { t } = props; // Get t from props
 
   function handleShow(breakpoint) {
     setShow(true);
@@ -46,7 +47,7 @@ export default function Summery(props) {
           onClick={() => handleShow(v)}
         >
           {typeof v === "string" && `below ${v.split("-")[0]}`}
-          Summery
+          {t("Summery")}
         </Button>
       ))}
       <Modal
@@ -90,7 +91,10 @@ export default function Summery(props) {
             <tbody>
               {summery.map((state) => {
                 return (
-                  <tr key={uuid()} className="hover:bg-secondd hover:text-BgTextColor whitespace-nowrap">
+                  <tr
+                    key={uuid()}
+                    className="hover:bg-secondd hover:text-BgTextColor whitespace-nowrap"
+                  >
                     <td>{state["Branch"]}</td>
                     <td>{state["InvType"]}</td>
                     <td className=" text-center">{state["Qty"]}</td>

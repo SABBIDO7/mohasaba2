@@ -1550,7 +1550,7 @@ export default function SalesForm(props) {
                   }
                 }}
               >
-                {props.selectedFormOptionDisplay}
+                {t(props.selectedFormOptionDisplay)}
               </h2>
               <div></div>
             </div>
@@ -1602,7 +1602,7 @@ export default function SalesForm(props) {
                     onClick={props.getInvoicesHistory}
                   >
                     <option value="" className="optionText">
-                      ReCall
+                      {t("ReCall")}
                     </option>
 
                     {props.sInvoices.map((inv, idx) => {
@@ -1653,28 +1653,28 @@ export default function SalesForm(props) {
                     props.selectedFormOption === "DB_AP" ? (
                       <>
                         <th>L</th>
-                        <th>Type</th>
-                        <th>Amount</th>
-                        <th>Cur</th>
-                        <th>Branch</th>
-                        <th>Notes</th>
-                        <th>Action</th>
+                        <th>{t("Type")}</th>
+                        <th>{t("Amount")}</th>
+                        <th>{t("Cur")}</th>
+                        <th>{t("Branch")}</th>
+                        <th>{t("Notes")}</th>
+                        <th>{t("Action")}</th>
                       </>
                     ) : (
                       <>
                         <th>L</th>
-                        <th>ItemNo</th>
-                        <th>Description</th>
-                        <th>Br</th>
-                        <th>PQty</th>
+                        <th>{t("ItemNo")}</th>
+                        <th>{t("Description")}</th>
+                        <th>{t("Br")}</th>
+                        <th>P{t("Qty")}</th>
                         <th>PUnit</th>
-                        <th>TQty</th>
-                        <th>UPrice</th>
-                        <th>D%</th>
-                        <th>T%</th>
-                        <th>Total</th>
-                        <th>Notes</th>
-                        <th>Action</th>
+                        <th>T{t("Qty")}</th>
+                        <th>{t("UPrice")}</th>
+                        <th>{t("D")}%</th>
+                        <th>{t("T")}%</th>
+                        <th>{t("Total")}</th>
+                        <th>{t("Notes")}</th>
+                        <th>{t("Action")}</th>
                       </>
                     )}
                   </tr>
@@ -2247,6 +2247,7 @@ export default function SalesForm(props) {
         modalVoucher={props.modalVoucher}
         setModalVoucher={props.setModalVoucher}
         inputRef={inputRef}
+        t={t}
       />
       {ItemStockDetails &&
       props.selectedFormOption != "CR_AP" &&
@@ -3855,7 +3856,7 @@ export default function SalesForm(props) {
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 ">
           <div className="FormOptionContainer">
             <h2 className="text-xl font-semibold mb-4 text-BgTextColor">
-              Select an Option:
+              {t("Select")} {t("Option")}:
             </h2>
             <div className="grid grid-cols-3 gap-4">
               {/* Your six boxes here */}
@@ -3863,56 +3864,56 @@ export default function SalesForm(props) {
                 className="bg-secondd text-BgTextColor py-4 px-8 rounded-md text-center"
                 onClick={() => formOptionProcessing("SA_AP")}
               >
-                Sales
+                {t("Sales")}
               </button>
               <button
                 className="bg-secondd text-BgTextColor py-4 px-8  rounded-md text-center"
                 onClick={() => formOptionProcessing("OD_AP")}
               >
-                Order
+                {t("Order")}
               </button>
               <button
                 className="bg-secondd text-BgTextColor py-4 px-8   rounded-md text-center"
                 onClick={() => formOptionProcessing("PR_AP")}
               >
-                Purchase Return
+                {t("Purchase Return")}
               </button>
               <button
                 className="bg-secondd text-BgTextColor py-4 px-8  rounded-md text-center"
                 onClick={() => formOptionProcessing("PI_AP")}
               >
-                Purchase
+                {t("Purchase")}
               </button>
               <button
                 className="bg-secondd text-BgTextColor py-4 px-8   rounded-md text-center"
                 onClick={() => formOptionProcessing("SR_AP")}
               >
-                Sales Return
+                {t("Sales Return")}
               </button>
               <button
                 className="bg-secondd text-BgTextColor py-4 px-8  rounded-md text-center"
                 onClick={() => formOptionProcessing("SAT_AP")}
               >
-                Branch Transfer
+                {t("Branch Transfer")}
               </button>
               <button
                 className="bg-secondd text-BgTextColor py-4 px-8 rounded-md text-center"
                 onClick={() => formOptionProcessing("CR_AP")}
               >
-                Receipt Voucher
+                {t("Receipt Voucher")}
               </button>
               <button
                 className="bg-secondd text-BgTextColor py-4 px-8 rounded-md text-center"
                 onClick={() => formOptionProcessing("DB_AP")}
               >
-                Payment Voucher
+                {t("Payment Voucher")}
               </button>
             </div>
             <button
               className="mt-4 bg-gray-300 hover:bg-gray-400 py-3 px-6  rounded-md"
               onClick={handleCloseDialog}
             >
-              Close
+              {t("Close")}
             </button>
           </div>
         </div>
