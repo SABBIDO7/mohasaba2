@@ -381,3 +381,46 @@ export async function UpdateCompanySettings(data) {
     return { status: "Error", message: error };
   }
 }
+
+export async function getBarChartData() {
+  try {
+    return await axios({
+      method: "get",
+      url:
+        url + "/moh/getBarChartData/" + localStorage.getItem("compname") + "/",
+    }).then((res) => {
+      if (res.data.status == "success") {
+        console.log("l" + res);
+        return {
+          status: "success",
+          result: res.data.result,
+        };
+      } else {
+        return { status: res.data.status, message: res.data.message };
+      }
+    });
+  } catch (error) {
+    return { status: "Error", message: error };
+  }
+}
+export async function getPieChartData() {
+  try {
+    return await axios({
+      method: "get",
+      url:
+        url + "/moh/getPieChartData/" + localStorage.getItem("compname") + "/",
+    }).then((res) => {
+      if (res.data.status == "success") {
+        console.log("lip" + res.data);
+        return {
+          status: "success",
+          result: res.data.result,
+        };
+      } else {
+        return { status: res.data.status, message: res.data.message };
+      }
+    });
+  } catch (error) {
+    return { status: "Error", message: error };
+  }
+}
