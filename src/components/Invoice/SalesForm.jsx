@@ -1046,7 +1046,7 @@ export default function SalesForm(props) {
       setErrorModal({
         show: true,
         message: "The Invoice Is Empty",
-        title: "Empty Invoice",
+        title: `${t("Empty")} ${t("Invoice")}`,
       });
     }
   };
@@ -1271,7 +1271,7 @@ export default function SalesForm(props) {
                 type="text"
                 ref={inputRef}
                 className="text-lg font-semibold block rounded-md w-full  h-[3rem] border border-secondd bg-white px-4 py-2 focus:outline-none focus:border-secondd focus:ring-1 focus:ring-secondd text-lg"
-                placeholder="Search Value"
+                placeholder={`${t("Search")} ${t("Value")}`}
                 value={vInput}
                 onChange={(e) => {
                   setvInput(e.target.value);
@@ -3384,7 +3384,7 @@ export default function SalesForm(props) {
         <Modal.Footer>
           <div className="flex flex-row w-full justify-around">
             <Button onClick={() => setDiscardOldInvoiceModalShow(false)}>
-              No
+              {`${t("No")}`}
             </Button>
             <Button
               variant="danger"
@@ -3421,7 +3421,7 @@ export default function SalesForm(props) {
                 localStorage.setItem("sales", "");
               }}
             >
-              Yes
+              {`${t("Yes")}`}
             </Button>
           </div>
         </Modal.Footer>
@@ -3471,22 +3471,22 @@ export default function SalesForm(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Empty Invoice
+            {`${t("Empty")} ${t("Invoice")}`}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <h4>
             {props.Client["id"] == "" && props.selectedFormOption != "SAT_AP"
-              ? "No Account Choosen"
+              ? `${t("p2")}`
               : props.propertiesAreEqual == true
               ? props.selectedFormOption == "SAT_AP" &&
                 props.SelectedItems.length == 0
-                ? "No Items in your invoice"
-                : "No Changes In Your Invoice"
+                ? `${t("p1")}`
+                : `${t("p3")}`
               : props.selectedFormOption == "CR_AP" ||
                 props.selectedFormOption == "DB_AP"
-              ? "No Accounts in your invoice"
-              : "No Items in your invoice"}
+              ? `${t("p4")}`
+              : `${t("p1")}`}
           </h4>
         </Modal.Body>
         <Modal.Footer>
@@ -3495,7 +3495,7 @@ export default function SalesForm(props) {
               variant="primary"
               onClick={() => setEmptyAlertModalShow(false)}
             >
-              Ok
+              {`${t("Ok")}`}
             </Button>
           </div>
         </Modal.Footer>
@@ -3515,8 +3515,8 @@ export default function SalesForm(props) {
         </Modal.Header>
         <Modal.Body>
           <h4>
-            {"No Account Choosen Yet."}
-            <br /> {"Please select Account first"}
+            {`${t("p4")}`}
+            <br /> {`${t("p5")}`}
           </h4>
         </Modal.Body>
         <Modal.Footer>
@@ -3525,7 +3525,7 @@ export default function SalesForm(props) {
               variant="danger"
               onClick={() => setItemsWithoutAccount(false)}
             >
-              Ok
+              {`${t("Ok")}`}
             </Button>
           </div>
         </Modal.Footer>
@@ -3542,18 +3542,16 @@ export default function SalesForm(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Unsaved Invoice
+            {`${t("p6")}`}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4>
-            You cannot Switch to Another Account Without saving the changes
-          </h4>
+          <h4>{`${t("p7")}`}</h4>
         </Modal.Body>
         <Modal.Footer>
           <div className="flex flex-row w-full justify-around">
             <Button onClick={() => setswitchBetweenInvoicesModalShow(false)}>
-              Ok
+              {`${t("Ok")}`}
             </Button>
             {/* <Button onClick={()=>setswitchBetweenInvoicesModalShow(false)}>No</Button> */}
             {/* <Button variant="danger" onClick={() => {
@@ -3585,18 +3583,19 @@ export default function SalesForm(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Change Invoice Account
+            {`${t("p8")}`}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <h4>
-            Are You Sure You Want To Change the Account Invoice From{" "}
-            {props.Client.id} to {newAccount} ?
+            {`${t("p9")}`} {props.Client.id} {`${t("p10")}`} {newAccount} ?
           </h4>
         </Modal.Body>
         <Modal.Footer>
           <div className="flex flex-row w-full justify-around">
-            <Button onClick={() => setSearchAccountModalShow(false)}>No</Button>
+            <Button onClick={() => setSearchAccountModalShow(false)}>{`${t(
+              "No"
+            )}`}</Button>
             <Button
               variant="danger"
               onClick={() => {
@@ -3612,7 +3611,7 @@ export default function SalesForm(props) {
                 );
               }}
             >
-              Yes
+              {`${t("Yes")}`}
             </Button>
           </div>
         </Modal.Footer>

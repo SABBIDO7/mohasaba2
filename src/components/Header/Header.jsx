@@ -98,7 +98,7 @@ export default function Header(props) {
                       window.location.href = "/";
                     }}
                   >
-                    Main Menu
+                    {t("Main")} {t("Menu")}
                   </NavDropdown.Item>
                   {(localStorage.getItem("CompanySettings") == "Y" ||
                     localStorage.getItem("UserManagement") == "Y" ||
@@ -109,14 +109,14 @@ export default function Header(props) {
                         navigate("/CompanyPortal");
                       }}
                     >
-                      Company Portal
+                      {t("Company")} {t("Portal")}
                     </NavDropdown.Item>
                   )}
                   <Navbar bg="light" expand="lg">
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                       <Nav className="me-auto">
-                        <LanguageDropdown />
+                        <LanguageDropdown t={t} />
                       </Nav>
                     </Navbar.Collapse>
                   </Navbar>
@@ -130,7 +130,7 @@ export default function Header(props) {
                       window.location.href = "/";
                     }}
                   >
-                    Sign out
+                    {t("Sign out")}
                   </NavDropdown.Item>
                 </NavDropdown>
               </div>

@@ -206,7 +206,7 @@ const IdSelect = forwardRef((props, ref) => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Choose</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">{t("Choose")}</Modal.Title>
         </Modal.Header>
         <Modal.Body className="h-[43rem] overflow-y-auto">
           {props.options.map((io, idx) => {

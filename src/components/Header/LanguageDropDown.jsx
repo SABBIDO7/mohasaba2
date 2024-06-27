@@ -3,15 +3,15 @@ import { NavDropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
 
-const LanguageDropdown = () => {
-  const { t } = useTranslation();
+const LanguageDropdown = (props) => {
+  const { t } = props;
 
   const changeLanguage = (lang) => {
     i18n.changeLanguage(lang);
   };
 
   return (
-    <NavDropdown title={<span>Language</span>} id="language-dropdown">
+    <NavDropdown title={<span>{t("Language")}</span>} id="language-dropdown">
       <NavDropdown.Item onClick={() => changeLanguage("en")}>
         <img
           src="https://flagcdn.com/w20/gb.png"
