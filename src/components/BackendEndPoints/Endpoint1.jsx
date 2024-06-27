@@ -424,3 +424,29 @@ export async function getPieChartData() {
     return { status: "Error", message: error };
   }
 }
+
+export async function getProfitData(year) {
+  try {
+    return await axios({
+      method: "get",
+      url:
+        url +
+        "/moh/getProfitData/" +
+        localStorage.getItem("compname") +
+        "/" +
+        year +
+        "/",
+    }).then((res) => {
+      if (res.data.status == "success") {
+        return {
+          status: "success",
+          result: res.data.result,
+        };
+      } else {
+        return { status: res.data.status, message: res.data.message };
+      }
+    });
+  } catch (error) {
+    return { status: "Error", message: error };
+  }
+}

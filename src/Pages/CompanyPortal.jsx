@@ -14,9 +14,9 @@ import Dashboard from "../components/CompanyPortal/Dashboard";
 
 import { Padding } from "@mui/icons-material";
 
-const CompanyPortal = () => {
+const CompanyPortal = (props) => {
   const [selectedTab, setSelectedTab] = useState(0);
-
+  const { t } = props;
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
@@ -55,21 +55,25 @@ const CompanyPortal = () => {
               textColor="inherit"
               indicatorColor="secondary"
             >
-              <Tab label="Company Settings" />
-              <Tab label="User Management" />
-              <Tab label="Dashboard" />
+              <Tab label={`${t("Company")} ${t("Settings")}`} />
+              <Tab label={`${t("User")} ${t("Management")}`} />
+              <Tab label={`${t("Dashboard")}`} />
             </Tabs>
           </AppBar>
           <TabPanel value={selectedTab} index={0}>
-            {localStorage.getItem("CompanySettings") == "Y" && <CompSettings />}
+            {localStorage.getItem("CompanySettings") == "Y" && (
+              <CompSettings t={t} />
+            )}
           </TabPanel>
           <TabPanel value={selectedTab} index={1}>
             {localStorage.getItem("UserManagement") == "Y" && (
-              <UserManagement />
+              <UserManagement t={t} />
             )}
           </TabPanel>
           <TabPanel value={selectedTab} index={2}>
-            {localStorage.getItem("CompanyDashboard") == "Y" && <Dboard />}
+            {localStorage.getItem("CompanyDashboard") == "Y" && (
+              <Dboard t={t} />
+            )}
           </TabPanel>
         </Paper>
       </Container>
@@ -95,14 +99,14 @@ const TabPanel = (props) => {
   );
 };
 
-const CompSettings = () => (
+const CompSettings = (props) => (
   <Box>
-    <CompanySettings></CompanySettings>
+    <CompanySettings t={props.t}></CompanySettings>
     {/* Company settings content goes here */}
   </Box>
 );
 
-const UserManagement = () => (
+const UserManagement = (props) => (
   <Box
     key={"UserManagementBox"}
     sx={{
@@ -117,13 +121,13 @@ const UserManagement = () => (
     {/* <Typography variant="h5">Users Management</Typography> */}
     {/* User management content goes here */}
 
-    <UsersManagement className="flex h-[100vh]"></UsersManagement>
+    <UsersManagement className="flex h-[100vh]" t={props.t}></UsersManagement>
   </Box>
 );
 
-const Dboard = () => (
+const Dboard = (props) => (
   <Box>
-    <Dashboard></Dashboard>
+    <Dashboard t={props.t}></Dashboard>
 
     {/* Dashboard content goes here */}
   </Box>
