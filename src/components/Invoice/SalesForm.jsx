@@ -174,7 +174,7 @@ export default function SalesForm(props) {
     } else if (localStorage.getItem(option) == "N") {
       setDeletePermission({
         show: true,
-        message: "You don't Have Permission To Access " + option + " Form",
+        message: t("p15") + " " + option + " " + t("Form"),
       });
       return;
     } else if (option == "SAT_AP") {
@@ -201,8 +201,7 @@ export default function SalesForm(props) {
           show: true,
           message: (
             <div>
-              There Is UnSaved Data. <br></br> Please Save Or Clear Invoice
-              Before Changing Form Option.
+              {t("p16")} <br></br> {t("p17")}
             </div>
           ),
           title: option,
@@ -242,8 +241,7 @@ export default function SalesForm(props) {
           show: true,
           message: (
             <div>
-              There Is UnSaved Data. <br></br> Please Save Or Clear Invoice
-              Before Changing Form Option.
+              {t("p16")} <br></br> {t("p17")}
             </div>
           ),
           title: option,
@@ -582,7 +580,7 @@ export default function SalesForm(props) {
             setErrorModal({
               show: true,
               message: <div>{response.data.message}</div>,
-              title: "Invoice Unavailable",
+              title: t("p19"),
             });
           }
         })
@@ -616,7 +614,7 @@ export default function SalesForm(props) {
           setErrorModal({
             show: true,
             message: <div>{response.data.message}</div>,
-            title: "Release Invoice",
+            title: t("p20"),
           });
         }
       })
@@ -817,13 +815,13 @@ export default function SalesForm(props) {
           setErrorModal({
             show: true,
             message: res.data.msg,
-            title: "Error Occured",
+            title: t("p21"),
           });
         }
       })
       .catch((error) => {
         console.error("Error in getInvoicesHistory:", error);
-        setErrorModal({ show: true, message: error, title: "Error Occured" });
+        setErrorModal({ show: true, message: error, title: t("p21") });
 
         // Handle error (e.g., set error state)
       });
@@ -1045,7 +1043,7 @@ export default function SalesForm(props) {
     } else {
       setErrorModal({
         show: true,
-        message: "The Invoice Is Empty",
+        message: t("p12"),
         title: `${t("Empty")} ${t("Invoice")}`,
       });
     }
@@ -1099,15 +1097,15 @@ export default function SalesForm(props) {
       } else {
         props.setsaveWhatsAppModel({
           show: true,
-          message: "Do You Want To Save Mobile Number Of The Client",
-          title: "Number Not Found",
+          message: t("p13"),
+          title: t("p14"),
         });
       }
     } else {
       setErrorModal({
         show: true,
-        message: "The Invoice Is Empty",
-        title: "Empty Invoice",
+        message: t("p12"),
+        title: t("p11"),
       });
     }
   }
@@ -1348,12 +1346,8 @@ export default function SalesForm(props) {
                     } else {
                       setErrorModal({
                         show: true,
-                        message: (
-                          <div>
-                            You Should Choose Search Items Selection First.
-                          </div>
-                        ),
-                        title: "Select Items Search",
+                        message: <div>{t("p22")}</div>,
+                        title: t("p23"),
                       });
                     }
                     //setGroupModalShow(true);
@@ -2179,7 +2173,7 @@ export default function SalesForm(props) {
                     if (DeleteInvoicePermission == "N") {
                       setDeletePermission({
                         show: true,
-                        message: "You don't have permission to delete invoice.",
+                        message: t("p25"),
                       });
                     } else {
                       if (
@@ -2263,6 +2257,7 @@ export default function SalesForm(props) {
           }}
           data={ItemDetailsModalData}
           url={props.url}
+          t={t}
         />
       ) : null}
 
@@ -2329,7 +2324,7 @@ export default function SalesForm(props) {
               <div className="space-y-3">
                 <div className="flex items-center">
                   <label htmlFor="itemQty" className="w-1/4">
-                    Qty:
+                    {t("Qty")}:
                   </label>
                   <div className="w-3/4 flex items-center space-x-2">
                     <img
@@ -2415,7 +2410,7 @@ export default function SalesForm(props) {
                 </div>
                 <div className="flex items-center">
                   <label htmlFor="itemPieceTotal" className="w-1/4">
-                    Total Qty:
+                    {t("Total")} {t("Qty")}:
                   </label>
                   <input
                     id="pieceTotal"
@@ -2445,7 +2440,7 @@ export default function SalesForm(props) {
                 </div>
                 <div className="flex items-center">
                   <label htmlFor="itemBranch" className="w-1/4">
-                    Branch:
+                    {t("Branch")}:
                   </label>
                   <select
                     id="itemBranch"
@@ -2482,7 +2477,7 @@ export default function SalesForm(props) {
 
                 <div className="flex items-center">
                   <label htmlFor="itemPrice" className="w-1/4">
-                    Uprice:{" "}
+                    {t("Uprice")}:{" "}
                     {!allowPriceChanges && (
                       <FontAwesomeIcon
                         icon={faLock}
@@ -2533,7 +2528,7 @@ export default function SalesForm(props) {
 
                 <div className="flex items-center">
                   <label htmlFor="itemDiscount" className="w-1/4">
-                    Discount %:{" "}
+                    {t("Discount")} %:{" "}
                     {!allowDiscountChanges && (
                       <FontAwesomeIcon
                         icon={faLock}
@@ -2583,7 +2578,7 @@ export default function SalesForm(props) {
 
                 <div className="flex items-center">
                   <label htmlFor="itemTax" className="w-1/4">
-                    Tax %:
+                    {t("Tax")} %:
                   </label>
                   <input
                     type={"number"}
@@ -2615,7 +2610,7 @@ export default function SalesForm(props) {
 
                 <div className="flex items-center">
                   <label htmlFor="itemTotal" className="w-1/4">
-                    Total:
+                    {t("Total")}:
                   </label>
                   <input
                     id="itemTotal"
@@ -2693,7 +2688,7 @@ export default function SalesForm(props) {
                     }
                   }}
                 >
-                  Close
+                  {t("Close")}
                 </Button>
 
                 <Button
@@ -2773,7 +2768,7 @@ export default function SalesForm(props) {
                     EmptyVariable();
                   }}
                 >
-                  Remove
+                  {t("Remove")}
                 </Button>
 
                 <Button
@@ -2891,7 +2886,7 @@ export default function SalesForm(props) {
                     // EmptyVariable();
                   }}
                 >
-                  Apply
+                  {t("Apply")}
                 </Button>
               </div>
             </Modal.Footer>
@@ -3324,6 +3319,7 @@ export default function SalesForm(props) {
         setModalShow={setDiscardModalShow}
         exit={props.inv}
         callBack={discardInvoice}
+        t={t}
       />
       <Modal
         show={NewInvoiceAlertModalShow}
@@ -3336,19 +3332,20 @@ export default function SalesForm(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Unsaved Invoice
+            {t("p6")}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <h4>
-            There is Unsaved Changes in Your Invoice<br></br>Are You Sure You
-            Want To Clear Current Invoice Without Saving?
+            {t("p26")}
+            <br></br>
+            {t("p27")}
           </h4>
         </Modal.Body>
         <Modal.Footer>
           <div className="flex flex-row w-full justify-around">
             <Button onClick={() => setNewInvoiceAlertModalShow(false)}>
-              No
+              {t("No")}
             </Button>
             <Button
               variant="danger"
@@ -3358,7 +3355,7 @@ export default function SalesForm(props) {
                 clearInvoice();
               }}
             >
-              Yes
+              {`${t("Yes")}`}
             </Button>
           </div>
         </Modal.Footer>
@@ -3375,11 +3372,11 @@ export default function SalesForm(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Unsaved Invoice
+            {t("p6")}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4>Are You Sure You Want To Exit Invoice Without Saving Changes?</h4>
+          <h4>{`${t("p28")}`}</h4>
         </Modal.Body>
         <Modal.Footer>
           <div className="flex flex-row w-full justify-around">
@@ -3510,7 +3507,7 @@ export default function SalesForm(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Empty Invoice
+            {`${t("p11")}`}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -3660,15 +3657,17 @@ export default function SalesForm(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Deleting Invoice
+            {t("Deleting Invoice")}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h3>Are You sure You Want Proceed in Deleting The Invoice?</h3>
+          <h3>{t("p30")}</h3>
         </Modal.Body>
         <Modal.Footer>
           <div className="flex flex-row w-full justify-around">
-            <Button onClick={() => setDeleteInvoiceModal(false)}>No</Button>
+            <Button onClick={() => setDeleteInvoiceModal(false)}>{`${t(
+              "No"
+            )}`}</Button>
             <Button
               variant="danger"
               onClick={() => {
@@ -3682,7 +3681,7 @@ export default function SalesForm(props) {
                 );
               }}
             >
-              Yes
+              {`${t("Yes")}`}
             </Button>
           </div>
         </Modal.Footer>
@@ -3696,11 +3695,11 @@ export default function SalesForm(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Permission Denied
+            {t("p24")}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h3>{DeletePermission.message || "Permission denied."}</h3>{" "}
+          <h3>{DeletePermission.message || t("p24")}</h3>{" "}
           {/* Display the message */}
         </Modal.Body>
         <Modal.Footer>
@@ -3711,7 +3710,7 @@ export default function SalesForm(props) {
                 setDeletePermission({ ...DeletePermission, show: false })
               }
             >
-              Ok
+              {t("Ok")}
             </Button>
           </div>
         </Modal.Footer>
@@ -3738,7 +3737,7 @@ export default function SalesForm(props) {
               variant="primary"
               onClick={() => setErrorModal({ ...ErrorModal, show: false })}
             >
-              Ok
+              {t("Ok")}
             </Button>
           </div>
         </Modal.Footer>
@@ -3775,7 +3774,7 @@ export default function SalesForm(props) {
                 setCloseSave({ ...CloseSave, show: false });
               }}
             >
-              Yes
+              {`${t("Yes")}`}
             </Button>
             <Button
               variant="primary"
@@ -3783,7 +3782,7 @@ export default function SalesForm(props) {
                 setCloseSave({ ...SwitchFormOption, show: false });
               }}
             >
-              No
+              N{`${t("No")}`}
             </Button>
           </div>
         </Modal.Footer>
@@ -3814,7 +3813,7 @@ export default function SalesForm(props) {
                 setSwitchFormOption({ ...SwitchFormOption, show: false });
               }}
             >
-              Yes
+              {`${t("Yes")}`}
             </Button>
             <Button
               variant="primary"
@@ -3822,7 +3821,7 @@ export default function SalesForm(props) {
                 setSwitchFormOption({ ...SwitchFormOption, show: false });
               }}
             >
-              No
+              {`${t("No")}`}{" "}
             </Button>
           </div>
         </Modal.Footer>
@@ -3836,16 +3835,16 @@ export default function SalesForm(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Delete Failed
+            {t("Delete Failed")}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h3>There is No Saved Invoice To Delete it.</h3>
+          <h3>{t("p29")}</h3>
         </Modal.Body>
         <Modal.Footer>
           <div className="flex flex-row w-full justify-around">
             <Button variant="primary" onClick={() => setNoSavedToDelete(false)}>
-              Ok
+              {`${t("Ok")}`}
             </Button>
           </div>
         </Modal.Footer>
@@ -3995,8 +3994,7 @@ export default function SalesForm(props) {
                       show: true,
                       message: (
                         <div>
-                          There Is UnSaved Data. <br></br> Please Save Or Clear
-                          Invoice Before Changing Form Option.
+                          {t("p16")} <br></br> {t("p17")}
                         </div>
                       ),
                       title: "Branch Transfer",
@@ -4189,7 +4187,7 @@ export default function SalesForm(props) {
           setErrorModal({
             show: true,
             message: <div>{res.data.msg}</div>,
-            title: "Error Occured",
+            title: t("p21"),
           });
         }
       })
@@ -4198,7 +4196,7 @@ export default function SalesForm(props) {
         setErrorModal({
           show: true,
           message: <div>{err}</div>,
-          title: "Error Occured",
+          title: t("p21"),
         });
       });
   }

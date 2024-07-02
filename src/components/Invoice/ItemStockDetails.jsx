@@ -8,7 +8,7 @@ import Table from "react-bootstrap/Table";
 export default function ItemStockDetails(props) {
   const [isLoading, setLoading] = useState(true);
   const [Double, setDouble] = useState([]);
-
+  const { t } = props;
   useEffect(() => {
     if (props.show == true) {
       fetch(
@@ -49,7 +49,7 @@ export default function ItemStockDetails(props) {
             className="border-0 position-absolute start-0"
           ></Modal.Header>
           <Modal.Title className="ms-5 me-5">
-            {props.data["ItemName"]}-WareHouse
+            {props.data["ItemName"]}-{t("WareHouse")}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

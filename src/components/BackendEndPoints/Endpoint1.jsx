@@ -475,3 +475,53 @@ export async function getLineChartDataProfit(year) {
     return { status: "Error", message: error };
   }
 }
+export async function getTopSellersByAmount(year) {
+  try {
+    return await axios({
+      method: "get",
+      url:
+        url +
+        "/moh/getTopSellersByAmount/" +
+        localStorage.getItem("compname") +
+        "/" +
+        year +
+        "/",
+    }).then((res) => {
+      if (res.data.status == "success") {
+        return {
+          status: "success",
+          result: res.data.result,
+        };
+      } else {
+        return { status: res.data.status, message: res.data.message };
+      }
+    });
+  } catch (error) {
+    return { status: "Error", message: error };
+  }
+}
+export async function getTopSellersByQuantity(year) {
+  try {
+    return await axios({
+      method: "get",
+      url:
+        url +
+        "/moh/getTopSellersByQuantity/" +
+        localStorage.getItem("compname") +
+        "/" +
+        year +
+        "/",
+    }).then((res) => {
+      if (res.data.status == "success") {
+        return {
+          status: "success",
+          result: res.data.result,
+        };
+      } else {
+        return { status: res.data.status, message: res.data.message };
+      }
+    });
+  } catch (error) {
+    return { status: "Error", message: error };
+  }
+}

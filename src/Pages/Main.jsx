@@ -12,7 +12,7 @@ export default function Main(props) {
   function accountingClick() {
     if (localStorage.getItem("AccountingPage") == "Y") {
       if (localStorage.getItem("BackOffice") == "Y") {
-        document.getElementById("Accounting").click();
+        document.getElementById(t("Accounting")).click();
       } else {
         modalsChildRef.current.setRestrictionModal({
           show: true,
@@ -31,7 +31,7 @@ export default function Main(props) {
   function stockClick() {
     if (localStorage.getItem("InventoryPage") == "Y") {
       if (localStorage.getItem("BackOffice") == "Y") {
-        document.getElementById("Inventory").click();
+        document.getElementById(t("Inventory")).click();
       } else {
         modalsChildRef.current.setRestrictionModal({
           show: true,
@@ -50,7 +50,7 @@ export default function Main(props) {
   function invoiceClick() {
     if (localStorage.getItem("TransactionsPage") == "Y") {
       if (localStorage.getItem("BackOffice") == "Y") {
-        document.getElementById("Transactions").click();
+        document.getElementById(t("Transactions")).click();
       } else {
         modalsChildRef.current.setRestrictionModal({
           show: true,
@@ -68,7 +68,7 @@ export default function Main(props) {
   }
   function CheckInClick() {
     if (localStorage.getItem("CheckInPage") == "Y") {
-      document.getElementById("Check In").click();
+      document.getElementById(t("Check In")).click();
     } else {
       modalsChildRef.current.setRestrictionModal({
         show: true,
