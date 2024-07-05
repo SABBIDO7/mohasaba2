@@ -27,6 +27,7 @@ import "../../index.css"; // Import the CSS file
 import ItemStockDetails from "./ItemStockDetails";
 import BarcodeReader from "./BarcodeReader";
 import DeliveryDateModal from "../Modals/DeliveryDateModal";
+import { Close } from "@mui/icons-material";
 
 export default function SalesForm(props) {
   // const [vInput, setvInput] = useState(
@@ -118,7 +119,7 @@ export default function SalesForm(props) {
 
   const formatter = new Intl.NumberFormat("en-US");
   const { t } = props; // Get t from props
-
+  const [editDBCRInitialValues, setEditDBCRInitialValues] = useState({});
   // Function to set the detected barcode
   const handleBarcodeDetected = (detectedBarcode) => {
     setvInput(detectedBarcode);
@@ -881,8 +882,9 @@ export default function SalesForm(props) {
   };
   const checkChangesOnEdit = (oldtempa, newValue) => {
     let pAreEqual = true;
-    if (oldtempa["qty"] !== newValue["qty"]) {
-      console.log("fetttt qty");
+    if (oldtempa["qty"] != newValue["qty"]) {
+      //khatira
+      console.log("fetttt qty", oldtempa["qty"], newValue["qty"]);
       pAreEqual = false;
     }
 
@@ -895,12 +897,12 @@ export default function SalesForm(props) {
       console.log("fetttt branch");
       pAreEqual = false;
     }
-    if (oldtempa["discount"] !== newValue["discount"]) {
+    if (oldtempa["discount"] != newValue["discount"]) {
       console.log("fetttt disc");
       pAreEqual = false;
     }
 
-    if (oldtempa["tax"] !== newValue["tax"]) {
+    if (oldtempa["tax"] != newValue["tax"]) {
       console.log("fetttt tax");
       console.log(oldtempa["tax"], newValue["tax"]);
       pAreEqual = false;
@@ -1528,10 +1530,9 @@ export default function SalesForm(props) {
                       show: true,
                       message: (
                         <div>
-                          You Cannot Change The Form Option While Calling Old
-                          Invoice.
+                          {t("p34")}
                           <br />
-                          Please Clear Invoice First .
+                          {t("p35")}
                         </div>
                       ),
                       //variable: option,
@@ -1812,6 +1813,12 @@ export default function SalesForm(props) {
                                     setEditPPrice(si["PPrice"]); /* Currency */
 
                                     setEditPrice(si["uprice"]); /* Amount */
+                                    setEditDBCRInitialValues({
+                                      branch: si["branch"],
+                                      type: si["PType"],
+                                      pPrice: si["PPrice"],
+                                      price: si["uprice"],
+                                    });
                                     console.log(
                                       "hsebet men Amount waat ekbos edit"
                                     );
@@ -1939,7 +1946,7 @@ export default function SalesForm(props) {
 
                       title: "Save Changes",
                       flag: "Notes",
-                      message: "Do You Want To Save Your Note Changes",
+                      message: t("p32"),
                     });
                   } else if (
                     updatedItems[selectedItemIndex]["Note"] == noteInput
@@ -1949,7 +1956,7 @@ export default function SalesForm(props) {
                 }}
               >
                 <Modal.Header closeButton>
-                  <Modal.Title>Edit Note (30 characters)</Modal.Title>
+                  <Modal.Title>{t("p33")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   <textarea
@@ -1982,7 +1989,7 @@ export default function SalesForm(props) {
 
                               title: "Save Changes",
                               flag: "Notes",
-                              message: "Do You Want To Save Your Note Changes",
+                              message: t("p32"),
                             });
                           } else if (
                             updatedItems[selectedItemIndex]["Note"] == noteInput
@@ -1991,7 +1998,7 @@ export default function SalesForm(props) {
                           }
                         }}
                       >
-                        Close
+                        {t("Close")}
                       </Button>
                     </div>
                     <Button
@@ -2000,7 +2007,7 @@ export default function SalesForm(props) {
                         setNoteInput("");
                       }}
                     >
-                      Clear
+                      {t("Clear")}
                     </Button>
                     <Button variant="primary" onClick={handleNoteSave}>
                       <FontAwesomeIcon icon={faSave} className="mr-2" />
@@ -2283,7 +2290,7 @@ export default function SalesForm(props) {
 
               title: "Save Changes",
               flag: "goodsInvoice",
-              message: "Do You Want To Save Your Changes",
+              message: t("p31"),
             });
           }
         }}
@@ -2683,7 +2690,7 @@ export default function SalesForm(props) {
 
                         title: "Save Changes",
                         flag: "goodsInvoice",
-                        message: "Do You Want To Save Your Changes",
+                        message: t("p31"),
                       });
                     }
                   }}
@@ -2910,7 +2917,7 @@ export default function SalesForm(props) {
               <div className="space-y-3">
                 <div className="flex items-center">
                   <label htmlFor="itemBranch" className="w-1/4">
-                    Branch:
+                    {t("Branch")}:
                   </label>
                   <select
                     id="itemBranch"
@@ -2929,7 +2936,7 @@ export default function SalesForm(props) {
                 </div>
                 <div className="flex items-center">
                   <label htmlFor="itemQty" className="w-1/4">
-                    Payment Type:
+                    {t("Payment Type")}:
                   </label>
                   <div className="flex items-center w-3/4">
                     <select
@@ -2940,7 +2947,9 @@ export default function SalesForm(props) {
                         setEditType(e.target.value);
                       }}
                     >
-                      <option value="">Choose Payment Type</option>
+                      <option value="">
+                        {t("Choose")} {t("Payment Type")}
+                      </option>
                       {localStorage.getItem("CASH") &&
                         localStorage.getItem("CASH") !== "" &&
                         localStorage.getItem("CASH") != "null" && (
@@ -2995,7 +3004,7 @@ export default function SalesForm(props) {
                 </div>
                 <div className="flex items-center">
                   <label htmlFor="itemQty" className="w-1/4">
-                    Currency:
+                    {t("Currency")}:
                   </label>
                   <div className="flex items-center w-3/4">
                     <select
@@ -3026,7 +3035,7 @@ export default function SalesForm(props) {
 
                 <div className="flex items-center">
                   <label htmlFor="itemPrice" className="w-1/4">
-                    Amount:{" "}
+                    {t("Amount")}:{" "}
                   </label>
 
                   <input
@@ -3050,20 +3059,33 @@ export default function SalesForm(props) {
                 <Button
                   variant="secondary"
                   onClick={() => {
-                    setCloseSave({
-                      show: true,
-                      variable: "",
-                      title: "Save Changes",
-                      flag: "AllGroups",
-                      message: "Do You Want To Save Your Changes",
-                    });
+                    let [oldtempa, newtempa] = getOldNewInputs();
+                    let tempa = props.SelectedItems;
+
+                    if (
+                      editDBCRInitialValues.branch !== EditBranch ||
+                      editDBCRInitialValues.type !== EditType ||
+                      editDBCRInitialValues.pPrice !== EditPPrice ||
+                      editDBCRInitialValues.price !== EditPrice
+                    ) {
+                      setCloseSave({
+                        OldDatavariable: tempa,
+                        NewDatavariable: newtempa,
+                        show: true,
+                        variable: "",
+                        title: "Save Changes",
+                        flag: "EditDBCR",
+                        message: t("p31"),
+                      });
+                    }
+
                     setShow(false);
                     setIdOptions([]);
                     setErrorMessage("");
                     EmptyVariable();
                   }}
                 >
-                  Close
+                  {t("Close")}
                 </Button>
 
                 <Button
@@ -3143,7 +3165,7 @@ export default function SalesForm(props) {
                     EmptyVariable();
                   }}
                 >
-                  Remove
+                  {t("Remove")}
                 </Button>
 
                 <Button
@@ -3287,7 +3309,7 @@ export default function SalesForm(props) {
                     EmptyVariable();
                   }}
                 >
-                  Apply
+                  {t("Apply")}
                 </Button>
               </div>
             </Modal.Footer>
@@ -3763,6 +3785,12 @@ export default function SalesForm(props) {
             <Button
               variant="danger"
               onClick={() => {
+                if (CloseSave.flag == "EditDBCR") {
+                  let tempa = CloseSave.OldDatavariable;
+                  tempa[EditIdx] = CloseSave.NewDatavariable;
+                  console.log(tempa, "hsein");
+                  GoodsInvoiceSaveChanges(false, tempa);
+                }
                 if (CloseSave.flag == "goodsInvoice") {
                   let tempa = CloseSave.OldDatavariable;
                   tempa[EditIdx] = CloseSave.NewDatavariable;
@@ -3782,7 +3810,7 @@ export default function SalesForm(props) {
                 setCloseSave({ ...SwitchFormOption, show: false });
               }}
             >
-              N{`${t("No")}`}
+              {`${t("No")}`}
             </Button>
           </div>
         </Modal.Footer>
@@ -3970,7 +3998,7 @@ export default function SalesForm(props) {
                   setDialogOpen(true);
                 }}
               >
-                Close
+                {t("Close")}
               </button>
               <button
                 className="mt-4 bg-secondd hover:bg-secondd py-3 px-6  rounded-md"
@@ -4118,7 +4146,7 @@ export default function SalesForm(props) {
                 setGroupModalShow({ ...GroupModalShow, show: false })
               }
             >
-              Close
+              {t("Close")}
             </Button>
           </div>
         </Modal.Footer>

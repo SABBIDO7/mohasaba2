@@ -70,6 +70,7 @@
 "WareHouse":"Entrepôt",
 "Delete Failed":"Échec de la suppression",
 "Deleting Invoice": "Suppression de la facture",
+"Payment Type": "Type de paiement",
 
 "p1": "Aucun élément dans votre facture",
 "p2": "Aucun compte choisi",
@@ -101,7 +102,11 @@
     "p28": "Êtes-vous sûr de vouloir quitter la facture sans enregistrer les modifications ?",
     "p29": "Il n'y a pas de facture enregistrée à supprimer.",
     "p30": "Êtes-vous sûr de vouloir procéder à la suppression de la facture ?",
-
+    "p31": "Voulez-vous enregistrer vos modifications",
+    "p32": "Voulez-vous enregistrer vos modifications de note",
+    "p33": "Modifier la note (30 caractères)",
+"p34":"Vous ne pouvez pas changer l'option du formulaire lors de l'appel de l'ancienne facture.",
+"p35":"Veuillez d'abord effacer la facture.",
 
     "Ok": "D'accord",
     "Yes": "Oui",

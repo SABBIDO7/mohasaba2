@@ -206,7 +206,9 @@ const IdSelect = forwardRef((props, ref) => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">{t("Choose")}</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {t("Choose")}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body className="h-[43rem] overflow-y-auto">
           {props.options.map((io, idx) => {
@@ -847,7 +849,7 @@ const IdSelect = forwardRef((props, ref) => {
           <div className="space-y-3">
             <div className="flex items-center">
               <label htmlFor="itemBranch" className="w-1/4">
-                Branch:
+                {t("Branch")}:
               </label>
               <select
                 id="itemBranch"
@@ -868,7 +870,7 @@ const IdSelect = forwardRef((props, ref) => {
             </div>
             <div className="flex items-center">
               <label htmlFor="itemQty" className="w-1/4">
-                Payment Type:
+                {t("Payment Type")}:
               </label>
               <div className="flex items-center w-3/4">
                 <select
@@ -934,7 +936,7 @@ const IdSelect = forwardRef((props, ref) => {
             </div>
             <div className="flex items-center">
               <label htmlFor="itemQty" className="w-1/4">
-                Currency:
+                {t("Currency")}:
               </label>
               <div className="flex items-center w-3/4">
                 <select
@@ -983,7 +985,7 @@ const IdSelect = forwardRef((props, ref) => {
 
             <div className="flex items-center">
               <label htmlFor="itemPrice" className="w-1/4">
-                Amount:{" "}
+                {t("Amount")}:{" "}
               </label>
 
               <input
@@ -1030,7 +1032,7 @@ const IdSelect = forwardRef((props, ref) => {
               }}
               variant="danger"
             >
-              Close
+              {t("Close")}
             </Button>
           </div>
         </Modal.Footer>
