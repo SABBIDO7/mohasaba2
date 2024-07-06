@@ -200,7 +200,10 @@ const IdSelect = forwardRef((props, ref) => {
 
       <Modal
         show={props.show}
-        onHide={() => props.setModalShow(false)}
+        onHide={() => {
+          EmptyVariables("USEEFFECT");
+          props.setModalShow(false);
+        }}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered

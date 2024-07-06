@@ -974,6 +974,68 @@ export default function SalesForm(props) {
     };
     return [oldtempa, newdata];
   };
+  const getDBCROldNewInputs = () => {
+    let tempa = props.SelectedItems;
+
+    let PQUnitT = tempa[EditIdx]["PQUnit"];
+    let PQtyT = tempa[EditIdx]["PQty"];
+    let PUnitT = tempa[EditIdx]["PUnit"];
+    let DateTT = tempa[EditIdx]["DateT"];
+    console.log(DateTT, "hon aamenaayit l date l adim edit");
+    let TimeTT = tempa[EditIdx]["TimeT"];
+
+    let NoteT = tempa[EditIdx]["Note"];
+    let PPriceT = EditPPrice;
+    let oldtempa = tempa[EditIdx];
+
+    let newData = {
+      no: EditItem.no,
+      name: tempa[EditIdx]["name"],
+      qty: tempa[EditIdx]["qty"],
+      uprice: parseFloat(EditPrice),
+      discount: tempa[EditIdx]["discount"],
+      branch: EditBranch,
+      lno: EditLno,
+      PQty: tempa[EditIdx]["PQty"],
+      PUnit:
+        PPriceT == localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
+          ? "1"
+          : "2",
+      tax: tempa[EditIdx]["tax"],
+      TaxTotal: tempa[EditIdx]["TaxTotal"],
+      Total:
+        // EditPPrice !=
+        // localStorage.getItem(
+        //   "Cur" + localStorage.getItem("mainCur")
+        // )
+        //   ? parseFloat(EditPrice) /
+        //     localStorage.getItem("Rate")
+        //   : parseFloat(EditPrice),
+        EditPPrice !=
+        localStorage.getItem("Cur" + localStorage.getItem("mainCur"))
+          ? localStorage.getItem("Cur" + localStorage.getItem("mainCur")) ==
+            localStorage.getItem("Cur1")
+            ? EditPrice / props.Client["Rate"]
+            : EditPrice * props.Client["Rate"]
+          : EditPrice,
+      // EditPPrice != props.Client["cur"]
+      //   ? EditPrice / props.Client["Rate"]
+      //   : EditPrice,
+      Note: NoteT,
+      DateT: DateTT,
+      TimeT: TimeTT,
+      PQUnit: tempa[EditIdx]["PQUnit"],
+      PType: EditType,
+      TotalPieces: tempa[EditIdx]["TotalPieces"],
+      PPrice: PPriceT,
+      BPUnit: tempa[EditIdx]["BPUnit"],
+      SPUnit: tempa[EditIdx]["SPUnit"],
+      InitialPrice: tempa[EditIdx]["InitialPrice"],
+      StockQty: tempa[EditIdx]["StockQty"],
+      BranchesStock: tempa[EditIdx]["BranchesStock"],
+    };
+    return [tempa, newData];
+  };
   const GoodsInvoiceSaveChanges = (pAreEqual, tempa) => {
     if (!pAreEqual) {
       console.log("rouhhhhhhhhhhhh");
@@ -3059,8 +3121,7 @@ export default function SalesForm(props) {
                 <Button
                   variant="secondary"
                   onClick={() => {
-                    let [oldtempa, newtempa] = getOldNewInputs();
-                    let tempa = props.SelectedItems;
+                    let [tempa, newTempa] = getDBCROldNewInputs();
 
                     if (
                       editDBCRInitialValues.branch !== EditBranch ||
@@ -3070,7 +3131,7 @@ export default function SalesForm(props) {
                     ) {
                       setCloseSave({
                         OldDatavariable: tempa,
-                        NewDatavariable: newtempa,
+                        NewDatavariable: newTempa,
                         show: true,
                         variable: "",
                         title: "Save Changes",
@@ -3647,22 +3708,22 @@ export default function SalesForm(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Deleting Last Item
+            {t("p41")}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <h3>
-            Deleting This Item will let The Invoice Empty<br></br>{" "}
+            {t("p38")}
+            <br></br>{" "}
             <h3>
-              Delete The Invoice <strong>Or</strong> Add A New Item Before
-              Deleting This One
+              {t("p39")} <strong>{t("Or")}</strong> {t("p40")}
             </h3>
           </h3>
         </Modal.Body>
         <Modal.Footer>
           <div className="flex flex-row w-full justify-around">
             <Button onClick={() => setDeleteLastItemFromHistory(false)}>
-              OK
+              {t("Ok")}
             </Button>
           </div>
         </Modal.Footer>
@@ -4083,8 +4144,7 @@ export default function SalesForm(props) {
                         show: true,
                         message: (
                           <div>
-                            You Cannot Transfer To The Same Branch. <br></br>{" "}
-                            Please Choose Different Branches
+                            {t("p36")} <br></br> {t("p37")}
                           </div>
                         ),
                         title: "Branch Transfer",
