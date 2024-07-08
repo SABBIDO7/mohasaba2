@@ -116,10 +116,14 @@ export default function BasicPie() {
               dataset={datasetBarMonth}
               xAxis={[{ scaleType: "band", dataKey: "month" }]}
               series={[
-                { dataKey: "SA_AP", label: "SALES", valueFormatter },
-                { dataKey: "PR_AP", label: "PURCHASE RETURN", valueFormatter },
-                { dataKey: "PI_AP", label: "PURCHASE", valueFormatter },
-                { dataKey: "SR_AP", label: "SALES RETURN", valueFormatter },
+                {
+                  dataKey: "SA_AP",
+                  label: "SA",
+                  valueFormatter,
+                },
+                { dataKey: "PR_AP", label: "PR", valueFormatter },
+                { dataKey: "PI_AP", label: "PI", valueFormatter },
+                { dataKey: "SR_AP", label: "SR", valueFormatter },
               ]}
               {...chartSetting}
               sx={{ minWidth: 500 }}
@@ -135,7 +139,7 @@ export default function BasicPie() {
           {dataProfit && (
             <Gauge
               value={dataProfit}
-              valueMax={100000}
+              valueMax={200000}
               startAngle={-110}
               endAngle={110}
               sx={{

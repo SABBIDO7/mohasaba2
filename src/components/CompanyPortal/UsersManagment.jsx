@@ -23,6 +23,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Modals from "../Modals/Modals";
+import CustomSnackbar from "../Snackbar/CustomSnackbar"; // Import the new Snackbar component
 
 const UsersManagement = () => {
   const [users, setUsers] = useState([]);
@@ -30,6 +31,9 @@ const UsersManagement = () => {
   const [changedUsernames, setChangedUsernames] = useState([]);
   const [branches, setBranches] = useState([]);
   const [salePrices, setSalePrices] = useState([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState();
   const modalsChildRef = useRef();
 
   useEffect(() => {
@@ -61,6 +65,13 @@ const UsersManagement = () => {
     setChangedUsernames((prevChanged) =>
       prevChanged.includes(username) ? prevChanged : [...prevChanged, username]
     );
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   return (
@@ -240,6 +251,10 @@ const UsersManagement = () => {
                   flag: 1,
                   title: "Error",
                 });
+              } else if (response.status == "success") {
+                setSnackbarMessage("Users Updated Successfully");
+                setSnackbarSeverity("success");
+                setSnackbarOpen(true);
               }
             });
           }}
@@ -248,6 +263,12 @@ const UsersManagement = () => {
         </button>
       </div>
       <Modals ref={modalsChildRef} />
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        severity={snackbarSeverity}
+        message={snackbarMessage}
+      />
     </>
   );
 };
