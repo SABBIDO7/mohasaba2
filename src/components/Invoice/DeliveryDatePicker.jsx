@@ -3,7 +3,13 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
-import { format, parse, isSameDay, eachDayOfInterval } from "date-fns"; // Import date-fns format function
+import {
+  format,
+  parse,
+  isSameDay,
+  eachDayOfInterval,
+  differenceInDays,
+} from "date-fns"; // Import date-fns format function
 import { getCompanySettingsData } from "../BackendEndPoints/Endpoint1";
 import CustomSnackbar from "../Snackbar/CustomSnackbar"; // Import the new Snackbar component
 
@@ -82,6 +88,13 @@ const DeliveryDatePicker = (props) => {
     setSnackbarOpen(false);
   };
   const checkIfOffDayChoosen = (day) => {
+    // Check if it's a Sunday
+    if (day.getDay() === 0) {
+      setSnackbarMessage("The chosen date is a Sunday!");
+      setSnackbarSeverity("warning");
+      setSnackbarOpen(true);
+      return;
+    }
     // Skip holidays
     const isHoliday = holidays.some((holiday) =>
       isSameDay(parse(holiday.date, "dd/MM/yyyy", new Date()), day)
@@ -107,6 +120,7 @@ const DeliveryDatePicker = (props) => {
     while (daysAdded < deliveryDays) {
       calculatedDeliveryDate.setDate(calculatedDeliveryDate.getDate() + 1);
 
+      // alert(calculatedDeliveryDate);
       // Skip Sundays
       if (calculatedDeliveryDate.getDay() === 0) {
         listOffs.push({
@@ -158,9 +172,11 @@ const DeliveryDatePicker = (props) => {
         let deliveryDays;
         let calculatedDeliveryDate;
         if (!props.oldInvoice) {
-          if (!isNaN(Date.parse(props.Client["deliveryDays"]))) {
+          if (!isNaN(props.Client["deliveryDays"])) {
             deliveryDays = parseInt(props.Client["deliveryDays"], 10);
+
             if (!isNaN(deliveryDays)) {
+              console.log("is int");
               const currentDate = new Date();
               calculatedDeliveryDate = new Date(currentDate);
               getCompanySettingsData().then((response) => {
@@ -217,6 +233,7 @@ const DeliveryDatePicker = (props) => {
             }}
             format="dd/MM/yyyy"
             className="text-md font-semibold block rounded-md w-[fit] h-[fit]"
+            minDate={new Date()} // Add this line
           />
         </LocalizationProvider>
       </div>
