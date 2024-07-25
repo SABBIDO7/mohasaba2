@@ -8,7 +8,7 @@ import { faTruck } from "@fortawesome/free-solid-svg-icons";
 const DeliveryDateModal = (props) => {
   const [show, setShow] = useState(false);
   const [listOffs, setListOffs] = useState([]);
-
+  const { t } = props;
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -37,7 +37,7 @@ const DeliveryDateModal = (props) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Select Delivery Date
+            {t("p42")}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -65,7 +65,7 @@ const DeliveryDateModal = (props) => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            {t("Close")}
           </Button>
         </Modal.Footer>
       </Modal>

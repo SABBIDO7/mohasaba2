@@ -1504,6 +1504,7 @@ export default function SalesForm(props) {
                         }
                         propertiesAreEqual={props.propertiesAreEqual}
                         setpropertiesAreEqual={props.setpropertiesAreEqual}
+                        t={t}
                       />
                     </div>
                   </div>
@@ -1517,7 +1518,9 @@ export default function SalesForm(props) {
                     props.SATToBranch != "" && (
                       <>
                         <div className="flex flex-row ml-[10%]  text-BgTextColor rounded p-0.5">
-                          <div style={{ marginRight: "3px" }}>From :</div>
+                          <div style={{ marginRight: "3px" }}>
+                            {t("From")} :
+                          </div>
                           <div>
                             {props.SATFromBranch !== "undefined"
                               ? "  " + props.SATFromBranch
@@ -1526,7 +1529,7 @@ export default function SalesForm(props) {
                         </div>
 
                         <div className="flex flex-row ml-[10%]  text-BgTextColor rounded p-0.5">
-                          <div style={{ marginRight: "3px" }}>To :</div>
+                          <div style={{ marginRight: "3px" }}>{t("p10")} :</div>
                           <div>
                             {props.SATToBranch !== "undefined" &&
                             props.SATToBranch != null &&
@@ -4009,11 +4012,11 @@ export default function SalesForm(props) {
       {SATdialogOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
           <div className="bg-white p-4 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Select Branches:</h2>
+            <h2 className="text-xl font-semibold mb-4">{t("p43")}:</h2>
             <div className="grid grid-cols-2 gap-4">
               {/* Your six boxes here */}
               <label htmlFor="itemFromBranch" className="w-fit">
-                From :{" "}
+                {t("From")} :{" "}
               </label>
               <select
                 id="itemFromBranch"
@@ -4032,7 +4035,7 @@ export default function SalesForm(props) {
                 })}
               </select>
               <label htmlFor="itemToBranch" className="w-fit">
-                To :{" "}
+                {t("p10")} :{" "}
               </label>
               <select
                 id="itemToBranch"
@@ -4262,12 +4265,15 @@ export default function SalesForm(props) {
             setErrorModal({
               show: true,
               message: (
+                // <div>
+                //   There Is No {sOption} Matches Your Search <br></br> Please Try
+                //   a Different {sOption} .
+                // </div>
                 <div>
-                  There Is No {sOption} Matches Your Search <br></br> Please Try
-                  a Different {sOption} .
+                  {t("p44")} <br></br> {t("p45")}
                 </div>
               ),
-              title: "Empty " + sOption,
+              title: t("Empty") + " " + t(sOption),
             });
           }
         } else if (res.data.Info == "error") {
@@ -4309,7 +4315,7 @@ export default function SalesForm(props) {
             setGroupModalShow({
               show: true,
               variable: res.data.groupTypes,
-              title: "Group Types",
+              title: t("Group Types"),
               flag: "GroupAvailable",
             });
             //setIdOptions(res.data.opp);
@@ -4320,9 +4326,12 @@ export default function SalesForm(props) {
             setErrorModal({
               show: true,
               message: (
+                // <div>
+                //   There Is No {sOption} Matches Your Search <br></br> Please Try
+                //   a Different {sOption} .
+                // </div>
                 <div>
-                  There Is No {sOption} Matches Your Search <br></br> Please Try
-                  a Different {sOption} .
+                  {t("p44")} <br></br> {t("p45")}
                 </div>
               ),
               title: "Empty " + sOption,
@@ -4350,7 +4359,7 @@ export default function SalesForm(props) {
     setGroupModalShow({
       show: true,
       variable: variable,
-      title: "Group Types",
+      title: t("Group Types"),
       flag: "AllGroups",
     });
   }

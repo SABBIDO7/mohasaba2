@@ -72,6 +72,9 @@
 "Deleting Invoice": "Suppression de la facture",
 "Payment Type": "Type de paiement",
 "Or": "Ou",
+"From":"De",
+"Done":"Terminé",
+"Group Types":"Types de groupes",
 
 "p1": "Aucun élément dans votre facture",
 "p2": "Aucun compte choisi",
@@ -114,6 +117,11 @@
     "p39": "Supprimer la facture",
     "p40": "Ajoutez un nouvel élément avant de supprimer celui-ci",
     "p41": "Suppression du dernier élément",
+    "p42":"Sélectionner la date de livraison",
+    "p43": "Sélectionner les succursales",
+"p44": "Aucune option ne correspond à votre recherche",
+"p45": "Veuillez essayer une autre option",
+
     "Ok": "D'accord",
     "Yes": "Oui",
     "No": "Non",
