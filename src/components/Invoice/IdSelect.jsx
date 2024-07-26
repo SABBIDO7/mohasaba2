@@ -174,7 +174,7 @@ const IdSelect = forwardRef((props, ref) => {
     setsItemTaxTotal(0);
     setsItemTotal(0);
     setsItemStockQty(0);
-    setTotalPieces(0);
+    setTotalPieces(1);
     setsItemDSPUnit("");
     setsItemBPUnit("");
     setsItemInitial(0);
