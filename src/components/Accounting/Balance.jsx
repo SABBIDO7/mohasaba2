@@ -46,7 +46,7 @@ export default function Balance(props) {
       {values.map((v, idx) => (
         <Button key={idx} className="me-2 my-1" onClick={() => handleShow(v)}>
           {props.oData["Balance"] !== null
-            ? props.oData["Balance"].toLocaleString() //ken tofixed(2)
+            ? props.oData["Balance"].toLocaleString() + " " + props.oData["Cur"] //ken tofixed(2)
             : "0.00" + " " + props.oData["Cur"]}
           {typeof v === "string" && `below ${v.split("-")[0]}`}
         </Button>

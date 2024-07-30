@@ -76,6 +76,13 @@
     "From":"From",
     "Done":"Done",
     "Group Types":"Group Types",
+    "Start": "Start",
+    "Contains": "Contains",
+    "Limit": "Limit",
+    "Not Equal": "Not Equal",
+"Any":"Any",
+"Filters": "Filters",
+
     "p1": "No Items in your invoice",
     "p2": "No Account Choosen",
     "p3": "No Changes In Your Invoice",

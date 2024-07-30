@@ -9,10 +9,11 @@ import backimg from "../../media/d.png";
 import resetimg from "../../media/R.png";
 
 export default function FilterItem(props) {
+  const { t } = props;
   const filtersOptions = [
-    { value: "Start", label: "Start" },
-    { value: "Contains", label: "Contains" },
-    { value: "Not Equal", label: "Not Equal" },
+    { value: "Start", label: t("Start") },
+    { value: "Contains", label: t("Contains") },
+    { value: "Not Equal", label: t("Not Equal") },
     { value: "=", label: "=" },
     { value: ">", label: ">" },
     { value: "<", label: "<" },
@@ -53,7 +54,7 @@ export default function FilterItem(props) {
 
   const filterItems = [
     {
-      pl: "Any",
+      pl: t("Any"),
       vVar: vAny,
       sVar: sAny,
       vFun: setvAny,
@@ -223,7 +224,7 @@ export default function FilterItem(props) {
           </div>
         </Modal.Title>
         <Button id="done-btn" className="mx-2" onClick={setFilters}>
-          Search
+          {t("Search")}
         </Button>
         <img
           src={backimg}
@@ -243,7 +244,7 @@ export default function FilterItem(props) {
               variant={bBranch ? "outline-primary" : "primary"}
               className="mx-2 select-none"
             >
-              Branch
+              {t("Branch")}
             </Button>
 
             {bBranch ? (
@@ -278,13 +279,13 @@ export default function FilterItem(props) {
               variant="light"
               className="mx-2 select-none "
             >
-              Clear
+              {t("Clear")}
             </Button>
           </div>
           <div className="flex flex-col w-[100%]">
             <div className="flex flex-row w-[100%] justify-center px-2 py-1 align-middle">
               <div className="w-[95%] max-w-[50rem] flex flex-row items-center align-middle justify-center">
-                <div className=" font-semibold text-lg">Limit:</div>
+                <div className=" font-semibold text-lg">{t("Limit")}:</div>
                 <Select
                   className="basic-single w-[50%] mx-1"
                   classNamePrefix="select"

@@ -75,7 +75,12 @@
 "From":"De",
 "Done":"Terminé",
 "Group Types":"Types de groupes",
-
+"Start": "Commencer",
+"Contains": "Contient",
+"Limit": "Limite",
+"Not Equal": "Pas égal",
+"Any": "N'importe quel",
+"Filters": "Filtres",
 "p1": "Aucun élément dans votre facture",
 "p2": "Aucun compte choisi",
 "p3": "Aucun changement dans votre facture",

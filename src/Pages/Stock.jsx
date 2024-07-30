@@ -167,7 +167,7 @@ export default function Stock(props) {
           >
             <div className="flex flex-row items-center align-middle">
               <img src={FilterIcon} className="h-[1rem]" alt="." />
-              <div className="mx-2">Filters</div>
+              <div className="mx-2">{t("Filters")}</div>
             </div>
             <div>
               <img src={arrowIcon} className="h-[1rem] -rotate-90" alt="." />
@@ -1208,6 +1208,7 @@ export default function Stock(props) {
         setShowFilter={setShowFilter}
         getData={getData}
         vBranches={vBranches} //honb1
+        t={t}
       />
     </>
   );
