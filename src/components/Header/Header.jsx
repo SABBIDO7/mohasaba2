@@ -151,7 +151,7 @@ export default function Header(props) {
                         : modalsChildRef.current.setRestrictionModal({
                             show: true,
                             message: `Not Authorized To Access ${item.name} Page`,
-                            title: "Authorization Failed",
+                            title: t("Authorization Failed"),
                           });
                     }}
                     /*className={classNames(

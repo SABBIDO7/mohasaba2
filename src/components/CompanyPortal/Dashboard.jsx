@@ -179,6 +179,7 @@ export default function BasicPie() {
         </div>
       </div>
       <div className="grid-item items-center">
+        <div className="h-[20%] w-[90%]"></div>
         <div className="h-[40%] w-[90%]">
           <Card>
             <CardContent>

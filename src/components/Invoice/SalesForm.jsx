@@ -2812,8 +2812,7 @@ export default function SalesForm(props) {
                       } else {
                         setDeletePermission({
                           show: true,
-                          message:
-                            "You don't have permission to delete Item From invoice.",
+                          message: t("p54"),
                         });
                       }
                     } else {
@@ -2853,8 +2852,7 @@ export default function SalesForm(props) {
                       ) {
                         setDeletePermission({
                           show: true,
-                          message:
-                            "You Don't Have Permission To Sell Less Than Stock Quantity.",
+                          message: t("p55"),
                         });
                         return;
                       }
@@ -3127,10 +3125,13 @@ export default function SalesForm(props) {
                     let [tempa, newTempa] = getDBCROldNewInputs();
 
                     if (
-                      editDBCRInitialValues.branch !== EditBranch ||
-                      editDBCRInitialValues.type !== EditType ||
-                      editDBCRInitialValues.pPrice !== EditPPrice ||
-                      editDBCRInitialValues.price !== EditPrice
+                      (editDBCRInitialValues.branch !== EditBranch &&
+                        EditBranch !== "") ||
+                      (editDBCRInitialValues.type !== EditType &&
+                        EditType !== "") ||
+                      (editDBCRInitialValues.pPrice !== EditPPrice &&
+                        EditPPrice !== "") ||
+                      (editDBCRInitialValues.price !== EditPrice && EditPrice)
                     ) {
                       setCloseSave({
                         OldDatavariable: tempa,
@@ -3201,8 +3202,7 @@ export default function SalesForm(props) {
                       } else {
                         setDeletePermission({
                           show: true,
-                          message:
-                            "You don't have permission to delete Item From invoice.",
+                          message: t("p54"),
                         });
                       }
                     } else {
@@ -3236,13 +3236,13 @@ export default function SalesForm(props) {
                   variant="primary"
                   onClick={() => {
                     if (EditType == "") {
-                      setErrorMessage("You Have To Choose Payment Type");
+                      setErrorMessage(t("p51"));
                       return;
                     } else if (EditPPrice == "") {
-                      setErrorMessage("You Have To Choose Currency Type");
+                      setErrorMessage(t("p52"));
                       return;
                     } else if (EditBranch == "") {
-                      setErrorMessage("You Have To Choose A Branch");
+                      setErrorMessage(t("p53"));
                       return;
                     }
                     let tempa = props.SelectedItems;

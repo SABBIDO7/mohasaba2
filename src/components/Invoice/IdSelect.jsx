@@ -778,8 +778,7 @@ const IdSelect = forwardRef((props, ref) => {
                     console.log("itemStockkkk");
                     props.setDeletePermission({
                       show: true,
-                      message:
-                        "You Don't Have Permission To Sell Less Than Stock Quantity.",
+                      message: t("p55"),
                     });
                     return;
                   }

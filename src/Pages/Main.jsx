@@ -16,15 +16,15 @@ export default function Main(props) {
       } else {
         modalsChildRef.current.setRestrictionModal({
           show: true,
-          message: "Your Company Is Not Register To The BackOffice",
-          title: "Authorization Failed",
+          message: t("p46"),
+          title: t("Authorization Failed"),
         });
       }
     } else {
       modalsChildRef.current.setRestrictionModal({
         show: true,
-        message: "Not Authorized To Access Accounting Page",
-        title: "Authorization Failed",
+        message: t("p47"),
+        title: t("Authorization Failed"),
       });
     }
   }
@@ -35,15 +35,15 @@ export default function Main(props) {
       } else {
         modalsChildRef.current.setRestrictionModal({
           show: true,
-          message: "Your Company Is Not Register To The BackOffice",
-          title: "Authorization Failed",
+          message: t("p46"),
+          title: t("Authorization Failed"),
         });
       }
     } else {
       modalsChildRef.current.setRestrictionModal({
         show: true,
-        message: "Not Authorized To Access Inventory Page",
-        title: "Authorization Failed",
+        message: t("p48"),
+        title: t("Authorization Failed"),
       });
     }
   }
@@ -54,15 +54,15 @@ export default function Main(props) {
       } else {
         modalsChildRef.current.setRestrictionModal({
           show: true,
-          message: "Your Company Is Not Register To The BackOffice",
-          title: "Authorization Failed",
+          message: t("p46"),
+          title: t("Authorization Failed"),
         });
       }
     } else {
       modalsChildRef.current.setRestrictionModal({
         show: true,
-        message: "Not Authorized To Access Transactions Page",
-        title: "Authorization Failed",
+        message: t("p49"),
+        title: t("Authorization Failed"),
       });
     }
   }
@@ -72,8 +72,8 @@ export default function Main(props) {
     } else {
       modalsChildRef.current.setRestrictionModal({
         show: true,
-        message: "Not Authorized To Access CheckIn Page",
-        title: "Authorization Failed",
+        message: t("p50"),
+        title: t("Authorization Failed"),
       });
     }
   }
