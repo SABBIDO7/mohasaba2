@@ -24,39 +24,40 @@ export default function BasicPie() {
   const [monthsProfitPerMonth, setMonthsProfitPerMonth] = useState(null);
   const [topSellersByAmount, setTopSellersByAmount] = useState(null);
   const [topSellersByQuantity, setTopSellersByQuantity] = useState(null);
+  const [option, setOption] = useState(1);
   useEffect(() => {
-    getPieChartData().then((response) => {
+    getPieChartData(option).then((response) => {
       if (response.status === "success") {
         setDataPie(response.result);
       }
     });
-    getBarChartData().then((response) => {
+    getBarChartData(option).then((response) => {
       if (response.status === "success") {
         setDatasetBarMonth(response.result);
       }
     });
-    getProfitData(2024).then((response) => {
+    getProfitData(2024, option).then((response) => {
       if (response.status === "success") {
         setDataProfit(response.result);
       }
     });
-    getLineChartDataProfit(2024).then((response) => {
+    getLineChartDataProfit(2024, option).then((response) => {
       if (response.status === "success") {
         setMonthsProfitPerMonth(response.result[0]);
         setDataProfitPerMonth(response.result[1]);
       }
     });
-    getTopSellersByAmount(2024).then((response) => {
+    getTopSellersByAmount(2024, option).then((response) => {
       if (response.status === "success") {
         setTopSellersByAmount(response.result);
       }
     });
-    getTopSellersByQuantity(2024).then((response) => {
+    getTopSellersByQuantity(2024, option).then((response) => {
       if (response.status === "success") {
         setTopSellersByQuantity(response.result);
       }
     });
-  }, []);
+  }, [option]);
 
   const chartSetting = {
     yAxis: [
@@ -179,7 +180,27 @@ export default function BasicPie() {
         </div>
       </div>
       <div className="grid-item items-center">
-        <div className="h-[20%] w-[90%]"></div>
+        <div className="h-[20%] w-[90%]">
+          <div className="h-[50%]">
+            <select
+              className="select-style ReCall-select-style"
+              onChange={(e) => {
+                setOption(e.target.value);
+              }}
+              value={option}
+            >
+              <option value={1} key={1} className="optionText">
+                Online
+              </option>
+              <option value={2} key={2} className="optionText">
+                BackOffice
+              </option>
+              <option value={3} key={3} className="optionText">
+                All
+              </option>
+            </select>
+          </div>
+        </div>
         <div className="h-[40%] w-[90%]">
           <Card>
             <CardContent>

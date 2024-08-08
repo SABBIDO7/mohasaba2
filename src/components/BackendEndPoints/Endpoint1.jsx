@@ -382,12 +382,17 @@ export async function UpdateCompanySettings(data) {
   }
 }
 
-export async function getBarChartData() {
+export async function getBarChartData(option) {
   try {
     return await axios({
       method: "get",
       url:
-        url + "/moh/getBarChartData/" + localStorage.getItem("compname") + "/",
+        url +
+        "/moh/getBarChartData/" +
+        localStorage.getItem("compname") +
+        "/" +
+        option +
+        "/",
     }).then((res) => {
       if (res.data.status == "success") {
         console.log("l" + res);
@@ -403,12 +408,17 @@ export async function getBarChartData() {
     return { status: "Error", message: error };
   }
 }
-export async function getPieChartData() {
+export async function getPieChartData(option) {
   try {
     return await axios({
       method: "get",
       url:
-        url + "/moh/getPieChartData/" + localStorage.getItem("compname") + "/",
+        url +
+        "/moh/getPieChartData/" +
+        localStorage.getItem("compname") +
+        "/" +
+        option +
+        "/",
     }).then((res) => {
       if (res.data.status == "success") {
         console.log("lip" + res.data);
@@ -425,7 +435,7 @@ export async function getPieChartData() {
   }
 }
 
-export async function getProfitData(year) {
+export async function getProfitData(year, option) {
   try {
     return await axios({
       method: "get",
@@ -435,6 +445,8 @@ export async function getProfitData(year) {
         localStorage.getItem("compname") +
         "/" +
         year +
+        "/" +
+        option +
         "/",
     }).then((res) => {
       if (res.data.status == "success") {
@@ -450,7 +462,7 @@ export async function getProfitData(year) {
     return { status: "Error", message: error };
   }
 }
-export async function getLineChartDataProfit(year) {
+export async function getLineChartDataProfit(year, option) {
   try {
     return await axios({
       method: "get",
@@ -460,6 +472,8 @@ export async function getLineChartDataProfit(year) {
         localStorage.getItem("compname") +
         "/" +
         year +
+        "/" +
+        option +
         "/",
     }).then((res) => {
       if (res.data.status == "success") {
@@ -475,7 +489,7 @@ export async function getLineChartDataProfit(year) {
     return { status: "Error", message: error };
   }
 }
-export async function getTopSellersByAmount(year) {
+export async function getTopSellersByAmount(year, option) {
   try {
     return await axios({
       method: "get",
@@ -485,6 +499,8 @@ export async function getTopSellersByAmount(year) {
         localStorage.getItem("compname") +
         "/" +
         year +
+        "/" +
+        option +
         "/",
     }).then((res) => {
       if (res.data.status == "success") {
@@ -500,7 +516,7 @@ export async function getTopSellersByAmount(year) {
     return { status: "Error", message: error };
   }
 }
-export async function getTopSellersByQuantity(year) {
+export async function getTopSellersByQuantity(year, option) {
   try {
     return await axios({
       method: "get",
@@ -510,6 +526,8 @@ export async function getTopSellersByQuantity(year) {
         localStorage.getItem("compname") +
         "/" +
         year +
+        "/" +
+        option +
         "/",
     }).then((res) => {
       if (res.data.status == "success") {
