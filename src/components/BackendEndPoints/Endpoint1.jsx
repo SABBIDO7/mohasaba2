@@ -382,7 +382,7 @@ export async function UpdateCompanySettings(data) {
   }
 }
 
-export async function getBarChartData(option) {
+export async function getBarChartData(option, type) {
   try {
     return await axios({
       method: "get",
@@ -392,6 +392,8 @@ export async function getBarChartData(option) {
         localStorage.getItem("compname") +
         "/" +
         option +
+        "/" +
+        type +
         "/",
     }).then((res) => {
       if (res.data.status == "success") {
@@ -408,7 +410,7 @@ export async function getBarChartData(option) {
     return { status: "Error", message: error };
   }
 }
-export async function getPieChartData(option) {
+export async function getPieChartData(option, type) {
   try {
     return await axios({
       method: "get",
@@ -418,6 +420,8 @@ export async function getPieChartData(option) {
         localStorage.getItem("compname") +
         "/" +
         option +
+        "/" +
+        type +
         "/",
     }).then((res) => {
       if (res.data.status == "success") {
@@ -435,7 +439,7 @@ export async function getPieChartData(option) {
   }
 }
 
-export async function getProfitData(year, option) {
+export async function getProfitData(year, option, type) {
   try {
     return await axios({
       method: "get",
@@ -447,6 +451,8 @@ export async function getProfitData(year, option) {
         year +
         "/" +
         option +
+        "/" +
+        type +
         "/",
     }).then((res) => {
       if (res.data.status == "success") {
@@ -462,7 +468,7 @@ export async function getProfitData(year, option) {
     return { status: "Error", message: error };
   }
 }
-export async function getLineChartDataProfit(year, option) {
+export async function getLineChartDataProfit(year, option, type) {
   try {
     return await axios({
       method: "get",
@@ -474,6 +480,8 @@ export async function getLineChartDataProfit(year, option) {
         year +
         "/" +
         option +
+        "/" +
+        type +
         "/",
     }).then((res) => {
       if (res.data.status == "success") {
@@ -489,7 +497,7 @@ export async function getLineChartDataProfit(year, option) {
     return { status: "Error", message: error };
   }
 }
-export async function getTopSellersByAmount(year, option) {
+export async function getTopSellersByAmount(year, option, type) {
   try {
     return await axios({
       method: "get",
@@ -501,6 +509,8 @@ export async function getTopSellersByAmount(year, option) {
         year +
         "/" +
         option +
+        "/" +
+        type +
         "/",
     }).then((res) => {
       if (res.data.status == "success") {
@@ -516,7 +526,7 @@ export async function getTopSellersByAmount(year, option) {
     return { status: "Error", message: error };
   }
 }
-export async function getTopSellersByQuantity(year, option) {
+export async function getTopSellersByQuantity(year, option, type) {
   try {
     return await axios({
       method: "get",
@@ -528,6 +538,8 @@ export async function getTopSellersByQuantity(year, option) {
         year +
         "/" +
         option +
+        "/" +
+        type +
         "/",
     }).then((res) => {
       if (res.data.status == "success") {

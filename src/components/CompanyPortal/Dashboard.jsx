@@ -25,39 +25,41 @@ export default function BasicPie() {
   const [topSellersByAmount, setTopSellersByAmount] = useState(null);
   const [topSellersByQuantity, setTopSellersByQuantity] = useState(null);
   const [option, setOption] = useState(1);
+  const [type, setType] = useState("s");
+
   useEffect(() => {
-    getPieChartData(option).then((response) => {
+    getPieChartData(option, type).then((response) => {
       if (response.status === "success") {
         setDataPie(response.result);
       }
     });
-    getBarChartData(option).then((response) => {
+    getBarChartData(option, type).then((response) => {
       if (response.status === "success") {
         setDatasetBarMonth(response.result);
       }
     });
-    getProfitData(2024, option).then((response) => {
+    getProfitData(2024, option, type).then((response) => {
       if (response.status === "success") {
         setDataProfit(response.result);
       }
     });
-    getLineChartDataProfit(2024, option).then((response) => {
+    getLineChartDataProfit(2024, option, type).then((response) => {
       if (response.status === "success") {
         setMonthsProfitPerMonth(response.result[0]);
         setDataProfitPerMonth(response.result[1]);
       }
     });
-    getTopSellersByAmount(2024, option).then((response) => {
+    getTopSellersByAmount(2024, option, type).then((response) => {
       if (response.status === "success") {
         setTopSellersByAmount(response.result);
       }
     });
-    getTopSellersByQuantity(2024, option).then((response) => {
+    getTopSellersByQuantity(2024, option, type).then((response) => {
       if (response.status === "success") {
         setTopSellersByQuantity(response.result);
       }
     });
-  }, [option]);
+  }, [option, type]);
 
   const chartSetting = {
     yAxis: [
