@@ -120,6 +120,11 @@ export default function SalesForm(props) {
   const formatter = new Intl.NumberFormat("en-US");
   const { t } = props; // Get t from props
   const [editDBCRInitialValues, setEditDBCRInitialValues] = useState({});
+  const [clickedX, setClickedX] = useState("N");
+
+  const handleCheckboxXChange = (e) => {
+    setClickedX(e.target.checked ? "Y" : "N");
+  };
   // Function to set the detected barcode
   const handleBarcodeDetected = (detectedBarcode) => {
     setvInput(detectedBarcode);
@@ -3951,7 +3956,11 @@ export default function SalesForm(props) {
             <div className="grid grid-cols-3 gap-4">
               {/* Your six boxes here */}
               <button
-                className="bg-secondd text-BgTextColor py-4 px-8 rounded-md text-center"
+                className={` ${
+                  clickedX === "Y"
+                    ? "bg-black text-white"
+                    : "bg-secondd text-BgTextColor"
+                }  py-4 px-8 rounded-md text-center`}
                 onClick={() => formOptionProcessing("SA_AP")}
               >
                 {t("Sales")}
@@ -3999,12 +4008,22 @@ export default function SalesForm(props) {
                 {t("Payment Voucher")}
               </button>
             </div>
-            <button
-              className="mt-4 bg-gray-300 hover:bg-gray-400 py-3 px-6  rounded-md"
-              onClick={handleCloseDialog}
-            >
-              {t("Close")}
-            </button>
+            <div className="flex flex-row justify-between">
+              <button
+                className="mt-4 bg-gray-300 hover:bg-gray-400 py-3 px-6  rounded-md"
+                onClick={handleCloseDialog}
+              >
+                {t("Close")}
+              </button>
+              <label className="ml-4 flex items-center">
+                <input
+                  type="checkbox"
+                  className="form-checkbox transform scale-150"
+                  onChange={handleCheckboxXChange}
+                />
+                <span className="ml-2">{t("Option")}X</span>
+              </label>
+            </div>
           </div>
         </div>
       )}
