@@ -3966,43 +3966,71 @@ export default function SalesForm(props) {
                 {t("Sales")}
               </button>
               <button
-                className="bg-secondd text-BgTextColor py-4 px-8  rounded-md text-center"
+                className={` ${
+                  clickedX === "Y"
+                    ? "bg-black text-white"
+                    : "bg-secondd text-BgTextColor"
+                }  py-4 px-8 rounded-md text-center`}
                 onClick={() => formOptionProcessing("OD_AP")}
               >
                 {t("Order")}
               </button>
               <button
-                className="bg-secondd text-BgTextColor py-4 px-8   rounded-md text-center"
+                className={` ${
+                  clickedX === "Y"
+                    ? "bg-black text-white"
+                    : "bg-secondd text-BgTextColor"
+                }  py-4 px-8 rounded-md text-center`}
                 onClick={() => formOptionProcessing("PR_AP")}
               >
                 {t("Purchase Return")}
               </button>
               <button
-                className="bg-secondd text-BgTextColor py-4 px-8  rounded-md text-center"
+                className={` ${
+                  clickedX === "Y"
+                    ? "bg-black text-white"
+                    : "bg-secondd text-BgTextColor"
+                }  py-4 px-8 rounded-md text-center`}
                 onClick={() => formOptionProcessing("PI_AP")}
               >
                 {t("Purchase")}
               </button>
               <button
-                className="bg-secondd text-BgTextColor py-4 px-8   rounded-md text-center"
+                className={` ${
+                  clickedX === "Y"
+                    ? "bg-black text-white"
+                    : "bg-secondd text-BgTextColor"
+                }  py-4 px-8 rounded-md text-center`}
                 onClick={() => formOptionProcessing("SR_AP")}
               >
                 {t("Sales Return")}
               </button>
               <button
-                className="bg-secondd text-BgTextColor py-4 px-8  rounded-md text-center"
+                className={` ${
+                  clickedX === "Y"
+                    ? "bg-black text-white"
+                    : "bg-secondd text-BgTextColor"
+                }  py-4 px-8 rounded-md text-center`}
                 onClick={() => formOptionProcessing("SAT_AP")}
               >
                 {t("Branch Transfer")}
               </button>
               <button
-                className="bg-secondd text-BgTextColor py-4 px-8 rounded-md text-center"
+                className={` ${
+                  clickedX === "Y"
+                    ? "bg-black text-white"
+                    : "bg-secondd text-BgTextColor"
+                }  py-4 px-8 rounded-md text-center`}
                 onClick={() => formOptionProcessing("CR_AP")}
               >
                 {t("Receipt Voucher")}
               </button>
               <button
-                className="bg-secondd text-BgTextColor py-4 px-8 rounded-md text-center"
+                className={` ${
+                  clickedX === "Y"
+                    ? "bg-black text-white"
+                    : "bg-secondd text-BgTextColor"
+                }  py-4 px-8 rounded-md text-center`}
                 onClick={() => formOptionProcessing("DB_AP")}
               >
                 {t("Payment Voucher")}
@@ -4020,6 +4048,7 @@ export default function SalesForm(props) {
                   type="checkbox"
                   className="form-checkbox transform scale-150"
                   onChange={handleCheckboxXChange}
+                  checked={clickedX === "Y"} // Automatically check if clickedX is 'Y'
                 />
                 <span className="ml-2">{t("Option")}X</span>
               </label>
